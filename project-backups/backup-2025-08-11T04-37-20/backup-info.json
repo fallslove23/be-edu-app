@@ -1,0 +1,22 @@
+{
+  "timestamp": "2025-08-11T04:37:20.089Z",
+  "type": "full",
+  "files": [
+    "package.json",
+    "tsconfig.json",
+    "tsconfig.app.json",
+    "tsconfig.node.json",
+    "vite.config.ts",
+    "tailwind.config.js",
+    "postcss.config.js",
+    "eslint.config.js",
+    "index.html",
+    ".gitignore"
+  ],
+  "directories": [
+    "src",
+    "public",
+    "scripts"
+  ],
+  "description": "전체 백업 - 2025. 8. 11. 오후 1:37:20"
+}
