@@ -1,0 +1,217 @@
+/* Neutral/Muted Icon Color System */
+
+/* Primary neutral color palette */
+:root {
+  /* Neutral grays */
+  --neutral-50: #fafafa;
+  --neutral-100: #f5f5f5;
+  --neutral-200: #e5e5e5;
+  --neutral-300: #d4d4d4;
+  --neutral-400: #a3a3a3;
+  --neutral-500: #737373;
+  --neutral-600: #525252;
+  --neutral-700: #404040;
+  --neutral-800: #262626;
+  --neutral-900: #171717;
+  
+  /* Slate grays (cooler) */
+  --slate-50: #f8fafc;
+  --slate-100: #f1f5f9;
+  --slate-200: #e2e8f0;
+  --slate-300: #cbd5e1;
+  --slate-400: #94a3b8;
+  --slate-500: #64748b;
+  --slate-600: #475569;
+  --slate-700: #334155;
+  --slate-800: #1e293b;
+  --slate-900: #0f172a;
+  
+  /* Stone grays (warmer) */
+  --stone-50: #fafaf9;
+  --stone-100: #f5f5f4;
+  --stone-200: #e7e5e4;
+  --stone-300: #d6d3d1;
+  --stone-400: #a8a29e;
+  --stone-500: #78716c;
+  --stone-600: #57534e;
+  --stone-700: #44403c;
+  --stone-800: #292524;
+  --stone-900: #1c1917;
+}
+
+/* Neutral icon color classes */
+.icon-neutral {
+  color: var(--neutral-500);
+}
+
+.icon-neutral-light {
+  color: var(--neutral-400);
+}
+
+.icon-neutral-dark {
+  color: var(--neutral-600);
+}
+
+.icon-slate {
+  color: var(--slate-500);
+}
+
+.icon-slate-light {
+  color: var(--slate-400);
+}
+
+.icon-slate-dark {
+  color: var(--slate-600);
+}
+
+.icon-stone {
+  color: var(--stone-500);
+}
+
+.icon-stone-light {
+  color: var(--stone-400);
+}
+
+.icon-stone-dark {
+  color: var(--stone-600);
+}
+
+/* Status icon colors (muted versions) */
+.icon-success-muted {
+  color: #6b7280; /* neutral-500 */
+}
+
+.icon-warning-muted {
+  color: #78716c; /* stone-500 */
+}
+
+.icon-error-muted {
+  color: #64748b; /* slate-500 */
+}
+
+.icon-info-muted {
+  color: #737373; /* neutral-500 */
+}
+
+/* Hover states for interactive icons */
+.icon-hover-neutral:hover {
+  color: var(--neutral-700);
+  transition: color 0.2s ease;
+}
+
+.icon-hover-slate:hover {
+  color: var(--slate-700);
+  transition: color 0.2s ease;
+}
+
+.icon-hover-stone:hover {
+  color: var(--stone-700);
+  transition: color 0.2s ease;
+}
+
+/* Dark mode adjustments */
+.dark .icon-neutral {
+  color: var(--neutral-400);
+}
+
+.dark .icon-neutral-light {
+  color: var(--neutral-500);
+}
+
+.dark .icon-neutral-dark {
+  color: var(--neutral-300);
+}
+
+.dark .icon-slate {
+  color: var(--slate-400);
+}
+
+.dark .icon-slate-light {
+  color: var(--slate-500);
+}
+
+.dark .icon-slate-dark {
+  color: var(--slate-300);
+}
+
+.dark .icon-stone {
+  color: var(--stone-400);
+}
+
+.dark .icon-stone-light {
+  color: var(--stone-500);
+}
+
+.dark .icon-stone-dark {
+  color: var(--stone-300);
+}
+
+/* Mobile optimized icon sizes and spacing */
+@media (max-width: 768px) {
+  .icon-mobile {
+    width: 20px;
+    height: 20px;
+    min-width: 20px;
+    min-height: 20px;
+  }
+  
+  .icon-mobile-lg {
+    width: 24px;
+    height: 24px;
+    min-width: 24px;
+    min-height: 24px;
+  }
+  
+  .icon-mobile-xl {
+    width: 28px;
+    height: 28px;
+    min-width: 28px;
+    min-height: 28px;
+  }
+}
+
+/* Mobile UX Optimizer Styles */
+.mobile-ux-optimizer {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+}
+
+.pull-refresh-indicator {
+  will-change: transform, opacity;
+  pointer-events: none;
+}
+
+/* Enhanced mobile button with better touch feedback */
+.mobile-button-enhanced {
+  position: relative;
+  overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  
+  /* Ripple effect setup */
+  background-position: center;
+  transition: background 0.8s;
+}
+
+.mobile-button-enhanced:active {
+  background-color: rgba(59, 130, 246, 0.1);
+  background-size: 100%;
+  transition: background 0s;
+}
+
+/* Touch target improvements */
+@media (pointer: coarse) {
+  .touch-target-improved {
+    min-height: 48px;
+    min-width: 48px;
+    padding: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .touch-spacing {
+    margin: 4px;
+  }
+}

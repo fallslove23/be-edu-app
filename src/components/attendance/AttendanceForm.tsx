@@ -136,6 +136,7 @@ const AttendanceForm: React.FC<AttendanceFormProps> = ({
         trainee_name: trainee.trainee_name,
         status: trainee.status,
         check_time: trainee.check_time || new Date().toISOString(),
+        recorded_at: new Date().toISOString(),
         notes: trainee.notes,
         checked_by: 'current_user', // 실제로는 현재 로그인한 사용자 ID
         created_at: new Date().toISOString(),
@@ -272,7 +273,7 @@ const AttendanceForm: React.FC<AttendanceFormProps> = ({
               <p>{error}</p>
               <button
                 onClick={loadTrainees}
-                className="mt-4 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
+                className="mt-4 bg-destructive text-destructive-foreground hover:bg-destructive/90 px-4 py-2 rounded transition-colors"
               >
                 다시 시도
               </button>
@@ -343,7 +344,7 @@ const AttendanceForm: React.FC<AttendanceFormProps> = ({
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+              className="btn-secondary disabled:opacity-50"
               disabled={saving}
             >
               취소
@@ -351,7 +352,7 @@ const AttendanceForm: React.FC<AttendanceFormProps> = ({
             <button
               type="button"
               onClick={handleSubmit}
-              className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={saving || loading}
             >
               {saving ? (

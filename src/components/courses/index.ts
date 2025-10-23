@@ -6,3 +6,8 @@ export { default as CourseEnrollmentDashboard } from './CourseEnrollmentDashboar
 export { default as TraineeSelector } from './TraineeSelector';
 export { default as EnrollmentHistoryModal } from './EnrollmentHistoryModal';
 export { default as WaitingListManager } from './WaitingListManager';
+export { default as NewCourseManagement } from './NewCourseManagement';
+export { default as CourseTemplateManagement } from './CourseTemplateManagement';
+export { default as OfflineCourseWizard } from './OfflineCourseWizard';
+export { default as EducationTargetManager } from './EducationTargetManager';
+export { default as ExcelScheduleImporter } from './ExcelScheduleImporter';

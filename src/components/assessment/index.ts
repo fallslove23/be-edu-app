@@ -1,0 +1,1 @@
+export { default as IntegratedAssessmentManagement } from './IntegratedAssessmentManagement';

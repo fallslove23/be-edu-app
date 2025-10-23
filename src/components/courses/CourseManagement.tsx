@@ -3,6 +3,7 @@ import CourseList from './CourseList';
 import CourseForm from './CourseForm';
 import DeleteCourseModal from './DeleteCourseModal';
 import CourseEnrollmentDashboard from './CourseEnrollmentDashboard';
+import EnhancedCourseCreation from './EnhancedCourseCreation';
 import type { Course } from '../../services/course.services';
 
 const CourseManagement: React.FC = () => {
@@ -12,12 +13,18 @@ const CourseManagement: React.FC = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isTraineeManagementOpen, setIsTraineeManagementOpen] = useState(false);
+  const [isEnhancedCreationOpen, setIsEnhancedCreationOpen] = useState(false);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
 
-  // 새 과정 생성
+  // 새 과정 생성 (기본)
   const handleCreateCourse = useCallback(() => {
     setSelectedCourse(undefined);
     setIsFormOpen(true);
+  }, []);
+
+  // 향상된 과정 생성
+  const handleEnhancedCreateCourse = useCallback(() => {
+    setIsEnhancedCreationOpen(true);
   }, []);
 
   // 과정 편집
@@ -68,6 +75,12 @@ const CourseManagement: React.FC = () => {
     setCourseForTraineeManagement(null);
   }, []);
 
+  // 향상된 과정 생성 닫기
+  const handleEnhancedCreationClose = useCallback(() => {
+    setIsEnhancedCreationOpen(false);
+    setRefreshTrigger(prev => prev + 1); // 목록 새로고침
+  }, []);
+
   // 과정 업데이트 (수강생 수 등)
   const handleCourseUpdate = useCallback((_updatedCourse: Course) => {
     setRefreshTrigger(prev => prev + 1);
@@ -80,6 +93,7 @@ const CourseManagement: React.FC = () => {
         <CourseList
           key={refreshTrigger} // 새로고침 트리거
           onCreateCourse={handleCreateCourse}
+          onEnhancedCreateCourse={handleEnhancedCreateCourse}
           onEditCourse={handleEditCourse}
           onDeleteCourse={handleDeleteCourse}
           onManageTrainees={handleManageTrainees}
@@ -99,6 +113,12 @@ const CourseManagement: React.FC = () => {
           isOpen={isDeleteModalOpen}
           onClose={handleDeleteModalClose}
           onConfirm={handleDeleteConfirm}
+        />
+
+        {/* 향상된 과정 생성 */}
+        <EnhancedCourseCreation
+          isOpen={isEnhancedCreationOpen}
+          onClose={handleEnhancedCreationClose}
         />
 
         {/* 수강생 관리 대시보드 */}

@@ -1,12 +1,53 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   ChartBarIcon,
   ArrowDownTrayIcon,
   UserIcon,
   DocumentChartBarIcon,
   AcademicCapIcon,
-  TrophyIcon
+  TrophyIcon,
+  CalendarDaysIcon,
+  ClockIcon,
+  CheckCircleIcon,
+  ExclamationTriangleIcon,
+  ArrowTrendingUpIcon,
+  ArrowTrendingDownIcon
 } from '@heroicons/react/24/outline';
+
+interface DailyProgress {
+  day: number;
+  date: string;
+  planned_topics: string[];
+  completed_topics: string[];
+  attendance_count: number;
+  total_students: number;
+  completion_rate: number;
+  notes?: string;
+}
+
+interface CourseProgress {
+  id: string;
+  course_name: string;
+  session_name: string;
+  start_date: string;
+  end_date: string;
+  total_days: number;
+  current_day: number;
+  daily_progress: DailyProgress[];
+  overall_completion: number;
+  students: StudentProgress[];
+}
+
+interface StudentProgress {
+  id: string;
+  name: string;
+  email: string;
+  daily_attendance: boolean[];
+  daily_completion: number[];
+  overall_progress: number;
+  status: 'on_track' | 'behind' | 'ahead' | 'at_risk';
+  last_activity: string;
+}
 
 interface TraineePerformance {
   id: string;
@@ -20,9 +61,140 @@ interface TraineePerformance {
 }
 
 const PerformanceTracking: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'overview' | 'individual' | 'reports'>('overview');
+  const [activeTab, setActiveTab] = useState<'daily-progress' | 'overview' | 'individual' | 'reports'>('daily-progress');
   const [selectedPeriod, setSelectedPeriod] = useState('this_month');
+  const [selectedCourse, setSelectedCourse] = useState<string>('all');
+  const [courseProgressData, setCourseProgressData] = useState<CourseProgress[]>([]);
   
+  // 목업 진도 추적 데이터
+  useEffect(() => {
+    const mockCourseProgress: CourseProgress[] = [
+      {
+        id: 'course-1',
+        course_name: 'BS 영업 기초과정',
+        session_name: '2024년 2차',
+        start_date: '2024-08-01',
+        end_date: '2024-08-15',
+        total_days: 15,
+        current_day: 8,
+        overall_completion: 53,
+        daily_progress: [
+          {
+            day: 1,
+            date: '2024-08-01',
+            planned_topics: ['오리엔테이션', '영업의 이해', '기본 개념'],
+            completed_topics: ['오리엔테이션', '영업의 이해'],
+            attendance_count: 24,
+            total_students: 25,
+            completion_rate: 67,
+            notes: '첫날 오리엔테이션 진행'
+          },
+          {
+            day: 2,
+            date: '2024-08-02',
+            planned_topics: ['고객 발굴', '영업 프로세스', '실습'],
+            completed_topics: ['고객 발굴', '영업 프로세스', '실습'],
+            attendance_count: 25,
+            total_students: 25,
+            completion_rate: 100,
+            notes: '모든 학습 목표 달성'
+          },
+          {
+            day: 3,
+            date: '2024-08-05',
+            planned_topics: ['고객 니즈 분석', '질문 기법'],
+            completed_topics: ['고객 니즈 분석'],
+            attendance_count: 23,
+            total_students: 25,
+            completion_rate: 50,
+            notes: '시간 부족으로 질문 기법은 다음 차시로 이월'
+          },
+          {
+            day: 4,
+            date: '2024-08-06',
+            planned_topics: ['질문 기법', '상품 설명법'],
+            completed_topics: ['질문 기법', '상품 설명법'],
+            attendance_count: 24,
+            total_students: 25,
+            completion_rate: 100
+          },
+          {
+            day: 5,
+            date: '2024-08-07',
+            planned_topics: ['이의제기 처리', '성공사례 분석'],
+            completed_topics: ['이의제기 처리'],
+            attendance_count: 22,
+            total_students: 25,
+            completion_rate: 50,
+            notes: '결석자 2명, 조기 퇴근 1명'
+          },
+          {
+            day: 6,
+            date: '2024-08-08',
+            planned_topics: ['계약 체결 기법', '사후 관리'],
+            completed_topics: ['계약 체결 기법', '사후 관리'],
+            attendance_count: 25,
+            total_students: 25,
+            completion_rate: 100
+          },
+          {
+            day: 7,
+            date: '2024-08-09',
+            planned_topics: ['실전 시뮬레이션', '피드백'],
+            completed_topics: ['실전 시뮬레이션'],
+            attendance_count: 24,
+            total_students: 25,
+            completion_rate: 50,
+            notes: '시뮬레이션 완료, 개별 피드백 예정'
+          },
+          {
+            day: 8,
+            date: '2024-08-12',
+            planned_topics: ['개별 피드백', '개선 계획 수립'],
+            completed_topics: ['개별 피드백'],
+            attendance_count: 25,
+            total_students: 25,
+            completion_rate: 50,
+            notes: '현재 진행 중'
+          }
+        ],
+        students: [
+          {
+            id: 'student-1',
+            name: '김민수',
+            email: 'kim@example.com',
+            daily_attendance: [true, true, true, true, false, true, true, true],
+            daily_completion: [70, 100, 50, 100, 0, 100, 80, 60],
+            overall_progress: 78,
+            status: 'on_track',
+            last_activity: '2024-08-12'
+          },
+          {
+            id: 'student-2',
+            name: '이영희',
+            email: 'lee@example.com',
+            daily_attendance: [true, true, true, true, true, true, true, true],
+            daily_completion: [80, 100, 60, 100, 70, 100, 90, 80],
+            overall_progress: 85,
+            status: 'ahead',
+            last_activity: '2024-08-12'
+          },
+          {
+            id: 'student-3',
+            name: '박정우',
+            email: 'park@example.com',
+            daily_attendance: [true, true, false, true, false, true, false, true],
+            daily_completion: [60, 90, 0, 80, 0, 90, 0, 50],
+            overall_progress: 46,
+            status: 'at_risk',
+            last_activity: '2024-08-12'
+          }
+        ]
+      }
+    ];
+    setCourseProgressData(mockCourseProgress);
+  }, []);
+
   // 목업 데이터
   const performanceData: TraineePerformance[] = [
     { id: '1', name: '김민수', course: 'BS 영업 기초과정', attendance_rate: 95, exam_average: 85, progress: 90, status: 'excellent', last_activity: '2024-08-08' },
@@ -75,20 +247,53 @@ const PerformanceTracking: React.FC = () => {
             <p className="text-gray-600">교육생들의 학습 성과를 추적하고 분석합니다.</p>
           </div>
           <div className="flex items-center space-x-3">
-            <select 
-              value={selectedPeriod} 
+            <button className="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors flex items-center">
+              <ArrowDownTrayIcon className="h-4 w-4 mr-2" />
+              진도 리포트
+            </button>
+          </div>
+        </div>
+
+        {/* 필터 카드 */}
+        <div className="bg-white rounded-2xl shadow-md border border-gray-100 p-6 mt-6">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+            <select
+              id="period-filter"
+              value={selectedPeriod}
               onChange={(e) => setSelectedPeriod(e.target.value)}
-              className="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="flex-1 sm:w-64 border-2 border-gray-200 rounded-xl px-6 py-3.5 text-base bg-white text-gray-700 font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all shadow-sm hover:border-gray-300 appearance-none cursor-pointer"
+              style={{
+                backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`,
+                backgroundPosition: 'right 0.75rem center',
+                backgroundRepeat: 'no-repeat',
+                backgroundSize: '1.5em 1.5em',
+                paddingRight: '2.5rem'
+              }}
             >
               <option value="this_week">이번 주</option>
               <option value="this_month">이번 달</option>
               <option value="this_quarter">이번 분기</option>
               <option value="this_year">올해</option>
             </select>
-            <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center">
-              <ArrowDownTrayIcon className="h-4 w-4 mr-2" />
-              리포트 내보내기
-            </button>
+
+            <select
+              id="course-filter"
+              value={selectedCourse}
+              onChange={(e) => setSelectedCourse(e.target.value)}
+              className="flex-1 sm:w-64 border-2 border-gray-200 rounded-xl px-6 py-3.5 text-base bg-white text-gray-700 font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all shadow-sm hover:border-gray-300 appearance-none cursor-pointer"
+              style={{
+                backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`,
+                backgroundPosition: 'right 0.75rem center',
+                backgroundRepeat: 'no-repeat',
+                backgroundSize: '1.5em 1.5em',
+                paddingRight: '2.5rem'
+              }}
+            >
+              <option value="all">전체 과정</option>
+              {courseProgressData.map(course => (
+                <option key={course.id} value={course.id}>{course.course_name}</option>
+              ))}
+            </select>
           </div>
         </div>
       </div>
@@ -98,6 +303,7 @@ const PerformanceTracking: React.FC = () => {
         <div className="border-b border-gray-200">
           <nav className="-mb-px flex">
             {[
+              { key: 'daily-progress', label: '일차별 진도', icon: CalendarDaysIcon },
               { key: 'overview', label: '전체 현황', icon: ChartBarIcon },
               { key: 'individual', label: '개별 성과', icon: UserIcon },
               { key: 'reports', label: '상세 리포트', icon: DocumentChartBarIcon }
@@ -107,7 +313,7 @@ const PerformanceTracking: React.FC = () => {
                 onClick={() => setActiveTab(tab.key as any)}
                 className={`px-6 py-3 text-sm font-medium border-b-2 transition-colors flex items-center ${
                   activeTab === tab.key
-                    ? 'border-blue-500 text-blue-600'
+                    ? 'border-gray-600 text-gray-700'
                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                 }`}
               >
@@ -119,25 +325,201 @@ const PerformanceTracking: React.FC = () => {
         </div>
 
         <div className="p-6">
+          {/* 일차별 진도 탭 */}
+          {activeTab === 'daily-progress' && (
+            <div className="space-y-6">
+              {courseProgressData.map((course) => (
+                <div key={course.id} className="bg-white border border-gray-200 rounded-lg p-6">
+                  {/* 과정 헤더 */}
+                  <div className="flex items-center justify-between mb-6">
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-900">{course.course_name}</h3>
+                      <p className="text-sm text-gray-600">{course.session_name} • {course.start_date} ~ {course.end_date}</p>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-2xl font-bold text-gray-700">{course.current_day}/{course.total_days}일차</div>
+                      <div className="text-sm text-gray-600">전체 진도 {course.overall_completion}%</div>
+                    </div>
+                  </div>
+
+                  {/* 진도 현황 */}
+                  <div className="mb-6">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm font-medium text-gray-700">전체 진도율</span>
+                      <span className="text-sm text-gray-600">{course.overall_completion}%</span>
+                    </div>
+                    <div className="w-full bg-gray-200 rounded-full h-2">
+                      <div 
+                        className="bg-gray-600 h-2 rounded-full transition-all duration-300"
+                        style={{ width: `${course.overall_completion}%` }}
+                      />
+                    </div>
+                  </div>
+
+                  {/* 일차별 진도 그리드 */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                    {course.daily_progress.map((day) => {
+                      const attendanceRate = Math.round((day.attendance_count / day.total_students) * 100);
+                      const isCurrentDay = day.day === course.current_day;
+                      const isCompleted = day.completion_rate === 100;
+                      const isBehind = day.completion_rate < 80 && day.day < course.current_day;
+                      
+                      return (
+                        <div 
+                          key={day.day} 
+                          className={`border rounded-lg p-4 transition-all ${
+                            isCurrentDay ? 'border-gray-500 bg-gray-50' :
+                            isCompleted ? 'border-gray-300 bg-gray-50' :
+                            isBehind ? 'border-red-300 bg-red-50' :
+                            'border-gray-200 bg-white'
+                          }`}
+                        >
+                          <div className="flex items-center justify-between mb-2">
+                            <div className="flex items-center space-x-2">
+                              <span className={`text-sm font-semibold ${
+                                isCurrentDay ? 'text-gray-700' :
+                                isCompleted ? 'text-gray-600' :
+                                isBehind ? 'text-red-600' :
+                                'text-gray-500'
+                              }`}>
+                                {day.day}일차
+                              </span>
+                              {isCurrentDay && <ClockIcon className="h-4 w-4 text-gray-600" />}
+                              {isCompleted && <CheckCircleIcon className="h-4 w-4 text-gray-600" />}
+                              {isBehind && <ExclamationTriangleIcon className="h-4 w-4 text-red-500" />}
+                            </div>
+                            <span className={`text-xs px-2 py-1 rounded-full ${
+                              day.completion_rate >= 80 ? 'bg-gray-100 text-gray-700' :
+                              day.completion_rate >= 50 ? 'bg-yellow-100 text-yellow-700' :
+                              'bg-red-100 text-red-700'
+                            }`}>
+                              {day.completion_rate}%
+                            </span>
+                          </div>
+                          
+                          <div className="text-xs text-gray-600 mb-2">{day.date}</div>
+                          
+                          <div className="space-y-2">
+                            <div>
+                              <div className="text-xs text-gray-500 mb-1">계획된 주제 ({day.planned_topics.length}개)</div>
+                              <div className="text-xs text-gray-700">
+                                {day.planned_topics.slice(0, 2).join(', ')}
+                                {day.planned_topics.length > 2 && ` 외 ${day.planned_topics.length - 2}개`}
+                              </div>
+                            </div>
+                            
+                            <div>
+                              <div className="text-xs text-gray-500 mb-1">완료된 주제 ({day.completed_topics.length}개)</div>
+                              <div className="text-xs text-gray-700">
+                                {day.completed_topics.slice(0, 2).join(', ')}
+                                {day.completed_topics.length > 2 && ` 외 ${day.completed_topics.length - 2}개`}
+                              </div>
+                            </div>
+                            
+                            <div className="flex items-center justify-between text-xs">
+                              <span className="text-gray-500">출석률</span>
+                              <span className={`font-medium ${
+                                attendanceRate >= 90 ? 'text-gray-700' :
+                                attendanceRate >= 80 ? 'text-yellow-600' :
+                                'text-red-600'
+                              }`}>
+                                {day.attendance_count}/{day.total_students} ({attendanceRate}%)
+                              </span>
+                            </div>
+                            
+                            {day.notes && (
+                              <div className="mt-2 text-xs text-gray-600 bg-gray-100 p-2 rounded">
+                                📝 {day.notes}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
+                    
+                    {/* 예정된 일차들 */}
+                    {Array.from({ length: course.total_days - course.daily_progress.length }, (_, i) => {
+                      const dayNumber = course.daily_progress.length + i + 1;
+                      return (
+                        <div key={`future-${dayNumber}`} className="border border-gray-200 rounded-lg p-4 bg-gray-50">
+                          <div className="flex items-center justify-between mb-2">
+                            <span className="text-sm font-semibold text-gray-400">{dayNumber}일차</span>
+                            <span className="text-xs px-2 py-1 rounded-full bg-gray-200 text-gray-500">예정</span>
+                          </div>
+                          <div className="text-xs text-gray-400">미정</div>
+                          <div className="mt-2 text-xs text-gray-500">강의 계획 수립 예정</div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  
+                  {/* 학생별 진도 요약 */}
+                  <div className="mt-6">
+                    <h4 className="text-sm font-medium text-gray-900 mb-3">학생별 진도 현황</h4>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                      {course.students.slice(0, 6).map((student) => {
+                        const attendanceRate = Math.round((student.daily_attendance.filter(Boolean).length / student.daily_attendance.length) * 100);
+                        
+                        return (
+                          <div key={student.id} className="bg-gray-50 rounded p-3">
+                            <div className="flex items-center justify-between mb-1">
+                              <span className="text-sm font-medium text-gray-900">{student.name}</span>
+                              <span className={`text-xs px-2 py-1 rounded-full ${
+                                student.status === 'ahead' ? 'bg-gray-100 text-gray-700' :
+                                student.status === 'on_track' ? 'bg-gray-100 text-gray-600' :
+                                student.status === 'behind' ? 'bg-yellow-100 text-yellow-700' :
+                                'bg-red-100 text-red-700'
+                              }`}>
+                                {student.status === 'ahead' ? '앞서감' :
+                                 student.status === 'on_track' ? '정상' :
+                                 student.status === 'behind' ? '지연' : '위험'}
+                              </span>
+                            </div>
+                            <div className="text-xs text-gray-600 mb-2">진도 {student.overall_progress}% • 출석 {attendanceRate}%</div>
+                            <div className="w-full bg-gray-200 rounded-full h-1.5">
+                              <div 
+                                className={`h-1.5 rounded-full ${
+                                  student.overall_progress >= 80 ? 'bg-gray-600' :
+                                  student.overall_progress >= 60 ? 'bg-yellow-500' :
+                                  'bg-red-500'
+                                }`}
+                                style={{ width: `${student.overall_progress}%` }}
+                              />
+                            </div>
+                          </div>
+                        );
+                      })}
+                      {course.students.length > 6 && (
+                        <div className="bg-gray-100 rounded p-3 flex items-center justify-center">
+                          <span className="text-sm text-gray-600">외 {course.students.length - 6}명</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
           {/* 전체 현황 탭 */}
           {activeTab === 'overview' && (
             <div className="space-y-6">
               {/* 주요 지표 */}
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                <div className="bg-blue-50 rounded-lg p-4">
-                  <div className="text-2xl font-bold text-blue-600">{overallStats.total_trainees}</div>
+                <div className="bg-gray-50 rounded-lg p-4">
+                  <div className="text-2xl font-bold text-gray-700">{overallStats.total_trainees}</div>
                   <div className="text-sm text-gray-600">총 수강생</div>
                 </div>
-                <div className="bg-green-50 rounded-lg p-4">
-                  <div className="text-2xl font-bold text-green-600">{overallStats.avg_attendance}%</div>
+                <div className="bg-gray-100 rounded-lg p-4">
+                  <div className="text-2xl font-bold text-gray-700">{overallStats.avg_attendance}%</div>
                   <div className="text-sm text-gray-600">평균 출석률</div>
                 </div>
-                <div className="bg-purple-50 rounded-lg p-4">
-                  <div className="text-2xl font-bold text-purple-600">{overallStats.avg_exam_score}</div>
+                <div className="bg-gray-100 rounded-lg p-4">
+                  <div className="text-2xl font-bold text-gray-700">{overallStats.avg_exam_score}</div>
                   <div className="text-sm text-gray-600">평균 시험 점수</div>
                 </div>
-                <div className="bg-orange-50 rounded-lg p-4">
-                  <div className="text-2xl font-bold text-orange-600">{overallStats.avg_progress}%</div>
+                <div className="bg-gray-50 rounded-lg p-4">
+                  <div className="text-2xl font-bold text-gray-700">{overallStats.avg_progress}%</div>
                   <div className="text-sm text-gray-600">평균 진도율</div>
                 </div>
               </div>
@@ -147,17 +529,17 @@ const PerformanceTracking: React.FC = () => {
                 <div>
                   <h3 className="text-lg font-medium text-gray-900 mb-4">성과 등급 분포</h3>
                   <div className="space-y-3">
-                    <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
-                      <span className="text-green-800 font-medium">우수 ({overallStats.excellent}명)</span>
-                      <span className="text-green-600">{Math.round((overallStats.excellent / overallStats.total_trainees) * 100)}%</span>
+                    <div className="flex items-center justify-between p-3 bg-gray-100 rounded-lg">
+                      <span className="text-gray-800 font-medium">우수 ({overallStats.excellent}명)</span>
+                      <span className="text-gray-700">{Math.round((overallStats.excellent / overallStats.total_trainees) * 100)}%</span>
                     </div>
-                    <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
-                      <span className="text-blue-800 font-medium">양호 ({overallStats.good}명)</span>
-                      <span className="text-blue-600">{Math.round((overallStats.good / overallStats.total_trainees) * 100)}%</span>
+                    <div className="flex items-center justify-between p-3 bg-gray-100 rounded-lg">
+                      <span className="text-gray-800 font-medium">양호 ({overallStats.good}명)</span>
+                      <span className="text-gray-700">{Math.round((overallStats.good / overallStats.total_trainees) * 100)}%</span>
                     </div>
-                    <div className="flex items-center justify-between p-3 bg-red-50 rounded-lg">
-                      <span className="text-red-800 font-medium">개선 필요 ({overallStats.needs_improvement}명)</span>
-                      <span className="text-red-600">{Math.round((overallStats.needs_improvement / overallStats.total_trainees) * 100)}%</span>
+                    <div className="flex items-center justify-between p-3 bg-gray-100 rounded-lg">
+                      <span className="text-gray-800 font-medium">개선 필요 ({overallStats.needs_improvement}명)</span>
+                      <span className="text-gray-700">{Math.round((overallStats.needs_improvement / overallStats.total_trainees) * 100)}%</span>
                     </div>
                   </div>
                 </div>
@@ -179,7 +561,7 @@ const PerformanceTracking: React.FC = () => {
                           </div>
                           <div className="w-full bg-gray-200 rounded-full h-2">
                             <div 
-                              className="bg-blue-500 h-2 rounded-full"
+                              className="bg-gray-600 h-2 rounded-full"
                               style={{ width: `${avgScore}%` }}
                             />
                           </div>
@@ -191,9 +573,9 @@ const PerformanceTracking: React.FC = () => {
               </div>
 
               {/* 개선 권장사항 */}
-              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-                <h3 className="font-medium text-yellow-800 mb-2">📋 개선 권장사항</h3>
-                <div className="space-y-1 text-sm text-yellow-700">
+              <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                <h3 className="font-medium text-gray-800 mb-2">📋 개선 권장사항</h3>
+                <div className="space-y-1 text-sm text-gray-700">
                   <div>• {overallStats.needs_improvement}명의 수강생이 개선이 필요한 상태입니다.</div>
                   <div>• 평균 출석률이 {overallStats.avg_attendance}%입니다. 85% 이상 유지를 권장합니다.</div>
                   <div>• 개별 맞춤 지도가 필요한 수강생에게 추가 지원을 제공하세요.</div>
@@ -211,9 +593,9 @@ const PerformanceTracking: React.FC = () => {
                   <input 
                     type="text" 
                     placeholder="수강생 검색..." 
-                    className="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                   />
-                  <select className="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                  <select className="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-gray-500 focus:border-gray-500">
                     <option value="">전체 상태</option>
                     <option value="excellent">우수</option>
                     <option value="good">양호</option>
@@ -279,7 +661,7 @@ const PerformanceTracking: React.FC = () => {
                 <div className="border border-gray-200 rounded-lg p-4 hover:shadow-sm transition-shadow">
                   <h4 className="font-medium text-gray-900 mb-2">📊 종합 성과 리포트</h4>
                   <p className="text-sm text-gray-600 mb-4">전체 수강생의 출석, 시험, 진도 현황을 종합한 리포트</p>
-                  <button className="w-full bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors text-sm">
+                  <button className="w-full bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700 transition-colors text-sm">
                     리포트 생성
                   </button>
                 </div>
@@ -287,7 +669,7 @@ const PerformanceTracking: React.FC = () => {
                 <div className="border border-gray-200 rounded-lg p-4 hover:shadow-sm transition-shadow">
                   <h4 className="font-medium text-gray-900 mb-2">📈 개별 수강생 리포트</h4>
                   <p className="text-sm text-gray-600 mb-4">특정 수강생의 상세한 학습 성과 분석 리포트</p>
-                  <button className="w-full bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition-colors text-sm">
+                  <button className="w-full bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700 transition-colors text-sm">
                     리포트 생성
                   </button>
                 </div>
@@ -295,7 +677,7 @@ const PerformanceTracking: React.FC = () => {
                 <div className="border border-gray-200 rounded-lg p-4 hover:shadow-sm transition-shadow">
                   <h4 className="font-medium text-gray-900 mb-2">📚 과정별 분석 리포트</h4>
                   <p className="text-sm text-gray-600 mb-4">과정별 수강생 성과 비교 및 분석 리포트</p>
-                  <button className="w-full bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 transition-colors text-sm">
+                  <button className="w-full bg-gray-700 text-white px-4 py-2 rounded hover:bg-gray-800 transition-colors text-sm">
                     리포트 생성
                   </button>
                 </div>
@@ -303,7 +685,7 @@ const PerformanceTracking: React.FC = () => {
                 <div className="border border-gray-200 rounded-lg p-4 hover:shadow-sm transition-shadow">
                   <h4 className="font-medium text-gray-900 mb-2">⚠️ 개선 필요 수강생 리포트</h4>
                   <p className="text-sm text-gray-600 mb-4">추가 지원이 필요한 수강생 현황 및 권장사항</p>
-                  <button className="w-full bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition-colors text-sm">
+                  <button className="w-full bg-gray-700 text-white px-4 py-2 rounded hover:bg-gray-800 transition-colors text-sm">
                     리포트 생성
                   </button>
                 </div>
@@ -323,7 +705,7 @@ const PerformanceTracking: React.FC = () => {
                         <div className="font-medium text-gray-900">{report.name}</div>
                         <div className="text-sm text-gray-600">{report.type} • {report.date} • {report.size}</div>
                       </div>
-                      <button className="text-blue-600 hover:text-blue-700 text-sm font-medium">
+                      <button className="text-gray-600 hover:text-gray-700 text-sm font-medium">
                         다운로드
                       </button>
                     </div>

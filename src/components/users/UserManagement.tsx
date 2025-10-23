@@ -318,23 +318,32 @@ const UserManagement: React.FC = () => {
       </div>
 
       {/* 검색 및 필터 */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div className="relative">
-            <MagnifyingGlassIcon className="h-5 w-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+      <div className="bg-white rounded-2xl shadow-md border border-gray-100 p-6">
+        <div className="flex flex-col md:flex-row gap-3">
+          {/* 검색 입력 */}
+          <div className="flex-1 relative">
+            <MagnifyingGlassIcon className="h-5 w-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
             <input
               type="text"
               placeholder="이름, 이메일, 사번, 부서 검색..."
-              className="pl-10 pr-4 py-2 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="pl-10 pr-4 py-2.5 w-full border border-border rounded-lg bg-card text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all shadow-sm"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
 
+          {/* 상태 필터 */}
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value as UserStatus | 'all')}
-            className="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="flex-1 sm:w-64 border-2 border-gray-200 rounded-xl px-6 py-3.5 text-base bg-white text-gray-700 font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all shadow-sm hover:border-gray-300 appearance-none cursor-pointer"
+            style={{
+              backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`,
+              backgroundPosition: 'right 0.75rem center',
+              backgroundRepeat: 'no-repeat',
+              backgroundSize: '1.5em 1.5em',
+              paddingRight: '2.5rem'
+            }}
           >
             <option value="all">모든 상태</option>
             {(Object.keys(userStatusLabels) as UserStatus[]).map(status => (
@@ -342,14 +351,18 @@ const UserManagement: React.FC = () => {
             ))}
           </select>
 
-          <button className="border border-gray-300 rounded-lg px-3 py-2 hover:bg-gray-50 transition-colors flex items-center justify-center">
+          {/* 엑셀 내보내기 버튼 */}
+          <button className="btn-secondary flex items-center justify-center px-4 py-2.5 whitespace-nowrap">
             <DocumentArrowDownIcon className="h-4 w-4 mr-2" />
             엑셀 내보내기
           </button>
 
-          <div className="flex items-center text-sm text-gray-500">
-            <FunnelIcon className="h-4 w-4 mr-1" />
-            총 {filteredUsers.length}명
+          {/* 결과 카운트 */}
+          <div className="flex items-center px-4 py-2.5 bg-secondary/30 rounded-lg border border-border">
+            <FunnelIcon className="h-4 w-4 mr-2 text-muted-foreground" />
+            <span className="text-sm font-medium text-foreground whitespace-nowrap">
+              총 <span className="text-primary font-semibold">{filteredUsers.length}</span>명
+            </span>
           </div>
         </div>
       </div>

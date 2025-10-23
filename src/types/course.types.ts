@@ -2,7 +2,7 @@
 export type CourseStatus = 'draft' | 'active' | 'completed' | 'cancelled';
 export type EnrollmentStatus = 'active' | 'completed' | 'dropped';
 export type AttendanceStatus = 'present' | 'absent' | 'late' | 'excused';
-export type ScheduleStatus = 'scheduled' | 'completed' | 'cancelled';
+export type ScheduleStatus = 'scheduled' | 'in_progress' | 'completed' | 'cancelled';
 
 export interface Course {
   id: string;
@@ -119,3 +119,11 @@ export const attendanceStatusLabels: { [key in AttendanceStatus]: string } = {
   late: '지각',
   excused: '정당한 사유'
 };
+
+// 과정 필터링을 위한 인터페이스
+export interface CourseFilters {
+  status?: CourseStatus[];
+  category?: string[];
+  courseType?: string[];
+  instructorId?: string;
+}

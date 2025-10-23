@@ -18,6 +18,12 @@ interface ExamFormProps {
   courses: Course[];
   onBack: () => void;
   onSave: (examData: Partial<Exam>) => void;
+  questionBank?: {
+    id: string;
+    name: string;
+    questions: any[];
+  };
+  selectedTargets?: string[];
 }
 
 interface ExamFormData {
@@ -49,7 +55,9 @@ const ExamForm: React.FC<ExamFormProps> = ({
   exam,
   courses,
   onBack,
-  onSave
+  onSave,
+  questionBank,
+  selectedTargets = []
 }) => {
   const [questions, setQuestions] = useState<QuestionFormData[]>([]);
   const [showQuestions, setShowQuestions] = useState(false);
@@ -78,11 +86,11 @@ const ExamForm: React.FC<ExamFormProps> = ({
       status: exam.status
     } : {
       course_id: '',
-      title: '',
+      title: questionBank ? `${questionBank.name} 시험` : '',
       description: '',
       exam_type: 'multiple_choice',
       duration_minutes: 60,
-      total_questions: 10,
+      total_questions: questionBank ? questionBank.questions.length : 10,
       passing_score: 70,
       max_attempts: 3,
       is_randomized: false,
@@ -94,6 +102,22 @@ const ExamForm: React.FC<ExamFormProps> = ({
   });
 
   const watchedTotalQuestions = watch('total_questions');
+
+  // 문제은행에서 온 경우 문제 목록 미리 설정
+  useEffect(() => {
+    if (questionBank && questionBank.questions.length > 0) {
+      const bankQuestions: QuestionFormData[] = questionBank.questions.map(q => ({
+        question_type: q.type || 'multiple_choice',
+        question_text: q.question || '',
+        points: 1,
+        options: q.options || ['', '', '', ''],
+        correct_answer: q.correct_answer?.toString() || '',
+        explanation: q.explanation || ''
+      }));
+      setQuestions(bankQuestions);
+      setShowQuestions(true); // 문제은행에서 온 경우 자동으로 문제 표시
+    }
+  }, [questionBank]);
 
   // 총 문항 수 변경 시 문제 목록 업데이트
   useEffect(() => {
@@ -163,11 +187,18 @@ const ExamForm: React.FC<ExamFormProps> = ({
             </button>
             <div>
               <h1 className="text-2xl font-bold text-gray-900">
-                {exam ? '시험 편집' : '새 시험 생성'}
+                {exam ? '시험 편집' : (questionBank ? '문제은행에서 시험 생성' : '새 시험 생성')}
               </h1>
               <p className="text-gray-600">
-                {exam ? '기존 시험을 수정합니다.' : '새로운 이론 평가 시험을 생성합니다.'}
+                {exam ? '기존 시험을 수정합니다.' : 
+                 questionBank ? `"${questionBank.name}" 문제은행을 사용하여 시험을 생성합니다.` :
+                 '새로운 이론 평가 시험을 생성합니다.'}
               </p>
+              {questionBank && selectedTargets.length > 0 && (
+                <p className="text-sm text-gray-500 mt-1">
+                  대상 과정: {selectedTargets.length}개 차수 선택됨
+                </p>
+              )}
             </div>
           </div>
         </div>
@@ -405,7 +436,7 @@ const ExamForm: React.FC<ExamFormProps> = ({
             <button
               type="button"
               onClick={() => setShowQuestions(!showQuestions)}
-              className="flex items-center text-sm text-blue-600 hover:text-blue-700"
+              className="flex items-center text-sm text-gray-600 hover:text-gray-700"
             >
               {showQuestions ? (
                 <>
@@ -434,7 +465,7 @@ const ExamForm: React.FC<ExamFormProps> = ({
                     <button
                       type="button"
                       onClick={() => setActiveQuestionIndex(activeQuestionIndex === index ? null : index)}
-                      className="text-sm text-blue-600 hover:text-blue-700"
+                      className="text-sm text-gray-600 hover:text-gray-700"
                     >
                       {activeQuestionIndex === index ? '접기' : '편집'}
                     </button>
@@ -540,7 +571,7 @@ const ExamForm: React.FC<ExamFormProps> = ({
             <button
               type="submit"
               disabled={isSubmitting}
-              className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center"
+              className="px-6 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center"
             >
               <CheckIcon className="h-4 w-4 mr-2" />
               {isSubmitting ? '저장 중...' : (exam ? '수정 완료' : '시험 생성')}

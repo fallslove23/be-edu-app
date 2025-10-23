@@ -1,9 +1,10 @@
 import { supabase } from './supabase'
+import { queryCache, withCache, queryBatcher } from '../utils/queryCache'
 
 export type CourseStatus = 'draft' | 'active' | 'completed' | 'cancelled'
 export type EnrollmentStatus = 'active' | 'completed' | 'dropped'
 export type AttendanceStatus = 'present' | 'absent' | 'late' | 'excused'
-export type ScheduleStatus = 'scheduled' | 'completed' | 'cancelled'
+export type ScheduleStatus = 'scheduled' | 'in_progress' | 'completed' | 'cancelled'
 
 export interface Course {
   id: string
@@ -123,8 +124,9 @@ export const attendanceStatusLabels: { [key in AttendanceStatus]: string } = {
 }
 
 export class CourseService {
-  // 과정 목록 조회
-  static async getCourses(filter: { status?: CourseStatus, instructor_id?: string, manager_id?: string } = {}) {
+  // 과정 목록 조회 (캐시 최적화)
+  static getCourses = withCache(
+    async (filter: { status?: CourseStatus, instructor_id?: string, manager_id?: string } = {}) => {
     try {
       console.log('[CourseService] getCourses called with filter:', filter);
       
@@ -144,10 +146,22 @@ export class CourseService {
       }
 
       console.log('[CourseService] Executing Supabase query...');
+      console.log('[CourseService] Supabase client check:', {
+        hasSupabase: !!supabase,
+        hasFrom: typeof supabase?.from === 'function'
+      });
+
       const { data, error } = await query
 
       if (error) {
         console.error('[CourseService] Supabase error:', error)
+        console.error('[CourseService] Error details:', {
+          message: error.message,
+          details: error.details,
+          hint: error.hint,
+          code: error.code
+        })
+        console.error('[CourseService] Full error object:', JSON.stringify(error, null, 2))
         console.log('[CourseService] Falling back to mock data');
         // Fallback to mock data
         return this.getMockCourses(filter)
@@ -183,9 +197,12 @@ export class CourseService {
       })) as Course[]
     } catch (error) {
       console.error('CourseService.getCourses error:', error)
-      return this.getMockCourses(filter)
+      return CourseService.getMockCourses(filter)
     }
-  }
+    },
+    'courses',
+    3 * 60 * 1000 // 3분 캐시
+  );
 
   // 목업 데이터 제공
   private static getMockCourses(filter: { status?: CourseStatus, instructor_id?: string, manager_id?: string } = {}) {
@@ -288,8 +305,9 @@ export class CourseService {
     return filteredCourses
   }
 
-  // 특정 과정 조회
-  static async getCourseById(courseId: string) {
+  // 특정 과정 조회 (캐시 최적화)
+  static getCourseById = withCache(
+    async (courseId: string) => {
     const { data, error } = await supabase
       .from('courses')
       .select('*')
@@ -319,9 +337,12 @@ export class CourseService {
       instructor_name: data.instructor_id ? userMap[data.instructor_id]?.name || '' : '',
       manager_name: data.manager_id ? userMap[data.manager_id]?.name || '' : ''
     } as Course
-  }
+    },
+    'course-detail',
+    5 * 60 * 1000 // 5분 캐시
+  );
 
-  // 과정 생성
+  // 과정 생성 (캐시 무효화)
   static async createCourse(courseData: CreateCourseData) {
     const { data, error } = await supabase
       .from('courses')
@@ -330,10 +351,15 @@ export class CourseService {
       .single()
 
     if (error) throw error
+    
+    // 캐시 무효화
+    queryCache.invalidate('courses');
+    queryCache.invalidate('course-stats');
+    
     return data as Course
   }
 
-  // 과정 수정
+  // 과정 수정 (캐시 무효화)
   static async updateCourse(courseId: string, courseData: Partial<CreateCourseData>) {
     const { data, error } = await supabase
       .from('courses')
@@ -346,6 +372,12 @@ export class CourseService {
       .single()
 
     if (error) throw error
+    
+    // 캐시 무효화
+    queryCache.invalidate('courses');
+    queryCache.invalidate('course-detail');
+    queryCache.invalidate('course-stats');
+    
     return data as Course
   }
 
@@ -360,8 +392,10 @@ export class CourseService {
     return true
   }
 
-  // 과정 등록 관리
-  static async getCourseEnrollments(courseId?: string, traineeId?: string) {
+  // 과정 등록 관리 (캐시 최적화)
+  static getCourseEnrollments = withCache(
+    async (params: { courseId?: string; traineeId?: string } = {}) => {
+    const { courseId, traineeId } = params;
     let query = supabase
       .from('course_enrollments')
       .select('*')
@@ -405,7 +439,10 @@ export class CourseService {
       trainee_email: traineeMap[enrollment.trainee_id]?.email || '',
       trainee_department: traineeMap[enrollment.trainee_id]?.department || ''
     })) as CourseEnrollment[]
-  }
+    },
+    'course-enrollments',
+    2 * 60 * 1000 // 2분 캐시
+  );
 
   // 교육생 과정 등록
   static async enrollTrainee(courseId: string, traineeId: string) {
@@ -535,8 +572,9 @@ export class CourseService {
     return stats
   }
 
-  // 과정 통계
-  static async getCourseStats() {
+  // 과정 통계 (캐시 최적화)
+  static getCourseStats = withCache(
+    async () => {
     const { data, error } = await supabase
       .from('courses')
       .select('status, created_at')
@@ -559,7 +597,10 @@ export class CourseService {
     })
 
     return stats
-  }
+    },
+    'course-stats',
+    5 * 60 * 1000 // 5분 캐시
+  );
 
   // 커리큘럼 관리
   static async getCourseCurriculum(courseId: string) {

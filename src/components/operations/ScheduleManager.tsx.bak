@@ -1,0 +1,1299 @@
+import React, { useState, useEffect } from 'react';
+import {
+  CalendarDaysIcon,
+  ClockIcon,
+  MapPinIcon,
+  UserIcon,
+  PlusIcon,
+  PencilIcon,
+  TrashIcon,
+  EyeIcon,
+  XMarkIcon,
+  CheckIcon,
+  ExclamationTriangleIcon,
+  ArrowLeftIcon,
+  ArrowRightIcon,
+  DocumentArrowUpIcon
+} from '@heroicons/react/24/outline';
+import ExcelScheduleImporter from '../courses/ExcelScheduleImporter';
+import { useAuth } from '../../contexts/AuthContext';
+import { FirebasePlannerService } from '../../services/firebase-planner.service';
+import toast from 'react-hot-toast';
+
+interface ScheduleEvent {
+  id: string;
+  title: string;
+  courseCode: string;
+  courseName: string;
+  date: string;
+  startTime: string;
+  endTime: string;
+  instructor: string;
+  assistantInstructor?: string;
+  coordinator: string;
+  classroom: string;
+  sessionNumber?: number;
+  type: 'lecture' | 'exam' | 'practice' | 'orientation' | 'ceremony';
+  status: 'scheduled' | 'in_progress' | 'completed' | 'cancelled';
+  attendees: number;
+  notes?: string;
+  color?: string;
+}
+
+interface Classroom {
+  id: string;
+  name: string;
+  capacity: number;
+  equipment: string[];
+  location: string;
+  status: 'available' | 'occupied' | 'maintenance';
+}
+
+const ScheduleManager: React.FC = () => {
+  const { user } = useAuth();
+  const [events, setEvents] = useState<ScheduleEvent[]>([]);
+  const [classrooms, setClassrooms] = useState<Classroom[]>([]);
+  const [currentDate, setCurrentDate] = useState(new Date());
+  const [selectedEvent, setSelectedEvent] = useState<ScheduleEvent | null>(null);
+  const [viewMode, setViewMode] = useState<'week' | 'day' | 'month'>('week');
+  const [showEventModal, setShowEventModal] = useState(false);
+  const [editingEvent, setEditingEvent] = useState<ScheduleEvent | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [showExcelImporter, setShowExcelImporter] = useState(false);
+  const [isOffline, setIsOffline] = useState(false);
+  const [lastSyncTime, setLastSyncTime] = useState<string>('');
+
+  // 관리자 권한 체크
+  const isAdmin = user?.role === 'admin' || user?.role === 'instructor';
+  const [formData, setFormData] = useState({
+    title: '',
+    courseCode: '',
+    courseName: '',
+    date: '',
+    startTime: '',
+    endTime: '',
+    instructor: '',
+    assistantInstructor: '',
+    coordinator: '',
+    classroom: '',
+    sessionNumber: 1,
+    type: 'lecture' as const,
+    status: 'scheduled' as const,
+    attendees: 0,
+    notes: ''
+  });
+
+  // 과정 템플릿에서 자동으로 일정 생성
+  const [courses] = useState([
+    {
+      id: 'course-1',
+      code: 'BS-2025-01',
+      name: 'BS 신입 영업사원 기초과정 1차',
+      duration: 5, // 일수
+      startDate: '2025-01-26',
+      instructor: '김강사',
+      coordinator: '박운영',
+      sessions: [
+        { title: '오리엔테이션', type: 'orientation', duration: 8 },
+        { title: '영업 기초 이론', type: 'lecture', duration: 3 },
+        { title: '고객 응대 실습', type: 'practice', duration: 4 },
+        { title: '제품 지식 학습', type: 'lecture', duration: 3 },
+        { title: '이론 시험', type: 'exam', duration: 2 }
+      ]
+    },
+    {
+      id: 'course-2', 
+      code: 'BS-2025-02',
+      name: 'BS 고급 영업 전략과정 2차',
+      duration: 3,
+      startDate: '2025-01-27',
+      instructor: '이강사',
+      coordinator: '김운영',
+      sessions: [
+        { title: '고급 영업 전략', type: 'lecture', duration: 4 },
+        { title: '실습 평가', type: 'practice', duration: 3 },
+        { title: '최종 평가', type: 'exam', duration: 2 }
+      ]
+    }
+  ]);
+
+  useEffect(() => {
+    loadData();
+  }, []);
+
+  // 과정 템플릿에서 타임라인 자동 생성
+  const generateTimelineFromCourse = (course: any) => {
+    const generatedEvents: ScheduleEvent[] = [];
+    let currentDate = new Date(course.startDate);
+    let sessionNumber = 1;
+
+    course.sessions.forEach((session: any) => {
+      const startHour = session.type === 'orientation' ? 9 : 
+                       session.type === 'exam' ? 10 : 9;
+      const endHour = startHour + Math.floor(session.duration);
+      const endMinute = (session.duration % 1) * 60;
+
+      const event: ScheduleEvent = {
+        id: `${course.code}-session-${sessionNumber}`,
+        title: `${sessionNumber}일차 ${session.title}`,
+        courseCode: course.code,
+        courseName: course.name,
+        date: currentDate.toISOString().split('T')[0],
+        startTime: `${startHour.toString().padStart(2, '0')}:00`,
+        endTime: `${endHour.toString().padStart(2, '0')}:${endMinute.toString().padStart(2, '0')}`,
+        instructor: course.instructor,
+        coordinator: course.coordinator,
+        classroom: '교육실 A', // 기본값
+        sessionNumber: sessionNumber,
+        type: session.type,
+        status: 'scheduled',
+        attendees: 25, // 기본값
+        color: getColorByType(session.type)
+      };
+
+      generatedEvents.push(event);
+      
+      // 다음 날로 이동 (주말 제외)
+      do {
+        currentDate.setDate(currentDate.getDate() + 1);
+      } while (currentDate.getDay() === 0 || currentDate.getDay() === 6); // 일요일(0), 토요일(6) 제외
+      
+      sessionNumber++;
+    });
+
+    return generatedEvents;
+  };
+
+  const loadData = async () => {
+    setLoading(true);
+    setIsOffline(false);
+
+    try {
+      // Firebase Planner에서 데이터 가져오기
+      const startDate = new Date();
+      startDate.setMonth(startDate.getMonth() - 1); // 지난 달부터
+      const endDate = new Date();
+      endDate.setMonth(endDate.getMonth() + 2); // 다음 달까지
+
+      const calendarEvents = await FirebasePlannerService.getCalendarEvents(
+        startDate.toISOString().split('T')[0],
+        endDate.toISOString().split('T')[0]
+      );
+
+      // CalendarEvent → ScheduleEvent 변환
+      const firebaseEvents: ScheduleEvent[] = calendarEvents.map(event => {
+        const startDate = new Date(event.start);
+        const endDate = new Date(event.end);
+
+        return {
+          id: event.id,
+          title: event.title,
+          courseCode: event.course_id || '',
+          courseName: event.title,
+          date: startDate.toISOString().split('T')[0],
+          startTime: startDate.toTimeString().slice(0, 5),
+          endTime: endDate.toTimeString().slice(0, 5),
+          instructor: event.instructor_id || '',
+          coordinator: '',
+          classroom: event.classroom || '',
+          type: 'lecture',
+          status: event.status as 'scheduled' | 'in_progress' | 'completed' | 'cancelled',
+          attendees: 0,
+          color: event.color
+        };
+      });
+
+      // 과정 템플릿에서 자동 생성된 일정들 (로컬)
+      const generatedEvents: ScheduleEvent[] = [];
+      courses.forEach(course => {
+        const courseEvents = generateTimelineFromCourse(course);
+        generatedEvents.push(...courseEvents);
+      });
+
+      // Firebase 데이터 우선, 로컬 템플릿은 보조
+      const allEvents = firebaseEvents.length > 0 ? firebaseEvents : generatedEvents;
+
+      setEvents(allEvents);
+      setLastSyncTime(new Date().toLocaleTimeString('ko-KR'));
+
+    } catch (error) {
+      console.error('Firebase 연동 중 오류:', error);
+      setIsOffline(true);
+      toast.error('Firebase 연동 실패 - 로컬 데이터를 표시합니다.');
+
+      // Fallback: 과정 템플릿에서 생성
+      const generatedEvents: ScheduleEvent[] = [];
+      courses.forEach(course => {
+        const courseEvents = generateTimelineFromCourse(course);
+        generatedEvents.push(...courseEvents);
+      });
+
+      setEvents(generatedEvents);
+    } finally {
+      // 강의실 데이터는 로컬
+      const mockClassrooms: Classroom[] = [
+        {
+          id: 'room-a',
+          name: '교육실 A',
+          capacity: 30,
+          equipment: ['프로젝터', '화이트보드', '음향시설', '에어컨'],
+          location: '본관 2층',
+          status: 'available'
+        },
+        {
+          id: 'room-b',
+          name: '교육실 B',
+          capacity: 20,
+          equipment: ['프로젝터', '컴퓨터', '화이트보드'],
+          location: '본관 3층',
+          status: 'available'
+        },
+        {
+          id: 'room-c',
+          name: '실습실',
+          capacity: 25,
+          equipment: ['컴퓨터', '실습장비', '프로젝터'],
+          location: '별관 1층',
+          status: 'maintenance'
+        }
+      ];
+
+      setClassrooms(mockClassrooms);
+      setLoading(false);
+    }
+  };
+
+  const getWeekDays = (date: Date) => {
+    const week = [];
+    const startOfWeek = new Date(date);
+    const day = startOfWeek.getDay();
+    const diff = startOfWeek.getDate() - day + (day === 0 ? -6 : 1); // 월요일 시작
+    startOfWeek.setDate(diff);
+
+    for (let i = 0; i < 7; i++) {
+      const day = new Date(startOfWeek);
+      day.setDate(startOfWeek.getDate() + i);
+      week.push(day);
+    }
+    return week;
+  };
+
+  const getEventsForDate = (date: Date) => {
+    const dateString = date.toISOString().split('T')[0];
+    return events.filter(event => event.date === dateString);
+  };
+
+  const getMonthDays = (date: Date) => {
+    const year = date.getFullYear();
+    const month = date.getMonth();
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
+    const startDate = new Date(firstDay);
+    const endDate = new Date(lastDay);
+    
+    // 월요일 시작으로 조정
+    const startDayOfWeek = firstDay.getDay();
+    const daysToSubtract = startDayOfWeek === 0 ? 6 : startDayOfWeek - 1;
+    startDate.setDate(firstDay.getDate() - daysToSubtract);
+    
+    // 일요일 종료로 조정
+    const endDayOfWeek = lastDay.getDay();
+    const daysToAdd = endDayOfWeek === 0 ? 0 : 7 - endDayOfWeek;
+    endDate.setDate(lastDay.getDate() + daysToAdd);
+    
+    const days = [];
+    const currentDate = new Date(startDate);
+    
+    while (currentDate <= endDate) {
+      days.push(new Date(currentDate));
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+    
+    return days;
+  };
+
+  const getStatusBadgeClass = (status: string) => {
+    switch (status) {
+      case 'scheduled': return 'bg-secondary text-secondary-foreground border border-border';
+      case 'in_progress': return 'bg-primary text-primary-foreground border border-primary';
+      case 'completed': return 'bg-muted text-muted-foreground border border-border';
+      case 'cancelled': return 'bg-destructive/10 text-destructive border border-destructive/20';
+      default: return 'bg-muted text-muted-foreground border border-border';
+    }
+  };
+
+  const getTypeBadgeClass = (type: string) => {
+    switch (type) {
+      case 'lecture': return 'bg-accent/20 text-accent-foreground border border-accent/30';
+      case 'exam': return 'bg-destructive/10 text-destructive border border-destructive/20';
+      case 'practice': return 'bg-secondary text-secondary-foreground border border-border';
+      case 'orientation': return 'bg-primary/10 text-primary border border-primary/20';
+      case 'ceremony': return 'bg-accent text-accent-foreground border border-accent';
+      default: return 'bg-muted text-muted-foreground border border-border';
+    }
+  };
+
+  const getTypeLabel = (type: string) => {
+    switch (type) {
+      case 'lecture': return '강의';
+      case 'exam': return '시험';
+      case 'practice': return '실습';
+      case 'orientation': return '오리엔테이션';
+      case 'ceremony': return '행사';
+      default: return '기타';
+    }
+  };
+
+  const navigateWeek = (direction: 'prev' | 'next') => {
+    const newDate = new Date(currentDate);
+    newDate.setDate(currentDate.getDate() + (direction === 'next' ? 7 : -7));
+    setCurrentDate(newDate);
+  };
+
+  const navigateDay = (direction: 'prev' | 'next') => {
+    const newDate = new Date(currentDate);
+    newDate.setDate(currentDate.getDate() + (direction === 'next' ? 1 : -1));
+    setCurrentDate(newDate);
+  };
+
+  const navigateMonth = (direction: 'prev' | 'next') => {
+    const newDate = new Date(currentDate);
+    newDate.setMonth(currentDate.getMonth() + (direction === 'next' ? 1 : -1));
+    setCurrentDate(newDate);
+  };
+
+  // 엑셀 일정 가져오기 핸들러
+  const handleExcelImport = async (scheduleData: any[]) => {
+    try {
+      // 엑셀 데이터를 ScheduleEvent 형식으로 변환
+      const newEvents: ScheduleEvent[] = scheduleData.map((row, index) => ({
+        id: `excel-${Date.now()}-${index}`,
+        title: row.교육주제,
+        courseCode: 'EXCEL-IMPORT',
+        courseName: '엑셀 가져오기 일정',
+        date: row.날짜,
+        startTime: row.시작시간,
+        endTime: row.종료시간,
+        instructor: row.강사명,
+        assistantInstructor: row.보조강사 || undefined,
+        coordinator: row.운영담당자,
+        classroom: row.강의실 || '미정',
+        sessionNumber: row.일차,
+        type: 'lecture' as const,
+        status: 'scheduled' as const,
+        attendees: 0,
+        notes: row.비고 || '',
+        color: '#10B981'
+      }));
+
+      // 기존 일정에 추가
+      setEvents(prev => [...prev, ...newEvents]);
+      
+      console.log(`${newEvents.length}개의 일정이 성공적으로 추가되었습니다.`);
+    } catch (error) {
+      console.error('일정 가져오기 실패:', error);
+      throw error;
+    }
+  };
+
+
+  // 일정 저장 핸들러
+  const handleSaveEvent = () => {
+    if (!formData.title || !formData.date || !formData.startTime || !formData.endTime || !formData.instructor || !formData.coordinator) {
+      alert('필수 필드를 모두 입력해주세요.');
+      return;
+    }
+
+    const newEvent: ScheduleEvent = {
+      ...formData,
+      id: editingEvent ? editingEvent.id : `event-${Date.now()}`,
+      color: getColorByType(formData.type)
+    };
+
+    if (editingEvent) {
+      // 편집 모드
+      setEvents(prev => prev.map(event => event.id === editingEvent.id ? newEvent : event));
+    } else {
+      // 새 일정 추가
+      setEvents(prev => [...prev, newEvent]);
+    }
+
+    // 폼 초기화 및 모달 닫기
+    resetForm();
+    setShowEventModal(false);
+    setEditingEvent(null);
+  };
+
+  // 폼 초기화
+  const resetForm = () => {
+    setFormData({
+      title: '',
+      courseCode: '',
+      courseName: '',
+      date: '',
+      startTime: '',
+      endTime: '',
+      instructor: '',
+      assistantInstructor: '',
+      coordinator: '',
+      classroom: '',
+      sessionNumber: 1,
+      type: 'lecture',
+      status: 'scheduled',
+      attendees: 0,
+      notes: ''
+    });
+  };
+
+  // 타입별 색상 가져오기
+  const getColorByType = (type: string) => {
+    switch (type) {
+      case 'lecture': return '#10B981';
+      case 'exam': return '#EF4444';
+      case 'practice': return '#F59E0B';
+      case 'orientation': return '#3B82F6';
+      case 'ceremony': return '#8B5CF6';
+      default: return '#6B7280';
+    }
+  };
+
+  // 구글 캘린더 연동
+  const exportToGoogleCalendar = () => {
+    // 현재 보고 있는 기간의 이벤트만 선택 (예: 현재 월)
+    const currentMonth = currentDate.getMonth();
+    const currentYear = currentDate.getFullYear();
+    const monthEvents = events.filter(event => {
+      const eventDate = new Date(event.date);
+      return eventDate.getMonth() === currentMonth && eventDate.getFullYear() === currentYear;
+    });
+
+    if (monthEvents.length === 0) {
+      alert('현재 기간에 내보낼 일정이 없습니다.');
+      return;
+    }
+
+    // Google Calendar URL 생성
+    monthEvents.forEach(event => {
+      const eventDateTime = new Date(`${event.date}T${event.startTime}`);
+      const endDateTime = new Date(`${event.date}T${event.endTime}`);
+      
+      // UTC 시간으로 변환
+      const startTime = eventDateTime.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+      const endTime = endDateTime.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+      
+      const details = [
+        `강사: ${event.instructor}`,
+        event.assistantInstructor ? `보조강사: ${event.assistantInstructor}` : '',
+        `운영담당자: ${event.coordinator}`,
+        `강의실: ${event.classroom}`,
+        `참석인원: ${event.attendees}명`,
+        event.notes ? `메모: ${event.notes}` : ''
+      ].filter(Boolean).join('\\n');
+
+      const googleCalendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(event.title)}&dates=${startTime}/${endTime}&details=${encodeURIComponent(details)}&location=${encodeURIComponent(event.classroom)}&ctz=Asia/Seoul`;
+      
+      // 새 탭에서 열기
+      window.open(googleCalendarUrl, '_blank');
+    });
+
+    alert(`${monthEvents.length}개의 일정을 구글 캘린더에 추가하기 위해 새 탭이 열렸습니다.`);
+  };
+
+  // 새로운 과정 추가 시 자동 타임라인 생성
+  const addCourseToTimeline = (newCourse: any) => {
+    const newEvents = generateTimelineFromCourse(newCourse);
+    setEvents(prev => [...prev, ...newEvents]);
+    
+    alert(`${newCourse.name} 과정의 ${newEvents.length}개 일정이 자동으로 생성되었습니다.`);
+  };
+
+  // 편집 모드로 전환
+  const handleEditEvent = (event: ScheduleEvent) => {
+    setFormData({
+      title: event.title,
+      courseCode: event.courseCode,
+      courseName: event.courseName,
+      date: event.date,
+      startTime: event.startTime,
+      endTime: event.endTime,
+      instructor: event.instructor,
+      assistantInstructor: event.assistantInstructor || '',
+      coordinator: event.coordinator,
+      classroom: event.classroom,
+      sessionNumber: event.sessionNumber || 1,
+      type: event.type,
+      status: event.status,
+      attendees: event.attendees,
+      notes: event.notes || ''
+    });
+    setEditingEvent(event);
+    setShowEventModal(true);
+  };
+
+  const EventModal: React.FC<{ event: ScheduleEvent; onClose: () => void }> = ({ event, onClose }) => (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div className="bg-card rounded-xl shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+        <div className="px-6 py-4 border-b border-border flex justify-between items-center">
+          <h3 className="text-lg font-medium text-card-foreground">일정 상세</h3>
+          <button
+            onClick={onClose}
+            className="text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <XMarkIcon className="h-6 w-6" />
+          </button>
+        </div>
+
+        <div className="p-6 space-y-4">
+          <div>
+            <h4 className="text-xl font-bold text-card-foreground">{event.title}</h4>
+            <p className="text-muted-foreground">{event.courseName}</p>
+          </div>
+
+          <div className="space-y-3">
+            <div className="flex items-center space-x-3">
+              <CalendarDaysIcon className="h-5 w-5 text-muted-foreground" />
+              <span className="text-card-foreground">{event.date}</span>
+            </div>
+
+            <div className="flex items-center space-x-3">
+              <ClockIcon className="h-5 w-5 text-muted-foreground" />
+              <span className="text-card-foreground">{event.startTime} - {event.endTime}</span>
+            </div>
+
+            <div className="flex items-center space-x-3">
+              <MapPinIcon className="h-5 w-5 text-muted-foreground" />
+              <span className="text-card-foreground">{event.classroom}</span>
+            </div>
+
+            <div className="flex items-center space-x-3">
+              <UserIcon className="h-5 w-5 text-muted-foreground" />
+              <div className="text-card-foreground">
+                <div>주강사: {event.instructor}</div>
+                {event.assistantInstructor && (
+                  <div className="text-sm text-muted-foreground">보조강사: {event.assistantInstructor}</div>
+                )}
+                <div className="text-sm text-muted-foreground">운영담당자: {event.coordinator}</div>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex items-center space-x-4">
+            <span className={`inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium ${getTypeBadgeClass(event.type)}`}>
+              {getTypeLabel(event.type)}
+            </span>
+            <span className={`inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium ${getStatusBadgeClass(event.status)}`}>
+              {event.status === 'scheduled' ? '예정' :
+               event.status === 'in_progress' ? '진행중' :
+               event.status === 'completed' ? '완료' : '취소'}
+            </span>
+          </div>
+
+          <div>
+            <span className="text-sm text-muted-foreground">참석 인원: </span>
+            <span className="text-sm font-medium text-card-foreground">{event.attendees}명</span>
+          </div>
+
+          {event.notes && (
+            <div>
+              <h5 className="text-sm font-medium text-card-foreground mb-2">메모</h5>
+              <p className="text-sm text-muted-foreground bg-secondary/30 p-3 rounded-lg border border-border">
+                {event.notes}
+              </p>
+            </div>
+          )}
+        </div>
+
+        {isAdmin && (
+          <div className="px-6 py-4 border-t border-border flex justify-end space-x-3">
+            <button
+              onClick={() => {
+                handleEditEvent(event);
+                onClose();
+              }}
+              className="btn-primary flex items-center space-x-2"
+            >
+              <PencilIcon className="h-4 w-4" />
+              <span>편집</span>
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        <span className="ml-2">일정 정보를 불러오는 중...</span>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      {/* 헤더 */}
+      <div className="bg-card rounded-xl shadow-sm border border-border p-6">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
+          <div>
+            <h1 className="text-2xl font-bold text-card-foreground mb-2">📅 일정 관리</h1>
+            <p className="text-muted-foreground">
+              {isAdmin
+                ? '강의 일정 및 교실 배정을 관리합니다. 모든 교육생이 전체 일정을 확인할 수 있습니다.'
+                : '전체 교육 일정을 확인하고 나의 수업 정보를 볼 수 있습니다.'}
+            </p>
+          </div>
+          <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-3 sm:space-y-0 sm:space-x-3">
+            <div className="flex items-center bg-secondary/50 rounded-lg p-1 border border-border">
+              {(['day', 'week', 'month'] as const).map((mode) => (
+                <button
+                  key={mode}
+                  onClick={() => setViewMode(mode)}
+                  className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
+                    viewMode === mode
+                      ? 'bg-card text-card-foreground shadow-sm border border-border'
+                      : 'text-muted-foreground hover:text-foreground hover:bg-accent/30'
+                  }`}
+                >
+                  {mode === 'day' ? '일' : mode === 'week' ? '주' : '월'}
+                </button>
+              ))}
+            </div>
+
+            {isAdmin && (
+              <div className="flex items-center space-x-2">
+                <button
+                  onClick={() => setShowExcelImporter(true)}
+                  className="btn-secondary flex items-center space-x-2 text-sm"
+                >
+                  <DocumentArrowUpIcon className="h-4 w-4" />
+                  <span>엑셀 가져오기</span>
+                </button>
+
+                <button
+                  onClick={() => {
+                    // 새 과정 시연용 데이터
+                    const demoCourse = {
+                      id: 'demo-course',
+                      code: 'BS-2025-03',
+                      name: 'BS 신입 관리자 리더십과정',
+                      duration: 3,
+                      startDate: '2025-02-10',
+                      instructor: '최강사',
+                      coordinator: '이운영',
+                      sessions: [
+                        { title: '리더십 기초', type: 'lecture', duration: 4 },
+                        { title: '팀 관리 실습', type: 'practice', duration: 3 },
+                        { title: '종합 평가', type: 'exam', duration: 2 }
+                      ]
+                    };
+                    addCourseToTimeline(demoCourse);
+                  }}
+                  className="btn-outline flex items-center space-x-2 text-sm"
+                >
+                  <PlusIcon className="h-4 w-4" />
+                  <span>과정 연동</span>
+                </button>
+
+                <button
+                  onClick={exportToGoogleCalendar}
+                  className="btn-outline flex items-center space-x-2 text-sm"
+                >
+                  <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/>
+                  </svg>
+                  <span>구글 캘린더</span>
+                </button>
+
+                <button
+                  onClick={() => setShowEventModal(true)}
+                  className="btn-primary flex items-center space-x-2 font-medium"
+                >
+                  <PlusIcon className="h-4 w-4" />
+                  <span>일정 추가</span>
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* 네비게이션 */}
+      <div className="bg-card rounded-xl shadow-sm border border-border p-4">
+        <div className="flex items-center justify-between">
+          <button
+            onClick={() => {
+              if (viewMode === 'week') navigateWeek('prev');
+              else if (viewMode === 'month') navigateMonth('prev');
+              else navigateDay('prev');
+            }}
+            className="p-2 rounded-lg text-muted-foreground hover:bg-accent/30 hover:text-foreground transition-colors"
+          >
+            <ArrowLeftIcon className="h-5 w-5" />
+          </button>
+
+          <div className="text-center">
+            <h2 className="text-lg font-semibold text-card-foreground">
+              {viewMode === 'week' ? (
+                `${getWeekDays(currentDate)[0].toLocaleDateString('ko-KR', { month: 'long', day: 'numeric' })} - ${getWeekDays(currentDate)[6].toLocaleDateString('ko-KR', { month: 'long', day: 'numeric' })}`
+              ) : viewMode === 'month' ? (
+                currentDate.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long' })
+              ) : (
+                currentDate.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' })
+              )}
+            </h2>
+            <p className="text-sm text-muted-foreground">
+              {currentDate.getFullYear()}년
+            </p>
+          </div>
+
+          <button
+            onClick={() => {
+              if (viewMode === 'week') navigateWeek('next');
+              else if (viewMode === 'month') navigateMonth('next');
+              else navigateDay('next');
+            }}
+            className="p-2 rounded-lg text-muted-foreground hover:bg-accent/30 hover:text-foreground transition-colors"
+          >
+            <ArrowRightIcon className="h-5 w-5" />
+          </button>
+        </div>
+      </div>
+
+      {/* 캘린더 뷰 */}
+      {viewMode === 'week' ? (
+        <div className="bg-card rounded-xl shadow-sm border border-border overflow-hidden">
+          <div className="grid grid-cols-7 border-b border-border">
+            {['월', '화', '수', '목', '금', '토', '일'].map((day, index) => (
+              <div key={day} className="p-4 text-center border-r border-border last:border-r-0">
+                <div className="text-sm font-medium text-card-foreground">{day}</div>
+                <div className="text-xs text-muted-foreground mt-1">
+                  {getWeekDays(currentDate)[index].getDate()}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="grid grid-cols-7 divide-x divide-border" style={{ minHeight: '500px' }}>
+            {getWeekDays(currentDate).map((day, dayIndex) => (
+              <div key={dayIndex} className="p-2 space-y-1">
+                {getEventsForDate(day).map((event) => (
+                  <div
+                    key={event.id}
+                    onClick={() => setSelectedEvent(event)}
+                    className="p-2 rounded text-xs cursor-pointer hover:opacity-80 transition-opacity bg-accent/10 border-l-2 border-accent"
+                  >
+                    <div className="font-medium text-card-foreground truncate">
+                      {event.title}
+                    </div>
+                    <div className="text-muted-foreground truncate">
+                      {event.startTime}-{event.endTime}
+                    </div>
+                    <div className="text-muted-foreground truncate">
+                      {event.classroom}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ))}
+          </div>
+        </div>
+      ) : viewMode === 'month' ? (
+        <div className="bg-card rounded-xl shadow-sm border border-border overflow-hidden">
+          <div className="grid grid-cols-7 border-b border-border">
+            {['월', '화', '수', '목', '금', '토', '일'].map((day) => (
+              <div key={day} className="p-3 text-center border-r border-border last:border-r-0">
+                <div className="text-sm font-medium text-card-foreground">{day}</div>
+              </div>
+            ))}
+          </div>
+
+          <div className="grid grid-cols-7">
+            {getMonthDays(currentDate).map((day, dayIndex) => {
+              const dayEvents = getEventsForDate(day);
+              const isCurrentMonth = day.getMonth() === currentDate.getMonth();
+              const isToday = day.toDateString() === new Date().toDateString();
+
+              return (
+                <div
+                  key={dayIndex}
+                  className={`min-h-[120px] p-2 border-r border-b border-border last:border-r-0 ${
+                    !isCurrentMonth ? 'bg-muted/30' : ''
+                  } ${isToday ? 'bg-primary/5 border-primary/20' : ''}`}
+                >
+                  <div className={`text-sm font-medium mb-1 ${
+                    !isCurrentMonth ? 'text-muted-foreground' :
+                    isToday ? 'text-primary font-bold' :
+                    'text-card-foreground'
+                  }`}>
+                    {day.getDate()}
+                  </div>
+
+                  <div className="space-y-1">
+                    {dayEvents.slice(0, 3).map((event) => (
+                      <div
+                        key={event.id}
+                        onClick={() => setSelectedEvent(event)}
+                        className="text-xs p-1 rounded cursor-pointer hover:opacity-80 transition-opacity bg-accent/10 border-l-2 border-accent"
+                      >
+                        <div className="font-medium text-card-foreground truncate">
+                          {event.title}
+                        </div>
+                        <div className="text-muted-foreground truncate">
+                          {event.startTime}
+                        </div>
+                      </div>
+                    ))}
+                    {dayEvents.length > 3 && (
+                      <div className="text-xs text-muted-foreground p-1">
+                        +{dayEvents.length - 3}개 더
+                      </div>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      ) : (
+        <div className="bg-card rounded-xl shadow-sm border border-border">
+          <div className="px-6 py-4 border-b border-border">
+            <h3 className="text-lg font-medium text-card-foreground">
+              {currentDate.toLocaleDateString('ko-KR', { month: 'long', day: 'numeric', weekday: 'long' })} 일정
+            </h3>
+          </div>
+
+          <div className="p-6">
+            {getEventsForDate(currentDate).length > 0 ? (
+              <div className="space-y-4">
+                {getEventsForDate(currentDate).map((event) => (
+                  <div
+                    key={event.id}
+                    onClick={() => setSelectedEvent(event)}
+                    className="border border-border rounded-lg p-4 cursor-pointer hover:bg-accent/5 transition-colors"
+                  >
+                    <div className="flex items-center justify-between mb-2">
+                      <h4 className="font-medium text-card-foreground">{event.title}</h4>
+                      <div className="flex items-center space-x-2">
+                        <span className={`inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium ${getTypeBadgeClass(event.type)}`}>
+                          {getTypeLabel(event.type)}
+                        </span>
+                        <span className={`inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium ${getStatusBadgeClass(event.status)}`}>
+                          {event.status === 'scheduled' ? '예정' :
+                           event.status === 'in_progress' ? '진행중' :
+                           event.status === 'completed' ? '완료' : '취소'}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4 text-sm text-muted-foreground">
+                      <div className="flex items-center space-x-2">
+                        <ClockIcon className="h-4 w-4" />
+                        <span>{event.startTime} - {event.endTime}</span>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <MapPinIcon className="h-4 w-4" />
+                        <span>{event.classroom}</span>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <UserIcon className="h-4 w-4" />
+                        <span>{event.instructor}</span>
+                      </div>
+                      <div>
+                        <span>참석: {event.attendees}명</span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-8 text-muted-foreground">
+                선택한 날짜에 예정된 일정이 없습니다.
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* 일정 분석 - 관리자만 표시 */}
+      {isAdmin && (
+        <div className="bg-card rounded-xl shadow-sm border border-border">
+          <div className="px-6 py-4 border-b border-border">
+            <h3 className="text-lg font-medium text-card-foreground">📊 일정 분석</h3>
+          </div>
+
+          <div className="p-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* 일정 통계 */}
+            <div className="bg-secondary/30 rounded-lg p-4 border border-border">
+              <h4 className="font-medium text-muted-foreground mb-2">📅 전체 일정</h4>
+              <p className="text-2xl font-bold text-card-foreground">{events.length}개</p>
+              <p className="text-sm text-muted-foreground">등록된 일정</p>
+            </div>
+
+            {/* 강사 현황 */}
+            <div className="bg-accent/10 rounded-lg p-4 border border-border">
+              <h4 className="font-medium text-muted-foreground mb-2">👨‍🏫 활동 강사</h4>
+              <p className="text-2xl font-bold text-card-foreground">
+                {new Set(events.map(e => e.instructor)).size}명
+              </p>
+              <p className="text-sm text-muted-foreground">참여 강사 수</p>
+            </div>
+
+            {/* 중복 일정 확인 */}
+            <div className="bg-muted/30 rounded-lg p-4 border border-border">
+              <h4 className="font-medium text-muted-foreground mb-2">⚠️ 중복 일정</h4>
+              <p className="text-2xl font-bold text-card-foreground">
+                {events.filter((event, index) =>
+                  events.some((other, otherIndex) =>
+                    index !== otherIndex &&
+                    event.date === other.date &&
+                    event.instructor === other.instructor &&
+                    !(event.endTime <= other.startTime || other.endTime <= event.startTime)
+                  )
+                ).length}개
+              </p>
+              <p className="text-sm text-muted-foreground">시간 중복 일정</p>
+            </div>
+          </div>
+
+          {/* 진행중인 과정 요약 */}
+          <div className="mt-6">
+            <h4 className="font-medium text-card-foreground mb-3">📚 진행중인 과정 현황</h4>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {Array.from(new Map(events.map(event => [event.courseCode, event])).values()).map((course) => {
+                const courseEvents = events.filter(e => e.courseCode === course.courseCode);
+                const completedEvents = courseEvents.filter(e => e.status === 'completed');
+                const upcomingEvents = courseEvents.filter(e => e.status === 'scheduled');
+                const progressPercent = Math.round((completedEvents.length / courseEvents.length) * 100);
+
+                return (
+                  <div key={course.courseCode} className="border border-border rounded-lg p-4">
+                    <div className="flex items-center justify-between mb-3">
+                      <div>
+                        <h5 className="font-medium text-card-foreground">{course.courseName}</h5>
+                        <p className="text-sm text-muted-foreground">{course.courseCode}</p>
+                      </div>
+                      <span className={`px-2.5 py-1 rounded-md text-xs font-medium border ${
+                        progressPercent === 100 ? 'bg-muted text-muted-foreground border-border' :
+                        progressPercent > 0 ? 'bg-secondary text-secondary-foreground border-border' :
+                        'bg-secondary/50 text-muted-foreground border-border'
+                      }`}>
+                        {progressPercent}% 완료
+                      </span>
+                    </div>
+
+                    <div className="space-y-2 text-sm">
+                      <div className="flex justify-between text-muted-foreground">
+                        <span>전체 일정:</span>
+                        <span className="text-card-foreground font-medium">{courseEvents.length}회</span>
+                      </div>
+                      <div className="flex justify-between text-muted-foreground">
+                        <span>완료:</span>
+                        <span className="text-card-foreground font-medium">{completedEvents.length}회</span>
+                      </div>
+                      <div className="flex justify-between text-muted-foreground">
+                        <span>예정:</span>
+                        <span className="text-card-foreground font-medium">{upcomingEvents.length}회</span>
+                      </div>
+                      <div className="flex justify-between text-muted-foreground">
+                        <span>참여 인원:</span>
+                        <span className="text-card-foreground font-medium">{course.attendees}명</span>
+                      </div>
+                    </div>
+
+                    {/* 진행 바 */}
+                    <div className="mt-3">
+                      <div className="w-full bg-muted/30 rounded-full h-2 border border-border">
+                        <div
+                          className={`h-2 rounded-full transition-all duration-300 ${
+                            progressPercent === 100 ? 'bg-muted' : 'bg-primary'
+                          }`}
+                          style={{ width: `${progressPercent}%` }}
+                        ></div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 이벤트 상세 모달 */}
+      {selectedEvent && (
+        <EventModal 
+          event={selectedEvent} 
+          onClose={() => setSelectedEvent(null)} 
+        />
+      )}
+
+      {/* 일정 추가/편집 모달 */}
+      {showEventModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-card rounded-xl shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+            <div className="px-6 py-4 border-b border-border">
+              <h3 className="text-lg font-medium text-card-foreground">
+                {editingEvent ? '일정 편집' : '일정 추가'}
+              </h3>
+            </div>
+
+            <div className="p-6">
+              <form className="space-y-6">
+                {/* 기본 정보 */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-card-foreground mb-2">
+                      일정 제목 *
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.title}
+                      onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                      className="w-full border border-border rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary focus:border-primary bg-background text-foreground"
+                      placeholder="예: 1일차 오리엔테이션"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-card-foreground mb-2">
+                      과정 코드
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.courseCode}
+                      onChange={(e) => setFormData({ ...formData, courseCode: e.target.value })}
+                      className="w-full border border-border rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary focus:border-primary bg-background text-foreground"
+                      placeholder="예: BS-2025-01"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-card-foreground mb-2">
+                    과정명
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.courseName}
+                    onChange={(e) => setFormData({ ...formData, courseName: e.target.value })}
+                    className="w-full border border-border rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary focus:border-primary bg-background text-foreground"
+                    placeholder="예: BS 신입 영업사원 기초과정 1차"
+                  />
+                </div>
+
+                {/* 일정 정보 */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-card-foreground mb-2">
+                      날짜 *
+                    </label>
+                    <input
+                      type="date"
+                      value={formData.date}
+                      onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+                      className="w-full border border-border rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary focus:border-primary bg-background text-foreground"
+                    />
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-card-foreground mb-2">
+                      시작 시간 *
+                    </label>
+                    <input
+                      type="time"
+                      value={formData.startTime}
+                      onChange={(e) => setFormData({ ...formData, startTime: e.target.value })}
+                      className="w-full border border-border rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary focus:border-primary bg-background text-foreground"
+                    />
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-card-foreground mb-2">
+                      종료 시간 *
+                    </label>
+                    <input
+                      type="time"
+                      value={formData.endTime}
+                      onChange={(e) => setFormData({ ...formData, endTime: e.target.value })}
+                      className="w-full border border-border rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary focus:border-primary bg-background text-foreground"
+                    />
+                  </div>
+                </div>
+
+                {/* 강사 및 담당자 */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-card-foreground mb-2">
+                      주강사 *
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.instructor}
+                      onChange={(e) => setFormData({ ...formData, instructor: e.target.value })}
+                      className="w-full border border-border rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary focus:border-primary bg-background text-foreground"
+                      placeholder="예: 김강사"
+                    />
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-card-foreground mb-2">
+                      보조강사
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.assistantInstructor}
+                      onChange={(e) => setFormData({ ...formData, assistantInstructor: e.target.value })}
+                      className="w-full border border-border rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary focus:border-primary bg-background text-foreground"
+                      placeholder="예: 이보조"
+                    />
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-card-foreground mb-2">
+                      운영담당자 *
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.coordinator}
+                      onChange={(e) => setFormData({ ...formData, coordinator: e.target.value })}
+                      className="w-full border border-border rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary focus:border-primary bg-background text-foreground"
+                      placeholder="예: 박운영"
+                    />
+                  </div>
+                </div>
+
+                {/* 강의실 및 세션 정보 */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-card-foreground mb-2">
+                      강의실
+                    </label>
+                    <select
+                      value={formData.classroom}
+                      onChange={(e) => setFormData({ ...formData, classroom: e.target.value })}
+                      className="w-full border border-border rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary focus:border-primary bg-background text-foreground"
+                    >
+                      <option value="">강의실 선택</option>
+                      {classrooms.map((room) => (
+                        <option key={room.id} value={room.name} disabled={room.status !== 'available'}>
+                          {room.name} ({room.capacity}명) {room.status !== 'available' && '- 사용불가'}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-card-foreground mb-2">
+                      세션 번호
+                    </label>
+                    <input
+                      type="number"
+                      min="1"
+                      value={formData.sessionNumber}
+                      onChange={(e) => setFormData({ ...formData, sessionNumber: parseInt(e.target.value) || 1 })}
+                      className="w-full border border-border rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary focus:border-primary bg-background text-foreground"
+                    />
+                  </div>
+                </div>
+
+                {/* 유형 및 상태 */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-card-foreground mb-2">
+                      일정 유형
+                    </label>
+                    <select
+                      value={formData.type}
+                      onChange={(e) => setFormData({ ...formData, type: e.target.value as any })}
+                      className="w-full border border-border rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary focus:border-primary bg-background text-foreground"
+                    >
+                      <option value="lecture">강의</option>
+                      <option value="exam">시험</option>
+                      <option value="practice">실습</option>
+                      <option value="orientation">오리엔테이션</option>
+                      <option value="ceremony">행사</option>
+                    </select>
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-card-foreground mb-2">
+                      상태
+                    </label>
+                    <select
+                      value={formData.status}
+                      onChange={(e) => setFormData({ ...formData, status: e.target.value as any })}
+                      className="w-full border border-border rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary focus:border-primary bg-background text-foreground"
+                    >
+                      <option value="scheduled">예정</option>
+                      <option value="in_progress">진행중</option>
+                      <option value="completed">완료</option>
+                      <option value="cancelled">취소</option>
+                    </select>
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-card-foreground mb-2">
+                      참석 인원
+                    </label>
+                    <input
+                      type="number"
+                      min="0"
+                      value={formData.attendees}
+                      onChange={(e) => setFormData({ ...formData, attendees: parseInt(e.target.value) || 0 })}
+                      className="w-full border border-border rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary focus:border-primary bg-background text-foreground"
+                    />
+                  </div>
+                </div>
+
+                {/* 메모 */}
+                <div>
+                  <label className="block text-sm font-medium text-card-foreground mb-2">
+                    메모
+                  </label>
+                  <textarea
+                    rows={3}
+                    value={formData.notes}
+                    onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+                    className="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                    placeholder="추가 정보나 특이사항을 입력하세요"
+                  />
+                </div>
+              </form>
+            </div>
+
+            <div className="px-6 py-4 border-t border-border flex justify-end space-x-3">
+              <button
+                onClick={() => {
+                  resetForm();
+                  setShowEventModal(false);
+                  setEditingEvent(null);
+                }}
+                className="btn-ghost"
+              >
+                취소
+              </button>
+              <button
+                onClick={handleSaveEvent}
+                className="btn-primary"
+              >
+                {editingEvent ? '수정' : '저장'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 엑셀 일정 가져오기 모달 */}
+      {showExcelImporter && (
+        <ExcelScheduleImporter
+          onImport={handleExcelImport}
+          onClose={() => setShowExcelImporter(false)}
+        />
+      )}
+    </div>
+  );
+};
+
+export default ScheduleManager;

@@ -1,430 +1,305 @@
 import React, { useState, useEffect } from 'react';
 import {
-  UserGroupIcon,
-  AcademicCapIcon,
-  ChartBarIcon,
-  CalendarDaysIcon,
-  BellIcon,
-  CheckCircleIcon,
-  ExclamationTriangleIcon,
   ArrowTrendingUpIcon,
   ArrowTrendingDownIcon,
-  ArrowRightIcon
 } from '@heroicons/react/24/outline';
 
-interface DashboardStats {
-  totalStudents: number;
-  activeCourses: number;
-  completedExams: number;
-  averageAttendance: number;
-  upcomingExams: number;
-  needsAttention: number;
-}
-
-interface RecentActivity {
-  id: string;
-  type: 'exam' | 'attendance' | 'course' | 'performance';
-  title: string;
-  description: string;
-  time: string;
-  priority: 'high' | 'medium' | 'low';
-}
-
-interface QuickStats {
+interface StatCard {
   label: string;
+  value: string;
+  change: string;
+  trend: 'up' | 'down';
+  subtitle: string;
+}
+
+interface ChartData {
+  month: string;
   value: number;
-  change: number;
-  trend: 'up' | 'down' | 'stable';
-  color: string;
 }
 
 const Dashboard: React.FC = () => {
-  const [stats, setStats] = useState<DashboardStats>({
-    totalStudents: 0,
-    activeCourses: 0,
-    completedExams: 0,
-    averageAttendance: 0,
-    upcomingExams: 0,
-    needsAttention: 0
-  });
-
-  const [recentActivities] = useState<RecentActivity[]>([
+  const [stats] = useState<StatCard[]>([
     {
-      id: '1',
-      type: 'exam',
-      title: '새로운 시험 완료',
-      description: '김민수님이 "영업 기초 이론 평가"를 완료했습니다. (85점)',
-      time: '10분 전',
-      priority: 'medium'
+      label: '전체 교육생',
+      value: '156',
+      change: '+12.5%',
+      trend: 'up',
+      subtitle: '이번 달 신규 등록 증가'
     },
     {
-      id: '2',
-      type: 'attendance',
-      title: '출석 확인 필요',
-      description: '정다은님이 3일 연속 결석했습니다.',
-      time: '1시간 전',
-      priority: 'high'
+      label: '진행 중인 과정',
+      value: '8',
+      change: '+2',
+      trend: 'up',
+      subtitle: '활발한 교육 운영'
     },
     {
-      id: '3',
-      type: 'course',
-      title: '새 과정 시작',
-      description: '"BS 고급 영업 전략" 과정이 시작되었습니다.',
-      time: '2시간 전',
-      priority: 'low'
+      label: '평균 출석률',
+      value: '94.5%',
+      change: '+3.2%',
+      trend: 'up',
+      subtitle: '높은 참여도 유지'
     },
     {
-      id: '4',
-      type: 'performance',
-      title: '성과 향상',
-      description: '이영희님의 전체 성과가 "우수" 등급으로 향상되었습니다.',
-      time: '4시간 전',
-      priority: 'medium'
+      label: '완료율',
+      value: '87%',
+      change: '+5.1%',
+      trend: 'up',
+      subtitle: '목표 달성률 상승'
     }
   ]);
 
-  const [quickStats] = useState<QuickStats[]>([
-    { label: '이번 주 출석률', value: 92, change: 5, trend: 'up', color: 'text-green-600' },
-    { label: '평균 시험 점수', value: 78, change: -2, trend: 'down', color: 'text-red-600' },
-    { label: '진행 중인 과정', value: 8, change: 1, trend: 'up', color: 'text-blue-600' },
-    { label: '완료된 시험', value: 24, change: 8, trend: 'up', color: 'text-purple-600' }
+  const [chartData] = useState<ChartData[]>([
+    { month: '1월 1일', value: 30 },
+    { month: '1월 3일', value: 45 },
+    { month: '1월 5일', value: 35 },
+    { month: '1월 7일', value: 50 },
+    { month: '1월 9일', value: 40 },
+    { month: '1월 11일', value: 55 },
+    { month: '1월 13일', value: 48 },
+    { month: '1월 15일', value: 62 },
+    { month: '1월 17일', value: 58 },
+    { month: '1월 19일', value: 70 },
+    { month: '1월 21일', value: 65 },
+    { month: '1월 23일', value: 78 },
+    { month: '1월 25일', value: 72 },
+    { month: '1월 27일', value: 80 },
+    { month: '1월 30일', value: 75 }
   ]);
 
-  useEffect(() => {
-    // 실제로는 API에서 데이터를 가져올 것
-    setStats({
-      totalStudents: 45,
-      activeCourses: 8,
-      completedExams: 24,
-      averageAttendance: 92,
-      upcomingExams: 5,
-      needsAttention: 3
-    });
-  }, []);
+  const [activeTab, setActiveTab] = useState('3months');
 
-  const getActivityIcon = (type: string) => {
-    switch (type) {
-      case 'exam': return '🎯';
-      case 'attendance': return '✅';
-      case 'course': return '📚';
-      case 'performance': return '📈';
-      default: return '📋';
-    }
-  };
-
-  const getPriorityColor = (priority: string) => {
-    switch (priority) {
-      case 'high': return 'border-l-red-500 bg-red-50';
-      case 'medium': return 'border-l-yellow-500 bg-yellow-50';
-      case 'low': return 'border-l-green-500 bg-green-50';
-      default: return 'border-l-gray-500 bg-gray-50';
-    }
-  };
-
-  const getTrendIcon = (trend: string) => {
-    switch (trend) {
-      case 'up': return '↗️';
-      case 'down': return '↘️';
-      default: return '→';
-    }
-  };
+  const maxValue = Math.max(...chartData.map(d => d.value));
 
   return (
     <div className="space-y-6">
-      {/* 헤더 */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900">대시보드</h1>
-            <p className="text-gray-600">BS 학습 관리 시스템의 전체 현황을 한눈에 확인하세요.</p>
-          </div>
-          <div className="flex items-center text-sm text-gray-500">
-            <CalendarDaysIcon className="h-4 w-4 mr-2" />
-            {new Date().toLocaleDateString('ko-KR', { 
-              year: 'numeric', 
-              month: 'long', 
-              day: 'numeric', 
-              weekday: 'long' 
-            })}
-          </div>
-        </div>
-      </div>
-
-      {/* 주요 통계 카드 */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <div className="flex items-center">
-            <div className="flex-shrink-0">
-              <UserGroupIcon className="h-8 w-8 text-blue-600" />
-            </div>
-            <div className="ml-4">
-              <p className="text-sm font-medium text-gray-500">총 교육생</p>
-              <p className="text-2xl font-semibold text-gray-900">{stats.totalStudents}</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <div className="flex items-center">
-            <div className="flex-shrink-0">
-              <AcademicCapIcon className="h-8 w-8 text-green-600" />
-            </div>
-            <div className="ml-4">
-              <p className="text-sm font-medium text-gray-500">활성 과정</p>
-              <p className="text-2xl font-semibold text-gray-900">{stats.activeCourses}</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <div className="flex items-center">
-            <div className="flex-shrink-0">
-              <CheckCircleIcon className="h-8 w-8 text-purple-600" />
-            </div>
-            <div className="ml-4">
-              <p className="text-sm font-medium text-gray-500">완료된 시험</p>
-              <p className="text-2xl font-semibold text-gray-900">{stats.completedExams}</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <div className="flex items-center">
-            <div className="flex-shrink-0">
-              <ExclamationTriangleIcon className="h-8 w-8 text-orange-600" />
-            </div>
-            <div className="ml-4">
-              <p className="text-sm font-medium text-gray-500">주의 필요</p>
-              <p className="text-2xl font-semibold text-gray-900">{stats.needsAttention}</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* 빠른 통계 */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-        <h2 className="text-lg font-medium text-gray-900 mb-4 flex items-center">
-          <ChartBarIcon className="h-5 w-5 mr-2" />
-          빠른 통계
-        </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {quickStats.map((stat, index) => (
-            <div key={index} className="bg-gray-50 rounded-lg p-4 border border-gray-100">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-medium text-gray-600">{stat.label}</span>
+      {/* 통계 카드 그리드 */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        {stats.map((stat, index) => (
+          <div
+            key={index}
+            className="bg-card rounded-xl border border-border p-6 hover:shadow-md transition-shadow"
+          >
+            {/* 헤더 */}
+            <div className="flex items-start justify-between mb-4">
+              <div>
+                <p className="text-sm text-muted-foreground mb-1">{stat.label}</p>
+                <h3 className="text-2xl font-bold text-card-foreground">{stat.value}</h3>
+              </div>
+              <div className={`flex items-center space-x-1 px-2 py-1 rounded-md ${
+                stat.trend === 'up'
+                  ? 'bg-green-50 text-green-700'
+                  : 'bg-red-50 text-red-700'
+              }`}>
                 {stat.trend === 'up' ? (
-                  <ArrowTrendingUpIcon className="h-4 w-4 text-green-600" />
-                ) : stat.trend === 'down' ? (
-                  <ArrowTrendingDownIcon className="h-4 w-4 text-red-600" />
+                  <ArrowTrendingUpIcon className="w-4 h-4" />
                 ) : (
-                  <ArrowRightIcon className="h-4 w-4 text-gray-400" />
+                  <ArrowTrendingDownIcon className="w-4 h-4" />
                 )}
-              </div>
-              <div className="flex items-center justify-between">
-                <span className={`text-2xl font-semibold ${stat.color}`}>
-                  {stat.value}{stat.label.includes('점수') || stat.label.includes('출석률') ? (stat.label.includes('출석률') ? '%' : '점') : ''}
-                </span>
-                <span className={`text-sm font-medium ${stat.trend === 'up' ? 'text-green-600' : stat.trend === 'down' ? 'text-red-600' : 'text-gray-600'}`}>
-                  {stat.change > 0 ? '+' : ''}{stat.change}
-                </span>
+                <span className="text-sm font-medium">{stat.change}</span>
               </div>
             </div>
-          ))}
-        </div>
+
+            {/* 서브타이틀 */}
+            <div className="flex items-start space-x-2">
+              {stat.trend === 'up' ? (
+                <ArrowTrendingUpIcon className="w-4 h-4 text-muted-foreground flex-shrink-0 mt-0.5" />
+              ) : (
+                <ArrowTrendingDownIcon className="w-4 h-4 text-muted-foreground flex-shrink-0 mt-0.5" />
+              )}
+              <p className="text-sm text-muted-foreground">{stat.subtitle}</p>
+            </div>
+          </div>
+        ))}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* 공지사항 */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-medium text-gray-900 flex items-center">
-              <BellIcon className="h-5 w-5 mr-2" />
-              공지사항
-            </h2>
-            <button className="text-blue-600 hover:text-blue-700 text-sm font-medium flex items-center">
-              전체보기
-              <ArrowRightIcon className="h-4 w-4 ml-1" />
+      {/* 차트 섹션 */}
+      <div className="bg-card rounded-xl border border-border p-6">
+        {/* 차트 헤더 */}
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h2 className="text-lg font-semibold text-card-foreground mb-1">교육 활동</h2>
+            <p className="text-sm text-muted-foreground">지난 3개월 교육 참여 현황</p>
+          </div>
+
+          {/* 탭 버튼 */}
+          <div className="flex items-center space-x-2">
+            <button
+              onClick={() => setActiveTab('3months')}
+              className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
+                activeTab === '3months'
+                  ? 'bg-secondary text-secondary-foreground font-medium'
+                  : 'text-muted-foreground hover:text-foreground hover:bg-secondary/50'
+              }`}
+            >
+              최근 3개월
+            </button>
+            <button
+              onClick={() => setActiveTab('30days')}
+              className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
+                activeTab === '30days'
+                  ? 'bg-secondary text-secondary-foreground font-medium'
+                  : 'text-muted-foreground hover:text-foreground hover:bg-secondary/50'
+              }`}
+            >
+              최근 30일
+            </button>
+            <button
+              onClick={() => setActiveTab('7days')}
+              className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
+                activeTab === '7days'
+                  ? 'bg-secondary text-secondary-foreground font-medium'
+                  : 'text-muted-foreground hover:text-foreground hover:bg-secondary/50'
+              }`}
+            >
+              최근 7일
             </button>
           </div>
-          <div className="space-y-3">
-            <div className="p-3 bg-red-50 border-l-4 border-red-400 rounded-r-lg">
-              <div className="flex items-center justify-between">
-                <div className="flex-1">
-                  <div className="flex items-center">
-                    <span className="bg-red-100 text-red-800 text-xs px-2 py-1 rounded-full mr-2">
-                      📌 고정
-                    </span>
-                    <span className="bg-red-100 text-red-800 text-xs px-2 py-1 rounded-full">
-                      긴급
-                    </span>
-                  </div>
-                  <p className="font-medium text-red-900 mt-2">새로운 영업 교육 과정 개설 안내</p>
-                  <p className="text-sm text-red-700 mt-1">BS 영업 기초과정과 고급 영업 전략 과정이 새롭게 개설되었습니다.</p>
-                </div>
-                <span className="text-xs text-red-500">8월 20일</span>
-              </div>
-            </div>
-            
-            <div className="p-3 bg-blue-50 border-l-4 border-blue-400 rounded-r-lg">
-              <div className="flex items-center justify-between">
-                <div className="flex-1">
-                  <div className="flex items-center">
-                    <span className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full mr-2">
-                      📌 고정
-                    </span>
-                    <span className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">
-                      긴급
-                    </span>
-                  </div>
-                  <p className="font-medium text-blue-900 mt-2">8월 정기 시험 일정 공지</p>
-                  <p className="text-sm text-blue-700 mt-1">8월 정기 시험이 8월 25일 진행됩니다. 출석 확인 및 시험 준비를 완료해주세요.</p>
-                </div>
-                <span className="text-xs text-blue-500">8월 18일</span>
-              </div>
-            </div>
-            
-            <div className="p-3 bg-yellow-50 border-l-4 border-yellow-400 rounded-r-lg">
-              <div className="flex items-center justify-between">
-                <div className="flex-1">
-                  <div className="flex items-center">
-                    <span className="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full">
-                      보통
-                    </span>
-                  </div>
-                  <p className="font-medium text-yellow-900 mt-2">출석 관리 시스템 업데이트</p>
-                  <p className="text-sm text-yellow-700 mt-1">출석 관리 시스템이 업데이트되어 더욱 편리하게 이용할 수 있습니다.</p>
-                </div>
-                <span className="text-xs text-yellow-500">8월 15일</span>
-              </div>
-            </div>
-          </div>
         </div>
 
-        {/* 최근 활동 */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <h2 className="text-lg font-medium text-gray-900 mb-4">📋 최근 활동</h2>
-          <div className="space-y-3">
-            {recentActivities.map((activity) => (
-              <div 
-                key={activity.id} 
-                className={`p-4 rounded-lg border-l-4 ${getPriorityColor(activity.priority)}`}
-              >
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <div className="flex items-center">
-                      <span className="mr-2">{getActivityIcon(activity.type)}</span>
-                      <span className="font-medium text-gray-900">{activity.title}</span>
-                    </div>
-                    <p className="text-sm text-gray-600 mt-1">{activity.description}</p>
-                  </div>
-                  <span className="text-xs text-gray-500">{activity.time}</span>
-                </div>
-              </div>
+        {/* 차트 */}
+        <div className="relative h-64">
+          {/* Y축 그리드 라인 */}
+          <div className="absolute inset-0 flex flex-col justify-between">
+            {[0, 1, 2, 3, 4].map((i) => (
+              <div key={i} className="border-t border-border/30" />
             ))}
           </div>
-          <div className="mt-4 text-center">
-            <button className="text-blue-600 hover:text-blue-700 text-sm font-medium">
-              모든 활동 보기 →
+
+          {/* 차트 영역 */}
+          <div className="relative h-full flex items-end justify-between px-4 space-x-2">
+            {chartData.map((data, index) => {
+              const heightPercentage = (data.value / maxValue) * 100;
+
+              return (
+                <div
+                  key={index}
+                  className="flex-1 flex flex-col items-center justify-end group relative"
+                >
+                  {/* 툴팁 */}
+                  <div className="opacity-0 group-hover:opacity-100 absolute bottom-full mb-2 px-2 py-1 bg-popover text-popover-foreground text-xs rounded shadow-lg whitespace-nowrap transition-opacity z-10">
+                    {data.value} 방문
+                    <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-popover" />
+                  </div>
+
+                  {/* 바 */}
+                  <div
+                    className="w-full rounded-t-sm transition-all duration-300 cursor-pointer"
+                    style={{
+                      height: `${heightPercentage}%`,
+                      background: 'linear-gradient(to top, hsl(var(--primary)), hsl(var(--primary) / 0.6))'
+                    }}
+                  />
+                </div>
+              );
+            })}
+          </div>
+
+          {/* X축 라벨 */}
+          <div className="flex items-center justify-between px-4 mt-4">
+            {chartData.filter((_, i) => i % 2 === 0).map((data, index) => (
+              <span key={index} className="text-xs text-muted-foreground">
+                {data.month}
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* 하단 테이블 섹션 */}
+      <div className="bg-card rounded-xl border border-border overflow-hidden">
+        {/* 테이블 헤더 */}
+        <div className="border-b border-border">
+          <div className="flex items-center space-x-4 px-6 py-4">
+            <button className="text-sm font-medium text-card-foreground pb-2 border-b-2 border-primary">
+              개요
+            </button>
+            <button className="text-sm text-muted-foreground hover:text-foreground pb-2">
+              과거 성과
+              <span className="ml-1 px-1.5 py-0.5 text-xs bg-secondary text-secondary-foreground rounded">3</span>
+            </button>
+            <button className="text-sm text-muted-foreground hover:text-foreground pb-2">
+              주요 인원
+              <span className="ml-1 px-1.5 py-0.5 text-xs bg-secondary text-secondary-foreground rounded">2</span>
+            </button>
+            <button className="text-sm text-muted-foreground hover:text-foreground pb-2">
+              집중 문서
             </button>
           </div>
         </div>
 
-        {/* 오늘의 일정 */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <h2 className="text-lg font-medium text-gray-900 mb-4">📅 오늘의 일정</h2>
-          <div className="space-y-3">
-            <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg border border-blue-200">
-              <div>
-                <div className="font-medium text-blue-900">영업 기초 과정 (1차시)</div>
-                <div className="text-sm text-blue-700">09:00 - 12:00</div>
-              </div>
-              <div className="text-blue-600">📚</div>
-            </div>
-            
-            <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg border border-green-200">
-              <div>
-                <div className="font-medium text-green-900">출석 확인</div>
-                <div className="text-sm text-green-700">12:00 - 13:00</div>
-              </div>
-              <div className="text-green-600">✅</div>
-            </div>
-            
-            <div className="flex items-center justify-between p-3 bg-purple-50 rounded-lg border border-purple-200">
-              <div>
-                <div className="font-medium text-purple-900">CRM 활용 시험</div>
-                <div className="text-sm text-purple-700">14:00 - 15:00</div>
-              </div>
-              <div className="text-purple-600">🎯</div>
-            </div>
-            
-            <div className="flex items-center justify-between p-3 bg-orange-50 rounded-lg border border-orange-200">
-              <div>
-                <div className="font-medium text-orange-900">주간 성과 리뷰</div>
-                <div className="text-sm text-orange-700">16:00 - 17:00</div>
-              </div>
-              <div className="text-orange-600">📈</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* 빠른 액션 */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-        <h2 className="text-lg font-medium text-gray-900 mb-4">⚡ 빠른 액션</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <button className="p-4 bg-blue-50 rounded-lg border border-blue-200 hover:bg-blue-100 transition-colors text-center">
-            <div className="text-2xl mb-2">📚</div>
-            <div className="font-medium text-blue-900">새 과정 생성</div>
-            <div className="text-sm text-blue-700">과정 추가하기</div>
-          </button>
-          
-          <button className="p-4 bg-green-50 rounded-lg border border-green-200 hover:bg-green-100 transition-colors text-center">
-            <div className="text-2xl mb-2">✅</div>
-            <div className="font-medium text-green-900">출석 확인</div>
-            <div className="text-sm text-green-700">오늘 출석 관리</div>
-          </button>
-          
-          <button className="p-4 bg-purple-50 rounded-lg border border-purple-200 hover:bg-purple-100 transition-colors text-center">
-            <div className="text-2xl mb-2">🎯</div>
-            <div className="font-medium text-purple-900">새 시험 생성</div>
-            <div className="text-sm text-purple-700">시험 만들기</div>
-          </button>
-          
-          <button className="p-4 bg-orange-50 rounded-lg border border-orange-200 hover:bg-orange-100 transition-colors text-center">
-            <div className="text-2xl mb-2">📈</div>
-            <div className="font-medium text-orange-900">성과 리포트</div>
-            <div className="text-sm text-orange-700">분석 보고서</div>
-          </button>
-        </div>
-      </div>
-
-      {/* 시스템 상태 */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-        <h2 className="text-lg font-medium text-gray-900 mb-4">🔧 시스템 상태</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
-            <div>
-              <div className="font-medium text-green-900">서버 상태</div>
-              <div className="text-sm text-green-700">정상 운영 중</div>
-            </div>
-            <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-          </div>
-          
-          <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
-            <div>
-              <div className="font-medium text-green-900">데이터베이스</div>
-              <div className="text-sm text-green-700">연결 정상</div>
-            </div>
-            <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-          </div>
-          
-          <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
-            <div>
-              <div className="font-medium text-green-900">백업</div>
-              <div className="text-sm text-green-700">최근 백업: 2시간 전</div>
-            </div>
-            <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-          </div>
+        {/* 테이블 */}
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead className="bg-muted/30">
+              <tr>
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                  과정명
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                  과정 유형
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                  교육생 수
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                  진행률
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                  담당 강사
+                </th>
+                <th className="px-6 py-3"></th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-border">
+              {[
+                { name: 'BS Basic 1기', type: 'BS Basic', target: '28', limit: '85%', reviewer: '김민수' },
+                { name: 'BS Advanced 3기', type: 'BS Advanced', target: '24', limit: '92%', reviewer: '김민수' },
+                { name: 'BS Basic 2기', type: 'BS Basic', target: '30', limit: '78%', reviewer: '이영희' },
+                { name: '영업 전략 심화', type: '심화 과정', target: '18', limit: '95%', reviewer: '박지훈' },
+                { name: 'BS 실전 훈련', type: '실습', target: '22', limit: '88%', reviewer: '최수진' },
+                { name: '고객 응대 기술', type: '기초 과정', target: '26', limit: '91%', reviewer: '정다은' },
+                { name: 'BS 리더십', type: '리더십', target: '15', limit: '86%', reviewer: '강태영' }
+              ].map((row, index) => (
+                <tr key={index} className="hover:bg-muted/20 transition-colors">
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="flex items-center space-x-3">
+                      <div className="flex items-center space-x-2">
+                        <button className="text-muted-foreground hover:text-foreground">
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8h16M4 16h16" />
+                          </svg>
+                        </button>
+                        <input type="checkbox" className="w-4 h-4 rounded border-border" />
+                      </div>
+                      <span className="text-sm text-card-foreground">{row.name}</span>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-medium bg-secondary text-secondary-foreground">
+                      {row.type}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
+                    {row.target}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
+                    {row.limit}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-card-foreground">
+                    {row.reviewer}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-right">
+                    <button className="text-muted-foreground hover:text-foreground">
+                      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
+                      </svg>
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>

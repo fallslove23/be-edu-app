@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    
+    <!-- 기본 메타 정보 -->
+    <title>BS 학습 관리 시스템</title>
+    <meta name="description" content="BS 학습 관리 앱 - 교육생과 강사를 위한 종합 학습 플랫폼" />
+    <meta name="keywords" content="학습관리, 교육, LMS, 교육생관리, 과정관리" />
+    <meta name="author" content="BS Learning Team" />
+    
+    <!-- PWA 매니페스트 -->
+    <link rel="manifest" href="/manifest.json" />
+    
+    <!-- iOS Safari 지원 -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="BS Learning" />
+    <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
+    
+    <!-- Android Chrome 지원 -->
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="theme-color" content="#3b82f6" />
+    <meta name="msapplication-TileColor" content="#3b82f6" />
+    
+    <!-- 스플래시 스크린 (iOS) -->
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    
+    <!-- 보안 헤더 -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    
+    <!-- 소셜 미디어 메타 태그 (Open Graph) -->
+    <meta property="og:title" content="BS 학습 관리 시스템" />
+    <meta property="og:description" content="교육생과 강사를 위한 종합 학습 플랫폼" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="/icons/icon-512x512.png" />
+    <meta property="og:locale" content="ko_KR" />
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="BS 학습 관리 시스템" />
+    <meta name="twitter:description" content="교육생과 강사를 위한 종합 학습 플랫폼" />
+    <meta name="twitter:image" content="/icons/icon-512x512.png" />
+    
+    <!-- 성능 최적화 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+  </head>
+  <body>
+    <div id="root"></div>
+    
+    <!-- 서비스 워커 등록 -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js')
+            .then(registration => {
+              console.log('✅ 서비스 워커 등록 성공:', registration.scope);
+            })
+            .catch(error => {
+              console.log('❌ 서비스 워커 등록 실패:', error);
+            });
+        });
+      }
+    </script>
+    
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

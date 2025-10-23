@@ -85,11 +85,11 @@ const AttendanceStatistics: React.FC<AttendanceStatisticsProps> = ({
 
   if (loading) {
     return (
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200">
+      <div className="bg-card rounded-xl shadow-sm border border-border">
         <div className="p-6">
           <div className="flex items-center justify-center py-8">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-            <span className="ml-2 text-gray-600">통계를 불러오는 중...</span>
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+            <span className="ml-2 text-muted-foreground">통계를 불러오는 중...</span>
           </div>
         </div>
       </div>
@@ -98,14 +98,14 @@ const AttendanceStatistics: React.FC<AttendanceStatisticsProps> = ({
 
   if (error) {
     return (
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200">
+      <div className="bg-card rounded-xl shadow-sm border border-border">
         <div className="p-6">
-          <div className="text-center py-8 text-red-500">
-            <ExclamationTriangleIcon className="h-12 w-12 mx-auto mb-4 text-red-300" />
+          <div className="text-center py-8 text-destructive">
+            <ExclamationTriangleIcon className="h-12 w-12 mx-auto mb-4 text-destructive/50" />
             <p>{error}</p>
             <button
               onClick={loadStatistics}
-              className="mt-4 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
+              className="mt-4 px-4 py-2 bg-destructive text-destructive-foreground rounded-lg hover:bg-destructive/90 transition-colors"
             >
               다시 시도
             </button>
@@ -117,13 +117,13 @@ const AttendanceStatistics: React.FC<AttendanceStatisticsProps> = ({
 
   if (!stats) {
     return (
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200">
+      <div className="bg-card rounded-xl shadow-sm border border-border">
         <div className="p-6">
-          <div className="text-center py-8 text-gray-500">
-            <ChartBarIcon className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+          <div className="text-center py-8 text-muted-foreground">
+            <ChartBarIcon className="h-12 w-12 mx-auto mb-4 text-muted-foreground/50" />
             <p>
-              {selectedCourse 
-                ? '출석 통계 데이터가 없습니다.' 
+              {selectedCourse
+                ? '출석 통계 데이터가 없습니다.'
                 : '과정을 선택하여 출석 통계를 확인하세요.'}
             </p>
           </div>
@@ -133,59 +133,60 @@ const AttendanceStatistics: React.FC<AttendanceStatisticsProps> = ({
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-      <div className="p-6 border-b border-gray-200">
-        <h2 className="text-lg font-medium text-gray-900 flex items-center">
+    <div className="bg-card rounded-xl shadow-sm border border-border">
+      <div className="p-6 border-b border-border">
+        <h2 className="text-lg font-bold text-card-foreground flex items-center">
           <ChartBarIcon className="h-5 w-5 mr-2" />
           출석 통계
         </h2>
         {selectedCourse && (
-          <p className="mt-1 text-sm text-gray-600">{selectedCourse.name}</p>
+          <p className="mt-1 text-sm text-muted-foreground">{selectedCourse.name}</p>
         )}
       </div>
 
       <div className="p-6">
         {/* 주요 지표 */}
         <div className="grid grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
-          <div className="text-center">
-            <div className="text-2xl font-bold text-gray-900">{stats.totalSchedules}</div>
-            <div className="text-sm text-gray-600 flex items-center justify-center mt-1">
+          <div className="text-center p-4 bg-muted rounded-lg">
+            <div className="text-2xl font-bold text-card-foreground">{stats.totalSchedules}</div>
+            <div className="text-sm text-muted-foreground flex items-center justify-center mt-1">
               <CalendarDaysIcon className="h-4 w-4 mr-1" />
               총 일정
             </div>
           </div>
-          
-          <div className="text-center">
-            <div className="text-2xl font-bold text-blue-600">{stats.completedSchedules}</div>
-            <div className="text-sm text-gray-600 flex items-center justify-center mt-1">
+
+          <div className="text-center p-4 bg-muted rounded-lg">
+            <div className="text-2xl font-bold text-primary">{stats.completedSchedules}</div>
+            <div className="text-sm text-muted-foreground flex items-center justify-center mt-1">
               <CheckCircleIcon className="h-4 w-4 mr-1" />
               완료된 일정
             </div>
           </div>
-          
-          <div className="text-center">
+
+          <div className="text-center p-4 bg-muted rounded-lg">
             <div className="text-2xl font-bold text-green-600">{stats.totalAttendees}</div>
-            <div className="text-sm text-gray-600 flex items-center justify-center mt-1">
+            <div className="text-sm text-muted-foreground flex items-center justify-center mt-1">
               <UserGroupIcon className="h-4 w-4 mr-1" />
               총 수강생
             </div>
           </div>
-          
-          <div className="text-center">
+
+
+          <div className="text-center p-4 bg-muted rounded-lg">
             <div className={`text-2xl font-bold ${getAttendanceRateColor(stats.averageAttendanceRate).split(' ')[0]}`}>
               {stats.averageAttendanceRate}%
             </div>
-            <div className="text-sm text-gray-600 flex items-center justify-center mt-1">
+            <div className="text-sm text-muted-foreground flex items-center justify-center mt-1">
               <CheckCircleIcon className="h-4 w-4 mr-1" />
               평균 출석률
             </div>
           </div>
-          
-          <div className="text-center">
+
+          <div className="text-center p-4 bg-muted rounded-lg">
             <div className={`text-2xl font-bold ${getAttendanceRateColor(stats.punctualityRate).split(' ')[0]}`}>
               {stats.punctualityRate}%
             </div>
-            <div className="text-sm text-gray-600 flex items-center justify-center mt-1">
+            <div className="text-sm text-muted-foreground flex items-center justify-center mt-1">
               <ClockIcon className="h-4 w-4 mr-1" />
               정시 출석률
             </div>
@@ -194,28 +195,28 @@ const AttendanceStatistics: React.FC<AttendanceStatisticsProps> = ({
 
         {/* 월별 출석률 차트 */}
         <div>
-          <h3 className="text-lg font-medium text-gray-900 mb-4">일별 출석률</h3>
+          <h3 className="text-lg font-bold text-card-foreground mb-4">일별 출석률</h3>
           <div className="space-y-3">
             {stats.monthlyStats.map((stat, index) => (
               <div key={stat.date} className="flex items-center space-x-4">
-                <div className="w-20 text-sm text-gray-600">
+                <div className="w-20 text-sm text-muted-foreground">
                   {format(parseISO(stat.date), 'MM/dd (E)', { locale: ko })}
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center justify-between mb-1">
-                    <span className="text-sm font-medium text-gray-700">
+                    <span className="text-sm font-medium text-card-foreground">
                       출석률: {stat.attendanceRate}%
                     </span>
-                    <span className="text-sm text-gray-500">
+                    <span className="text-sm text-muted-foreground">
                       {stat.presentCount}/{stat.totalTrainees}명
                     </span>
                   </div>
-                  <div className="w-full bg-gray-200 rounded-full h-2">
-                    <div 
+                  <div className="w-full bg-muted rounded-full h-2">
+                    <div
                       className={`h-2 rounded-full transition-all duration-300 ${
                         stat.attendanceRate >= 95 ? 'bg-green-500' :
-                        stat.attendanceRate >= 90 ? 'bg-blue-500' :
-                        stat.attendanceRate >= 85 ? 'bg-yellow-500' : 'bg-red-500'
+                        stat.attendanceRate >= 90 ? 'bg-primary' :
+                        stat.attendanceRate >= 85 ? 'bg-yellow-500' : 'bg-destructive'
                       }`}
                       style={{ width: `${stat.attendanceRate}%` }}
                     />

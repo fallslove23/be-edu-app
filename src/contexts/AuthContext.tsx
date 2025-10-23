@@ -7,11 +7,11 @@ interface AuthContextType extends AuthState {
   switchRole: (role: UserRole) => void; // 테스트용
 }
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+const AuthContext = createContext<AuthContextType | null>(null);
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
-  if (context === undefined) {
+  if (!context) {
     throw new Error('useAuth must be used within an AuthProvider');
   }
   return context;
@@ -21,41 +21,58 @@ interface AuthProviderProps {
   children: React.ReactNode;
 }
 
-export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
+export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [authState, setAuthState] = useState<AuthState>({
     isAuthenticated: false,
     user: null,
-    loading: false,
+    loading: true,
     error: null
   });
 
   // 테스트용 - 실제로는 localStorage나 API에서 가져올 것
   useEffect(() => {
-    const savedUser = localStorage.getItem('bs_learning_user');
-    if (savedUser) {
-      const user = JSON.parse(savedUser);
+    try {
+      const savedUser = localStorage.getItem('bs_learning_user');
+      if (savedUser) {
+        const user = JSON.parse(savedUser);
+        setAuthState(prev => ({
+          ...prev,
+          isAuthenticated: true,
+          user,
+          loading: false
+        }));
+      } else {
+        // 기본적으로 관리자로 설정 (테스트용)
+        const defaultUser: User = {
+          id: '1',
+          name: '관리자',
+          email: 'admin@company.com',
+          phone: '010-1234-5678',
+          employee_id: 'EMP001',
+          role: 'admin',
+          department: 'IT팀',
+          position: '시스템 관리자',
+          hire_date: new Date().toISOString(),
+          status: 'active',
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        };
+        
+        setAuthState(prev => ({
+          ...prev,
+          isAuthenticated: true,
+          user: defaultUser,
+          loading: false
+        }));
+        localStorage.setItem('bs_learning_user', JSON.stringify(defaultUser));
+      }
+    } catch (error) {
+      console.error('Auth 초기화 오류:', error);
       setAuthState(prev => ({
         ...prev,
-        isAuthenticated: true,
-        user
+        loading: false,
+        error: '사용자 정보를 불러올 수 없습니다.'
       }));
-    } else {
-      // 기본적으로 관리자로 설정 (테스트용)
-      const defaultUser: User = {
-        id: '1',
-        name: '관리자',
-        email: 'admin@company.com',
-        role: 'admin',
-        department: 'IT팀',
-        created_at: new Date().toISOString()
-      };
-      
-      setAuthState(prev => ({
-        ...prev,
-        isAuthenticated: true,
-        user: defaultUser
-      }));
-      localStorage.setItem('bs_learning_user', JSON.stringify(defaultUser));
     }
   }, []);
 
@@ -71,9 +88,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         id: '1',
         name: email === 'trainee@test.com' ? '김교육' : '관리자',
         email,
+        phone: '010-1234-5678',
+        employee_id: email === 'trainee@test.com' ? 'EMP002' : 'EMP001',
         role: email === 'trainee@test.com' ? 'trainee' : 'admin',
         department: email === 'trainee@test.com' ? '영업팀' : 'IT팀',
+        position: email === 'trainee@test.com' ? '사원' : '관리자',
+        hire_date: new Date().toISOString(),
+        status: 'active',
         created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
         last_login: new Date().toISOString()
       };
 
@@ -111,7 +134,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         ...authState.user,
         role,
         name: role === 'admin' ? '관리자' : role === 'instructor' ? '강사' : '교육생',
-        department: role === 'trainee' ? '영업팀' : 'IT팀'
+        department: role === 'trainee' ? '영업팀' : 'IT팀',
+        position: role === 'admin' ? '관리자' : role === 'instructor' ? '강사' : '사원',
+        updated_at: new Date().toISOString()
       };
 
       setAuthState(prev => ({
@@ -123,15 +148,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
+  const contextValue: AuthContextType = {
+    ...authState,
+    login,
+    logout,
+    switchRole
+  };
+
   return (
-    <AuthContext.Provider
-      value={{
-        ...authState,
-        login,
-        logout,
-        switchRole
-      }}
-    >
+    <AuthContext.Provider value={contextValue}>
       {children}
     </AuthContext.Provider>
   );

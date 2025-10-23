@@ -5,7 +5,10 @@ import {
   UserIcon,
   CalendarDaysIcon,
   UserGroupIcon,
-  DocumentTextIcon
+  DocumentTextIcon,
+  AcademicCapIcon,
+  HashtagIcon,
+  UsersIcon
 } from '@heroicons/react/24/outline';
 import { CourseService } from '../../services/course.services';
 import type { CreateCourseData, Course } from '../../services/course.services';
@@ -20,9 +23,16 @@ interface CourseFormProps {
   onSubmit: (course: Course) => void;
 }
 
-interface FormData extends CreateCourseData {
-  id?: string;
-  status?: string;
+interface FormData {
+  name: string;
+  description?: string;
+  manager_id?: string;
+  start_date: string;
+  end_date: string;
+  max_trainees: number;
+  education_year?: number;
+  cohort?: number;
+  enrollment_count?: number;
 }
 
 const CourseForm: React.FC<CourseFormProps> = ({
@@ -32,7 +42,6 @@ const CourseForm: React.FC<CourseFormProps> = ({
   onSubmit
 }) => {
   const [loading, setLoading] = useState(false);
-  const [instructors, setInstructors] = useState<User[]>([]);
   const [managers, setManagers] = useState<User[]>([]);
   const isEdit = !!course;
 
@@ -57,35 +66,39 @@ const CourseForm: React.FC<CourseFormProps> = ({
     if (course && isOpen) {
       setValue('name', course.name);
       setValue('description', course.description || '');
-      setValue('instructor_id', course.instructor_id || '');
       setValue('manager_id', course.manager_id || '');
       setValue('start_date', course.start_date);
       setValue('end_date', course.end_date);
       setValue('max_trainees', course.max_trainees);
+      // 새 필드들
+      setValue('education_year', (course as any).education_year || new Date().getFullYear());
+      setValue('cohort', (course as any).cohort || 1);
+      setValue('enrollment_count', (course as any).enrollment_count || 0);
     } else if (isOpen) {
+      const currentYear = new Date().getFullYear();
       reset({
         name: '',
         description: '',
-        instructor_id: '',
         manager_id: '',
         start_date: '',
         end_date: '',
-        max_trainees: 20
+        max_trainees: 20,
+        education_year: currentYear,
+        cohort: 1,
+        enrollment_count: 0
       });
     }
   }, [course, isOpen, setValue, reset]);
 
   const loadUsers = async () => {
     try {
-      const [instructorList, adminList, courseManagerList] = await Promise.all([
-        UserService.getUsersByRole('instructor'),
+      const [adminList, courseManagerList] = await Promise.all([
         UserService.getUsersByRole('app_admin'),
         UserService.getUsersByRole('course_manager')
       ]);
       
       const managerList = [...adminList, ...courseManagerList];
       
-      setInstructors(instructorList);
       setManagers(managerList);
     } catch (error) {
       console.error('Failed to load users:', error);
@@ -106,15 +119,25 @@ const CourseForm: React.FC<CourseFormProps> = ({
         return;
       }
 
-      const courseData: CreateCourseData = {
+      const courseData: any = {
         name: data.name,
         description: data.description || undefined,
-        instructor_id: data.instructor_id || undefined,
         manager_id: data.manager_id || undefined,
         start_date: data.start_date,
         end_date: data.end_date,
-        max_trainees: data.max_trainees
+        max_trainees: data.max_trainees,
+        // 새 필드들 (DB에 컬럼이 없는 경우 description에 포함)
+        education_year: data.education_year,
+        cohort: data.cohort,
+        enrollment_count: data.enrollment_count
       };
+
+      // DB에 새 컬럼이 없는 경우를 대비해 description에 정보 포함
+      if (data.description) {
+        courseData.description = `${data.description}\n\n[교육정보] ${data.education_year}년 ${data.cohort}차 | 입과생: ${data.enrollment_count}명`;
+      } else {
+        courseData.description = `[교육정보] ${data.education_year}년 ${data.cohort}차 | 입과생: ${data.enrollment_count}명`;
+      }
 
       let result: Course;
       
@@ -187,6 +210,103 @@ const CourseForm: React.FC<CourseFormProps> = ({
             )}
           </div>
 
+          {/* 교육 기본 정보 */}
+          <div className="bg-blue-50 p-4 rounded-lg space-y-4">
+            <h3 className="text-lg font-medium text-blue-900 flex items-center">
+              <AcademicCapIcon className="h-5 w-5 mr-2" />
+              교육 기본 정보
+            </h3>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {/* 교육 연도 */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  교육 연도 <span className="text-red-500">*</span>
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <AcademicCapIcon className="h-5 w-5 text-gray-400" />
+                  </div>
+                  <input
+                    type="number"
+                    {...register('education_year', { 
+                      required: '교육 연도를 입력해주세요.',
+                      min: { value: 2020, message: '2020년 이후로 입력해주세요.' },
+                      max: { value: 2030, message: '2030년 이전으로 입력해주세요.' }
+                    })}
+                    min="2020"
+                    max="2030"
+                    className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                    placeholder="2024"
+                  />
+                </div>
+                {errors.education_year && (
+                  <p className="mt-1 text-sm text-red-600">{errors.education_year.message}</p>
+                )}
+              </div>
+
+              {/* 차수 */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  차수 <span className="text-red-500">*</span>
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <HashtagIcon className="h-5 w-5 text-gray-400" />
+                  </div>
+                  <input
+                    type="number"
+                    {...register('cohort', { 
+                      required: '차수를 입력해주세요.',
+                      min: { value: 1, message: '1차 이상이어야 합니다.' },
+                      max: { value: 20, message: '20차 이하로 입력해주세요.' }
+                    })}
+                    min="1"
+                    max="20"
+                    className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                    placeholder="1"
+                  />
+                  <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                    <span className="text-gray-500 text-sm">차</span>
+                  </div>
+                </div>
+                {errors.cohort && (
+                  <p className="mt-1 text-sm text-red-600">{errors.cohort.message}</p>
+                )}
+              </div>
+
+              {/* 입과생 수 */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  입과생 수 <span className="text-red-500">*</span>
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <UsersIcon className="h-5 w-5 text-gray-400" />
+                  </div>
+                  <input
+                    type="number"
+                    {...register('enrollment_count', { 
+                      required: '입과생 수를 입력해주세요.',
+                      min: { value: 0, message: '0명 이상이어야 합니다.' },
+                      max: { value: 100, message: '100명 이하로 입력해주세요.' }
+                    })}
+                    min="0"
+                    max="100"
+                    className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                    placeholder="20"
+                  />
+                  <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                    <span className="text-gray-500 text-sm">명</span>
+                  </div>
+                </div>
+                {errors.enrollment_count && (
+                  <p className="mt-1 text-sm text-red-600">{errors.enrollment_count.message}</p>
+                )}
+              </div>
+            </div>
+          </div>
+
           {/* 설명 */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -205,52 +325,26 @@ const CourseForm: React.FC<CourseFormProps> = ({
             )}
           </div>
 
-          {/* 강사 및 관리자 */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* 강사 선택 */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                담당 강사
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <UserIcon className="h-5 w-5 text-gray-400" />
-                </div>
-                <select
-                  {...register('instructor_id')}
-                  className="block w-full pl-10 pr-8 py-2 border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-                >
-                  <option value="">강사 선택</option>
-                  {instructors.map((instructor) => (
-                    <option key={instructor.id} value={instructor.id}>
-                      {instructor.name} ({instructor.email})
-                    </option>
-                  ))}
-                </select>
+          {/* 과정 운영자 */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              과정 운영자
+            </label>
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <UserIcon className="h-5 w-5 text-gray-400" />
               </div>
-            </div>
-
-            {/* 관리자 선택 */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                과정 관리자
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <UserIcon className="h-5 w-5 text-gray-400" />
-                </div>
-                <select
-                  {...register('manager_id')}
-                  className="block w-full pl-10 pr-8 py-2 border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-                >
-                  <option value="">관리자 선택</option>
-                  {managers.map((manager) => (
-                    <option key={manager.id} value={manager.id}>
-                      {manager.name} ({manager.email})
-                    </option>
-                  ))}
-                </select>
-              </div>
+              <select
+                {...register('manager_id')}
+                className="block w-full pl-10 pr-8 py-2 border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+              >
+                <option value="">운영자 선택</option>
+                {managers.map((manager) => (
+                  <option key={manager.id} value={manager.id}>
+                    {manager.name} ({manager.email})
+                  </option>
+                ))}
+              </select>
             </div>
           </div>
 

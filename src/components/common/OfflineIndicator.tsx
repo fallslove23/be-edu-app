@@ -1,29 +1,62 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   WifiIcon,
   ExclamationTriangleIcon,
   CloudArrowUpIcon,
   XMarkIcon,
-  InformationCircleIcon
+  InformationCircleIcon,
+  ArrowPathIcon
 } from '@heroicons/react/24/outline';
-import { useOffline } from '../../hooks/useOffline';
+import { useOfflineStatus } from '../../hooks/useOfflineSync';
 
 const OfflineIndicator: React.FC = () => {
   const { 
-    isOffline, 
     isOnline, 
-    queuedCount, 
-    syncInProgress, 
-    syncQueuedRequests,
-    clearQueue,
-    offlineDuration 
-  } = useOffline();
+    isPending, 
+    hasConflicts, 
+    pendingCount, 
+    conflictCount, 
+    lastSyncTime 
+  } = useOfflineStatus();
   
   const [isExpanded, setIsExpanded] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
+  const [showIndicator, setShowIndicator] = useState(false);
 
-  // 온라인 상태면 표시하지 않음
-  if (isOnline && queuedCount === 0) return null;
+  useEffect(() => {
+    const handleOnline = () => {
+      setShowIndicator(true);
+      setTimeout(() => setShowIndicator(false), 3000);
+    };
+
+    const handleOffline = () => {
+      setShowIndicator(true);
+    };
+
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+
+    // 오프라인이거나 대기/충돌이 있으면 표시
+    if (!isOnline || isPending || hasConflicts) {
+      setShowIndicator(true);
+    }
+
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, [isOnline, isPending, hasConflicts]);
+
+  // 온라인이고 문제없으면 자동 숨김
+  useEffect(() => {
+    if (isOnline && !isPending && !hasConflicts) {
+      const timer = setTimeout(() => setShowIndicator(false), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [isOnline, isPending, hasConflicts]);
+
+  // 표시할 필요가 없으면 숨김
+  if (!showIndicator) return null;
 
   const formatDuration = (ms?: number): string => {
     if (!ms) return '';
@@ -47,37 +80,47 @@ const OfflineIndicator: React.FC = () => {
       >
         <div
           className={`rounded-lg shadow-lg border backdrop-blur-sm cursor-pointer transition-all duration-200 ${
-            isOffline
+            !isOnline
               ? 'bg-red-50 border-red-200 text-red-800'
+              : hasConflicts
+              ? 'bg-purple-50 border-purple-200 text-purple-800'
+              : isPending
+              ? 'bg-yellow-50 border-yellow-200 text-yellow-800'
               : 'bg-green-50 border-green-200 text-green-800'
           } ${isExpanded ? 'p-4' : 'p-3'}`}
           onClick={() => setIsExpanded(!isExpanded)}
         >
           <div className="flex items-center space-x-2">
-            {syncInProgress ? (
-              <CloudArrowUpIcon className="h-5 w-5 animate-pulse" />
-            ) : isOffline ? (
+            {!isOnline ? (
               <ExclamationTriangleIcon className="h-5 w-5" />
+            ) : hasConflicts ? (
+              <ExclamationTriangleIcon className="h-5 w-5 text-purple-500" />
+            ) : isPending ? (
+              <CloudArrowUpIcon className="h-5 w-5 animate-bounce" />
             ) : (
               <WifiIcon className="h-5 w-5" />
             )}
             
             <span className="font-medium text-sm">
-              {syncInProgress
-                ? '동기화 중...'
-                : isOffline
+              {!isOnline
                 ? '오프라인'
+                : hasConflicts
+                ? `충돌 ${conflictCount}개`
+                : isPending
+                ? `동기화 대기 ${pendingCount}개`
                 : '온라인 복구됨'
               }
             </span>
             
-            {queuedCount > 0 && (
+            {(pendingCount > 0 || conflictCount > 0) && (
               <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                isOffline 
+                !isOnline 
                   ? 'bg-red-200 text-red-800'
-                  : 'bg-green-200 text-green-800'
+                  : hasConflicts
+                  ? 'bg-purple-200 text-purple-800'
+                  : 'bg-yellow-200 text-yellow-800'
               }`}>
-                {queuedCount}
+                {conflictCount > 0 ? conflictCount : pendingCount}
               </span>
             )}
           </div>
@@ -85,44 +128,36 @@ const OfflineIndicator: React.FC = () => {
           {isExpanded && (
             <div className="mt-3 space-y-3">
               <div className="text-sm opacity-75">
-                {isOffline ? (
+                {!isOnline ? (
                   <div className="space-y-1">
                     <p>현재 인터넷 연결이 끊어졌습니다.</p>
-                    {offlineDuration && (
-                      <p>오프라인 지속 시간: {formatDuration(offlineDuration)}</p>
-                    )}
                     <p>연결이 복구되면 자동으로 동기화됩니다.</p>
                   </div>
+                ) : hasConflicts ? (
+                  <p>데이터 충돌이 발견되었습니다. 해결이 필요합니다.</p>
+                ) : isPending ? (
+                  <p>동기화 대기 중인 데이터가 있습니다.</p>
                 ) : (
                   <p>인터넷 연결이 복구되었습니다.</p>
                 )}
               </div>
 
-              {queuedCount > 0 && (
+              {(pendingCount > 0 || conflictCount > 0) && (
                 <div className="space-y-2">
                   <div className="text-sm font-medium">
-                    동기화 대기 중인 작업: {queuedCount}개
+                    {hasConflicts 
+                      ? `충돌: ${conflictCount}개` 
+                      : `동기화 대기: ${pendingCount}개`
+                    }
                   </div>
                   
                   <div className="flex space-x-2">
-                    {isOnline && !syncInProgress && (
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          syncQueuedRequests();
-                        }}
-                        className="flex-1 bg-blue-600 text-white px-3 py-1.5 rounded text-sm hover:bg-blue-700 transition-colors"
-                      >
-                        지금 동기화
-                      </button>
-                    )}
-                    
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
                         setShowDetails(true);
                       }}
-                      className="flex-1 bg-gray-600 text-white px-3 py-1.5 rounded text-sm hover:bg-gray-700 transition-colors"
+                      className="flex-1 bg-blue-600 text-white px-3 py-1.5 rounded text-sm hover:bg-blue-700 transition-colors"
                     >
                       상세 보기
                     </button>
@@ -151,7 +186,7 @@ const OfflineIndicator: React.FC = () => {
             <div className="p-4 border-b border-gray-200">
               <div className="flex items-center justify-between">
                 <h3 className="text-lg font-medium text-gray-900">
-                  오프라인 작업 상태
+                  동기화 상태
                 </h3>
                 <button
                   onClick={() => setShowDetails(false)}
@@ -166,78 +201,42 @@ const OfflineIndicator: React.FC = () => {
               <div className="space-y-4">
                 {/* 현재 상태 */}
                 <div className="flex items-center space-x-3">
-                  {isOffline ? (
+                  {!isOnline ? (
                     <ExclamationTriangleIcon className="h-5 w-5 text-red-500" />
                   ) : (
                     <WifiIcon className="h-5 w-5 text-green-500" />
                   )}
                   <div>
                     <div className="font-medium">
-                      {isOffline ? '오프라인 상태' : '온라인 상태'}
+                      {!isOnline ? '오프라인 상태' : '온라인 상태'}
                     </div>
-                    <div className="text-sm text-gray-500">
-                      {offlineDuration && isOffline && (
-                        `${formatDuration(offlineDuration)} 동안 오프라인`
-                      )}
-                    </div>
+                    {lastSyncTime && (
+                      <div className="text-sm text-gray-500">
+                        마지막 동기화: {new Date(lastSyncTime).toLocaleString('ko-KR')}
+                      </div>
+                    )}
                   </div>
                 </div>
 
-                {/* 큐 상태 */}
+                {/* 동기화 상태 */}
                 <div className="bg-gray-50 p-3 rounded">
                   <div className="flex items-center space-x-2 mb-2">
                     <InformationCircleIcon className="h-4 w-4 text-blue-500" />
-                    <span className="font-medium text-sm">동기화 대기열</span>
+                    <span className="font-medium text-sm">동기화 상태</span>
                   </div>
                   
-                  {queuedCount === 0 ? (
-                    <p className="text-sm text-gray-600">
-                      동기화 대기 중인 작업이 없습니다.
-                    </p>
-                  ) : (
-                    <div className="space-y-2">
-                      <p className="text-sm text-gray-600">
-                        {queuedCount}개 작업이 동기화를 기다리고 있습니다.
-                      </p>
-                      
-                      <div className="space-y-2">
-                        {isOnline && !syncInProgress && (
-                          <button
-                            onClick={() => {
-                              syncQueuedRequests();
-                              setShowDetails(false);
-                            }}
-                            className="w-full bg-blue-600 text-white px-4 py-2 rounded text-sm hover:bg-blue-700 transition-colors"
-                          >
-                            <CloudArrowUpIcon className="h-4 w-4 inline mr-2" />
-                            지금 동기화
-                          </button>
-                        )}
-                        
-                        <button
-                          onClick={() => {
-                            if (confirm('정말로 모든 대기 중인 작업을 삭제하시겠습니까?')) {
-                              clearQueue();
-                              setShowDetails(false);
-                            }
-                          }}
-                          className="w-full bg-red-600 text-white px-4 py-2 rounded text-sm hover:bg-red-700 transition-colors"
-                        >
-                          모든 작업 삭제
-                        </button>
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                {syncInProgress && (
-                  <div className="bg-blue-50 p-3 rounded">
-                    <div className="flex items-center space-x-2">
-                      <CloudArrowUpIcon className="h-4 w-4 text-blue-500 animate-pulse" />
-                      <span className="text-sm text-blue-800">동기화가 진행 중입니다...</span>
-                    </div>
+                  <div className="space-y-2 text-sm text-gray-600">
+                    {pendingCount > 0 && (
+                      <p>• 대기 중: {pendingCount}개</p>
+                    )}
+                    {conflictCount > 0 && (
+                      <p>• 충돌: {conflictCount}개</p>
+                    )}
+                    {pendingCount === 0 && conflictCount === 0 && (
+                      <p>모든 데이터가 동기화되었습니다.</p>
+                    )}
                   </div>
-                )}
+                </div>
               </div>
             </div>
 

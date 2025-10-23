@@ -288,15 +288,15 @@ const PracticeEvaluation: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* 헤더 */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <div className="bg-card border border-border rounded-lg shadow-sm p-6">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">실습 평가 관리</h1>
-            <p className="text-gray-600">영업 시뮬레이션, 역할극, 프레젠테이션 등 실습 평가를 관리합니다.</p>
+            <h1 className="text-2xl font-bold text-card-foreground">실습 평가 관리</h1>
+            <p className="text-muted-foreground">영업 시뮬레이션, 역할극, 프레젠테이션 등 실습 평가를 관리합니다.</p>
           </div>
           <button
             onClick={handleCreatePractice}
-            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center"
+            className="bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-lg transition-colors flex items-center font-medium"
           >
             <PlusIcon className="h-5 w-5 mr-2" />
             새 실습 평가 생성
@@ -306,66 +306,66 @@ const PracticeEvaluation: React.FC = () => {
 
       {/* 통계 카드 */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <div className="bg-card border border-border rounded-lg shadow-sm p-6">
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <ClipboardDocumentListIcon className="h-8 w-8 text-blue-600" />
+              <ClipboardDocumentListIcon className="h-8 w-8 text-primary" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-500">전체 평가</p>
-              <p className="text-2xl font-semibold text-gray-900">{practices.length}</p>
+              <p className="text-sm font-medium text-muted-foreground">전체 평가</p>
+              <p className="text-2xl font-semibold text-card-foreground">{practices.length}</p>
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <div className="bg-card border border-border rounded-lg shadow-sm p-6">
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <PlayIcon className="h-8 w-8 text-green-600" />
+              <PlayIcon className="h-8 w-8 text-emerald-600" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-500">진행중</p>
-              <p className="text-2xl font-semibold text-gray-900">
+              <p className="text-sm font-medium text-muted-foreground">진행중</p>
+              <p className="text-2xl font-semibold text-card-foreground">
                 {practices.filter(p => p.status === 'in_progress').length}
               </p>
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <div className="bg-card border border-border rounded-lg shadow-sm p-6">
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <UserGroupIcon className="h-8 w-8 text-purple-600" />
+              <UserGroupIcon className="h-8 w-8 text-slate-600" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-500">참여 인원</p>
-              <p className="text-2xl font-semibold text-gray-900">24</p>
+              <p className="text-sm font-medium text-muted-foreground">참여 인원</p>
+              <p className="text-2xl font-semibold text-card-foreground">24</p>
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <div className="bg-card border border-border rounded-lg shadow-sm p-6">
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <ChartBarIcon className="h-8 w-8 text-orange-600" />
+              <ChartBarIcon className="h-8 w-8 text-amber-600" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-500">평균 점수</p>
-              <p className="text-2xl font-semibold text-gray-900">82.5</p>
+              <p className="text-sm font-medium text-muted-foreground">평균 점수</p>
+              <p className="text-2xl font-semibold text-card-foreground">82.5</p>
             </div>
           </div>
         </div>
       </div>
 
       {/* 검색 및 필터 */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <div className="bg-card border border-border rounded-lg shadow-sm p-6">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div className="relative">
-            <MagnifyingGlassIcon className="h-5 w-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+            <MagnifyingGlassIcon className="h-5 w-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
             <input
               type="text"
               placeholder="제목, 설명 검색..."
-              className="pl-10 pr-4 py-2 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="pl-10 pr-4 py-2 w-full border border-input rounded-lg bg-background focus:ring-2 focus:ring-ring focus:border-ring"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
@@ -374,7 +374,7 @@ const PracticeEvaluation: React.FC = () => {
           <select
             value={typeFilter}
             onChange={(e) => setTypeFilter(e.target.value as PracticeType | 'all')}
-            className="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="border border-input rounded-lg px-3 py-2 bg-background focus:ring-2 focus:ring-ring focus:border-ring"
           >
             <option value="all">모든 유형</option>
             {(Object.keys(practiceTypeLabels) as PracticeType[]).map(type => (
@@ -385,7 +385,7 @@ const PracticeEvaluation: React.FC = () => {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value as PracticeStatus | 'all')}
-            className="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="border border-input rounded-lg px-3 py-2 bg-background focus:ring-2 focus:ring-ring focus:border-ring"
           >
             <option value="all">모든 상태</option>
             {(Object.keys(practiceStatusLabels) as PracticeStatus[]).map(status => (
@@ -393,7 +393,7 @@ const PracticeEvaluation: React.FC = () => {
             ))}
           </select>
 
-          <div className="flex items-center text-sm text-gray-500">
+          <div className="flex items-center text-sm text-muted-foreground">
             총 {filteredPractices.length}개 평가
           </div>
         </div>
@@ -402,7 +402,7 @@ const PracticeEvaluation: React.FC = () => {
       {/* 실습 평가 목록 */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {filteredPractices.map((practice) => (
-          <div key={practice.id} className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <div key={practice.id} className="bg-card border border-border rounded-lg shadow-sm p-6">
             <div className="flex items-start justify-between">
               <div className="flex-1">
                 <div className="flex items-center space-x-2 mb-2">
@@ -425,10 +425,10 @@ const PracticeEvaluation: React.FC = () => {
                     {practiceStatusLabels[practice.status]}
                   </span>
                 </div>
-                <h3 className="text-lg font-medium text-gray-900 mb-2">{practice.title}</h3>
-                <p className="text-gray-600 text-sm mb-4 line-clamp-2">{practice.description}</p>
+                <h3 className="text-lg font-medium text-card-foreground mb-2">{practice.title}</h3>
+                <p className="text-muted-foreground text-sm mb-4 line-clamp-2">{practice.description}</p>
                 
-                <div className="grid grid-cols-2 gap-4 text-sm text-gray-500">
+                <div className="grid grid-cols-2 gap-4 text-sm text-muted-foreground">
                   <div className="flex items-center">
                     <CalendarIcon className="h-4 w-4 mr-1" />
                     {practice.duration_minutes}분
@@ -439,7 +439,7 @@ const PracticeEvaluation: React.FC = () => {
                   </div>
                 </div>
                 
-                <div className="mt-4 text-xs text-gray-400">
+                <div className="mt-4 text-xs text-muted-foreground/70">
                   시나리오: {practice.scenario.title}
                 </div>
               </div>
@@ -449,21 +449,21 @@ const PracticeEvaluation: React.FC = () => {
               <button
                 onClick={() => handleStartSession(practice)}
                 disabled={practice.status !== 'published'}
-                className="px-3 py-1.5 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
+                className="px-3 py-1.5 text-sm bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed flex items-center font-medium transition-colors"
               >
                 <PlayIcon className="h-4 w-4 mr-1" />
                 세션 시작
               </button>
               <button
                 onClick={() => handleViewResults(practice)}
-                className="px-3 py-1.5 text-sm bg-green-600 text-white rounded hover:bg-green-700 flex items-center"
+                className="px-3 py-1.5 text-sm bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 flex items-center font-medium transition-colors"
               >
                 <ChartBarIcon className="h-4 w-4 mr-1" />
                 결과 보기
               </button>
               <button
                 onClick={() => handleEditPractice(practice)}
-                className="px-3 py-1.5 text-sm border border-gray-300 text-gray-700 rounded hover:bg-gray-50"
+                className="btn-neutral btn-sm"
               >
                 수정
               </button>
@@ -473,10 +473,10 @@ const PracticeEvaluation: React.FC = () => {
       </div>
 
       {filteredPractices.length === 0 && (
-        <div className="text-center py-12 bg-white rounded-lg shadow-sm border border-gray-200">
-          <ClipboardDocumentListIcon className="mx-auto h-12 w-12 text-gray-400" />
-          <h3 className="mt-2 text-sm font-medium text-gray-900">실습 평가가 없습니다</h3>
-          <p className="mt-1 text-sm text-gray-500">새로운 실습 평가를 생성해보세요.</p>
+        <div className="text-center py-12 bg-card rounded-lg shadow-sm border border-border">
+          <ClipboardDocumentListIcon className="mx-auto h-12 w-12 text-muted-foreground" />
+          <h3 className="mt-2 text-sm font-medium text-card-foreground">실습 평가가 없습니다</h3>
+          <p className="mt-1 text-sm text-muted-foreground">새로운 실습 평가를 생성해보세요.</p>
         </div>
       )}
     </div>

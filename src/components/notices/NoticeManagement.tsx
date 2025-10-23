@@ -115,20 +115,20 @@ const NoticeManagement: React.FC = () => {
   // 우선순위 색상
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case 'high': return 'bg-red-100 text-red-800 border-red-200';
-      case 'medium': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
-      case 'low': return 'bg-green-100 text-green-800 border-green-200';
-      default: return 'bg-gray-100 text-gray-800 border-gray-200';
+      case 'high': return 'bg-destructive text-destructive-foreground border-border';
+      case 'medium': return 'bg-accent text-accent-foreground border-border';
+      case 'low': return 'bg-muted text-muted-foreground border-border';
+      default: return 'bg-secondary text-secondary-foreground border-border';
     }
   };
 
   // 상태 색상
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'published': return 'bg-green-100 text-green-800';
-      case 'draft': return 'bg-gray-100 text-gray-800';
-      case 'archived': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'published': return 'bg-primary text-primary-foreground';
+      case 'draft': return 'bg-secondary text-secondary-foreground';
+      case 'archived': return 'bg-muted text-muted-foreground';
+      default: return 'bg-secondary text-secondary-foreground';
     }
   };
 
@@ -158,65 +158,77 @@ const NoticeManagement: React.FC = () => {
           </div>
           <button
             onClick={() => setShowForm(true)}
-            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center whitespace-nowrap"
+            className="btn-primary flex items-center space-x-2 whitespace-nowrap"
           >
-            <PlusIcon className="h-5 w-5 mr-2" />
-            새 공지 작성
+            <PlusIcon className="h-5 w-5" />
+            <span>새 공지 작성</span>
           </button>
         </div>
 
         {/* 통계 */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
-          <div className="bg-blue-50 rounded-lg p-4">
-            <div className="text-2xl font-bold text-blue-600">{notices.filter(n => n.status === 'published').length}</div>
-            <div className="text-sm text-gray-600">게시중</div>
+          <div className="bg-card border border-border rounded-lg p-4">
+            <div className="text-2xl font-bold text-card-foreground">{notices.filter(n => n.status === 'published').length}</div>
+            <div className="text-sm text-muted-foreground">게시중</div>
           </div>
-          <div className="bg-yellow-50 rounded-lg p-4">
-            <div className="text-2xl font-bold text-yellow-600">{notices.filter(n => n.status === 'draft').length}</div>
-            <div className="text-sm text-gray-600">임시저장</div>
+          <div className="bg-card border border-border rounded-lg p-4">
+            <div className="text-2xl font-bold text-card-foreground">{notices.filter(n => n.status === 'draft').length}</div>
+            <div className="text-sm text-muted-foreground">임시저장</div>
           </div>
-          <div className="bg-green-50 rounded-lg p-4">
-            <div className="text-2xl font-bold text-green-600">{notices.filter(n => n.is_pinned).length}</div>
-            <div className="text-sm text-gray-600">고정됨</div>
+          <div className="bg-card border border-border rounded-lg p-4">
+            <div className="text-2xl font-bold text-card-foreground">{notices.filter(n => n.is_pinned).length}</div>
+            <div className="text-sm text-muted-foreground">고정됨</div>
           </div>
-          <div className="bg-purple-50 rounded-lg p-4">
-            <div className="text-2xl font-bold text-purple-600">
+          <div className="bg-card border border-border rounded-lg p-4">
+            <div className="text-2xl font-bold text-card-foreground">
               {notices.reduce((sum, n) => sum + n.views, 0)}
             </div>
-            <div className="text-sm text-gray-600">총 조회수</div>
+            <div className="text-sm text-muted-foreground">총 조회수</div>
           </div>
         </div>
       </div>
 
       {/* 검색 및 필터 */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-        <div className="flex flex-col sm:flex-row gap-4">
-          <div className="relative flex-1">
-            <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+      <div className="bg-white rounded-2xl shadow-md border border-gray-100 p-6">
+        <div className="flex flex-col md:flex-row gap-3">
+          {/* 검색 입력 */}
+          <div className="flex-1 relative">
+            <MagnifyingGlassIcon className="h-5 w-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
             <input
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="제목, 내용으로 검색..."
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="pl-10 pr-4 py-2.5 w-full border border-border rounded-lg bg-card text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all shadow-sm"
             />
           </div>
-          <div className="flex items-center gap-2">
-            <FunnelIcon className="h-5 w-5 text-gray-400" />
-            <select
-              value={filterStatus}
-              onChange={(e) => setFilterStatus(e.target.value as any)}
-              className="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            >
-              <option value="all">전체</option>
-              <option value="published">게시중</option>
-              <option value="draft">임시저장</option>
-              <option value="archived">보관됨</option>
-            </select>
+
+          {/* 상태 필터 */}
+          <select
+            value={filterStatus}
+            onChange={(e) => setFilterStatus(e.target.value as any)}
+            className="flex-1 sm:w-64 border-2 border-gray-200 rounded-xl px-6 py-3.5 text-base bg-white text-gray-700 font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all shadow-sm hover:border-gray-300 appearance-none cursor-pointer"
+            style={{
+              backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`,
+              backgroundPosition: 'right 0.75rem center',
+              backgroundRepeat: 'no-repeat',
+              backgroundSize: '1.5em 1.5em',
+              paddingRight: '2.5rem'
+            }}
+          >
+            <option value="all">전체</option>
+            <option value="published">게시중</option>
+            <option value="draft">임시저장</option>
+            <option value="archived">보관됨</option>
+          </select>
+
+          {/* 결과 카운트 */}
+          <div className="flex items-center px-4 py-2.5 bg-secondary/30 rounded-lg border border-border">
+            <FunnelIcon className="h-4 w-4 mr-2 text-muted-foreground" />
+            <span className="text-sm font-medium text-foreground whitespace-nowrap">
+              총 <span className="text-primary font-semibold">{filteredNotices.length}</span>개 공지
+            </span>
           </div>
-          <span className="text-sm text-gray-600 self-center whitespace-nowrap">
-            {filteredNotices.length}개 공지
-          </span>
         </div>
       </div>
 
@@ -236,14 +248,14 @@ const NoticeManagement: React.FC = () => {
                 <div
                   key={notice.id}
                   className={`border rounded-lg p-4 hover:shadow-md transition-shadow ${
-                    notice.is_pinned ? 'border-blue-300 bg-blue-50' : 'border-gray-200'
+                    notice.is_pinned ? 'border-primary bg-accent/10' : 'border-border bg-card'
                   }`}
                 >
                   <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-4">
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-2">
                         {notice.is_pinned && (
-                          <span className="bg-blue-600 text-white text-xs px-2 py-1 rounded-full">
+                          <span className="bg-primary text-primary-foreground text-xs px-2 py-1 rounded-full">
                             📌 고정
                           </span>
                         )}
@@ -282,13 +294,13 @@ const NoticeManagement: React.FC = () => {
                     </div>
                     
                     <div className="flex items-center gap-2 flex-shrink-0">
-                      <button className="p-2 text-blue-600 hover:bg-blue-100 rounded-lg transition-colors">
+                      <button className="btn-ghost p-2">
                         <EyeIcon className="h-4 w-4" />
                       </button>
-                      <button className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
+                      <button className="btn-ghost p-2">
                         <PencilIcon className="h-4 w-4" />
                       </button>
-                      <button className="p-2 text-red-600 hover:bg-red-100 rounded-lg transition-colors">
+                      <button className="btn-ghost p-2 text-destructive hover:bg-destructive hover:text-destructive-foreground">
                         <TrashIcon className="h-4 w-4" />
                       </button>
                     </div>

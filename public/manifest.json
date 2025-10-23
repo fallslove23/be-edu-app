@@ -1,103 +1,71 @@
 {
-  "name": "BS 학습 관리 시스템",
+  "name": "BS Learning App",
   "short_name": "BS Learning",
-  "description": "BS 학습 관리 앱 - 교육생과 강사를 위한 종합 학습 플랫폼",
+  "description": "Business Skills Learning Management System",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#3b82f6",
+  "theme_color": "#2563eb",
   "orientation": "portrait-primary",
   "scope": "/",
-  "lang": "ko-KR",
-  "categories": ["education", "productivity", "business"],
+  "lang": "ko",
+  "categories": ["education", "business", "productivity"],
   "icons": [
     {
-      "src": "/icons/icon-72x72.png",
-      "sizes": "72x72",
-      "type": "image/png",
-      "purpose": "maskable any"
-    },
-    {
-      "src": "/icons/icon-96x96.png",
-      "sizes": "96x96",
-      "type": "image/png",
-      "purpose": "maskable any"
-    },
-    {
-      "src": "/icons/icon-128x128.png",
-      "sizes": "128x128",
-      "type": "image/png",
-      "purpose": "maskable any"
-    },
-    {
-      "src": "/icons/icon-144x144.png",
-      "sizes": "144x144",
-      "type": "image/png",
-      "purpose": "maskable any"
-    },
-    {
-      "src": "/icons/icon-152x152.png",
-      "sizes": "152x152",
-      "type": "image/png",
-      "purpose": "maskable any"
-    },
-    {
-      "src": "/icons/icon-192x192.png",
+      "src": "/icons/icon-192x192.svg",
       "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "maskable any"
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
     },
     {
-      "src": "/icons/icon-384x384.png",
-      "sizes": "384x384",
-      "type": "image/png",
-      "purpose": "maskable any"
-    },
-    {
-      "src": "/icons/icon-512x512.png",
+      "src": "/icons/icon-512x512.svg",
       "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "maskable any"
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
     }
   ],
   "shortcuts": [
     {
       "name": "대시보드",
-      "short_name": "대시보드",
-      "description": "메인 대시보드로 이동",
-      "url": "/",
-      "icons": [{ "src": "/icons/dashboard-96x96.png", "sizes": "96x96" }]
+      "short_name": "Dashboard",
+      "description": "학습 대시보드로 이동",
+      "url": "/dashboard",
+      "icons": [
+        {
+          "src": "/icons/icon-192x192.svg",
+          "sizes": "192x192"
+        }
+      ]
     },
     {
-      "name": "과정 관리",
-      "short_name": "과정",
-      "description": "과정 관리 페이지로 이동",
-      "url": "/?view=courses",
-      "icons": [{ "src": "/icons/courses-96x96.png", "sizes": "96x96" }]
-    },
-    {
-      "name": "사용자 관리",
-      "short_name": "사용자",
-      "description": "사용자 관리 페이지로 이동",
-      "url": "/?view=users",
-      "icons": [{ "src": "/icons/users-96x96.png", "sizes": "96x96" }]
+      "name": "강의 목록",
+      "short_name": "Courses",
+      "description": "강의 목록 보기",
+      "url": "/courses",
+      "icons": [
+        {
+          "src": "/icons/icon-192x192.svg",
+          "sizes": "192x192"
+        }
+      ]
     }
   ],
+  "related_applications": [],
+  "prefer_related_applications": false,
   "screenshots": [
     {
-      "src": "/screenshots/desktop-1.png",
-      "sizes": "1280x720",
+      "src": "/screenshots/desktop-dashboard.png",
+      "sizes": "1920x1080",
       "type": "image/png",
-      "platform": "wide",
-      "label": "데스크톱 대시보드 화면"
+      "form_factor": "wide",
+      "label": "대시보드 화면"
     },
     {
-      "src": "/screenshots/mobile-1.png", 
-      "sizes": "375x812",
+      "src": "/screenshots/mobile-courses.png",
+      "sizes": "390x844",
       "type": "image/png",
-      "platform": "narrow",
-      "label": "모바일 대시보드 화면"
+      "form_factor": "narrow",
+      "label": "모바일 강의 목록"
     }
-  ],
-  "prefer_related_applications": false
+  ]
 }

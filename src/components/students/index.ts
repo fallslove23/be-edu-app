@@ -1,0 +1,9 @@
+export { default as StudentManagement } from './StudentManagement';
+export { default as StudentProfile } from './StudentProfile';
+export { default as StudentScoring } from './StudentScoring';
+export { default as ScoreDataManager } from './ScoreDataManager';
+export { default as PerformanceReportGenerator } from './PerformanceReportGenerator';
+export { default as CompletionHistory } from './CompletionHistory';
+export { default as EnrollmentHistory } from './EnrollmentHistory';
+export { default as CertificateManagement } from './CertificateManagement';
+export { default as IntegratedStudentManagement } from './IntegratedStudentManagement';

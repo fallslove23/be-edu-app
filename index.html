@@ -2,7 +2,7 @@
 <html lang="ko">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
     
     <!-- 기본 메타 정보 -->
@@ -52,20 +52,13 @@
   <body>
     <div id="root"></div>
     
-    <!-- 서비스 워커 등록 -->
-    <script>
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/sw.js')
-            .then(registration => {
-              console.log('✅ 서비스 워커 등록 성공:', registration.scope);
-            })
-            .catch(error => {
-              console.log('❌ 서비스 워커 등록 실패:', error);
-            });
-        });
-      }
-    </script>
+    <!-- PWA 로딩 상태 표시 -->
+    <noscript>
+      <div style="text-align: center; padding: 50px; font-family: system-ui, sans-serif;">
+        <h1>🎯 BS 학습 관리 시스템</h1>
+        <p>JavaScript가 필요한 앱입니다. 브라우저에서 JavaScript를 활성화해주세요.</p>
+      </div>
+    </noscript>
     
     <script type="module" src="/src/main.tsx"></script>
   </body>

@@ -30,6 +30,17 @@ dist-ssr
 .env.test.local
 .env.production.local
 
+# Next.js
+.next/
+out/
+
+# Claude Code
+.claude/
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
 # Backup files (keep important ones)
 *.backup
 backups/

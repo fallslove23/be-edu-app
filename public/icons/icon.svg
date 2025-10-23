@@ -1,0 +1,10 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <rect width="512" height="512" rx="32" fill="#3b82f6"/>
+  <g fill="white">
+    <!-- 책 아이콘 -->
+    <path d="M112 64c-8.8 0-16 7.2-16 16v352c0 8.8 7.2 16 16 16h288c8.8 0 16-7.2 16-16V80c0-8.8-7.2-16-16-16H112zm32 32h224v320H144V96z"/>
+    <path d="M176 160h160v32H176zm0 64h160v32H176zm0 64h128v32H176z"/>
+    <!-- BS 텍스트 -->
+    <text x="256" y="340" text-anchor="middle" font-family="Arial, sans-serif" font-size="48" font-weight="bold" fill="white">BS</text>
+  </g>
+</svg>

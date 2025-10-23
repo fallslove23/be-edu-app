@@ -1,0 +1,7 @@
+<svg width="152" height="152" viewBox="0 0 152 152" xmlns="http://www.w3.org/2000/svg">
+      <rect width="152" height="152" rx="19" fill="#3b82f6"/>
+      <g fill="white">
+        <path d="M33.44 19c-2.584 0-4.712 2.128-4.712 4.712v104.576c0 2.584 2.128 4.712 4.712 4.712h85.576c2.584 0 4.712-2.128 4.712-4.712V23.712c0-2.584-2.128-4.712-4.712-4.712H33.44z"/>
+        <text x="76" y="106.39999999999999" text-anchor="middle" font-family="Arial, sans-serif" font-size="22.8" font-weight="bold" fill="white">BS</text>
+      </g>
+    </svg>

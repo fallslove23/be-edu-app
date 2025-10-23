@@ -37,41 +37,31 @@ const AttendanceManagement: React.FC = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-        {/* 헤더 */}
-        <div className="mb-8">
-          <h1 className="text-2xl font-bold text-gray-900">출석 관리</h1>
-          <p className="mt-1 text-sm text-gray-600">
-            과정별 출석 현황을 관리하고 통계를 확인할 수 있습니다.
-          </p>
-        </div>
-
-        {/* 출석 통계 */}
-        <div className="mb-8">
-          <AttendanceStatistics
-            key={refreshTrigger}
-            selectedCourse={selectedCourse}
-          />
-        </div>
-
-        {/* 출석 목록 */}
-        <AttendanceList
+    <div className="space-y-6 max-w-7xl mx-auto">
+      {/* 출석 통계 */}
+      <div>
+        <AttendanceStatistics
           key={refreshTrigger}
           selectedCourse={selectedCourse}
-          onCourseSelect={handleCourseSelect}
-          onScheduleSelect={handleScheduleSelect}
-        />
-
-        {/* 출석 체크 폼 */}
-        <AttendanceForm
-          schedule={selectedSchedule}
-          course={selectedCourse}
-          isOpen={isFormOpen}
-          onClose={handleFormClose}
-          onSubmit={handleAttendanceSubmit}
         />
       </div>
+
+      {/* 출석 목록 */}
+      <AttendanceList
+        key={refreshTrigger}
+        selectedCourse={selectedCourse}
+        onCourseSelect={handleCourseSelect}
+        onScheduleSelect={handleScheduleSelect}
+      />
+
+      {/* 출석 체크 폼 */}
+      <AttendanceForm
+        schedule={selectedSchedule}
+        course={selectedCourse}
+        isOpen={isFormOpen}
+        onClose={handleFormClose}
+        onSubmit={handleAttendanceSubmit}
+      />
     </div>
   );
 };

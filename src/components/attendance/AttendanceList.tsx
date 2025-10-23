@@ -8,8 +8,9 @@ import {
   ExclamationTriangleIcon,
   MapPinIcon
 } from '@heroicons/react/24/outline';
-import { CourseService } from '../../services/course.services';
-import type { Course, CourseSchedule } from '../../services/course.services';
+import { CourseTemplateService } from '../../services/course-template.service';
+import type { CourseRound } from '../../types/course-template.types';
+import type { Course, CourseSchedule, CourseStatus } from '../../services/course.services';
 import { format, parseISO } from 'date-fns';
 import { ko } from 'date-fns/locale';
 
@@ -28,11 +29,12 @@ const AttendanceList: React.FC<AttendanceListProps> = ({
   const [schedules, setSchedules] = useState<CourseSchedule[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showAllCourses, setShowAllCourses] = useState(false);
 
   // 과정 목록 로드
   useEffect(() => {
     loadCourses();
-  }, []);
+  }, [showAllCourses]);
 
   // 선택된 과정의 일정 로드
   useEffect(() => {
@@ -46,8 +48,31 @@ const AttendanceList: React.FC<AttendanceListProps> = ({
   const loadCourses = async () => {
     try {
       setLoading(true);
-      const data = await CourseService.getCourses({ status: 'active' });
-      setCourses(data);
+      // CourseTemplateService를 사용하여 과정(rounds) 조회
+      // showAllCourses가 true면 모든 과정, false면 진행 중인 과정만
+      const rounds = await CourseTemplateService.getRounds(
+        showAllCourses ? {} : { status: 'in_progress' }
+      );
+
+      // CourseRound를 Course 타입으로 변환
+      const coursesData: Course[] = rounds.map(round => ({
+        id: round.id,
+        name: round.title,
+        description: undefined,
+        instructor_id: round.instructor_id,
+        instructor_name: round.instructor_name,
+        manager_id: undefined,
+        manager_name: undefined,
+        start_date: round.start_date,
+        end_date: round.end_date,
+        max_trainees: round.max_trainees,
+        current_trainees: round.current_trainees,
+        status: 'active' as CourseStatus,
+        created_at: round.created_at,
+        updated_at: round.updated_at
+      }));
+
+      setCourses(coursesData);
     } catch (error) {
       console.error('Failed to load courses:', error);
       setError('과정 목록을 불러오는데 실패했습니다.');
@@ -117,6 +142,39 @@ const AttendanceList: React.FC<AttendanceListProps> = ({
     }
   };
 
+  // 과정 상태별 색상 클래스
+  const getCourseStatusClass = (status: CourseStatus) => {
+    const baseClasses = "px-2 py-1 rounded-full text-xs font-medium";
+    switch (status) {
+      case 'planned':
+        return `${baseClasses} bg-gray-100 text-gray-800`;
+      case 'active':
+        return `${baseClasses} bg-green-100 text-green-800`;
+      case 'completed':
+        return `${baseClasses} bg-blue-100 text-blue-800`;
+      case 'cancelled':
+        return `${baseClasses} bg-red-100 text-red-800`;
+      default:
+        return `${baseClasses} bg-gray-100 text-gray-800`;
+    }
+  };
+
+  // 과정 상태 레이블
+  const getCourseStatusLabel = (status: CourseStatus) => {
+    switch (status) {
+      case 'planned':
+        return '예정';
+      case 'active':
+        return '진행중';
+      case 'completed':
+        return '완료';
+      case 'cancelled':
+        return '취소';
+      default:
+        return '알 수 없음';
+    }
+  };
+
   // 일정 상태별 색상 클래스
   const getScheduleStatusClass = (status: string) => {
     const baseClasses = "px-2 py-1 rounded-full text-xs font-medium";
@@ -178,8 +236,27 @@ const AttendanceList: React.FC<AttendanceListProps> = ({
       {/* 과정 선택 */}
       <div className="bg-white rounded-lg shadow-sm border border-gray-200">
         <div className="p-6 border-b border-gray-200">
-          <h2 className="text-lg font-medium text-gray-900">과정 선택</h2>
-          <p className="mt-1 text-sm text-gray-600">출석을 관리할 과정을 선택하세요.</p>
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-lg font-medium text-gray-900">과정 선택</h2>
+              <p className="mt-1 text-sm text-gray-600">출석을 관리할 과정을 선택하세요.</p>
+            </div>
+            <div className="flex items-center space-x-2">
+              <span className="text-sm text-gray-600">모든 과정 보기</span>
+              <button
+                onClick={() => setShowAllCourses(!showAllCourses)}
+                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                  showAllCourses ? 'bg-blue-600' : 'bg-gray-300'
+                }`}
+              >
+                <span
+                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                    showAllCourses ? 'translate-x-6' : 'translate-x-1'
+                  }`}
+                />
+              </button>
+            </div>
+          </div>
         </div>
         <div className="p-6">
           {courses.length === 0 ? (
@@ -200,7 +277,12 @@ const AttendanceList: React.FC<AttendanceListProps> = ({
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
-                      <h3 className="font-medium text-gray-900 line-clamp-2">{course.name}</h3>
+                      <div className="flex items-center gap-2 mb-1">
+                        <h3 className="font-medium text-gray-900 line-clamp-2">{course.name}</h3>
+                        <span className={getCourseStatusClass(course.status)}>
+                          {getCourseStatusLabel(course.status)}
+                        </span>
+                      </div>
                       <p className="mt-1 text-sm text-gray-600">
                         {course.instructor_name || '강사 미배정'}
                       </p>
@@ -293,7 +375,7 @@ const AttendanceList: React.FC<AttendanceListProps> = ({
                           e.stopPropagation();
                           onScheduleSelect(schedule);
                         }}
-                        className="flex items-center px-3 py-2 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                        className="btn-primary flex items-center text-sm"
                       >
                         <CheckCircleIcon className="h-4 w-4 mr-1" />
                         출석 체크
@@ -321,7 +403,7 @@ const AttendanceList: React.FC<AttendanceListProps> = ({
                   loadCourses();
                 }
               }}
-              className="px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700 transition-colors"
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90 px-3 py-1 text-sm rounded transition-colors"
             >
               다시 시도
             </button>
