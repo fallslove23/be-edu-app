@@ -48,3 +48,6 @@ temp-backups/
 
 # But keep project backups
 !project-backups/
+
+# Archive (legacy Vite files)
+archive/
