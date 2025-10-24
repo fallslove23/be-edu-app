@@ -57,6 +57,10 @@ const ScheduleViewer = lazy(() => import('./components/schedule/ScheduleViewerWr
 const CourseSchedule = lazy(() => import('./components/schedule/CourseManagement'));
 const ScheduleManager = lazy(() => import('./components/operations/ScheduleManager').catch(() => ({ default: () => <div className="p-6 bg-white rounded-lg shadow"><h2 className="text-xl font-bold mb-4">📅 일정 관리</h2><p className="text-gray-600">통합 캘린더 및 일정 관리 페이지입니다.</p></div> })));
 
+// 개인 정보 컴포넌트 추가
+const MyProfile = lazy(() => import('./components/profile/MyProfile'));
+const MyHistory = lazy(() => import('./components/profile/MyHistory'));
+
 // 로딩 컴포넌트
 const LoadingSpinner: React.FC = () => (
   <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -91,7 +95,9 @@ const AppContent: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [expandedMenus, setExpandedMenus] = useState<Set<string>>(new Set());
   const [showRoleMenu, setShowRoleMenu] = useState(false);
+  const [showUserMenu, setShowUserMenu] = useState(false);
   const roleMenuTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const userMenuRef = useRef<HTMLDivElement>(null);
 
   // 페이지 제목 매핑
   const pageTitles: Record<string, { title: string; description: string }> = {
@@ -318,6 +324,10 @@ const AppContent: React.FC = () => {
           return <AudioPlayer src="" title="오디오 플레이어" />;
         case 'video-player':
           return <VideoPlayer src="" title="비디오 플레이어" />;
+        case 'my-profile':
+          return <MyProfile />;
+        case 'my-history':
+          return <MyHistory />;
         default:
           return <div className="p-6 bg-white rounded-lg shadow"><h2 className="text-xl font-bold mb-4">🔍 페이지를 찾을 수 없습니다</h2><p className="text-gray-600">요청하신 페이지가 존재하지 않습니다.</p></div>;
       }
@@ -354,96 +364,126 @@ const AppContent: React.FC = () => {
             </div>
             <div className="flex items-center space-x-2 sm:space-x-4">
               <DarkModeToggle />
-              <div className="flex items-center space-x-2 text-sm text-muted-foreground">
-                <span>👤</span>
-                <span className="hidden sm:inline">{user.name}</span>
-              </div>
 
-              {/* 역할 표시 및 전환 */}
-              <div
-                className="relative"
-                onMouseEnter={() => setShowRoleMenu(true)}
-                onMouseLeave={() => {
-                  roleMenuTimeoutRef.current = setTimeout(() => {
-                    setShowRoleMenu(false);
-                  }, 300);
-                }}
-              >
+              {/* 역할 배지 */}
+              <div className="relative">
                 <button
-                  className="bg-secondary text-secondary-foreground px-3 py-1 rounded-md text-sm font-medium hover:bg-secondary/80 transition-colors"
-                  onMouseEnter={() => {
-                    if (roleMenuTimeoutRef.current) {
-                      clearTimeout(roleMenuTimeoutRef.current);
-                    }
-                  }}
+                  onClick={() => setShowRoleMenu(!showRoleMenu)}
+                  className="bg-secondary text-secondary-foreground px-3 py-1.5 rounded-md text-sm font-medium hover:bg-secondary/80 transition-colors flex items-center gap-1"
                 >
-                  {user.role === 'admin' ? '관리자' : user.role === 'instructor' ? '강사' : user.role === 'trainee' ? '교육생' : user.role}
-                  <span className="ml-1">▼</span>
+                  {user.role === 'admin' ? '👑 관리자' : user.role === 'instructor' ? '👨‍🏫 강사' : user.role === 'trainee' ? '🎓 교육생' : user.role}
+                  <span className="text-xs">▼</span>
                 </button>
 
-                {/* 드롭다운 메뉴 */}
-                <div
-                  className={`${showRoleMenu ? 'block' : 'hidden'} absolute right-0 mt-1 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 py-1 z-50`}
-                  onMouseEnter={() => {
-                    if (roleMenuTimeoutRef.current) {
-                      clearTimeout(roleMenuTimeoutRef.current);
-                    }
-                  }}
-                  onMouseLeave={() => {
-                    roleMenuTimeoutRef.current = setTimeout(() => {
-                      setShowRoleMenu(false);
-                    }, 300);
-                  }}
-                >
-                  <button
-                    onClick={() => {
-                      if (window.confirm('교육생 역할로 전환하시겠습니까?')) {
+                {/* 역할 전환 드롭다운 */}
+                {showRoleMenu && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 py-1 z-50">
+                    <div className="px-4 py-2 text-xs text-gray-500 dark:text-gray-400 border-b border-gray-200 dark:border-gray-700">
+                      역할 전환 (테스트용)
+                    </div>
+                    <button
+                      onClick={() => {
                         switchRole?.('trainee');
                         setActiveView('bs-activities');
-                      }
-                      setShowRoleMenu(false);
-                    }}
-                    className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
-                  >
-                    🎓 교육생으로 보기
-                  </button>
-                  <button
-                    onClick={() => {
-                      if (window.confirm('강사 역할로 전환하시겠습니까?')) {
+                        setShowRoleMenu(false);
+                      }}
+                      className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 ${user.role === 'trainee' ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400' : 'text-gray-700 dark:text-gray-300'}`}
+                    >
+                      🎓 교육생
+                    </button>
+                    <button
+                      onClick={() => {
                         switchRole?.('instructor');
                         setActiveView('bs-activities');
-                      }
-                      setShowRoleMenu(false);
-                    }}
-                    className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
-                  >
-                    👨‍🏫 강사로 보기
-                  </button>
-                  <button
-                    onClick={() => {
-                      if (window.confirm('관리자 역할로 전환하시겠습니까?')) {
+                        setShowRoleMenu(false);
+                      }}
+                      className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 ${user.role === 'instructor' ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400' : 'text-gray-700 dark:text-gray-300'}`}
+                    >
+                      👨‍🏫 강사
+                    </button>
+                    <button
+                      onClick={() => {
                         switchRole?.('admin');
-                        setActiveView('bs-activities');
-                      }
-                      setShowRoleMenu(false);
-                    }}
-                    className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
-                  >
-                    👑 관리자로 보기
-                  </button>
-                  <hr className="my-1 border-gray-200 dark:border-gray-700" />
-                  <button
-                    onClick={() => {
-                      if (window.confirm('로그아웃 하시겠습니까?')) {
-                        logout?.();
-                      }
-                      setShowRoleMenu(false);
-                    }}
-                    className="w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20"
-                  >
-                    🚪 로그아웃
-                  </button>
-                </div>
+                        setActiveView('dashboard');
+                        setShowRoleMenu(false);
+                      }}
+                      className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 ${user.role === 'admin' ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400' : 'text-gray-700 dark:text-gray-300'}`}
+                    >
+                      👑 관리자
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              {/* 사용자 메뉴 */}
+              <div className="relative" ref={userMenuRef}>
+                <button
+                  onClick={() => setShowUserMenu(!showUserMenu)}
+                  className="flex items-center space-x-2 hover:bg-accent px-3 py-2 rounded-lg transition-colors"
+                >
+                  <div className="w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm font-semibold">
+                    {user.name.charAt(0)}
+                  </div>
+                  <div className="hidden md:block text-left">
+                    <div className="text-sm font-medium text-foreground">{user.name}</div>
+                    <div className="text-xs text-muted-foreground">{user.department || user.position}</div>
+                  </div>
+                  <span className="text-xs text-muted-foreground">▼</span>
+                </button>
+
+                {/* 사용자 드롭다운 */}
+                {showUserMenu && (
+                  <div className="absolute right-0 mt-2 w-64 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 py-1 z-50">
+                    {/* 사용자 정보 */}
+                    <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
+                      <div className="flex items-center space-x-3">
+                        <div className="w-12 h-12 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-lg font-semibold">
+                          {user.name.charAt(0)}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="text-sm font-semibold text-foreground truncate">{user.name}</div>
+                          <div className="text-xs text-muted-foreground truncate">{user.email}</div>
+                          <div className="text-xs text-muted-foreground">{user.employee_id}</div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* 메뉴 아이템 */}
+                    <button
+                      onClick={() => {
+                        setActiveView('my-profile');
+                        setShowUserMenu(false);
+                      }}
+                      className="w-full text-left px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-3"
+                    >
+                      <span className="text-lg">👤</span>
+                      <span>내 정보</span>
+                    </button>
+                    <button
+                      onClick={() => {
+                        setActiveView('my-history');
+                        setShowUserMenu(false);
+                      }}
+                      className="w-full text-left px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-3"
+                    >
+                      <span className="text-lg">📋</span>
+                      <span>내 이력</span>
+                    </button>
+                    <hr className="my-1 border-gray-200 dark:border-gray-700" />
+                    <button
+                      onClick={() => {
+                        if (window.confirm('로그아웃 하시겠습니까?')) {
+                          logout?.();
+                        }
+                        setShowUserMenu(false);
+                      }}
+                      className="w-full text-left px-4 py-2.5 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 flex items-center gap-3"
+                    >
+                      <span className="text-lg">🚪</span>
+                      <span>로그아웃</span>
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           </div>
