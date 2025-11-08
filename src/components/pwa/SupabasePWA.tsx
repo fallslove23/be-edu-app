@@ -210,7 +210,7 @@ const SupabasePWA: React.FC = () => {
               <div className="flex space-x-2 mt-3">
                 <button
                   onClick={handleInstall}
-                  className="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700"
+                  className="btn-primary"
                 >
                   설치
                 </button>
@@ -240,7 +240,7 @@ const SupabasePWA: React.FC = () => {
               </p>
               <button
                 onClick={handleUpdateApp}
-                className="bg-green-600 text-white px-3 py-1 rounded text-sm hover:bg-green-700 mt-2"
+                className="btn-success"
               >
                 업데이트
               </button>

@@ -414,7 +414,7 @@ const ActivityJournal: React.FC = () => {
             {isOperator && (
               <button
                 onClick={() => setCurrentView('scheduler')}
-                className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2"
+                className="btn-success px-4 py-2 rounded-lg flex items-center space-x-2"
               >
                 <PresentationChartBarIcon className="h-4 w-4" />
                 <span>발표 일정 관리</span>
@@ -427,7 +427,7 @@ const ActivityJournal: React.FC = () => {
                   setEditingEntry(null);
                   setCurrentView('form');
                 }}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2"
+                className="btn-primary px-4 py-2 rounded-lg flex items-center space-x-2"
               >
                 <PlusIcon className="h-4 w-4" />
                 <span>활동일지 작성</span>
@@ -554,7 +554,7 @@ const ActivityJournal: React.FC = () => {
                   setEditingEntry(null);
                   setCurrentView('form');
                 }}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg"
+                className="btn-primary px-4 py-2 rounded-lg"
               >
                 첫 활동일지 작성하기
               </button>

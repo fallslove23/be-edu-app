@@ -373,7 +373,7 @@ const ScoreDataManager: React.FC<ScoreDataManagerProps> = ({
                   </div>
                   <button
                     onClick={downloadTemplate}
-                    className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2"
+                    className="btn-primary px-4 py-2 rounded-lg flex items-center space-x-2"
                   >
                     <TableCellsIcon className="h-4 w-4" />
                     <span>템플릿 다운로드</span>
@@ -496,7 +496,7 @@ const ScoreDataManager: React.FC<ScoreDataManagerProps> = ({
                 </p>
                 <button
                   onClick={handleExport}
-                  className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg flex items-center space-x-2 mx-auto"
+                  className="btn-success px-6 py-3 rounded-lg flex items-center space-x-2 mx-auto"
                 >
                   <DocumentArrowDownIcon className="h-5 w-5" />
                   <span>CSV 파일 다운로드</span>

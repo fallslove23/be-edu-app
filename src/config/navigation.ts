@@ -43,15 +43,38 @@ export const navigationItems: MenuItem[] = [
     route: 'course-management'
   },
 
-  // 교육생 관리
+  // 인적자원 관리 - 통합 관리
   {
-    id: 'trainees',
-    label: '교육생 관리',
+    id: 'hr-management',
+    label: '인적자원 관리',
     icon: '👥',
-    description: '교육생 등록 및 관리',
-    roles: ['admin', 'manager', 'operator', 'instructor'],
-    section: 'education',
-    route: 'trainees'
+    description: '사용자, 교육생, 강사 통합 관리',
+    roles: ['admin', 'manager'],
+    section: 'hr',
+    isCollapsible: true,
+    subItems: [
+      {
+        id: 'users',
+        label: '사용자 관리',
+        icon: '👤',
+        description: '시스템 사용자 계정 관리',
+        route: 'users'
+      },
+      {
+        id: 'trainees',
+        label: '교육생 관리',
+        icon: '🎓',
+        description: '교육생 등록 및 관리',
+        route: 'trainees'
+      },
+      {
+        id: 'instructor-management',
+        label: '강사 관리',
+        icon: '👨‍🏫',
+        description: '강사 계정 및 프로필 통합 관리',
+        route: 'instructor-management'
+      }
+    ]
   },
 
   // BS 활동 관리 (운영진 전용)
@@ -81,7 +104,7 @@ export const navigationItems: MenuItem[] = [
     id: 'assessment',
     label: '평가 관리',
     icon: '📝',
-    description: '시험, 실습평가, 인증서',
+    description: '시험, 실습평가, 종합평가, 인증서',
     roles: ['admin', 'manager', 'operator', 'instructor', 'trainee'],
     section: 'assessment',
     isCollapsible: true,
@@ -99,6 +122,27 @@ export const navigationItems: MenuItem[] = [
         icon: '🎯',
         description: '실습 과제 평가',
         route: 'practice'
+      },
+      {
+        id: 'evaluation-templates',
+        label: '평가 템플릿',
+        icon: '⚙️',
+        description: '평가 기준 설정',
+        route: 'evaluation-templates'
+      },
+      {
+        id: 'instructor-evaluation',
+        label: '강사 평가',
+        icon: '✏️',
+        description: '학생 평가 입력',
+        route: 'instructor-evaluation'
+      },
+      {
+        id: 'comprehensive-grades',
+        label: '종합 성적',
+        icon: '📊',
+        description: '최종 성적표',
+        route: 'comprehensive-grades'
       }
     ]
   },
@@ -144,15 +188,72 @@ export const navigationItems: MenuItem[] = [
     ]
   },
 
-  // 일정 관리
+  // 일정 관리 - 서브메뉴 포함
   {
-    id: 'schedule-management',
+    id: 'schedule',
     label: '일정 관리',
     icon: '📅',
-    description: '강의 일정, 교실 배정, 캘린더 관리',
-    roles: ['admin', 'manager', 'operator', 'instructor'],
+    description: '커리큘럼, 강의 일정, 교실 배정, 캘린더 관리',
+    roles: ['admin', 'manager', 'operator', 'instructor', 'trainee'],
     section: 'schedule',
-    route: 'schedule-management'
+    isCollapsible: true,
+    subItems: [
+      {
+        id: 'curriculum-management',
+        label: '커리큘럼 관리',
+        icon: '📚',
+        description: '과정 시간표 생성 및 관리 (관리자 전용)',
+        route: 'curriculum-management'
+      },
+      {
+        id: 'schedule-management',
+        label: '통합 캘린더',
+        icon: '📆',
+        description: '주간/월간/일간 시간표 조회 및 필터링 (권한별 편집 가능)',
+        route: 'schedule-management'
+      }
+    ]
+  },
+
+  // 자원 관리
+  {
+    id: 'resource-management',
+    label: '자원 관리',
+    icon: '🏢',
+    description: '카테고리, 과목, 강의실, 강사료 관리',
+    roles: ['admin', 'manager'],
+    section: 'resources',
+    isCollapsible: true,
+    subItems: [
+      {
+        id: 'category-management',
+        label: '카테고리 관리',
+        icon: '📂',
+        description: '과정 카테고리 관리',
+        route: 'category-management'
+      },
+      {
+        id: 'subject-management',
+        label: '과목 관리',
+        icon: '📚',
+        description: '강의 과목 관리',
+        route: 'subject-management'
+      },
+      {
+        id: 'classroom-management',
+        label: '강의실 관리',
+        icon: '🏫',
+        description: '강의실 및 시설 관리',
+        route: 'classroom-management'
+      },
+      {
+        id: 'instructor-payment',
+        label: '강사료 계산',
+        icon: '💰',
+        description: '강사 강의 시간 집계 및 강사료 계산',
+        route: 'instructor-payment'
+      }
+    ]
   },
 
   // 교육생 리포트 (기존 중복 메뉴를 리포트 기능으로 변경)
@@ -170,18 +271,11 @@ export const navigationItems: MenuItem[] = [
     id: 'system',
     label: '시스템 관리',
     icon: '⚙️',
-    description: '시스템 사용자 및 공지사항 관리',
+    description: '시스템 설정 및 공지사항 관리',
     roles: ['admin', 'manager'],
     section: 'system',
     isCollapsible: true,
     subItems: [
-      {
-        id: 'users',
-        label: '사용자 관리',
-        icon: '👥',
-        description: '시스템 사용자 등록 및 관리',
-        route: 'users'
-      },
       {
         id: 'notices',
         label: '공지사항 관리',
@@ -288,6 +382,7 @@ export const sectionLabels: Record<string, string> = {
   assessment: '평가',
   analytics: '분석',
   schedule: '일정',
+  resources: '자원',
   reports: '리포트',
   system: '시스템',
   materials: '교육 자료',

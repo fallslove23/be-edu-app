@@ -4,7 +4,16 @@ export interface CourseTemplate {
   id: string;
   name: string; // 'BS Basic', 'BS Advanced'
   description: string;
-  category: 'basic' | 'advanced';
+  category: 'basic' | 'advanced'; // Deprecated: use category_id
+  category_id?: string; // FK to categories table
+  category_data?: {
+    id: string;
+    name: string;
+    color: string;
+    icon: string;
+    parent_id?: string;
+    parent_name?: string;
+  };
   duration_days: number; // 전체 일수
   total_hours: number;
   curriculum: TemplateCurriculum[];
@@ -34,12 +43,15 @@ export interface CourseRound {
   title: string; // "BS Basic 3차"
   instructor_id: string;
   instructor_name: string;
+  manager_id?: string; // 운영 담당자 ID
+  manager_name?: string; // 운영 담당자 이름
   start_date: string;
   end_date: string;
   max_trainees: number;
   current_trainees: number;
   location: string;
   status: 'planning' | 'recruiting' | 'in_progress' | 'completed' | 'cancelled';
+  description?: string; // 차수 설명
   sessions: CourseSession[];
   created_at: string;
   updated_at: string;
@@ -50,7 +62,9 @@ export interface CourseSession {
   round_id: string;
   template_curriculum_id: string;
   day_number: number; // 1일차, 2일차...
+  title?: string; // 세션 제목
   session_date: string;
+  scheduled_date?: string; // 예정일 (session_date와 동일하거나 별칭)
   start_time: string;
   end_time: string;
   classroom: string;

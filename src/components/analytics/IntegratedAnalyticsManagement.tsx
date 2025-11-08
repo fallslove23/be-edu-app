@@ -144,7 +144,7 @@ const IntegratedAnalyticsManagement: React.FC<IntegratedAnalyticsManagementProps
                     onClick={action.action}
                     className={`px-4 py-2 rounded-lg transition-colors flex items-center text-sm font-medium ${
                       action.primary
-                        ? 'bg-blue-600 text-white hover:bg-blue-700'
+                        ? 'btn-primary'
                         : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                     }`}
                   >

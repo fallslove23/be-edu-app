@@ -359,7 +359,7 @@ const PresentationManager: React.FC<PresentationManagerProps> = ({ journalId }) 
             )}
             <button
               onClick={() => {/* 새 발표 생성 */}}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2"
+              className="btn-primary px-4 py-2 rounded-lg flex items-center space-x-2"
             >
               <PlusIcon className="h-4 w-4" />
               <span>발표 생성</span>
@@ -604,7 +604,7 @@ const PresentationManager: React.FC<PresentationManagerProps> = ({ journalId }) 
               {(!searchQuery && statusFilter === 'all') && (
                 <button
                   onClick={() => {/* 발표 생성 */}}
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg"
+                  className="btn-primary px-4 py-2 rounded-lg"
                 >
                   첫 발표 생성하기
                 </button>
@@ -736,14 +736,14 @@ const PresentationManager: React.FC<PresentationManagerProps> = ({ journalId }) 
               <div className="flex items-center justify-end space-x-3 pt-4 border-t border-gray-200">
                 <button
                   onClick={() => {/* 발표 시작 */}}
-                  className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2"
+                  className="btn-success px-4 py-2 rounded-lg flex items-center space-x-2"
                 >
                   <PlayIcon className="h-4 w-4" />
                   <span>발표 시작</span>
                 </button>
                 <button
                   onClick={() => {/* 다운로드 */}}
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2"
+                  className="btn-primary px-4 py-2 rounded-lg flex items-center space-x-2"
                 >
                   <ArrowDownTrayIcon className="h-4 w-4" />
                   <span>다운로드</span>

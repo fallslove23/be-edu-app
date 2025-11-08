@@ -240,17 +240,17 @@ const MyExams: React.FC = () => {
 
                   <div className="ml-6 flex flex-col space-y-2">
                     {exam.status === 'available' && !isOverdue && exam.attempts < exam.max_attempts && (
-                      <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                      <button className="btn-primary">
                         시험 응시
                       </button>
                     )}
                     {exam.status === 'in_progress' && (
-                      <button className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
+                      <button className="btn-success">
                         계속 응시
                       </button>
                     )}
                     {exam.status === 'completed' && exam.attempts < exam.max_attempts && !exam.passed && (
-                      <button className="bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition-colors">
+                      <button className="btn-warning">
                         재응시
                       </button>
                     )}

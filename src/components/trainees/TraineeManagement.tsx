@@ -16,11 +16,14 @@ import {
   DocumentTextIcon,
   ExclamationTriangleIcon,
   CheckCircleIcon,
-  XMarkIcon
+  XMarkIcon,
+  ClipboardDocumentListIcon
 } from '@heroicons/react/24/outline';
 import type { Trainee, TraineeStatus, CreateTraineeData, BulkUploadResult } from '../../types/trainee.types';
 import { traineeStatusLabels } from '../../types/trainee.types';
 import { TraineeService } from '../../services/trainee.services';
+import { ReportService } from '../../services/report.services';
+import type { StudentReport } from '../../types/report.types';
 import toast from 'react-hot-toast';
 import * as XLSX from 'xlsx';
 
@@ -37,13 +40,18 @@ const TraineeManagement: React.FC = () => {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
-  
+
   // 엑셀 가져오기 관련 상태
   const [isExcelModalOpen, setIsExcelModalOpen] = useState(false);
   const [excelData, setExcelData] = useState<any[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
   const [uploadResult, setUploadResult] = useState<BulkUploadResult | null>(null);
   const [showResultModal, setShowResultModal] = useState(false);
+
+  // 리포트 보기 상태
+  const [showReportForTrainee, setShowReportForTrainee] = useState<string | null>(null);
+  const [reportData, setReportData] = useState<StudentReport | null>(null);
+  const [isLoadingReport, setIsLoadingReport] = useState(false);
 
   // 교육생 데이터 로드
   useEffect(() => {
@@ -66,6 +74,29 @@ const TraineeManagement: React.FC = () => {
       console.log('👥 교육생 데이터 로딩 완료');
     }
   };
+
+  // 교육생 리포트 로드
+  const loadTraineeReport = async (traineeId: string) => {
+    try {
+      setIsLoadingReport(true);
+      const report = await ReportService.getStudentReport(traineeId);
+      setReportData(report);
+    } catch (error) {
+      console.error('교육생 리포트 로드 중 오류:', error);
+      toast.error('교육생 리포트를 불러오는 중 오류가 발생했습니다.');
+    } finally {
+      setIsLoadingReport(false);
+    }
+  };
+
+  // 리포트 보기 트리거
+  useEffect(() => {
+    if (showReportForTrainee) {
+      loadTraineeReport(showReportForTrainee);
+    } else {
+      setReportData(null);
+    }
+  }, [showReportForTrainee]);
 
   // 필터링 로직
   useEffect(() => {
@@ -1117,6 +1148,15 @@ const TraineeManagement: React.FC = () => {
                       </button>
                       <button
                         onClick={() => {
+                          setShowReportForTrainee(trainee.id);
+                        }}
+                        className="btn-primary btn-sm p-2 rounded-lg transition-colors flex items-center justify-center"
+                        title="리포트 보기"
+                      >
+                        <ClipboardDocumentListIcon className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={() => {
                           setSelectedTrainee(trainee);
                           setIsEditModalOpen(true);
                         }}
@@ -1137,7 +1177,7 @@ const TraineeManagement: React.FC = () => {
                             }
                           }
                         }}
-                        className="bg-red-600 hover:bg-red-700 text-white btn-sm p-2 rounded-lg transition-colors flex items-center justify-center"
+                        className="btn-danger btn-sm p-2 rounded-lg transition-colors flex items-center justify-center"
                         title="삭제"
                       >
                         <TrashIcon className="w-4 h-4" />
@@ -1179,8 +1219,209 @@ const TraineeManagement: React.FC = () => {
       <TraineeDetailModal />
       <ExcelImportModal />
       <UploadResultModal />
+      <TraineeReportModal />
     </div>
   );
+
+  // 교육생 리포트 모달
+  function TraineeReportModal() {
+    if (!showReportForTrainee || !reportData) return null;
+
+    const [activeTab, setActiveTab] = useState<'overview' | 'courses' | 'grades' | 'attendance'>('overview');
+
+    return (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 overflow-y-auto">
+        <div className="bg-card rounded-xl max-w-5xl w-full max-h-[90vh] overflow-y-auto border border-border">
+          {/* 헤더 */}
+          <div className="sticky top-0 bg-card border-b border-border p-6 flex justify-between items-center z-10">
+            <div>
+              <h2 className="text-xl font-bold text-card-foreground">{reportData.trainee.name} - 교육생 리포트</h2>
+              <p className="text-sm text-muted-foreground mt-1">{reportData.trainee.email}</p>
+            </div>
+            <button
+              onClick={() => setShowReportForTrainee(null)}
+              className="text-muted-foreground hover:text-foreground"
+            >
+              <XMarkIcon className="w-6 h-6" />
+            </button>
+          </div>
+
+          {isLoadingReport ? (
+            <div className="flex items-center justify-center p-12">
+              <div className="text-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+                <p className="text-muted-foreground">리포트 로드 중...</p>
+              </div>
+            </div>
+          ) : (
+            <>
+              {/* 통계 요약 */}
+              <div className="p-6 bg-muted/30">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div className="bg-card p-4 rounded-lg border border-border">
+                    <p className="text-sm text-muted-foreground mb-1">총 과정</p>
+                    <p className="text-2xl font-bold text-card-foreground">{reportData.overall_statistics.total_courses}</p>
+                  </div>
+                  <div className="bg-card p-4 rounded-lg border border-border">
+                    <p className="text-sm text-muted-foreground mb-1">이수 완료</p>
+                    <p className="text-2xl font-bold text-green-600">{reportData.overall_statistics.completed_courses}</p>
+                  </div>
+                  <div className="bg-card p-4 rounded-lg border border-border">
+                    <p className="text-sm text-muted-foreground mb-1">평균 성적</p>
+                    <p className="text-2xl font-bold text-orange-600">{reportData.overall_statistics.average_score.toFixed(1)}점</p>
+                  </div>
+                  <div className="bg-card p-4 rounded-lg border border-border">
+                    <p className="text-sm text-muted-foreground mb-1">출석률</p>
+                    <p className="text-2xl font-bold text-blue-600">{reportData.overall_statistics.average_attendance_rate.toFixed(1)}%</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* 탭 */}
+              <div className="border-b border-border px-6">
+                <div className="flex gap-6">
+                  {[
+                    { id: 'overview', label: '개요' },
+                    { id: 'courses', label: '과정 이수' },
+                    { id: 'grades', label: '성적' },
+                    { id: 'attendance', label: '출석' }
+                  ].map((tab) => (
+                    <button
+                      key={tab.id}
+                      onClick={() => setActiveTab(tab.id as any)}
+                      className={`pb-3 px-2 font-medium transition-colors ${
+                        activeTab === tab.id
+                          ? 'text-primary border-b-2 border-primary'
+                          : 'text-muted-foreground hover:text-foreground'
+                      }`}
+                    >
+                      {tab.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* 탭 내용 */}
+              <div className="p-6">
+                {activeTab === 'overview' && (
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <p className="text-sm text-muted-foreground mb-1">수강 중인 과정</p>
+                        <p className="text-xl font-semibold">{reportData.overall_statistics.in_progress_courses}개</p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-muted-foreground mb-1">인증서</p>
+                        <p className="text-xl font-semibold">{reportData.overall_statistics.total_certificates}개</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {activeTab === 'courses' && (
+                  <div className="space-y-4">
+                    {reportData.course_completions.map((course) => (
+                      <div key={course.id} className="bg-muted/30 p-4 rounded-lg">
+                        <div className="flex justify-between items-start mb-2">
+                          <h3 className="font-semibold">{course.course_name}</h3>
+                          <span className={`px-2 py-1 text-xs font-medium rounded ${
+                            course.completion_status === 'completed' ? 'bg-green-100 text-green-800' :
+                            course.completion_status === 'in_progress' ? 'bg-blue-100 text-blue-800' :
+                            'bg-gray-100 text-gray-800'
+                          }`}>
+                            {course.completion_status === 'completed' ? '완료' :
+                             course.completion_status === 'in_progress' ? '수강중' : course.completion_status}
+                          </span>
+                        </div>
+                        <p className="text-sm text-muted-foreground">{course.session_code}</p>
+                        <p className="text-sm text-muted-foreground">
+                          {new Date(course.start_date).toLocaleDateString('ko-KR')} - {new Date(course.end_date).toLocaleDateString('ko-KR')}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {activeTab === 'grades' && (
+                  <div className="overflow-x-auto">
+                    <table className="w-full">
+                      <thead>
+                        <tr className="border-b">
+                          <th className="text-left py-3 px-4">과목</th>
+                          <th className="text-center py-3 px-4">점수</th>
+                          <th className="text-center py-3 px-4">등급</th>
+                          <th className="text-center py-3 px-4">평가일</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {reportData.grades.map((grade, index) => (
+                          <tr key={index} className="border-b hover:bg-muted/30">
+                            <td className="py-3 px-4">{grade.subject}</td>
+                            <td className="text-center py-3 px-4">{grade.score}/{grade.max_score}</td>
+                            <td className="text-center py-3 px-4 font-bold">{grade.grade}</td>
+                            <td className="text-center py-3 px-4">{new Date(grade.evaluation_date).toLocaleDateString('ko-KR')}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                    {reportData.grades.length === 0 && (
+                      <p className="text-center py-8 text-muted-foreground">성적 정보가 없습니다.</p>
+                    )}
+                  </div>
+                )}
+
+                {activeTab === 'attendance' && (
+                  <div className="space-y-6">
+                    <div className="grid grid-cols-5 gap-4">
+                      <div className="bg-muted/30 p-4 rounded-lg text-center">
+                        <p className="text-sm text-muted-foreground mb-1">총 일수</p>
+                        <p className="text-2xl font-bold">{reportData.attendance_summary.total_days}</p>
+                      </div>
+                      <div className="bg-green-50 p-4 rounded-lg text-center">
+                        <p className="text-sm text-muted-foreground mb-1">출석</p>
+                        <p className="text-2xl font-bold text-green-600">{reportData.attendance_summary.present_days}</p>
+                      </div>
+                      <div className="bg-yellow-50 p-4 rounded-lg text-center">
+                        <p className="text-sm text-muted-foreground mb-1">지각</p>
+                        <p className="text-2xl font-bold text-yellow-600">{reportData.attendance_summary.late_days}</p>
+                      </div>
+                      <div className="bg-red-50 p-4 rounded-lg text-center">
+                        <p className="text-sm text-muted-foreground mb-1">결석</p>
+                        <p className="text-2xl font-bold text-red-600">{reportData.attendance_summary.absent_days}</p>
+                      </div>
+                      <div className="bg-blue-50 p-4 rounded-lg text-center">
+                        <p className="text-sm text-muted-foreground mb-1">출석률</p>
+                        <p className="text-2xl font-bold text-blue-600">{reportData.attendance_summary.attendance_rate.toFixed(1)}%</p>
+                      </div>
+                    </div>
+                    <div className="bg-muted/30 p-4 rounded-lg">
+                      <p className="text-sm text-muted-foreground mb-2">전체 출석률</p>
+                      <div className="w-full bg-gray-200 rounded-full h-4">
+                        <div
+                          className="bg-blue-600 h-4 rounded-full transition-all"
+                          style={{ width: `${reportData.attendance_summary.attendance_rate}%` }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* 푸터 */}
+              <div className="sticky bottom-0 bg-card border-t border-border p-6 flex justify-end">
+                <button
+                  onClick={() => setShowReportForTrainee(null)}
+                  className="bg-primary text-primary-foreground hover:bg-primary/90 px-6 py-2 rounded-lg font-medium transition-colors"
+                >
+                  닫기
+                </button>
+              </div>
+            </>
+          )}
+        </div>
+      </div>
+    );
+  }
 };
 
 export default TraineeManagement;

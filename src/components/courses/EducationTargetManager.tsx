@@ -273,7 +273,7 @@ const EducationTargetManager: React.FC<EducationTargetManagerProps> = ({ onClose
         </div>
         <button
           onClick={() => setShowAddJobCategory(true)}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2"
+          className="btn-primary px-4 py-2 rounded-lg flex items-center space-x-2"
         >
           <PlusIcon className="h-4 w-4" />
           <span>직군 추가</span>
@@ -334,7 +334,7 @@ const EducationTargetManager: React.FC<EducationTargetManagerProps> = ({ onClose
             </button>
             <button
               onClick={handleAddJobCategory}
-              className="px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+              className="btn-primary"
             >
               추가
             </button>
@@ -450,7 +450,7 @@ const EducationTargetManager: React.FC<EducationTargetManagerProps> = ({ onClose
               </p>
               <button
                 onClick={() => setShowAddJobCategory(true)}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg"
+                className="btn-primary px-4 py-2 rounded-lg"
               >
                 첫 직군 추가하기
               </button>
@@ -474,7 +474,7 @@ const EducationTargetManager: React.FC<EducationTargetManagerProps> = ({ onClose
         </div>
         <button
           onClick={handleAddCourseSeries}
-          className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2"
+          className="btn-success px-4 py-2 rounded-lg flex items-center space-x-2"
         >
           <PlusIcon className="h-4 w-4" />
           <span>시리즈 추가</span>
@@ -631,7 +631,7 @@ const EducationTargetManager: React.FC<EducationTargetManagerProps> = ({ onClose
             </p>
             <button
               onClick={handleAddCourseSeries}
-              className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg"
+              className="btn-success px-4 py-2 rounded-lg"
             >
               첫 시리즈 추가하기
             </button>

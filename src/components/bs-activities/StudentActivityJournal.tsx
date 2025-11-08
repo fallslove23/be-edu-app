@@ -115,7 +115,7 @@ const StudentActivityJournal: React.FC = () => {
             </div>
             <button
               onClick={() => setViewMode('create')}
-              className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center"
+              className="btn-primary"
             >
               <PlusIcon className="w-4 h-4 mr-2" />
               새 활동 일지 작성
@@ -300,7 +300,7 @@ const StudentActivityJournal: React.FC = () => {
               <p className="text-gray-600 mb-6">첫 번째 치과 방문 활동 일지를 작성해보세요.</p>
               <button
                 onClick={() => setViewMode('create')}
-                className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors flex items-center mx-auto"
+                className="btn-primary"
               >
                 <PlusIcon className="w-5 h-5 mr-2" />
                 첫 번째 활동 일지 작성

@@ -1,43 +1,56 @@
-import type { 
-  Course, 
-  Schedule, 
-  Instructor, 
-  FirebasePlannerCourse, 
+import { collection, getDocs, query, where, orderBy, Timestamp } from 'firebase/firestore';
+import { getPlannerDb, isPlannerConfigured } from './firebase';
+import type {
+  Course,
+  Schedule,
+  Instructor,
+  FirebasePlannerCourse,
   FirebaseScheduleItem,
-  CalendarEvent 
+  CalendarEvent
 } from '../types/schedule.types';
 
 /**
  * Firebase 플래너와의 연동을 위한 서비스
- * 기존 Firebase 앱의 API를 호출하여 데이터를 동기화
+ * Firestore를 직접 사용하여 데이터를 동기화
  */
 export class FirebasePlannerService {
-  private static readonly FIREBASE_PLANNER_URL = 'https://studio--eduscheduler-nrx9o.us-central1.hosted.app';
-  private static readonly API_BASE = `${this.FIREBASE_PLANNER_URL}/api`;
+  private static readonly FIREBASE_PLANNER_URL = process.env.NEXT_PUBLIC_FIREBASE_PLANNER_URL || 'https://studio--eduscheduler-nrx9o.us-central1.hosted.app';
 
   /**
-   * Firebase 플래너에서 과정 목록 가져오기
+   * Firebase 플래너에서 과정 목록 가져오기 (Firestore 직접 사용)
    */
   static async getCoursesFromPlanner(): Promise<FirebasePlannerCourse[]> {
     try {
-      const response = await fetch(`${this.API_BASE}/courses`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          // Firebase 인증 토큰이 필요한 경우
-          // 'Authorization': `Bearer ${await this.getFirebaseToken()}`
-        }
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+      // Firebase 설정 확인
+      if (!isPlannerConfigured()) {
+        console.warn('Firebase 플래너가 설정되지 않았습니다. 목업 데이터를 사용합니다.');
+        return this.getMockPlannerCourses();
       }
 
-      const data = await response.json();
-      return data;
-      
+      const db = getPlannerDb();
+      const coursesRef = collection(db, 'courses');
+      const q = query(coursesRef, orderBy('startDate', 'desc'));
+
+      const snapshot = await getDocs(q);
+      const courses: FirebasePlannerCourse[] = [];
+
+      snapshot.forEach((doc) => {
+        const data = doc.data();
+        courses.push({
+          id: doc.id,
+          title: data.title || '',
+          startDate: this.convertTimestampToString(data.startDate),
+          endDate: this.convertTimestampToString(data.endDate),
+          instructors: data.instructors || [],
+          schedules: data.schedules || []
+        });
+      });
+
+      console.log('✅ Firebase 플래너에서 과정 가져오기 성공:', courses.length, '개');
+      return courses;
+
     } catch (error) {
-      console.error('Firebase 플래너에서 과정 목록 가져오기 실패:', error);
+      console.error('❌ Firebase 플래너에서 과정 목록 가져오기 실패:', error);
       // Fallback: 목업 데이터 반환
       return this.getMockPlannerCourses();
     }
@@ -48,25 +61,34 @@ export class FirebasePlannerService {
    */
   static async getCourseFromPlanner(courseId: string): Promise<FirebasePlannerCourse | null> {
     try {
-      const response = await fetch(`${this.API_BASE}/courses/${courseId}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
-
-      if (!response.ok) {
-        if (response.status === 404) {
-          return null;
-        }
-        throw new Error(`HTTP error! status: ${response.status}`);
+      if (!isPlannerConfigured()) {
+        return null;
       }
 
-      const data = await response.json();
-      return data;
-      
+      const db = getPlannerDb();
+      const coursesRef = collection(db, 'courses');
+      const q = query(coursesRef, where('__name__', '==', courseId));
+
+      const snapshot = await getDocs(q);
+
+      if (snapshot.empty) {
+        return null;
+      }
+
+      const doc = snapshot.docs[0];
+      const data = doc.data();
+
+      return {
+        id: doc.id,
+        title: data.title || '',
+        startDate: this.convertTimestampToString(data.startDate),
+        endDate: this.convertTimestampToString(data.endDate),
+        instructors: data.instructors || [],
+        schedules: data.schedules || []
+      };
+
     } catch (error) {
-      console.error(`Firebase 플래너에서 과정 ${courseId} 가져오기 실패:`, error);
+      console.error(`❌ Firebase 플래너에서 과정 ${courseId} 가져오기 실패:`, error);
       return null;
     }
   }
@@ -99,7 +121,7 @@ export class FirebasePlannerService {
    * Firebase 플래너의 스케줄을 BS App 형식으로 변환
    */
   static convertFirebaseSchedulesToBSSchedules(
-    courseId: string, 
+    courseId: string,
     firebaseSchedules: FirebaseScheduleItem[]
   ): Schedule[] {
     return firebaseSchedules.map(schedule => ({
@@ -120,87 +142,87 @@ export class FirebasePlannerService {
   }
 
   /**
-   * BS App의 과정을 Firebase 플래너로 동기화
-   */
-  static async syncCourseToPlanner(course: Course, schedules: Schedule[]): Promise<boolean> {
-    try {
-      const firebaseCourse: FirebasePlannerCourse = {
-        id: course.id,
-        title: course.name,
-        startDate: course.start_date,
-        endDate: course.end_date,
-        instructors: course.instructor_ids,
-        schedules: schedules.map(schedule => ({
-          id: schedule.id,
-          title: schedule.title,
-          startTime: `${schedule.date}T${schedule.start_time}`,
-          endTime: `${schedule.date}T${schedule.end_time}`,
-          instructor: schedule.instructor_id || '',
-          room: schedule.classroom
-        }))
-      };
-
-      const response = await fetch(`${this.API_BASE}/courses/${course.id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(firebaseCourse)
-      });
-
-      return response.ok;
-      
-    } catch (error) {
-      console.error('Firebase 플래너로 과정 동기화 실패:', error);
-      return false;
-    }
-  }
-
-  /**
-   * Firebase 플래너에서 캘린더 이벤트 가져오기
+   * Firebase 플래너에서 캘린더 이벤트 가져오기 (Firestore 직접 사용)
    */
   static async getCalendarEvents(startDate: string, endDate: string): Promise<CalendarEvent[]> {
     try {
-      const response = await fetch(
-        `${this.API_BASE}/calendar?start=${startDate}&end=${endDate}`,
-        {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+      if (!isPlannerConfigured()) {
+        console.warn('Firebase 플래너가 설정되지 않았습니다. 목업 데이터를 사용합니다.');
+        return this.getMockCalendarEvents();
       }
 
-      const data = await response.json();
-      return this.convertFirebaseEventsToCalendarEvents(data);
-      
+      const db = getPlannerDb();
+      const schedulesRef = collection(db, 'schedules');
+
+      // Firestore에서 날짜 범위로 쿼리
+      const q = query(
+        schedulesRef,
+        where('date', '>=', startDate),
+        where('date', '<=', endDate),
+        orderBy('date', 'asc')
+      );
+
+      const snapshot = await getDocs(q);
+      const events: CalendarEvent[] = [];
+
+      snapshot.forEach((doc) => {
+        const data = doc.data();
+
+        // 시작/종료 시간 조합
+        const startDateTime = `${data.date}T${data.startTime || '09:00'}:00`;
+        const endDateTime = `${data.date}T${data.endTime || '18:00'}:00`;
+
+        events.push({
+          id: doc.id,
+          title: data.title || data.subject || '제목 없음',
+          start: startDateTime,
+          end: endDateTime,
+          type: 'course',
+          course_id: data.courseId || '',
+          instructor_id: data.instructorId || data.instructor || '',
+          classroom: data.classroom || data.room || '',
+          status: data.status || 'scheduled',
+          color: this.getEventColor(data.courseType || data.title),
+          editable: false
+        });
+      });
+
+      console.log('✅ Firebase 플래너에서 캘린더 이벤트 가져오기 성공:', events.length, '개');
+      return events;
+
     } catch (error) {
-      console.error('Firebase 플래너에서 캘린더 이벤트 가져오기 실패:', error);
+      console.error('❌ Firebase 플래너에서 캘린더 이벤트 가져오기 실패:', error);
       return this.getMockCalendarEvents();
     }
   }
 
   /**
-   * Firebase 플래너의 이벤트를 캘린더 이벤트로 변환
+   * Firestore Timestamp를 문자열로 변환
    */
-  private static convertFirebaseEventsToCalendarEvents(firebaseEvents: any[]): CalendarEvent[] {
-    return firebaseEvents.map(event => ({
-      id: event.id,
-      title: event.title,
-      start: event.startTime,
-      end: event.endTime,
-      type: 'course',
-      course_id: event.courseId,
-      instructor_id: event.instructor,
-      classroom: event.room,
-      status: event.status || 'scheduled',
-      color: this.getEventColor(event.type),
-      editable: false // Firebase 플래너에서 가져온 이벤트는 읽기 전용
-    }));
+  private static convertTimestampToString(timestamp: any): string {
+    if (!timestamp) return '';
+
+    try {
+      // Firestore Timestamp 객체인 경우
+      if (timestamp.toDate) {
+        return timestamp.toDate().toISOString().split('T')[0];
+      }
+
+      // 이미 문자열인 경우
+      if (typeof timestamp === 'string') {
+        return timestamp.split('T')[0];
+      }
+
+      // Date 객체인 경우
+      if (timestamp instanceof Date) {
+        return timestamp.toISOString().split('T')[0];
+      }
+
+      return '';
+    } catch (error) {
+      console.error('Timestamp 변환 실패:', error);
+      return '';
+    }
   }
 
   /**
@@ -218,7 +240,14 @@ export class FirebasePlannerService {
       default: '#6B7280' // 회색
     };
 
-    return colorMap[eventType] || colorMap.default;
+    // 부분 매칭
+    for (const [key, color] of Object.entries(colorMap)) {
+      if (eventType && eventType.includes(key)) {
+        return color;
+      }
+    }
+
+    return colorMap.default;
   }
 
   /**
@@ -226,7 +255,7 @@ export class FirebasePlannerService {
    */
   private static calculateTotalHours(schedules: FirebaseScheduleItem[]): number {
     let totalMinutes = 0;
-    
+
     schedules.forEach(schedule => {
       const startTime = new Date(schedule.startTime);
       const endTime = new Date(schedule.endTime);
@@ -242,7 +271,7 @@ export class FirebasePlannerService {
    */
   private static extractClassroom(schedules: FirebaseScheduleItem[]): string {
     const roomCounts: Record<string, number> = {};
-    
+
     schedules.forEach(schedule => {
       if (schedule.room) {
         roomCounts[schedule.room] = (roomCounts[schedule.room] || 0) + 1;
@@ -254,15 +283,6 @@ export class FirebasePlannerService {
       .sort(([,a], [,b]) => b - a)[0];
 
     return mostUsedRoom ? mostUsedRoom[0] : '';
-  }
-
-  /**
-   * Firebase 인증 토큰 가져오기 (필요시 구현)
-   */
-  private static async getFirebaseToken(): Promise<string> {
-    // Firebase Auth를 통한 토큰 획득 로직
-    // 현재는 공개 API라고 가정
-    return '';
   }
 
   /**
@@ -302,18 +322,34 @@ export class FirebasePlannerService {
    * 목업 캘린더 이벤트
    */
   private static getMockCalendarEvents(): CalendarEvent[] {
+    const today = new Date();
+    const todayStr = today.toISOString().split('T')[0];
+
     return [
       {
         id: 'event-001',
         title: 'BS Basic 과정',
-        start: '2025-09-03T09:00:00',
-        end: '2025-09-03T18:00:00',
+        start: `${todayStr}T09:00:00`,
+        end: `${todayStr}T12:00:00`,
         type: 'course',
         course_id: 'bs-basic-001',
         instructor_id: 'instructor1',
         classroom: '강의실 1',
         status: 'scheduled',
         color: '#3B82F6',
+        editable: false
+      },
+      {
+        id: 'event-002',
+        title: 'PC기초아무튼',
+        start: `${todayStr}T14:00:00`,
+        end: `${todayStr}T17:00:00`,
+        type: 'course',
+        course_id: 'bs-basic-002',
+        instructor_id: 'instructor2',
+        classroom: '강의실 2',
+        status: 'scheduled',
+        color: '#10B981',
         editable: false
       }
     ];

@@ -488,7 +488,7 @@ const OrganizationEditor: React.FC<OrganizationEditorProps> = ({ onClose }) => {
                 </div>
                 <button
                   onClick={handleAddDepartment}
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2"
+                  className="btn-primary px-4 py-2 rounded-lg flex items-center space-x-2"
                 >
                   <PlusIcon className="h-4 w-4" />
                   <span>부서 추가</span>
@@ -520,7 +520,7 @@ const OrganizationEditor: React.FC<OrganizationEditorProps> = ({ onClose }) => {
                 </div>
                 <button
                   onClick={handleAddCourseSeries}
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2"
+                  className="btn-primary px-4 py-2 rounded-lg flex items-center space-x-2"
                 >
                   <PlusIcon className="h-4 w-4" />
                   <span>과정 시리즈 추가</span>
@@ -793,7 +793,7 @@ const DepartmentEditor: React.FC<DepartmentEditorProps> = ({
             </button>
             <button
               type="submit"
-              className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+              className="btn-primary"
             >
               저장
             </button>
@@ -967,7 +967,7 @@ const CourseSeriesEditor: React.FC<CourseSeriesEditorProps> = ({
               <button
                 type="button"
                 onClick={handleAddLevel}
-                className="text-sm bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded flex items-center space-x-1"
+                className="btn-success text-sm px-3 py-1 rounded flex items-center space-x-1"
               >
                 <PlusIcon className="h-3 w-3" />
                 <span>레벨 추가</span>
@@ -1036,7 +1036,7 @@ const CourseSeriesEditor: React.FC<CourseSeriesEditorProps> = ({
             </button>
             <button
               type="submit"
-              className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+              className="btn-primary"
             >
               저장
             </button>
@@ -1267,7 +1267,7 @@ const CourseLevelEditor: React.FC<CourseLevelEditorProps> = ({
             </button>
             <button
               type="submit"
-              className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+              className="btn-primary"
             >
               저장
             </button>

@@ -132,7 +132,7 @@ const EnhancedMobileUX: React.FC<EnhancedMobileUXProps> = ({
             setSearchVisible(!searchVisible);
             hapticFeedback('light');
           }}
-          className="bg-blue-500 text-white p-3 rounded-full shadow-lg hover:bg-blue-600 transition-colors duration-200"
+          className="btn-primary"
         >
           <MagnifyingGlassIcon className="h-5 w-5" />
         </button>
@@ -205,7 +205,7 @@ const EnhancedMobileUX: React.FC<EnhancedMobileUXProps> = ({
             scrollToTop();
             hapticFeedback('medium');
           }}
-          className="fixed bottom-20 right-4 z-40 bg-blue-500 text-white p-3 rounded-full shadow-lg hover:bg-blue-600 transition-all duration-200 transform hover:scale-110"
+          className="btn-primary"
           aria-label="맨 위로 스크롤"
         >
           <ArrowUpIcon className="h-5 w-5" />

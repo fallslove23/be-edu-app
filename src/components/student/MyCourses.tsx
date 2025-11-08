@@ -181,13 +181,13 @@ const MyCourses: React.FC = () => {
 
                   <div className="ml-6 flex flex-col space-y-2">
                     {course.status === 'in_progress' && (
-                      <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center">
+                      <button className="btn-primary flex items-center">
                         <PlayIcon className="h-4 w-4 mr-2" />
                         계속 학습
                       </button>
                     )}
                     {course.status === 'not_started' && (
-                      <button className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
+                      <button className="btn-success">
                         학습 시작
                       </button>
                     )}

@@ -268,9 +268,9 @@ const InstructorManagement: React.FC = () => {
   const filteredInstructors = instructors.filter(instructor => {
     const matchesSearch = instructor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          instructor.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         instructor.specializations.some(spec => 
+                         (instructor.specializations && instructor.specializations.some(spec =>
                            spec.toLowerCase().includes(searchTerm.toLowerCase())
-                         );
+                         ));
     const matchesStatus = selectedStatus === 'all' || instructor.status === selectedStatus;
     return matchesSearch && matchesStatus;
   });
@@ -515,8 +515,8 @@ const InstructorManagement: React.FC = () => {
                         
                         <div className="space-y-2">
                           <div className="text-sm text-gray-600">
-                            <span className="font-medium">전문분야:</span> {instructor.specializations.slice(0, 2).join(', ')}
-                            {instructor.specializations.length > 2 && ` 외 ${instructor.specializations.length - 2}개`}
+                            <span className="font-medium">전문분야:</span> {instructor.specializations ? instructor.specializations.slice(0, 2).join(', ') : '없음'}
+                            {instructor.specializations && instructor.specializations.length > 2 && ` 외 ${instructor.specializations.length - 2}개`}
                           </div>
                           <div className="text-sm text-gray-600">
                             <span className="font-medium">진행중 과정:</span> {activeAssignments.length}개
@@ -603,12 +603,12 @@ const InstructorManagement: React.FC = () => {
                         <span className="font-medium">경력:</span> {instructor.experience_years}년
                       </div>
                       <div className="text-sm text-gray-600">
-                        <span className="font-medium">전문분야:</span> {instructor.specializations.slice(0, 2).join(', ')}
-                        {instructor.specializations.length > 2 && ` 외 ${instructor.specializations.length - 2}개`}
+                        <span className="font-medium">전문분야:</span> {instructor.specializations ? instructor.specializations.slice(0, 2).join(', ') : '없음'}
+                        {instructor.specializations && instructor.specializations.length > 2 && ` 외 ${instructor.specializations.length - 2}개`}
                       </div>
                       <div className="text-sm text-gray-600">
-                        <span className="font-medium">자격증:</span> {instructor.certifications.slice(0, 1).join(', ')}
-                        {instructor.certifications.length > 1 && ` 외 ${instructor.certifications.length - 1}개`}
+                        <span className="font-medium">자격증:</span> {instructor.certifications ? instructor.certifications.slice(0, 1).join(', ') : '없음'}
+                        {instructor.certifications && instructor.certifications.length > 1 && ` 외 ${instructor.certifications.length - 1}개`}
                       </div>
                     </div>
 

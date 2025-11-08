@@ -307,9 +307,11 @@ export class InstructorService {
 
       // 전문 분야 분포 계산
       instructors.forEach(instructor => {
-        instructor.specializations.forEach(spec => {
-          stats.specializations_distribution[spec] = (stats.specializations_distribution[spec] || 0) + 1;
-        });
+        if (instructor.specializations) {
+          instructor.specializations.forEach(spec => {
+            stats.specializations_distribution[spec] = (stats.specializations_distribution[spec] || 0) + 1;
+          });
+        }
       });
     }
 
@@ -335,7 +337,7 @@ export class InstructorService {
 
     if (error) throw error;
 
-    const allSpecializations = data?.flatMap(item => item.specializations) || [];
+    const allSpecializations = data?.flatMap(item => item.specializations || []) || [];
     return [...new Set(allSpecializations)].sort();
   }
 }

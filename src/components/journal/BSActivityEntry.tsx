@@ -272,7 +272,7 @@ const BSActivityEntry: React.FC<BSActivityEntryProps> = ({
                 </button>
                 <button
                   onClick={() => handleSubmit(false)}
-                  className="px-3 py-1.5 text-sm text-white bg-blue-600 hover:bg-blue-700 rounded-lg"
+                  className="btn-primary"
                 >
                   제출
                 </button>
@@ -494,7 +494,7 @@ const BSActivityEntry: React.FC<BSActivityEntryProps> = ({
               <button
                 onClick={() => handleSubmit(false)}
                 disabled={isSubmitting}
-                className="flex-1 py-3 text-white bg-blue-600 hover:bg-blue-700 rounded-lg font-medium disabled:opacity-50"
+                className="btn-primary"
               >
                 {isSubmitting ? '제출 중...' : '제출하기'}
               </button>

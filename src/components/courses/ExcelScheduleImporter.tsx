@@ -302,7 +302,7 @@ const ExcelScheduleImporter: React.FC<ExcelScheduleImporterProps> = ({
               </div>
               <button
                 onClick={openCoursePlanner}
-                className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2"
+                className="btn-purple flex items-center space-x-2"
               >
                 <LinkIcon className="h-4 w-4" />
                 <span>플래너 열기</span>
@@ -322,7 +322,7 @@ const ExcelScheduleImporter: React.FC<ExcelScheduleImporterProps> = ({
               </div>
               <button
                 onClick={downloadTemplate}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2"
+                className="btn-primary px-4 py-2 rounded-lg flex items-center space-x-2"
               >
                 <DocumentArrowDownIcon className="h-4 w-4" />
                 <span>템플릿 다운로드</span>
@@ -440,7 +440,7 @@ const ExcelScheduleImporter: React.FC<ExcelScheduleImporterProps> = ({
                 </h3>
                 <button
                   onClick={handleImportData}
-                  className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg"
+                  className="btn-success px-6 py-2 rounded-lg"
                 >
                   일정 가져오기
                 </button>

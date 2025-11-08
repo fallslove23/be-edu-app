@@ -37,13 +37,13 @@ const ScheduleViewerWrapper: React.FC = () => {
       </div>
       
       <div className="mt-6 flex justify-between items-center">
-        <button className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors">
+        <button className="btn-primary">
           이전 주
         </button>
         <span className="font-medium text-gray-700">
           2025년 1월 6일 - 1월 12일
         </span>
-        <button className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors">
+        <button className="btn-primary">
           다음 주
         </button>
       </div>

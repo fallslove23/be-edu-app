@@ -539,7 +539,7 @@ const PresentationScheduler: React.FC<PresentationSchedulerProps> = ({
             <button
               onClick={handleCreateSchedule}
               disabled={!formData.presentationDate || !formData.deadline}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="btn-primary"
             >
               스케줄 생성
             </button>
@@ -588,7 +588,7 @@ const PresentationScheduler: React.FC<PresentationSchedulerProps> = ({
               {presentationDay.status === 'scheduled' && (
                 <button
                   onClick={() => handlePresentationControl('start', selectedSchedule.id)}
-                  className="flex items-center space-x-2 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700"
+                  className="btn-success"
                 >
                   <PlayIcon className="h-4 w-4" />
                   <span>발표 시작</span>
@@ -599,14 +599,14 @@ const PresentationScheduler: React.FC<PresentationSchedulerProps> = ({
                 <>
                   <button
                     onClick={() => handlePresentationControl('next', selectedSchedule.id)}
-                    className="flex items-center space-x-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+                    className="btn-primary"
                   >
                     <ArrowPathIcon className="h-4 w-4" />
                     <span>다음 발표자</span>
                   </button>
                   <button
                     onClick={() => handlePresentationControl('complete', selectedSchedule.id)}
-                    className="flex items-center space-x-2 bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700"
+                    className="btn-purple"
                   >
                     <StopIcon className="h-4 w-4" />
                     <span>발표 종료</span>
@@ -705,7 +705,7 @@ const PresentationScheduler: React.FC<PresentationSchedulerProps> = ({
           {isOperator && (
             <button
               onClick={() => setCurrentView('create')}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2"
+              className="btn-primary px-4 py-2 rounded-lg flex items-center space-x-2"
             >
               <PlusIcon className="h-4 w-4" />
               <span>발표 일정 생성</span>
@@ -730,7 +730,7 @@ const PresentationScheduler: React.FC<PresentationSchedulerProps> = ({
             {isOperator && (
               <button
                 onClick={() => setCurrentView('create')}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg"
+                className="btn-primary px-4 py-2 rounded-lg"
               >
                 첫 발표 일정 생성하기
               </button>

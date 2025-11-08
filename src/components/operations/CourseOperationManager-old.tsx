@@ -237,7 +237,7 @@ const CourseOperationManager: React.FC = () => {
             </p>
           </div>
           <div className="flex items-center space-x-3">
-            <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2">
+            <button className="btn-primary px-4 py-2 rounded-lg flex items-center space-x-2">
               <ArrowPathIcon className="h-4 w-4" />
               <span>새로고침</span>
             </button>
@@ -332,14 +332,14 @@ const CourseOperationManager: React.FC = () => {
                       <>
                         <button
                           onClick={() => updateCourseStatus(selectedCourse.id, 'paused')}
-                          className="bg-yellow-600 hover:bg-yellow-700 text-white px-3 py-2 rounded-lg flex items-center space-x-1 text-sm"
+                          className="btn-warning flex items-center space-x-1 text-sm"
                         >
                           <PauseCircleIcon className="h-4 w-4" />
                           <span>일시정지</span>
                         </button>
                         <button
                           onClick={() => updateCourseStatus(selectedCourse.id, 'completed')}
-                          className="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-lg flex items-center space-x-1 text-sm"
+                          className="btn-success px-3 py-2 rounded-lg flex items-center space-x-1 text-sm"
                         >
                           <CheckCircleIcon className="h-4 w-4" />
                           <span>완료처리</span>
@@ -349,7 +349,7 @@ const CourseOperationManager: React.FC = () => {
                     {selectedCourse.status === 'paused' && (
                       <button
                         onClick={() => updateCourseStatus(selectedCourse.id, 'in_progress')}
-                        className="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-lg flex items-center space-x-1 text-sm"
+                        className="btn-success px-3 py-2 rounded-lg flex items-center space-x-1 text-sm"
                       >
                         <PlayCircleIcon className="h-4 w-4" />
                         <span>재개</span>
@@ -358,7 +358,7 @@ const CourseOperationManager: React.FC = () => {
                     {selectedCourse.status === 'scheduled' && (
                       <button
                         onClick={() => updateCourseStatus(selectedCourse.id, 'in_progress')}
-                        className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg flex items-center space-x-1 text-sm"
+                        className="btn-primary px-3 py-2 rounded-lg flex items-center space-x-1 text-sm"
                       >
                         <PlayCircleIcon className="h-4 w-4" />
                         <span>시작</span>

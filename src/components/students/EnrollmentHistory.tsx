@@ -357,7 +357,7 @@ const EnrollmentHistory: React.FC = () => {
         </div>
         <button
           onClick={exportToExcel}
-          className="flex items-center space-x-2 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors"
+          className="btn-success"
         >
           <DocumentArrowDownIcon className="h-5 w-5" />
           <span>Excel 내보내기</span>

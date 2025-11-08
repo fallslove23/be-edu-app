@@ -159,7 +159,7 @@ const SimpleExamManagement: React.FC = () => {
                   </div>
                   
                   <div className="flex items-center space-x-3 pt-4">
-                    <button className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                    <button className="btn-primary">
                       시험 생성
                     </button>
                     <button className="border border-gray-300 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-50 transition-colors">

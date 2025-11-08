@@ -113,7 +113,7 @@ const TraineeDashboard: React.FC<TraineeDashboardProps> = ({ traineeId }) => {
         <div className="text-gray-600 mb-4">{error || '대시보드 데이터를 불러올 수 없습니다.'}</div>
         <button
           onClick={() => loadDashboard()}
-          className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          className="btn-primary"
         >
           <ArrowPathIcon className="h-4 w-4 mr-2" />
           다시 시도

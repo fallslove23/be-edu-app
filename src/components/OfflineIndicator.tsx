@@ -111,7 +111,7 @@ const OfflineIndicator: React.FC = () => {
                           e.stopPropagation();
                           syncQueuedRequests();
                         }}
-                        className="flex-1 bg-blue-600 text-white px-3 py-1.5 rounded text-sm hover:bg-blue-700 transition-colors"
+                        className="btn-primary"
                       >
                         지금 동기화
                       </button>
@@ -207,7 +207,7 @@ const OfflineIndicator: React.FC = () => {
                               syncQueuedRequests();
                               setShowDetails(false);
                             }}
-                            className="w-full bg-blue-600 text-white px-4 py-2 rounded text-sm hover:bg-blue-700 transition-colors"
+                            className="btn-primary"
                           >
                             <CloudArrowUpIcon className="h-4 w-4 inline mr-2" />
                             지금 동기화
@@ -221,7 +221,7 @@ const OfflineIndicator: React.FC = () => {
                               setShowDetails(false);
                             }
                           }}
-                          className="w-full bg-red-600 text-white px-4 py-2 rounded text-sm hover:bg-red-700 transition-colors"
+                          className="btn-danger"
                         >
                           모든 작업 삭제
                         </button>

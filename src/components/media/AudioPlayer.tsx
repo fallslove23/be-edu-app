@@ -292,7 +292,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
         <button
           onClick={togglePlay}
           disabled={loading}
-          className="p-4 bg-blue-600 hover:bg-blue-700 text-white rounded-full transition-colors disabled:opacity-50"
+          className="btn-primary p-4 rounded-full transition-colors disabled:opacity-50"
           title={isPlaying ? '일시정지' : '재생'}
         >
           {loading ? (

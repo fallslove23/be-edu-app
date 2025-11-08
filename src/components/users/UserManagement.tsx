@@ -273,14 +273,14 @@ const UserManagement: React.FC = () => {
           <div className="flex items-center space-x-3">
             <button
               onClick={() => setShowImportModal(true)}
-              className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors flex items-center"
+              className="btn-success"
             >
               <ArrowUpTrayIcon className="h-4 w-4 mr-2" />
               일괄 불러오기
             </button>
             <button
               onClick={handleCreateUser}
-              className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center"
+              className="btn-primary"
             >
               <PlusIcon className="h-5 w-5 mr-2" />
               사용자 추가

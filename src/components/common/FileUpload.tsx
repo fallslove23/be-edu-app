@@ -268,7 +268,7 @@ const FileUpload: React.FC<FileUploadProps> = ({
               <button
                 onClick={uploadAll}
                 disabled={isUploading}
-                className="text-sm bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 disabled:opacity-50"
+                className="btn-primary"
               >
                 {isUploading ? '업로드 중...' : '모두 업로드'}
               </button>

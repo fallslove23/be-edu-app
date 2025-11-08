@@ -296,7 +296,7 @@ const BackupRestoreSystem: React.FC = () => {
               className={`px-4 py-2 rounded-lg text-white flex items-center space-x-2 ${
                 processing !== null
                   ? 'bg-gray-400 cursor-not-allowed'
-                  : 'bg-blue-600 hover:bg-blue-700'
+                  : 'btn-primary'
               }`}
             >
               <CloudArrowUpIcon className="h-4 w-4" />
@@ -345,7 +345,7 @@ const BackupRestoreSystem: React.FC = () => {
                   className={`px-3 py-1 rounded text-sm ${
                     processing !== null
                       ? 'bg-gray-400 text-white cursor-not-allowed'
-                      : 'bg-green-600 hover:bg-green-700 text-white'
+                      : 'btn-success'
                   }`}
                 >
                   전체 백업
@@ -353,10 +353,10 @@ const BackupRestoreSystem: React.FC = () => {
                 <button
                   onClick={() => createBackup('incremental')}
                   disabled={processing !== null}
-                  className={`px-3 py-1 rounded text-sm ${
+                  className={`${
                     processing !== null
-                      ? 'bg-gray-400 text-white cursor-not-allowed'
-                      : 'bg-blue-600 hover:bg-blue-700 text-white'
+                      ? 'bg-gray-400 text-white cursor-not-allowed px-3 py-1 rounded text-sm'
+                      : 'btn-primary btn-sm'
                   }`}
                 >
                   증분 백업
@@ -477,7 +477,7 @@ const BackupRestoreSystem: React.FC = () => {
               </p>
               <button
                 onClick={() => createBackup('full')}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg"
+                className="btn-primary px-4 py-2 rounded-lg"
               >
                 첫 백업 생성하기
               </button>
@@ -673,7 +673,7 @@ const BackupRestoreSystem: React.FC = () => {
                   // 설정 저장 로직
                   alert('백업 설정이 저장되었습니다.');
                 }}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg"
+                className="btn-primary px-6 py-2 rounded-lg"
               >
                 설정 저장
               </button>

@@ -175,7 +175,7 @@ const MediaViewer: React.FC<MediaViewerProps> = ({
             {allowDownload && (
               <button
                 onClick={downloadFile}
-                className="flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg transition-colors"
+                className="flex items-center space-x-2 btn-primary"
               >
                 <ArrowDownTrayIcon className="h-5 w-5" />
                 <span>다운로드</span>
@@ -345,7 +345,7 @@ const MediaViewer: React.FC<MediaViewerProps> = ({
             {onDelete && (
               <button
                 onClick={() => onDelete(currentFile.id)}
-                className="w-full bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded-lg transition-colors mt-6"
+                className="btn-danger w-full py-2 px-4 rounded-lg transition-colors mt-6"
               >
                 파일 삭제
               </button>

@@ -260,7 +260,7 @@ const CourseEnrollmentDashboard: React.FC<CourseEnrollmentDashboardProps> = ({
           <div className="text-gray-600 mb-4">{error || '데이터를 불러올 수 없습니다.'}</div>
           <button
             onClick={() => loadEnrollmentData()}
-            className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            className="btn-primary"
           >
             <ArrowPathIcon className="h-4 w-4 mr-2" />
             다시 시도
@@ -317,7 +317,7 @@ const CourseEnrollmentDashboard: React.FC<CourseEnrollmentDashboardProps> = ({
             
             <button
               onClick={() => setShowTraineeSelector(true)}
-              className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              className="btn-primary"
             >
               <PlusIcon className="h-4 w-4 mr-2" />
               교육생 추가
@@ -426,7 +426,7 @@ const CourseEnrollmentDashboard: React.FC<CourseEnrollmentDashboardProps> = ({
                 </span>
                 <button
                   onClick={handleBulkUnenroll}
-                  className="flex items-center px-3 py-1 text-sm bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
+                  className="btn-danger"
                 >
                   <TrashIcon className="h-4 w-4 mr-1" />
                   일괄 해제
@@ -443,7 +443,7 @@ const CourseEnrollmentDashboard: React.FC<CourseEnrollmentDashboardProps> = ({
               <p>등록된 교육생이 없습니다.</p>
               <button
                 onClick={() => setShowTraineeSelector(true)}
-                className="mt-4 inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                className="btn-primary"
               >
                 <PlusIcon className="h-4 w-4 mr-2" />
                 첫 교육생 추가하기

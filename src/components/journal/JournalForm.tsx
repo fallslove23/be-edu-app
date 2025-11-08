@@ -605,7 +605,7 @@ const JournalForm: React.FC<JournalFormProps> = ({
           <button
             onClick={handleSubmit}
             disabled={isSubmitting || deadlineInfo.expired}
-            className="flex-1 py-3 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 font-medium"
+            className="btn-primary"
           >
             {isSubmitting ? '제출 중...' : deadlineInfo.expired ? '마감됨' : '제출하기'}
           </button>

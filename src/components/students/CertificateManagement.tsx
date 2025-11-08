@@ -406,7 +406,7 @@ const CertificateManagement: React.FC = () => {
             <PlusIcon className="h-5 w-5" />
             <span>수동 발급</span>
           </button>
-          <button className="flex items-center space-x-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+          <button className="btn-primary">
             <DocumentArrowDownIcon className="h-5 w-5" />
             <span>일괄 다운로드</span>
           </button>

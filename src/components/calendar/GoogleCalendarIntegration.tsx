@@ -360,14 +360,14 @@ const GoogleCalendarIntegration: React.FC = () => {
                 <button
                   onClick={syncWithGoogleCalendar}
                   disabled={isSyncing}
-                  className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 disabled:opacity-50"
+                  className="btn-success px-4 py-2 rounded-lg flex items-center space-x-2 disabled:opacity-50"
                 >
                   <ArrowPathIcon className={`h-4 w-4 ${isSyncing ? 'animate-spin' : ''}`} />
                   <span>{isSyncing ? '동기화 중...' : '동기화'}</span>
                 </button>
                 <button
                   onClick={() => setShowEventForm(true)}
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2"
+                  className="btn-primary px-4 py-2 rounded-lg flex items-center space-x-2"
                 >
                   <PlusIcon className="h-4 w-4" />
                   <span>일정 추가</span>
@@ -377,7 +377,7 @@ const GoogleCalendarIntegration: React.FC = () => {
               <button
                 onClick={connectToGoogleCalendar}
                 disabled={isConnecting}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 disabled:opacity-50"
+                className="btn-primary px-4 py-2 rounded-lg flex items-center space-x-2 disabled:opacity-50"
               >
                 <LinkIcon className="h-4 w-4" />
                 <span>{isConnecting ? '연결 중...' : 'Google Calendar 연결'}</span>
@@ -484,7 +484,7 @@ const GoogleCalendarIntegration: React.FC = () => {
             {isConnected && (
               <button
                 onClick={() => setShowEventForm(true)}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg"
+                className="btn-primary px-4 py-2 rounded-lg"
               >
                 첫 일정 추가하기
               </button>

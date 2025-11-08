@@ -9,6 +9,7 @@ import {
   FlagIcon
 } from '@heroicons/react/24/outline';
 import type { Exam, ExamQuestion, ExamAnswer } from '../../types/exam.types';
+import { ExamService } from '../../services/exam.services';
 import { format } from 'date-fns';
 import { ko } from 'date-fns/locale';
 
@@ -29,43 +30,9 @@ const ExamTaking: React.FC<ExamTakingProps> = ({
   onBack,
   onSubmit
 }) => {
-  const [questions] = useState<ExamQuestion[]>([
-    // 목업 문제 데이터
-    {
-      id: '1',
-      exam_id: exam.id,
-      question_type: 'multiple_choice',
-      question_text: 'BS 영업의 기본 원칙 중 가장 중요한 것은 무엇인가요?',
-      points: 2,
-      order_index: 1,
-      options: [
-        { id: '1-1', question_id: '1', option_text: '고객의 니즈 파악', is_correct: true, order_index: 1 },
-        { id: '1-2', question_id: '1', option_text: '제품 기능 설명', is_correct: false, order_index: 2 },
-        { id: '1-3', question_id: '1', option_text: '가격 경쟁력', is_correct: false, order_index: 3 },
-        { id: '1-4', question_id: '1', option_text: '빠른 계약 체결', is_correct: false, order_index: 4 }
-      ],
-      correct_answer: '고객의 니즈 파악',
-      explanation: '성공적인 영업을 위해서는 먼저 고객의 니즈를 정확히 파악하는 것이 가장 중요합니다.',
-      created_at: new Date().toISOString()
-    },
-    {
-      id: '2',
-      exam_id: exam.id,
-      question_type: 'multiple_choice',
-      question_text: '효과적인 고객 관리를 위한 CRM 시스템의 주요 기능은?',
-      points: 2,
-      order_index: 2,
-      options: [
-        { id: '2-1', question_id: '2', option_text: '고객 정보 통합 관리', is_correct: true, order_index: 1 },
-        { id: '2-2', question_id: '2', option_text: '단순 연락처 저장', is_correct: false, order_index: 2 },
-        { id: '2-3', question_id: '2', option_text: '제품 카탈로그', is_correct: false, order_index: 3 },
-        { id: '2-4', question_id: '2', option_text: '직원 근태 관리', is_correct: false, order_index: 4 }
-      ],
-      correct_answer: '고객 정보 통합 관리',
-      explanation: 'CRM의 핵심은 고객 정보를 통합적으로 관리하여 개인화된 서비스를 제공하는 것입니다.',
-      created_at: new Date().toISOString()
-    }
-  ]);
+  const [questions, setQuestions] = useState<ExamQuestion[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState<Map<string, Answer>>(new Map());
@@ -73,6 +40,49 @@ const ExamTaking: React.FC<ExamTakingProps> = ({
   const [flaggedQuestions, setFlaggedQuestions] = useState<Set<string>>(new Set());
   const [showConfirmSubmit, setShowConfirmSubmit] = useState(false);
   const [examStarted, setExamStarted] = useState(false);
+
+  // 시험 문제 로딩
+  useEffect(() => {
+    const loadQuestions = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        console.log('[ExamTaking] 시험 문제 로딩 시작:', exam.id);
+
+        const examWithQuestions = await ExamService.getExamById(exam.id);
+
+        if (!examWithQuestions || !examWithQuestions.exam_questions) {
+          throw new Error('시험 문제를 불러올 수 없습니다.');
+        }
+
+        // exam_questions를 ExamQuestion 형식으로 변환
+        const loadedQuestions: ExamQuestion[] = examWithQuestions.exam_questions.map((eq: any) => ({
+          id: eq.question.id,
+          exam_id: exam.id,
+          question_type: eq.question.type,
+          question_text: eq.question.question_text,
+          points: eq.points,
+          order_index: eq.order_index,
+          options: eq.question.options || [],
+          correct_answer: '', // 학생에게는 정답 노출하지 않음
+          explanation: eq.question.explanation || '',
+          created_at: new Date().toISOString()
+        }));
+
+        console.log('[ExamTaking] 문제 로딩 완료:', loadedQuestions.length, '개');
+        setQuestions(loadedQuestions);
+
+      } catch (err) {
+        console.error('[ExamTaking] 문제 로딩 실패:', err);
+        setError(err instanceof Error ? err.message : '문제를 불러오는데 실패했습니다.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadQuestions();
+  }, [exam.id]);
 
   // 타이머 관리
   useEffect(() => {
@@ -173,6 +183,49 @@ const ExamTaking: React.FC<ExamTakingProps> = ({
     return 'text-green-600';
   };
 
+  // 로딩 중 화면
+  if (loading) {
+    return (
+      <div className="max-w-2xl mx-auto">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto"></div>
+            <p className="mt-4 text-gray-600">시험 문제를 불러오는 중...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // 에러 화면
+  if (error) {
+    return (
+      <div className="max-w-2xl mx-auto">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
+          <div className="text-center">
+            <ExclamationTriangleIcon className="h-12 w-12 text-red-600 mx-auto" />
+            <h3 className="mt-4 text-lg font-medium text-gray-900">문제 로딩 실패</h3>
+            <p className="mt-2 text-gray-600">{error}</p>
+            <div className="mt-6 space-x-3">
+              <button
+                onClick={onBack}
+                className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300"
+              >
+                돌아가기
+              </button>
+              <button
+                onClick={() => window.location.reload()}
+                className="btn-primary"
+              >
+                다시 시도
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   // 시험 시작 전 화면
   if (!examStarted) {
     return (
@@ -242,7 +295,7 @@ const ExamTaking: React.FC<ExamTakingProps> = ({
             </button>
             <button
               onClick={startExam}
-              className="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition-colors font-medium"
+              className="btn-primary"
             >
               시험 시작
             </button>
@@ -272,7 +325,7 @@ const ExamTaking: React.FC<ExamTakingProps> = ({
             </div>
             <button
               onClick={() => setShowConfirmSubmit(true)}
-              className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors"
+              className="btn-success"
             >
               제출하기
             </button>
@@ -504,7 +557,7 @@ const ExamTaking: React.FC<ExamTakingProps> = ({
               </button>
               <button
                 onClick={handleSubmit}
-                className="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+                className="btn-success"
               >
                 제출하기
               </button>

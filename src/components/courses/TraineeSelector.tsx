@@ -419,7 +419,7 @@ const TraineeSelector: React.FC<TraineeSelectorProps> = ({
             <button
               onClick={handleEnrollment}
               disabled={selectedCount === 0 || loading}
-              className="flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="btn-primary"
             >
               <UserPlusIcon className="h-4 w-4 mr-1" />
               {selectedCount}명 배정하기

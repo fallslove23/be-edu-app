@@ -7,7 +7,8 @@ import {
   PlayIcon,
   PencilIcon,
   ChartBarIcon,
-  ExclamationTriangleIcon
+  ExclamationTriangleIcon,
+  DocumentDuplicateIcon
 } from '@heroicons/react/24/outline';
 import { examStatusLabels, examTypeLabels } from '../../services/exam.services';
 import type { Exam } from '../../types/exam.types';
@@ -19,6 +20,7 @@ interface ExamListProps {
   loading: boolean;
   error: string | null;
   onExamSelect: (exam: Exam, action: 'edit' | 'take' | 'results') => void;
+  onClone?: (exam: Exam) => void;
   onRefresh: () => void;
 }
 
@@ -27,6 +29,7 @@ const ExamList: React.FC<ExamListProps> = ({
   loading,
   error,
   onExamSelect,
+  onClone,
   onRefresh
 }) => {
   // 상태별 색상 스타일
@@ -87,7 +90,7 @@ const ExamList: React.FC<ExamListProps> = ({
             <p className="text-red-600 mb-4">{error}</p>
             <button
               onClick={onRefresh}
-              className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+              className="btn-danger"
             >
               다시 시도
             </button>
@@ -185,26 +188,36 @@ const ExamList: React.FC<ExamListProps> = ({
               <div className="flex items-center space-x-2">
                 <button
                   onClick={() => onExamSelect(exam, 'edit')}
-                  className="flex-1 flex items-center justify-center px-3 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                  className="flex-1 btn-secondary btn-sm"
                 >
                   <PencilIcon className="h-4 w-4 mr-1" />
                   편집
                 </button>
-                
+
+                {onClone && (
+                  <button
+                    onClick={() => onClone(exam)}
+                    className="btn-secondary btn-sm"
+                    title="시험 복제"
+                  >
+                    <DocumentDuplicateIcon className="h-4 w-4" />
+                  </button>
+                )}
+
                 {exam.status === 'active' && (
                   <button
                     onClick={() => onExamSelect(exam, 'take')}
-                    className="flex-1 flex items-center justify-center px-3 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors"
+                    className="flex-1 btn-primary btn-sm"
                   >
                     <PlayIcon className="h-4 w-4 mr-1" />
                     시험 응시
                   </button>
                 )}
-                
+
                 {(exam.status === 'completed' || exam.status === 'active') && (
                   <button
                     onClick={() => onExamSelect(exam, 'results')}
-                    className="flex items-center justify-center px-3 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                    className="btn-secondary btn-sm"
                   >
                     <ChartBarIcon className="h-4 w-4" />
                   </button>

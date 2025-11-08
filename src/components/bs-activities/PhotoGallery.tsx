@@ -118,7 +118,7 @@ const PhotoViewer: React.FC<PhotoViewerProps> = ({
                 </button>
                 <button
                   onClick={handleSaveDescription}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                  className="btn-primary"
                 >
                   저장
                 </button>
@@ -177,7 +177,7 @@ const PhotoGallery: React.FC<PhotoGalleryProps> = ({
         {!readonly && (
           <button
             onClick={onAddPhoto}
-            className="flex items-center px-3 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            className="btn-primary"
           >
             <CameraIcon className="w-4 h-4 mr-2" />
             사진 추가
@@ -213,7 +213,7 @@ const PhotoGallery: React.FC<PhotoGalleryProps> = ({
                     e.stopPropagation();
                     handleDeletePhoto(photo.id);
                   }}
-                  className="absolute top-2 right-2 p-1 bg-red-600 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-200 hover:bg-red-700"
+                  className="btn-danger"
                 >
                   <XMarkIcon className="w-4 h-4" />
                 </button>
@@ -246,7 +246,7 @@ const PhotoGallery: React.FC<PhotoGalleryProps> = ({
           {!readonly && (
             <button
               onClick={onAddPhoto}
-              className="inline-flex items-center px-4 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              className="btn-primary"
             >
               <CameraIcon className="w-4 h-4 mr-2" />
               첫 번째 사진 추가

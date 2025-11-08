@@ -201,7 +201,7 @@ const WaitingListManager: React.FC<WaitingListManagerProps> = ({
               <button
                 onClick={handleProcessWaitingList}
                 disabled={processing !== null}
-                className="flex items-center px-3 py-2 text-sm bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50 transition-colors"
+                className="btn-success"
               >
                 <UserPlusIcon className="h-4 w-4 mr-1" />
                 자동 처리

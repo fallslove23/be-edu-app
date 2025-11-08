@@ -487,14 +487,14 @@ const CourseTemplateManagement: React.FC = () => {
               <div className="flex items-center space-x-2">
                 <button
                   onClick={() => setShowTargetManager(true)}
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2"
+                  className="btn-primary px-4 py-2 rounded-lg flex items-center space-x-2"
                 >
                   <Cog6ToothIcon className="h-4 w-4" />
                   <span>교육과정 체계 관리</span>
                 </button>
                 <button
                   onClick={() => setShowOfflineWizard(true)}
-                  className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2"
+                  className="btn-success px-4 py-2 rounded-lg flex items-center space-x-2"
                 >
                   <CalendarDaysIcon className="h-4 w-4" />
                   <span>새 과정 개설</span>

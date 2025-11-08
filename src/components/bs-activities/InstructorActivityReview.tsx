@@ -389,7 +389,7 @@ const InstructorActivityReview: React.FC<InstructorActivityReviewProps> = ({
                     setSelectedActivity(activity);
                     setIsFeedbackModalOpen(true);
                   }}
-                  className="flex-1 bg-blue-600 text-white py-2.5 rounded-lg font-medium hover:bg-blue-700 transition-colors flex items-center justify-center"
+                  className="btn-primary"
                 >
                   <ChatBubbleLeftRightIcon className="w-4 h-4 mr-2" />
                   피드백 작성
@@ -574,7 +574,7 @@ const InstructorActivityReview: React.FC<InstructorActivityReviewProps> = ({
               {/* 제출 버튼 */}
               <button
                 onClick={handleSubmitFeedback}
-                className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
+                className="btn-primary"
               >
                 피드백 제출
               </button>

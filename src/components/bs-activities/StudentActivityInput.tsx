@@ -264,7 +264,7 @@ const StudentActivityInput: React.FC<StudentActivityInputProps> = ({
       <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4">
         <button
           onClick={() => setStep('create')}
-          className="w-full bg-blue-600 text-white py-4 rounded-lg font-semibold text-lg shadow-lg hover:bg-blue-700 transition-colors flex items-center justify-center"
+          className="btn-primary"
         >
           <DocumentTextIcon className="w-6 h-6 mr-2" />
           새 활동 기록하기
@@ -392,7 +392,7 @@ const StudentActivityInput: React.FC<StudentActivityInputProps> = ({
                 />
                 <button
                   onClick={() => handleRemoveImage(index)}
-                  className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 shadow-lg hover:bg-red-600"
+                  className="btn-danger"
                 >
                   <XMarkIcon className="w-4 h-4" />
                 </button>
@@ -452,7 +452,7 @@ const StudentActivityInput: React.FC<StudentActivityInputProps> = ({
         <button
           onClick={handleSubmit}
           disabled={isSubmitting}
-          className="w-full bg-blue-600 text-white py-4 rounded-lg font-semibold text-lg shadow-lg hover:bg-blue-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center"
+          className="btn-primary"
         >
           <CheckIcon className="w-6 h-6 mr-2" />
           {isSubmitting ? '제출 중...' : '제출하기'}

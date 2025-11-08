@@ -362,7 +362,7 @@ const NewCourseManagement: React.FC = () => {
             </button>
             <button
               onClick={() => setShowAddModal(true)}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2"
+              className="btn-primary px-4 py-2 rounded-lg flex items-center space-x-2"
             >
               <CalendarDaysIcon className="h-4 w-4" />
               <span>새 차수 개설</span>
@@ -610,7 +610,7 @@ const NewCourseManagement: React.FC = () => {
               {(!searchQuery && statusFilter === 'all') && (
                 <button
                   onClick={() => setShowAddModal(true)}
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg"
+                  className="btn-primary px-4 py-2 rounded-lg"
                 >
                   첫 차수 개설하기
                 </button>
@@ -688,7 +688,7 @@ const NewCourseManagement: React.FC = () => {
                   setShowAddModal(false);
                   setShowCourseForm(true);
                 }}
-                className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                className="btn-primary"
               >
                 차수 개설하기
               </button>

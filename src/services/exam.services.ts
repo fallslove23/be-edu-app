@@ -1,279 +1,541 @@
 import { supabase } from './supabase';
-import type { 
-  Exam, 
-  ExamQuestion, 
-  ExamAttempt, 
-  ExamResult, 
+import type {
+  Exam,
+  ExamAttempt,
+  Question,
+  QuestionResponse,
+  ExamEligibleTrainee,
   ExamStatistics,
-  ExamFilter,
-  ExamStatus,
-  ExamType,
-  AttemptStatus
+  CreateExamData,
+  GradeExamAttemptData,
+  TraineeExamHistory
 } from '../types/exam.types';
 
+/**
+ * 시험 관리 서비스
+ *
+ * 계층 구조:
+ * - Course Template → Course Rounds (차수)
+ * - 유연한 시험 대상 설정 (템플릿/차수)
+ */
 export class ExamService {
-  // 시험 목록 조회
-  static async getExams(filter: ExamFilter = {}): Promise<Exam[]> {
-    try {
-      console.log('[ExamService] getExams called with filter:', filter);
+  // ========================================
+  // 시험 관리 (CRUD)
+  // ========================================
 
-      let query = supabase
-        .from('exams')
-        .select(`
-          *,
-          course:course_id(name)
-        `)
-        .order('created_at', { ascending: false });
+  /**
+   * 시험 목록 조회
+   */
+  static async getExams(filters?: {
+    round_id?: string;
+    exam_type?: string;
+    status?: string;
+  }): Promise<Exam[]> {
+    console.log('[ExamService] getExams called with filters:', filters);
 
-      if (filter.course_id) {
-        query = query.eq('course_id', filter.course_id);
-      }
-      if (filter.status) {
-        query = query.eq('status', filter.status);
-      }
-      if (filter.exam_type) {
-        query = query.eq('exam_type', filter.exam_type);
-      }
+    // 임시: PostgREST 캐시 문제로 인해 조인 제거
+    // round와 bank 정보는 필요 시 별도 쿼리로 가져오기
+    let query = supabase
+      .from('exams')
+      .select('*')
+      .order('scheduled_at', { ascending: false });
 
-      const { data, error } = await query;
-
-      if (error) {
-        console.error('[ExamService] Supabase error:', error);
-        return this.getMockExams(filter);
-      }
-
-      if (!data || data.length === 0) {
-        console.warn('[ExamService] No exams found, using mock data');
-        return this.getMockExams(filter);
-      }
-
-      return data.map(exam => ({
-        id: exam.id,
-        course_id: exam.course_id,
-        course_name: exam.course?.name || '과정명 없음',
-        title: exam.title,
-        description: exam.description,
-        exam_type: exam.exam_type,
-        duration_minutes: exam.duration_minutes,
-        total_questions: exam.total_questions,
-        passing_score: exam.passing_score,
-        max_attempts: exam.max_attempts,
-        is_randomized: exam.is_randomized,
-        show_results_immediately: exam.show_results_immediately,
-        scheduled_start: exam.scheduled_start,
-        scheduled_end: exam.scheduled_end,
-        status: exam.status,
-        created_by: exam.created_by,
-        created_at: exam.created_at,
-        updated_at: exam.updated_at
-      }));
-    } catch (error) {
-      console.error('[ExamService] Failed to fetch exams:', error);
-      return this.getMockExams(filter);
+    if (filters?.round_id) {
+      query = query.eq('round_id', filters.round_id);
     }
+    if (filters?.exam_type) {
+      query = query.eq('exam_type', filters.exam_type);
+    }
+    if (filters?.status) {
+      query = query.eq('status', filters.status);
+    }
+
+    const { data, error } = await query;
+
+    if (error) {
+      console.error('[ExamService] ❌ 시험 목록 조회 실패:', error);
+      console.error('[ExamService] Error details:', {
+        message: error.message,
+        details: error.details,
+        hint: error.hint,
+        code: error.code
+      });
+      throw new Error(`시험 목록 조회 실패: ${error.message}`);
+    }
+
+    console.log('[ExamService] ✅ 시험 목록 조회 성공:', data?.length, '개');
+    return data || [];
   }
 
-  // 시험 상세 조회
-  static async getExam(examId: string): Promise<Exam | null> {
-    try {
-      const { data, error } = await supabase
-        .from('exams')
-        .select(`
-          *,
-          course:course_id(name)
-        `)
-        .eq('id', examId)
-        .single();
+  /**
+   * 시험 상세 조회 (문제 포함)
+   */
+  static async getExamById(examId: string): Promise<Exam | null> {
+    // 임시: PostgREST 캐시 문제로 인해 조인 제거
+    const { data, error } = await supabase
+      .from('exams')
+      .select('*')
+      .eq('id', examId)
+      .single();
 
-      if (error || !data) {
-        console.error('Failed to fetch exam:', error);
-        return null;
-      }
+    if (error) {
+      console.error('시험 상세 조회 실패:', error);
+      return null;
+    }
 
-      return {
-        id: data.id,
-        course_id: data.course_id,
-        course_name: data.course?.name || '과정명 없음',
+    return data;
+  }
+
+  /**
+   * 시험 생성
+   */
+  static async createExam(data: CreateExamData): Promise<Exam> {
+    const { data: exam, error } = await supabase
+      .from('exams')
+      .insert({
         title: data.title,
         description: data.description,
         exam_type: data.exam_type,
+
+        // 대상 설정 (round_id 사용)
+        template_id: data.template_id,
+        round_id: data.round_id,
+
+        // 시험 설정
+        bank_id: data.bank_id,
+        scheduled_at: data.scheduled_at,
         duration_minutes: data.duration_minutes,
-        total_questions: data.total_questions,
-        passing_score: data.passing_score,
-        max_attempts: data.max_attempts,
-        is_randomized: data.is_randomized,
-        show_results_immediately: data.show_results_immediately,
-        scheduled_start: data.scheduled_start,
-        scheduled_end: data.scheduled_end,
-        status: data.status,
-        created_by: data.created_by,
-        created_at: data.created_at,
-        updated_at: data.updated_at
-      };
-    } catch (error) {
-      console.error('Failed to fetch exam:', error);
-      return null;
+        passing_score: data.passing_score || 70.0,
+        total_points: data.total_points || 100.0,
+        max_attempts: data.max_attempts || 1,
+
+        // 옵션
+        randomize_questions: data.randomize_questions || false,
+        randomize_options: data.randomize_options || false,
+        show_correct_answers: data.show_correct_answers || false,
+        allow_review: data.allow_review || true,
+
+        status: data.status || 'draft'
+      })
+      .select()
+      .single();
+
+    if (error) {
+      console.error('시험 생성 실패:', error);
+      throw new Error(`시험 생성 실패: ${error.message}`);
+    }
+
+    return exam;
+  }
+
+  /**
+   * 시험 수정
+   */
+  static async updateExam(examId: string, data: Partial<CreateExamData>): Promise<Exam> {
+    const { data: exam, error } = await supabase
+      .from('exams')
+      .update(data)
+      .eq('id', examId)
+      .select()
+      .single();
+
+    if (error) {
+      console.error('시험 수정 실패:', error);
+      throw new Error(`시험 수정 실패: ${error.message}`);
+    }
+
+    return exam;
+  }
+
+  /**
+   * 시험 삭제
+   */
+  static async deleteExam(examId: string): Promise<void> {
+    const { error } = await supabase
+      .from('exams')
+      .delete()
+      .eq('id', examId);
+
+    if (error) {
+      console.error('시험 삭제 실패:', error);
+      throw new Error(`시험 삭제 실패: ${error.message}`);
     }
   }
 
-  // 시험 문제 조회
-  static async getExamQuestions(examId: string): Promise<ExamQuestion[]> {
-    try {
-      const { data, error } = await supabase
-        .from('exam_questions')
-        .select(`
-          *,
-          options:exam_question_options(*)
-        `)
-        .eq('exam_id', examId)
-        .order('order_index');
+  // ========================================
+  // 응시 대상자 관리
+  // ========================================
 
-      if (error) {
-        console.error('Failed to fetch exam questions:', error);
-        return [];
+  /**
+   * 시험 응시 대상자 조회 (View 사용)
+   */
+  static async getEligibleTrainees(examId: string): Promise<ExamEligibleTrainee[]> {
+    const { data, error } = await supabase
+      .from('v_exam_eligible_trainees')
+      .select('*')
+      .eq('exam_id', examId)
+      .order('division_name')
+      .order('trainee_name');
+
+    if (error) {
+      console.error('응시 대상자 조회 실패:', error);
+      throw new Error(`응시 대상자 조회 실패: ${error.message}`);
+    }
+
+    return data || [];
+  }
+
+  // ========================================
+  // 시험 응시
+  // ========================================
+
+  /**
+   * 시험 응시 시작
+   */
+  static async startExamAttempt(examId: string, traineeId: string): Promise<ExamAttempt> {
+    // 1. 기존 응시 횟수 확인
+    const { data: existingAttempts, error: countError } = await supabase
+      .from('exam_attempts')
+      .select('attempt_number')
+      .eq('exam_id', examId)
+      .eq('trainee_id', traineeId)
+      .order('attempt_number', { ascending: false })
+      .limit(1);
+
+    if (countError) {
+      throw new Error(`응시 횟수 조회 실패: ${countError.message}`);
+    }
+
+    const attemptNumber = existingAttempts && existingAttempts.length > 0
+      ? existingAttempts[0].attempt_number + 1
+      : 1;
+
+    // 2. 시험 정보 조회 (최대 응시 횟수 확인)
+    const { data: exam } = await supabase
+      .from('exams')
+      .select('max_attempts')
+      .eq('id', examId)
+      .single();
+
+    if (exam && attemptNumber > exam.max_attempts) {
+      throw new Error(`최대 응시 횟수(${exam.max_attempts}회)를 초과했습니다.`);
+    }
+
+    // 3. 응시 기록 생성
+    const { data: attempt, error } = await supabase
+      .from('exam_attempts')
+      .insert({
+        exam_id: examId,
+        trainee_id: traineeId,
+        attempt_number: attemptNumber,
+        started_at: new Date().toISOString(),
+        status: 'in_progress'
+      })
+      .select()
+      .single();
+
+    if (error) {
+      console.error('시험 응시 시작 실패:', error);
+      throw new Error(`시험 응시 시작 실패: ${error.message}`);
+    }
+
+    return attempt;
+  }
+
+  /**
+   * 답안 제출
+   */
+  static async submitExamAttempt(
+    attemptId: string,
+    answers: Record<string, any>
+  ): Promise<ExamAttempt> {
+    const { data: attempt, error } = await supabase
+      .from('exam_attempts')
+      .update({
+        submitted_at: new Date().toISOString(),
+        answers: answers,
+        status: 'submitted'
+      })
+      .eq('id', attemptId)
+      .select()
+      .single();
+
+    if (error) {
+      console.error('답안 제출 실패:', error);
+      throw new Error(`답안 제출 실패: ${error.message}`);
+    }
+
+    return attempt;
+  }
+
+  /**
+   * 개별 문제 응답 저장
+   */
+  static async saveQuestionResponse(
+    attemptId: string,
+    questionId: string,
+    answer: any
+  ): Promise<QuestionResponse> {
+    const { data: response, error } = await supabase
+      .from('question_responses')
+      .upsert({
+        attempt_id: attemptId,
+        question_id: questionId,
+        answer: answer,
+        answered_at: new Date().toISOString()
+      })
+      .select()
+      .single();
+
+    if (error) {
+      console.error('문제 응답 저장 실패:', error);
+      throw new Error(`문제 응답 저장 실패: ${error.message}`);
+    }
+
+    return response;
+  }
+
+  // ========================================
+  // 채점
+  // ========================================
+
+  /**
+   * 자동 채점 (객관식/O/X)
+   */
+  static async autoGradeAttempt(attemptId: string): Promise<void> {
+    // 1. 응시 기록 및 문제 응답 조회
+    const { data: responses, error: fetchError } = await supabase
+      .from('question_responses')
+      .select(`
+        id,
+        answer,
+        question:questions(
+          id,
+          type,
+          correct_answer,
+          points
+        )
+      `)
+      .eq('attempt_id', attemptId);
+
+    if (fetchError) {
+      throw new Error(`응답 조회 실패: ${fetchError.message}`);
+    }
+
+    if (!responses || responses.length === 0) {
+      throw new Error('채점할 응답이 없습니다.');
+    }
+
+    // 2. 각 문제별 채점
+    for (const response of responses) {
+      const question = response.question as any;
+
+      let isCorrect: boolean | null = null;
+      let pointsEarned = 0;
+
+      if (question.type === 'multiple_choice' || question.type === 'true_false') {
+        // 객관식/O/X는 자동 채점
+        isCorrect = JSON.stringify(response.answer) === JSON.stringify(question.correct_answer);
+        pointsEarned = isCorrect ? question.points : 0;
+
+        await supabase
+          .from('question_responses')
+          .update({
+            is_correct: isCorrect,
+            points_earned: pointsEarned,
+            needs_manual_grading: false
+          })
+          .eq('id', response.id);
+      } else {
+        // 주관식은 수동 채점 필요
+        await supabase
+          .from('question_responses')
+          .update({
+            needs_manual_grading: true
+          })
+          .eq('id', response.id);
       }
-
-      return data.map(question => ({
-        id: question.id,
-        exam_id: question.exam_id,
-        question_type: question.question_type,
-        question_text: question.question_text,
-        points: question.points,
-        order_index: question.order_index,
-        options: question.options || [],
-        correct_answer: question.correct_answer,
-        explanation: question.explanation,
-        created_at: question.created_at
-      }));
-    } catch (error) {
-      console.error('Failed to fetch exam questions:', error);
-      return [];
     }
+
+    // 3. 총점 계산 및 합격 여부 판정
+    await this.calculateAttemptScore(attemptId);
   }
 
-  // 시험 통계 조회
-  static async getExamStatistics(examId?: string): Promise<ExamStatistics> {
-    try {
-      // 임시 목업 데이터
-      const mockStats: ExamStatistics = {
-        totalExams: 8,
-        activeExams: 3,
-        completedExams: 5,
-        averageScore: 78.5,
-        passRate: 82.3,
-        totalAttempts: 156,
-        averageAttempts: 1.8,
-        scoreDistribution: [
-          { range: '90-100', count: 25, percentage: 16.0 },
-          { range: '80-89', count: 42, percentage: 26.9 },
-          { range: '70-79', count: 38, percentage: 24.4 },
-          { range: '60-69', count: 28, percentage: 17.9 },
-          { range: '0-59', count: 23, percentage: 14.7 }
-        ]
-      };
+  /**
+   * 수동 채점
+   */
+  static async manualGrade(data: GradeExamAttemptData): Promise<void> {
+    const { attempt_id, response_id, is_correct, points_earned, feedback } = data;
 
-      return mockStats;
-    } catch (error) {
-      console.error('Failed to fetch exam statistics:', error);
-      throw error;
-    }
+    await supabase
+      .from('question_responses')
+      .update({
+        is_correct,
+        points_earned,
+        feedback,
+        needs_manual_grading: false
+      })
+      .eq('id', response_id);
+
+    // 총점 재계산
+    await this.calculateAttemptScore(attempt_id);
   }
 
-  // 목업 데이터 제공
-  private static getMockExams(filter: ExamFilter = {}): Exam[] {
-    console.log('[ExamService] getMockExams called with filter:', filter);
+  /**
+   * 총점 계산 및 합격 여부 판정
+   */
+  private static async calculateAttemptScore(attemptId: string): Promise<void> {
+    // 1. 총점 계산
+    const { data: responses } = await supabase
+      .from('question_responses')
+      .select('points_earned')
+      .eq('attempt_id', attemptId);
 
-    const mockExams: Exam[] = [
-      {
-        id: '1',
-        course_id: '1',
-        course_name: 'BS 영업 기초과정',
-        title: '영업 기초 이론 평가',
-        description: '영업의 기본 개념과 프로세스에 대한 이해도를 평가하는 시험입니다.',
-        exam_type: 'multiple_choice',
-        duration_minutes: 60,
-        total_questions: 30,
-        passing_score: 70,
-        max_attempts: 3,
-        is_randomized: true,
-        show_results_immediately: false,
-        scheduled_start: '2024-08-20T09:00:00Z',
-        scheduled_end: '2024-08-20T18:00:00Z',
-        status: 'active',
-        created_by: 'instructor1',
-        created_at: '2024-08-15T10:00:00Z',
-        updated_at: '2024-08-15T10:00:00Z'
-      },
-      {
-        id: '2',
-        course_id: '2',
-        course_name: 'BS 고급 영업 전략',
-        title: '고급 영업 전략 종합 평가',
-        description: '고급 영업 전략과 실무 적용에 대한 종합적인 평가입니다.',
-        exam_type: 'mixed',
-        duration_minutes: 90,
-        total_questions: 25,
-        passing_score: 75,
-        max_attempts: 2,
-        is_randomized: true,
-        show_results_immediately: true,
-        scheduled_start: '2024-09-05T10:00:00Z',
-        scheduled_end: '2024-09-05T17:00:00Z',
-        status: 'scheduled',
-        created_by: 'instructor2',
-        created_at: '2024-08-20T14:30:00Z',
-        updated_at: '2024-08-20T14:30:00Z'
-      },
-      {
-        id: '3',
-        course_id: '3',
-        course_name: 'BS 고객 관리 시스템',
-        title: 'CRM 활용 능력 평가',
-        description: 'CRM 시스템 활용법과 고객 관리 전략에 대한 실무 평가입니다.',
-        exam_type: 'multiple_choice',
-        duration_minutes: 45,
-        total_questions: 20,
-        passing_score: 80,
-        max_attempts: 3,
-        is_randomized: false,
-        show_results_immediately: true,
-        scheduled_start: '2024-08-25T13:00:00Z',
-        scheduled_end: '2024-08-25T16:00:00Z',
-        status: 'completed',
-        created_by: 'instructor3',
-        created_at: '2024-08-18T11:15:00Z',
-        updated_at: '2024-08-25T16:30:00Z'
-      }
-    ];
+    const totalScore = responses?.reduce((sum, r) => sum + (r.points_earned || 0), 0) || 0;
 
-    // 필터 적용
-    let filteredExams = mockExams;
-    if (filter.course_id) {
-      filteredExams = filteredExams.filter(exam => exam.course_id === filter.course_id);
-    }
-    if (filter.status) {
-      filteredExams = filteredExams.filter(exam => exam.status === filter.status);
-    }
-    if (filter.exam_type) {
-      filteredExams = filteredExams.filter(exam => exam.exam_type === filter.exam_type);
+    // 2. 시험 정보 조회
+    const { data: attempt } = await supabase
+      .from('exam_attempts')
+      .select('exam:exams(passing_score, total_points)')
+      .eq('id', attemptId)
+      .single();
+
+    if (!attempt) return;
+
+    const exam = (attempt as any).exam;
+    const scorePercentage = (totalScore / exam.total_points) * 100;
+    const passed = scorePercentage >= exam.passing_score;
+
+    // 3. 결과 업데이트
+    await supabase
+      .from('exam_attempts')
+      .update({
+        score: totalScore,
+        score_percentage: scorePercentage,
+        passed,
+        status: 'graded'
+      })
+      .eq('id', attemptId);
+  }
+
+  // ========================================
+  // 통계 및 분석
+  // ========================================
+
+  /**
+   * 시험별 통계 조회 (View 사용)
+   */
+  static async getExamStatistics(examId: string): Promise<ExamStatistics[]> {
+    const { data, error } = await supabase
+      .from('v_exam_statistics')
+      .select('*')
+      .eq('exam_id', examId)
+      .order('division_name');
+
+    if (error) {
+      console.error('통계 조회 실패:', error);
+      throw new Error(`통계 조회 실패: ${error.message}`);
     }
 
-    return filteredExams;
+    return data || [];
+  }
+
+  /**
+   * 교육생별 시험 이력 조회
+   */
+  static async getTraineeExamHistory(traineeId: string): Promise<TraineeExamHistory[]> {
+    const { data, error } = await supabase
+      .from('exam_attempts')
+      .select(`
+        id,
+        attempt_number,
+        score,
+        score_percentage,
+        passed,
+        started_at,
+        submitted_at,
+        status,
+        exam:exams(
+          id,
+          title,
+          exam_type,
+          round:course_rounds(title, round_number)
+        )
+      `)
+      .eq('trainee_id', traineeId)
+      .eq('status', 'graded')
+      .order('submitted_at', { ascending: false });
+
+    if (error) {
+      console.error('시험 이력 조회 실패:', error);
+      throw new Error(`시험 이력 조회 실패: ${error.message}`);
+    }
+
+    return data || [];
+  }
+
+  /**
+   * 교육생의 특정 시험 응시 가능 여부 확인
+   */
+  static async canTakeExam(examId: string, traineeId: string): Promise<{
+    canTake: boolean;
+    reason?: string;
+  }> {
+    // 1. 시험 정보 조회
+    const { data: exam } = await supabase
+      .from('exams')
+      .select('status, max_attempts, scheduled_at')
+      .eq('id', examId)
+      .single();
+
+    if (!exam) {
+      return { canTake: false, reason: '시험을 찾을 수 없습니다.' };
+    }
+
+    if (exam.status !== 'published') {
+      return { canTake: false, reason: '시험이 공개되지 않았습니다.' };
+    }
+
+    // 2. 응시 대상자 확인
+    const eligibleTrainees = await this.getEligibleTrainees(examId);
+    const isEligible = eligibleTrainees.some(t => t.trainee_id === traineeId);
+
+    if (!isEligible) {
+      return { canTake: false, reason: '응시 대상자가 아닙니다.' };
+    }
+
+    // 3. 응시 횟수 확인
+    const { data: attempts } = await supabase
+      .from('exam_attempts')
+      .select('id')
+      .eq('exam_id', examId)
+      .eq('trainee_id', traineeId);
+
+    if (attempts && attempts.length >= exam.max_attempts) {
+      return { canTake: false, reason: `최대 응시 횟수(${exam.max_attempts}회)를 초과했습니다.` };
+    }
+
+    return { canTake: true };
   }
 }
 
 // 시험 상태 레이블
-export const examStatusLabels: Record<ExamStatus, string> = {
+export const examStatusLabels = {
   draft: '초안',
-  scheduled: '예정',
-  active: '진행중',
+  published: '공개',
+  in_progress: '진행중',
   completed: '완료',
   cancelled: '취소'
-};
+} as const;
 
 // 시험 유형 레이블
-export const examTypeLabels: Record<ExamType, string> = {
-  multiple_choice: '객관식',
-  essay: '주관식',
-  mixed: '혼합형'
-};
+export const examTypeLabels = {
+  final: '최종평가',
+  midterm: '중간평가',
+  quiz: '퀴즈',
+  daily_test: '일일평가',
+  practice: '연습문제',
+  assignment: '과제'
+} as const;
+
+export default ExamService;

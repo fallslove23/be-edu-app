@@ -792,7 +792,7 @@ const SessionCreationWizard: React.FC<SessionCreationWizardProps> = ({
                 type="button"
                 onClick={nextStep}
                 disabled={currentStep === 1 && (!sessionInfo.seriesId || !sessionInfo.levelId)}
-                className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
+                className="btn-primary"
               >
                 <span>다음</span>
                 <ChevronRightIcon className="h-4 w-4" />
@@ -802,7 +802,7 @@ const SessionCreationWizard: React.FC<SessionCreationWizardProps> = ({
                 type="button"
                 onClick={handleSubmit}
                 disabled={isDuplicateCode()}
-                className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
+                className="btn-success"
               >
                 <CheckCircleIcon className="h-4 w-4" />
                 <span>차수 개설</span>

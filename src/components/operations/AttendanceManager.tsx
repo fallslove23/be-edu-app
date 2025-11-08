@@ -333,7 +333,7 @@ const AttendanceManager: React.FC = () => {
               onChange={(e) => setDateFilter(e.target.value)}
               className="border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500"
             />
-            <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2">
+            <button className="btn-primary px-4 py-2 rounded-lg flex items-center space-x-2">
               <DocumentArrowDownIcon className="h-4 w-4" />
               <span>출석부 다운로드</span>
             </button>

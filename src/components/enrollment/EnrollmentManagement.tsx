@@ -358,14 +358,14 @@ const EnrollmentManagementComponent: React.FC = () => {
               <div className="flex items-center space-x-2">
                 <button
                   onClick={() => setCurrentView('bulk')}
-                  className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2"
+                  className="btn-success px-4 py-2 rounded-lg flex items-center space-x-2"
                 >
                   <UsersIcon className="h-4 w-4" />
                   <span>일괄 등록</span>
                 </button>
                 <button
                   onClick={() => setCurrentView('create')}
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2"
+                  className="btn-primary px-4 py-2 rounded-lg flex items-center space-x-2"
                 >
                   <UserPlusIcon className="h-4 w-4" />
                   <span>개별 등록</span>
@@ -514,10 +514,10 @@ const EnrollmentManagementComponent: React.FC = () => {
               <span className="text-sm text-gray-600">
                 {selectedEnrollments.length}개 선택됨
               </span>
-              <button className="bg-red-600 text-white px-3 py-1 rounded text-sm hover:bg-red-700">
+              <button className="btn-danger">
                 선택 삭제
               </button>
-              <button className="bg-green-600 text-white px-3 py-1 rounded text-sm hover:bg-green-700">
+              <button className="btn-success">
                 일괄 승인
               </button>
             </div>
@@ -537,7 +537,7 @@ const EnrollmentManagementComponent: React.FC = () => {
             {isManager && (
               <button
                 onClick={() => setCurrentView('create')}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg"
+                className="btn-primary px-4 py-2 rounded-lg"
               >
                 첫 수강생 등록하기
               </button>

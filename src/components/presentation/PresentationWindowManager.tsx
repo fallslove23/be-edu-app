@@ -333,7 +333,7 @@ const PresentationWindowManager: React.FC<PresentationWindowManagerProps> = ({
                 {canManage && window.submittedActivities.length > 0 && (
                   <button
                     onClick={() => openPresentationMode(window)}
-                    className="flex-1 flex items-center justify-center space-x-1 px-3 py-2 text-sm text-white bg-green-600 hover:bg-green-700 rounded-lg"
+                    className="btn-success"
                   >
                     <ComputerDesktopIcon className="h-4 w-4" />
                     <span>발표모드</span>

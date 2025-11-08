@@ -288,7 +288,7 @@ const InstructorFeedback: React.FC<InstructorFeedbackProps> = ({
                                   addSuggestionToActivity(activityDetail.id, newSuggestion);
                                   setNewSuggestion('');
                                 }}
-                                className="px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                                className="btn-primary"
                               >
                                 <PlusIcon className="w-4 h-4" />
                               </button>
@@ -338,7 +338,7 @@ const InstructorFeedback: React.FC<InstructorFeedbackProps> = ({
                     />
                     <button
                       onClick={() => addToList(strengths, setStrengths, newStrength, setNewStrength)}
-                      className="px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+                      className="btn-success"
                     >
                       <PlusIcon className="w-4 h-4" />
                     </button>
@@ -380,7 +380,7 @@ const InstructorFeedback: React.FC<InstructorFeedbackProps> = ({
                     />
                     <button
                       onClick={() => addToList(improvements, setImprovements, newImprovement, setNewImprovement)}
-                      className="px-3 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors"
+                      className="btn-warning"
                     >
                       <PlusIcon className="w-4 h-4" />
                     </button>
@@ -422,7 +422,7 @@ const InstructorFeedback: React.FC<InstructorFeedbackProps> = ({
                     />
                     <button
                       onClick={() => addToList(suggestions, setSuggestions, newSuggestion, setNewSuggestion)}
-                      className="px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                      className="btn-primary"
                     >
                       <PlusIcon className="w-4 h-4" />
                     </button>
@@ -464,7 +464,7 @@ const InstructorFeedback: React.FC<InstructorFeedbackProps> = ({
                     />
                     <button
                       onClick={() => addToList(nextGoals, setNextGoals, newGoal, setNewGoal)}
-                      className="px-3 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+                      className="btn-purple"
                     >
                       <PlusIcon className="w-4 h-4" />
                     </button>
@@ -486,7 +486,7 @@ const InstructorFeedback: React.FC<InstructorFeedbackProps> = ({
             </button>
             <button
               onClick={handleSave}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center"
+              className="btn-primary"
             >
               <CheckIcon className="w-4 h-4 mr-2" />
               피드백 저장

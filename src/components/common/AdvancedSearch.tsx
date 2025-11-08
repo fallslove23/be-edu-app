@@ -319,7 +319,7 @@ const AdvancedSearch: React.FC<AdvancedSearchProps> = ({
             </button>
             <button
               onClick={executeSearch}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium"
+              className="btn-primary px-4 py-2 rounded-lg text-sm font-medium"
             >
               검색
             </button>
@@ -412,7 +412,7 @@ const AdvancedSearch: React.FC<AdvancedSearchProps> = ({
           <div className="mt-6 flex justify-end">
             <button
               onClick={executeSearch}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg"
+              className="btn-primary px-6 py-2 rounded-lg"
             >
               필터 적용
             </button>

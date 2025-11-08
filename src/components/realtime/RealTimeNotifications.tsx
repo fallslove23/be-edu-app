@@ -348,7 +348,7 @@ const NotificationItem: React.FC<{
                   onClick={action.action}
                   className={`px-3 py-1 text-xs rounded font-medium ${
                     action.primary
-                      ? 'bg-blue-500 text-white hover:bg-blue-600'
+                      ? 'btn-primary'
                       : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                   }`}
                 >
@@ -482,7 +482,7 @@ const NotificationSettings: React.FC<{
           </button>
           <button
             onClick={handleSave}
-            className="px-4 py-2 bg-blue-500 text-white text-sm rounded hover:bg-blue-600"
+            className="btn-primary"
           >
             저장
           </button>

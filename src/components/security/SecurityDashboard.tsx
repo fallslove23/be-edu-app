@@ -10,9 +10,11 @@ import {
   EyeSlashIcon
 } from '@heroicons/react/24/outline';
 import { useAuth } from '../../contexts/AuthContext';
+import { SecurityManager } from '../../utils/security';
 
 const SecurityDashboard: React.FC = () => {
   const { user } = useAuth();
+  const securityManager = SecurityManager.getInstance();
 
   // Mock session info since useAuth doesn't provide these
   const sessionInfo = { createdAt: Date.now() - 3600000 };
@@ -166,13 +168,13 @@ const SecurityDashboard: React.FC = () => {
               <div className="space-x-2">
                 <button
                   onClick={() => setShowSessionDetails(!showSessionDetails)}
-                  className="px-3 py-1 text-sm bg-blue-100 text-blue-700 rounded-md hover:bg-blue-200 transition-colors"
+                  className="btn-info btn-sm"
                 >
                   {showSessionDetails ? <EyeSlashIcon className="h-4 w-4" /> : <EyeIcon className="h-4 w-4" />}
                 </button>
                 <button
                   onClick={handleInvalidateAllSessions}
-                  className="px-3 py-1 text-sm bg-red-100 text-red-700 rounded-md hover:bg-red-200 transition-colors"
+                  className="btn-danger btn-sm"
                 >
                   모든 세션 종료
                 </button>
@@ -219,7 +221,7 @@ const SecurityDashboard: React.FC = () => {
               <h3 className="text-lg font-medium text-gray-900 dark:text-white">최근 보안 활동</h3>
               <button
                 onClick={() => setShowLogs(!showLogs)}
-                className="px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors"
+                className="btn-secondary btn-sm"
               >
                 {showLogs ? '숨기기' : '더보기'}
               </button>

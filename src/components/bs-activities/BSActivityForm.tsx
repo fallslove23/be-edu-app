@@ -282,7 +282,7 @@ const BSActivityForm: React.FC<BSActivityFormProps> = ({
                 <button
                   type="button"
                   onClick={() => handleImageRemove(index)}
-                  className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
+                  className="btn-danger"
                 >
                   <XMarkIcon className="h-4 w-4" />
                 </button>
@@ -364,7 +364,7 @@ const BSActivityForm: React.FC<BSActivityFormProps> = ({
         <button
           type="submit"
           disabled={isSubmitting}
-          className="px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium disabled:opacity-50"
+          className="btn-primary"
         >
           {isSubmitting ? '제출 중...' : '제출'}
         </button>

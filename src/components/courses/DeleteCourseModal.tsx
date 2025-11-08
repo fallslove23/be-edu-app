@@ -167,7 +167,7 @@ const DeleteCourseModal: React.FC<DeleteCourseModalProps> = ({
           <button
             type="button"
             onClick={handleDelete}
-            className="px-4 py-2 text-sm font-medium text-white bg-red-600 border border-transparent rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="btn-danger"
             disabled={loading || !canDelete}
           >
             {loading ? (

@@ -590,7 +590,7 @@ const PerformanceReportGenerator: React.FC<PerformanceReportGeneratorProps> = ({
             className={`px-6 py-2 rounded-lg text-white flex items-center space-x-2 ${
               isGenerating 
                 ? 'bg-gray-400 cursor-not-allowed' 
-                : 'bg-blue-600 hover:bg-blue-700'
+                : 'btn-primary'
             }`}
           >
             {isGenerating ? (

@@ -13,6 +13,7 @@ import {
   ChartBarIcon
 } from '@heroicons/react/24/outline';
 import { CourseTemplateService } from '../../services/course-template.service';
+import { CategoryService, type CategoryWithParent } from '../../services/category.service';
 import type { CourseTemplate } from '../../types/course-template.types';
 import toast from 'react-hot-toast';
 
@@ -20,6 +21,7 @@ type SortOption = 'name' | 'updated_at' | 'usage_count' | 'created_at';
 
 const UnifiedTemplateManagement: React.FC = () => {
   const [templates, setTemplates] = useState<CourseTemplate[]>([]);
+  const [categories, setCategories] = useState<CategoryWithParent[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [categoryFilter, setCategoryFilter] = useState<string>('all');
@@ -40,8 +42,13 @@ const UnifiedTemplateManagement: React.FC = () => {
   const loadData = async () => {
     try {
       setIsLoading(true);
-      const templatesData = await CourseTemplateService.getTemplates();
+      const [templatesData, categoriesData] = await Promise.all([
+        CourseTemplateService.getTemplates(),
+        CategoryService.getCategories()
+      ]);
+
       setTemplates(templatesData);
+      setCategories(categoriesData);
 
       // 템플릿 사용 통계 로드 (모의 데이터 - 실제로는 API에서 가져와야 함)
       const usageData: Record<string, number> = {};
@@ -331,6 +338,7 @@ const UnifiedTemplateManagement: React.FC = () => {
       name: '',
       description: '',
       category: 'basic' as 'basic' | 'advanced',
+      category_id: '',
       duration_days: 3,
       total_hours: 21,
       curriculum: [] as any[],
@@ -338,6 +346,9 @@ const UnifiedTemplateManagement: React.FC = () => {
       objectives: [] as string[],
       is_active: true
     });
+
+    // 카테고리 선택 옵션 (계층 구조)
+    const categoryOptions = CategoryService.flattenCategoriesForSelect(categories);
 
     const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
@@ -383,7 +394,7 @@ const UnifiedTemplateManagement: React.FC = () => {
                     type="text"
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500"
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     placeholder="예: BS Expert"
                     required
                   />
@@ -391,19 +402,27 @@ const UnifiedTemplateManagement: React.FC = () => {
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">카테고리 *</label>
                   <select
-                    value={formData.category}
-                    onChange={(e) => setFormData({ ...formData, category: e.target.value as 'basic' | 'advanced' })}
-                    className="w-full border-2 border-gray-200 rounded-xl px-6 py-3.5 text-base bg-white text-gray-700 font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all shadow-sm hover:border-gray-300 appearance-none cursor-pointer"
+                    value={formData.category_id}
+                    onChange={(e) => setFormData({ ...formData, category_id: e.target.value })}
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white appearance-none cursor-pointer"
                     style={{
                       backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`,
-                      backgroundPosition: 'right 0.75rem center',
+                      backgroundPosition: 'right 0.5rem center',
                       backgroundRepeat: 'no-repeat',
-                      backgroundSize: '1.5em 1.5em',
-                      paddingRight: '2.5rem'
+                      backgroundSize: '1.25em 1.25em',
+                      paddingRight: '2rem'
                     }}
+                    required
                   >
-                    <option value="basic">Basic</option>
-                    <option value="advanced">Advanced</option>
+                    <option value="">카테고리 선택</option>
+                    {categoryOptions.map(option => (
+                      <option
+                        key={option.value}
+                        value={option.value}
+                      >
+                        {option.indent > 0 ? '  └ ' : ''}{option.label}
+                      </option>
+                    ))}
                   </select>
                 </div>
               </div>
@@ -603,7 +622,7 @@ const UnifiedTemplateManagement: React.FC = () => {
                 </div>
                 <div className="text-center p-3 bg-muted rounded-lg">
                   <AcademicCapIcon className="w-5 h-5 text-muted-foreground mx-auto mb-1" />
-                  <div className="text-lg font-bold text-card-foreground">{template.curriculum.length}</div>
+                  <div className="text-lg font-bold text-card-foreground">{template.curriculum?.length || 0}</div>
                   <div className="text-xs text-muted-foreground">커리큘럼</div>
                 </div>
               </div>

@@ -186,7 +186,7 @@ const CourseEnrollmentComponent: React.FC<CourseEnrollmentProps> = ({
           </h3>
           <button
             onClick={() => setIsEnrollModalOpen(true)}
-            className="flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors"
+            className="btn-primary"
           >
             <PlusIcon className="h-4 w-4 mr-1" />
             교육생 등록
@@ -381,10 +381,10 @@ const CourseEnrollmentComponent: React.FC<CourseEnrollmentProps> = ({
               <button
                 onClick={enrollTrainees}
                 disabled={selectedTrainees.length === 0}
-                className={`px-6 py-2 text-sm font-medium rounded-md ${
+                className={`${
                   selectedTrainees.length > 0
-                    ? 'text-white bg-blue-600 hover:bg-blue-700'
-                    : 'text-gray-400 bg-gray-100 cursor-not-allowed'
+                    ? 'btn-primary'
+                    : 'text-gray-400 bg-gray-100 cursor-not-allowed px-6 py-2 text-sm font-medium rounded-md'
                 }`}
               >
                 {selectedTrainees.length > 0 

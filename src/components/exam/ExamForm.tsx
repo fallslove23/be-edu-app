@@ -6,16 +6,22 @@ import {
   TrashIcon,
   CheckIcon,
   EyeIcon,
-  EyeSlashIcon
+  EyeSlashIcon,
+  XMarkIcon
 } from '@heroicons/react/24/outline';
 import { examStatusLabels, examTypeLabels } from '../../services/exam.services';
 import type { Exam, ExamType, ExamStatus, ExamQuestion, QuestionType } from '../../types/exam.types';
-import type { Course } from '../../services/course.services';
+import type { CourseRound } from '../../types/course-template.types';
 import { format, addDays } from 'date-fns';
+import { QuestionBankService } from '../../services/question-bank.service';
+import type { QuestionBank as QB, Question } from '../../services/question-bank.service';
+import SmartQuestionBankSelector from './SmartQuestionBankSelector';
+import VisualQuestionBuilder, { QuestionFormData } from './VisualQuestionBuilder';
+import QuestionEditModal from './QuestionEditModal';
 
 interface ExamFormProps {
   exam: Exam | null;
-  courses: Course[];
+  courseRounds: CourseRound[];
   onBack: () => void;
   onSave: (examData: Partial<Exam>) => void;
   questionBank?: {
@@ -27,7 +33,7 @@ interface ExamFormProps {
 }
 
 interface ExamFormData {
-  course_id: string;
+  round_id: string;
   title: string;
   description: string;
   exam_type: ExamType;
@@ -35,25 +41,16 @@ interface ExamFormData {
   total_questions: number;
   passing_score: number;
   max_attempts: number;
-  is_randomized: boolean;
-  show_results_immediately: boolean;
-  scheduled_start: string;
-  scheduled_end: string;
+  randomize_questions: boolean;
+  show_correct_answers: boolean;
+  scheduled_at: string;
+  available_until: string;
   status: ExamStatus;
-}
-
-interface QuestionFormData {
-  question_type: QuestionType;
-  question_text: string;
-  points: number;
-  options: string[];
-  correct_answer: string;
-  explanation: string;
 }
 
 const ExamForm: React.FC<ExamFormProps> = ({
   exam,
-  courses,
+  courseRounds,
   onBack,
   onSave,
   questionBank,
@@ -61,7 +58,15 @@ const ExamForm: React.FC<ExamFormProps> = ({
 }) => {
   const [questions, setQuestions] = useState<QuestionFormData[]>([]);
   const [showQuestions, setShowQuestions] = useState(false);
-  const [activeQuestionIndex, setActiveQuestionIndex] = useState<number | null>(null);
+  const [editingQuestionIndex, setEditingQuestionIndex] = useState<number | null>(null);
+  const [showBankSelector, setShowBankSelector] = useState(false);
+  const [availableBanks, setAvailableBanks] = useState<any[]>([]);
+
+  // 디버깅: courseRounds 확인
+  useEffect(() => {
+    console.log('📊 ExamForm courseRounds:', courseRounds);
+    console.log('📊 ExamForm courseRounds length:', courseRounds?.length);
+  }, [courseRounds]);
 
   const {
     register,
@@ -71,37 +76,79 @@ const ExamForm: React.FC<ExamFormProps> = ({
     formState: { errors, isSubmitting }
   } = useForm<ExamFormData>({
     defaultValues: exam ? {
-      course_id: exam.course_id,
+      round_id: exam.round_id || '',
       title: exam.title,
       description: exam.description || '',
       exam_type: exam.exam_type,
       duration_minutes: exam.duration_minutes,
-      total_questions: exam.total_questions,
+      total_questions: 10,
       passing_score: exam.passing_score,
       max_attempts: exam.max_attempts,
-      is_randomized: exam.is_randomized,
-      show_results_immediately: exam.show_results_immediately,
-      scheduled_start: exam.scheduled_start ? format(new Date(exam.scheduled_start), "yyyy-MM-dd'T'HH:mm") : '',
-      scheduled_end: exam.scheduled_end ? format(new Date(exam.scheduled_end), "yyyy-MM-dd'T'HH:mm") : '',
+      randomize_questions: exam.randomize_questions,
+      show_correct_answers: exam.show_correct_answers,
+      scheduled_at: exam.scheduled_at ? format(new Date(exam.scheduled_at), "yyyy-MM-dd'T'HH:mm") : '',
+      available_until: exam.available_until ? format(new Date(exam.available_until), "yyyy-MM-dd'T'HH:mm") : '',
       status: exam.status
     } : {
-      course_id: '',
+      round_id: '',
       title: questionBank ? `${questionBank.name} 시험` : '',
       description: '',
-      exam_type: 'multiple_choice',
+      exam_type: 'final',
       duration_minutes: 60,
       total_questions: questionBank ? questionBank.questions.length : 10,
       passing_score: 70,
       max_attempts: 3,
-      is_randomized: false,
-      show_results_immediately: true,
-      scheduled_start: format(new Date(), "yyyy-MM-dd'T'09:00"),
-      scheduled_end: format(addDays(new Date(), 1), "yyyy-MM-dd'T'18:00"),
+      randomize_questions: false,
+      show_correct_answers: false,
+      scheduled_at: format(new Date(), "yyyy-MM-dd'T'09:00"),
+      available_until: format(addDays(new Date(), 7), "yyyy-MM-dd'T'23:59"),
       status: 'draft'
     }
   });
 
   const watchedTotalQuestions = watch('total_questions');
+
+  // exam이 변경될 때 (편집 모드) 폼 값 업데이트
+  useEffect(() => {
+    if (exam) {
+      console.log('📝 Setting form values from exam:', exam);
+      console.log('📝 exam.round_id:', exam.round_id);
+
+      if (exam.round_id) {
+        setValue('round_id', exam.round_id);
+      }
+      setValue('title', exam.title);
+      setValue('description', exam.description || '');
+      setValue('exam_type', exam.exam_type);
+      setValue('duration_minutes', exam.duration_minutes);
+      setValue('total_questions', 10);
+      setValue('passing_score', exam.passing_score);
+      setValue('max_attempts', exam.max_attempts);
+      setValue('randomize_questions', exam.randomize_questions);
+      setValue('show_correct_answers', exam.show_correct_answers);
+
+      if (exam.scheduled_at) {
+        setValue('scheduled_at', format(new Date(exam.scheduled_at), "yyyy-MM-dd'T'HH:mm"));
+      }
+      if (exam.available_until) {
+        setValue('available_until', format(new Date(exam.available_until), "yyyy-MM-dd'T'HH:mm"));
+      }
+      setValue('status', exam.status);
+    }
+  }, [exam, setValue]);
+
+  // 문제은행 목록 로드
+  useEffect(() => {
+    const loadQuestionBanks = async () => {
+      try {
+        const banks = await QuestionBankService.getQuestionBanks({ includeQuestions: true });
+        setAvailableBanks(banks);
+      } catch (error) {
+        console.error('❌ Failed to load question banks:', error);
+      }
+    };
+    loadQuestionBanks();
+  }, []);
 
   // 문제은행에서 온 경우 문제 목록 미리 설정
   useEffect(() => {
@@ -118,6 +165,31 @@ const ExamForm: React.FC<ExamFormProps> = ({
       setShowQuestions(true); // 문제은행에서 온 경우 자동으로 문제 표시
     }
   }, [questionBank]);
+
+  // 문제은행에서 문제 가져오기
+  const importQuestionsFromBank = (bank: QB) => {
+    if (!bank.questions || bank.questions.length === 0) {
+      alert('이 문제은행에는 문제가 없습니다.');
+      return;
+    }
+
+    const bankQuestions: QuestionFormData[] = bank.questions.map((q: Question) => ({
+      question_type: (q.type === 'multiple_choice' || q.type === 'true_false' ||
+                      q.type === 'short_answer' || q.type === 'essay'
+                        ? q.type : 'multiple_choice') as QuestionType,
+      question_text: q.question_text,
+      points: q.points,
+      options: (q.options as string[]) || ['', '', '', ''],
+      correct_answer: q.correct_answer?.toString() || '',
+      explanation: q.explanation || ''
+    }));
+
+    setQuestions(bankQuestions);
+    setValue('total_questions', bankQuestions.length);
+    setShowQuestions(true);
+    setShowBankSelector(false);
+    alert(`${bank.name}에서 ${bankQuestions.length}개의 문제를 가져왔습니다.`);
+  };
 
   // 총 문항 수 변경 시 문제 목록 업데이트
   useEffect(() => {
@@ -147,8 +219,10 @@ const ExamForm: React.FC<ExamFormProps> = ({
       const examData: Partial<Exam> = {
         ...data,
         id: exam?.id,
-        scheduled_start: new Date(data.scheduled_start).toISOString(),
-        scheduled_end: new Date(data.scheduled_end).toISOString()
+        scheduled_at: new Date(data.scheduled_at).toISOString(),
+        available_until: new Date(data.available_until).toISOString(),
+        total_points: 100,
+        allow_review: true
       };
 
       onSave(examData);
@@ -212,19 +286,23 @@ const ExamForm: React.FC<ExamFormProps> = ({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                과정 선택 *
+                과정 차수 선택 *
               </label>
               <select
-                {...register('course_id', { required: '과정을 선택해주세요.' })}
+                {...register('round_id', { required: '과정 차수를 선택해주세요.' })}
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               >
-                <option value="">과정 선택</option>
-                {courses.map(course => (
-                  <option key={course.id} value={course.id}>{course.name}</option>
+                <option value="">과정 차수 선택</option>
+                {courseRounds.map(round => (
+                  <option key={round.id} value={round.id}>
+                    {round.title} ({round.status === 'recruiting' ? '모집중' :
+                     round.status === 'in_progress' ? '진행중' :
+                     round.status === 'planning' ? '기획중' : '완료'})
+                  </option>
                 ))}
               </select>
-              {errors.course_id && (
-                <p className="mt-1 text-sm text-red-600">{errors.course_id.message}</p>
+              {errors.round_id && (
+                <p className="mt-1 text-sm text-red-600">{errors.round_id.message}</p>
               )}
             </div>
 
@@ -357,7 +435,7 @@ const ExamForm: React.FC<ExamFormProps> = ({
             <div className="flex items-center">
               <input
                 type="checkbox"
-                {...register('is_randomized')}
+                {...register('randomize_questions')}
                 className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
               />
               <label className="ml-2 block text-sm text-gray-700">
@@ -368,11 +446,11 @@ const ExamForm: React.FC<ExamFormProps> = ({
             <div className="flex items-center">
               <input
                 type="checkbox"
-                {...register('show_results_immediately')}
+                {...register('show_correct_answers')}
                 className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
               />
               <label className="ml-2 block text-sm text-gray-700">
-                제출 즉시 결과 표시
+                정답 표시
               </label>
             </div>
           </div>
@@ -381,33 +459,33 @@ const ExamForm: React.FC<ExamFormProps> = ({
         {/* 일정 설정 */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
           <h2 className="text-lg font-medium text-gray-900 mb-4">일정 설정</h2>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                시작 일시 *
+                시험 시작 일시 *
               </label>
               <input
                 type="datetime-local"
-                {...register('scheduled_start', { required: '시작 일시를 설정해주세요.' })}
+                {...register('scheduled_at', { required: '시작 일시를 설정해주세요.' })}
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               />
-              {errors.scheduled_start && (
-                <p className="mt-1 text-sm text-red-600">{errors.scheduled_start.message}</p>
+              {errors.scheduled_at && (
+                <p className="mt-1 text-sm text-red-600">{errors.scheduled_at.message}</p>
               )}
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                종료 일시 *
+                응시 마감 일시 *
               </label>
               <input
                 type="datetime-local"
-                {...register('scheduled_end', { required: '종료 일시를 설정해주세요.' })}
+                {...register('available_until', { required: '마감 일시를 설정해주세요.' })}
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               />
-              {errors.scheduled_end && (
-                <p className="mt-1 text-sm text-red-600">{errors.scheduled_end.message}</p>
+              {errors.available_until && (
+                <p className="mt-1 text-sm text-red-600">{errors.available_until.message}</p>
               )}
             </div>
 
@@ -433,127 +511,51 @@ const ExamForm: React.FC<ExamFormProps> = ({
             <h2 className="text-lg font-medium text-gray-900">
               문제 관리 ({questions.length}개)
             </h2>
-            <button
-              type="button"
-              onClick={() => setShowQuestions(!showQuestions)}
-              className="flex items-center text-sm text-gray-600 hover:text-gray-700"
-            >
-              {showQuestions ? (
-                <>
-                  <EyeSlashIcon className="h-4 w-4 mr-1" />
-                  문제 숨기기
-                </>
-              ) : (
-                <>
-                  <EyeIcon className="h-4 w-4 mr-1" />
-                  문제 보기
-                </>
-              )}
-            </button>
+            <div className="flex items-center space-x-2">
+              <button
+                type="button"
+                onClick={() => setShowBankSelector(true)}
+                className="px-3 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors text-sm flex items-center"
+              >
+                <PlusIcon className="h-4 w-4 mr-1" />
+                문제은행에서 가져오기
+              </button>
+              <button
+                type="button"
+                onClick={() => setShowQuestions(!showQuestions)}
+                className="flex items-center text-sm text-gray-600 hover:text-gray-700"
+              >
+                {showQuestions ? (
+                  <>
+                    <EyeSlashIcon className="h-4 w-4 mr-1" />
+                    문제 숨기기
+                  </>
+                ) : (
+                  <>
+                    <EyeIcon className="h-4 w-4 mr-1" />
+                    문제 보기
+                  </>
+                )}
+              </button>
+            </div>
           </div>
 
           {showQuestions && (
             <div className="space-y-4">
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-gray-600 mb-4">
                 총 {watchedTotalQuestions}개의 문제를 설정할 수 있습니다. (현재 {questions.length}개)
               </p>
-              
-              {questions.map((question, index) => (
-                <div key={index} className="border border-gray-200 rounded-lg p-4">
-                  <div className="flex items-center justify-between mb-3">
-                    <h4 className="font-medium text-gray-900">문제 {index + 1}</h4>
-                    <button
-                      type="button"
-                      onClick={() => setActiveQuestionIndex(activeQuestionIndex === index ? null : index)}
-                      className="text-sm text-gray-600 hover:text-gray-700"
-                    >
-                      {activeQuestionIndex === index ? '접기' : '편집'}
-                    </button>
-                  </div>
 
-                  {activeQuestionIndex === index && (
-                    <div className="space-y-4 border-t border-gray-100 pt-4">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          문제 내용 *
-                        </label>
-                        <textarea
-                          value={question.question_text}
-                          onChange={(e) => updateQuestion(index, { question_text: e.target.value })}
-                          rows={3}
-                          className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                          placeholder="문제를 입력하세요."
-                        />
-                      </div>
-
-                      {question.question_type === 'multiple_choice' && (
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">
-                            선택지
-                          </label>
-                          <div className="space-y-2">
-                            {question.options.map((option, optionIndex) => (
-                              <div key={optionIndex} className="flex items-center space-x-2">
-                                <span className="text-sm text-gray-500 w-6">
-                                  {String.fromCharCode(65 + optionIndex)}.
-                                </span>
-                                <input
-                                  type="text"
-                                  value={option}
-                                  onChange={(e) => updateQuestionOption(index, optionIndex, e.target.value)}
-                                  className="flex-1 border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                  placeholder={`선택지 ${optionIndex + 1}`}
-                                />
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-
-                      <div className="grid grid-cols-2 gap-4">
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">
-                            정답
-                          </label>
-                          <input
-                            type="text"
-                            value={question.correct_answer}
-                            onChange={(e) => updateQuestion(index, { correct_answer: e.target.value })}
-                            className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                            placeholder="정답을 입력하세요."
-                          />
-                        </div>
-
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">
-                            배점
-                          </label>
-                          <input
-                            type="number"
-                            value={question.points}
-                            onChange={(e) => updateQuestion(index, { points: parseInt(e.target.value) || 1 })}
-                            className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                            min="1"
-                          />
-                        </div>
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          해설 (선택사항)
-                        </label>
-                        <textarea
-                          value={question.explanation}
-                          onChange={(e) => updateQuestion(index, { explanation: e.target.value })}
-                          rows={2}
-                          className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                          placeholder="정답 해설을 입력하세요."
-                        />
-                      </div>
-                    </div>
-                  )}
-                </div>
-              ))}
+              <VisualQuestionBuilder
+                questions={questions}
+                onQuestionsChange={setQuestions}
+                onEditQuestion={(index) => setEditingQuestionIndex(index)}
+                onDeleteQuestion={(index) => {
+                  if (window.confirm('이 문제를 삭제하시겠습니까?')) {
+                    setQuestions(prev => prev.filter((_, i) => i !== index));
+                  }
+                }}
+              />
             </div>
           )}
         </div>
@@ -579,6 +581,29 @@ const ExamForm: React.FC<ExamFormProps> = ({
           </div>
         </div>
       </form>
+
+      {/* 스마트 문제은행 선택 모달 */}
+      {showBankSelector && (
+        <SmartQuestionBankSelector
+          banks={availableBanks}
+          onSelect={importQuestionsFromBank}
+          onClose={() => setShowBankSelector(false)}
+        />
+      )}
+
+      {/* 문제 편집 모달 */}
+      {editingQuestionIndex !== null && questions[editingQuestionIndex] && (
+        <QuestionEditModal
+          question={questions[editingQuestionIndex]}
+          questionIndex={editingQuestionIndex}
+          onSave={(updatedQuestion) => {
+            const newQuestions = [...questions];
+            newQuestions[editingQuestionIndex] = updatedQuestion;
+            setQuestions(newQuestions);
+          }}
+          onClose={() => setEditingQuestionIndex(null)}
+        />
+      )}
     </div>
   );
 };

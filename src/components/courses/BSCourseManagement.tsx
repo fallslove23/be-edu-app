@@ -16,11 +16,12 @@ import {
   UsersIcon
 } from '@heroicons/react/24/outline';
 import { CourseTemplateService } from '../../services/course-template.service';
-import type { 
-  CourseTemplate, 
-  CourseRound, 
+import { UserService, type User } from '../../services/user.services';
+import type {
+  CourseTemplate,
+  CourseRound,
   BSCourseSummary,
-  RoundStats 
+  RoundStats
 } from '../../types/course-template.types';
 import toast from 'react-hot-toast';
 
@@ -55,15 +56,59 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
   const [isNewTemplateModalOpen, setIsNewTemplateModalOpen] = useState(false);
   const [editingTemplate, setEditingTemplate] = useState<CourseTemplate | null>(null);
 
+  // 차수 상세 모달
+  const [roundDetailModal, setRoundDetailModal] = useState<{
+    isOpen: boolean;
+    round: CourseRound | null;
+  }>({ isOpen: false, round: null });
+
+  // 차수 편집 모달
+  const [roundEditModal, setRoundEditModal] = useState<{
+    isOpen: boolean;
+    round: CourseRound | null;
+  }>({ isOpen: false, round: null });
+
+  // 운영 담당자 목록
+  const [managers, setManagers] = useState<User[]>([]);
+  // 강의실 목록
+  const [classrooms, setClassrooms] = useState<any[]>([]);
+
   useEffect(() => {
     loadData();
+    loadManagers();
+    loadClassrooms();
   }, [selectedTemplate]);
+
+  const loadManagers = async () => {
+    try {
+      const managerUsers = await UserService.getUsersByRole('course_manager');
+      setManagers(managerUsers);
+    } catch (error) {
+      console.error('운영 담당자 로드 오류:', error);
+    }
+  };
+
+  const loadClassrooms = async () => {
+    try {
+      const { data, error } = await import('../../services/supabase').then(m =>
+        m.supabase.from('classrooms').select('*').eq('is_active', true).order('name')
+      );
+      if (error) throw error;
+      setClassrooms(data || []);
+    } catch (error) {
+      console.error('강의실 로드 오류:', error);
+      toast.error('강의실 목록을 불러오는데 실패했습니다.');
+    }
+  };
 
   const loadData = async () => {
     try {
       console.log('📊 BSCourseManagement 데이터 로딩 시작...');
       setIsLoading(true);
-      
+
+      // 날짜 기반 자동 상태 업데이트 실행
+      await CourseTemplateService.autoUpdateRoundStatus();
+
       const [templatesData, roundsData, summaryData] = await Promise.all([
         CourseTemplateService.getTemplates(),
         CourseTemplateService.getRounds(
@@ -160,6 +205,75 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
     } catch (error) {
       console.error('차수 생성 실패:', error);
       toast.error('차수 생성 중 오류가 발생했습니다.');
+    }
+  };
+
+  // 차수 상세 보기
+  const handleViewRound = (round: CourseRound) => {
+    setRoundDetailModal({ isOpen: true, round });
+  };
+
+  // 차수 편집
+  const handleEditRound = (round: CourseRound) => {
+    setRoundEditModal({ isOpen: true, round });
+  };
+
+  // 차수 저장
+  const handleSaveRound = async (updatedRound: CourseRound) => {
+    try {
+      await CourseTemplateService.updateRound(updatedRound.id, updatedRound);
+      await loadData();
+      setRoundEditModal({ isOpen: false, round: null });
+      toast.success('차수가 성공적으로 수정되었습니다.');
+    } catch (error) {
+      console.error('차수 수정 실패:', error);
+      toast.error('차수 수정 중 오류가 발생했습니다.');
+    }
+  };
+
+  // 차수 시작
+  const handleStartRound = async (round: CourseRound) => {
+    try {
+      await CourseTemplateService.updateRound(round.id, {
+        ...round,
+        status: 'in_progress'
+      });
+      await loadData();
+      toast.success('차수가 시작되었습니다.');
+    } catch (error) {
+      console.error('차수 시작 실패:', error);
+      toast.error('차수 시작 중 오류가 발생했습니다.');
+    }
+  };
+
+  // 차수 완료
+  const handleCompleteRound = async (round: CourseRound) => {
+    try {
+      await CourseTemplateService.updateRound(round.id, {
+        ...round,
+        status: 'completed'
+      });
+      await loadData();
+      toast.success('차수가 완료되었습니다.');
+    } catch (error) {
+      console.error('차수 완료 실패:', error);
+      toast.error('차수 완료 중 오류가 발생했습니다.');
+    }
+  };
+
+  // 차수 삭제
+  const handleDeleteRound = async (round: CourseRound) => {
+    if (!confirm(`"${round.title}" 차수를 삭제하시겠습니까?`)) {
+      return;
+    }
+
+    try {
+      await CourseTemplateService.deleteRound(round.id);
+      await loadData();
+      toast.success('차수가 삭제되었습니다.');
+    } catch (error) {
+      console.error('차수 삭제 실패:', error);
+      toast.error('차수 삭제 중 오류가 발생했습니다.');
     }
   };
 
@@ -769,7 +883,9 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
                       {getStatusLabel(round.status)}
                     </span>
                   </div>
-                  <p className="text-sm text-muted-foreground">강사: {round.instructor_name}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {round.manager_name ? `운영: ${round.manager_name}` : '운영 담당자 미배정'}
+                  </p>
                 </div>
 
                 {/* 상세 정보 */}
@@ -793,18 +909,36 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
                 {/* 액션 버튼 */}
                 <div className="p-6 pt-0">
                   <div className="flex space-x-2">
-                    <button className="btn-neutral btn-sm flex-1 flex items-center justify-center">
+                    <button
+                      onClick={() => handleViewRound(round)}
+                      className="btn-neutral btn-sm flex-1 flex items-center justify-center"
+                    >
                       <EyeIcon className="w-4 h-4 mr-1" />
                       상세
                     </button>
-                    <button className="btn-slate btn-sm flex-1 flex items-center justify-center">
+                    <button
+                      onClick={() => handleEditRound(round)}
+                      className="btn-slate btn-sm flex-1 flex items-center justify-center"
+                    >
                       <PencilIcon className="w-4 h-4 mr-1" />
                       편집
                     </button>
                     {round.status === 'recruiting' && (
-                      <button className="btn-primary btn-sm flex-1 flex items-center justify-center">
+                      <button
+                        onClick={() => handleStartRound(round)}
+                        className="btn-primary btn-sm flex-1 flex items-center justify-center"
+                      >
                         <PlayIcon className="w-4 h-4 mr-1" />
                         시작
+                      </button>
+                    )}
+                    {round.status === 'in_progress' && (
+                      <button
+                        onClick={() => handleCompleteRound(round)}
+                        className="btn-primary btn-sm flex-1 flex items-center justify-center"
+                      >
+                        <StopIcon className="w-4 h-4 mr-1" />
+                        완료
                       </button>
                     )}
                   </div>
@@ -883,7 +1017,7 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
                     </div>
                     <div className="text-center p-3 bg-muted rounded-lg">
                       <AcademicCapIcon className="w-5 h-5 text-muted-foreground mx-auto mb-1" />
-                      <div className="text-lg font-bold text-card-foreground">{template.curriculum.length}</div>
+                      <div className="text-lg font-bold text-card-foreground">{template.curriculum?.length || 0}</div>
                       <div className="text-xs text-muted-foreground">커리큘럼</div>
                     </div>
                   </div>
@@ -907,24 +1041,26 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
                   </div>
 
                   {/* 커리큘럼 미리보기 */}
-                  <div className="mb-6">
-                    <h4 className="text-sm font-medium text-card-foreground mb-2">커리큘럼 구성</h4>
-                    <div className="space-y-2">
-                      {template.curriculum.slice(0, 2).map((curriculum, idx) => (
-                        <div key={curriculum.id} className="flex items-center justify-between text-sm">
-                          <span className="text-card-foreground">
-                            {curriculum.day}일차: {curriculum.title}
-                          </span>
-                          <span className="text-muted-foreground">{curriculum.duration_hours}h</span>
-                        </div>
-                      ))}
-                      {template.curriculum.length > 2 && (
-                        <div className="text-sm text-muted-foreground">
-                          +{template.curriculum.length - 2}개 커리큘럼 더보기
-                        </div>
-                      )}
+                  {template.curriculum && template.curriculum.length > 0 && (
+                    <div className="mb-6">
+                      <h4 className="text-sm font-medium text-card-foreground mb-2">커리큘럼 구성</h4>
+                      <div className="space-y-2">
+                        {template.curriculum.slice(0, 2).map((curriculum, idx) => (
+                          <div key={curriculum.id} className="flex items-center justify-between text-sm">
+                            <span className="text-card-foreground">
+                              {curriculum.day}일차: {curriculum.title}
+                            </span>
+                            <span className="text-muted-foreground">{curriculum.duration_hours}h</span>
+                          </div>
+                        ))}
+                        {template.curriculum.length > 2 && (
+                          <div className="text-sm text-muted-foreground">
+                            +{template.curriculum.length - 2}개 커리큘럼 더보기
+                          </div>
+                        )}
+                      </div>
                     </div>
-                  </div>
+                  )}
 
                   {/* 액션 버튼 */}
                   <div className="flex space-x-2">
@@ -950,8 +1086,354 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
       {isRoundModalOpen && <CreateRoundModal />}
       {templateEditModal.isOpen && <TemplateEditModal />}
       {isNewTemplateModalOpen && <NewTemplateModal />}
+      {roundDetailModal.isOpen && <RoundDetailModal />}
+      {roundEditModal.isOpen && <RoundEditModal />}
     </div>
   );
+
+  // 차수 상세 보기 모달
+  function RoundDetailModal() {
+    if (!roundDetailModal.isOpen || !roundDetailModal.round) return null;
+
+    const round = roundDetailModal.round;
+
+    return (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div className="bg-card rounded-xl max-w-3xl w-full max-h-[90vh] overflow-hidden border border-border">
+          <div className="flex justify-between items-center p-6 border-b border-border">
+            <div>
+              <h2 className="text-xl font-bold text-card-foreground">{round.title}</h2>
+              <p className="text-sm text-muted-foreground mt-1">차수 상세 정보</p>
+            </div>
+            <button
+              onClick={() => setRoundDetailModal({ isOpen: false, round: null })}
+              className="text-muted-foreground hover:text-foreground"
+            >
+              ✕
+            </button>
+          </div>
+
+          <div className="overflow-y-auto max-h-[calc(90vh-140px)] p-6">
+            <div className="space-y-6">
+              {/* 상태 */}
+              <div>
+                <h3 className="text-sm font-medium text-muted-foreground mb-2">상태</h3>
+                <span className={`inline-flex px-3 py-1 text-sm font-medium rounded-full border ${getStatusColor(round.status)}`}>
+                  {getStatusLabel(round.status)}
+                </span>
+              </div>
+
+              {/* 기본 정보 */}
+              <div>
+                <h3 className="text-sm font-medium text-muted-foreground mb-2">차수</h3>
+                <p className="text-card-foreground">{round.round_number}차</p>
+              </div>
+
+              {/* 운영 담당자 */}
+              <div>
+                <h3 className="text-sm font-medium text-muted-foreground mb-2">운영 담당자</h3>
+                <p className="text-card-foreground">
+                  {round.manager_name || '미배정'}
+                </p>
+              </div>
+
+              {/* 강사 배정 안내 */}
+              <div className="bg-muted/30 rounded-lg p-4 border border-border">
+                <p className="text-sm text-muted-foreground">
+                  💡 강사는 세션(일정)별로 배정됩니다. 과정 플래너에서 관리하세요.
+                </p>
+              </div>
+
+              {/* 일정 */}
+              <div>
+                <h3 className="text-sm font-medium text-muted-foreground mb-2">교육 일정</h3>
+                <div className="flex items-center text-card-foreground">
+                  <CalendarDaysIcon className="w-5 h-5 mr-2 text-muted-foreground" />
+                  {round.start_date} ~ {round.end_date}
+                </div>
+              </div>
+
+              {/* 수강 정보 */}
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <h3 className="text-sm font-medium text-muted-foreground mb-2">수강생</h3>
+                  <div className="flex items-center text-card-foreground">
+                    <UserGroupIcon className="w-5 h-5 mr-2 text-muted-foreground" />
+                    {round.current_trainees}/{round.max_trainees}명
+                  </div>
+                </div>
+                <div>
+                  <h3 className="text-sm font-medium text-muted-foreground mb-2">강의 장소</h3>
+                  <div className="flex items-center text-card-foreground">
+                    <MapPinIcon className="w-5 h-5 mr-2 text-muted-foreground" />
+                    {round.location}
+                  </div>
+                </div>
+              </div>
+
+              {/* 설명 */}
+              {round.description && (
+                <div>
+                  <h3 className="text-sm font-medium text-muted-foreground mb-2">설명</h3>
+                  <p className="text-card-foreground whitespace-pre-wrap">{round.description}</p>
+                </div>
+              )}
+
+              {/* 세션 정보 */}
+              {round.sessions && round.sessions.length > 0 && (
+                <div>
+                  <h3 className="text-sm font-medium text-muted-foreground mb-3">세션 목록</h3>
+                  <div className="space-y-2">
+                    {round.sessions.map((session, idx) => (
+                      <div key={idx} className="border border-border rounded-lg p-3">
+                        <div className="flex justify-between items-start">
+                          <div>
+                            <h4 className="font-medium text-card-foreground">{session.title}</h4>
+                            <p className="text-sm text-muted-foreground mt-1">
+                              {session.scheduled_date} {session.start_time} ~ {session.end_time}
+                            </p>
+                          </div>
+                          <span className={`text-xs px-2 py-1 rounded-full ${
+                            session.status === 'completed'
+                              ? 'bg-green-100 text-green-700'
+                              : session.status === 'in_progress'
+                              ? 'bg-blue-100 text-blue-700'
+                              : 'bg-gray-100 text-gray-700'
+                          }`}>
+                            {session.status === 'completed' ? '완료' : session.status === 'in_progress' ? '진행중' : '예정'}
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className="flex justify-end space-x-3 p-6 border-t border-border">
+            <button
+              onClick={() => setRoundDetailModal({ isOpen: false, round: null })}
+              className="btn-neutral px-4 py-2 text-sm font-medium rounded-lg"
+            >
+              닫기
+            </button>
+            <button
+              onClick={() => {
+                setRoundDetailModal({ isOpen: false, round: null });
+                handleEditRound(round);
+              }}
+              className="btn-primary px-4 py-2 text-sm font-medium rounded-lg"
+            >
+              편집
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // 차수 편집 모달
+  function RoundEditModal() {
+    const [formData, setFormData] = useState<CourseRound | null>(null);
+
+    useEffect(() => {
+      if (roundEditModal.round) {
+        setFormData(roundEditModal.round);
+      }
+    }, [roundEditModal.round]);
+
+    const handleSubmit = async (e: React.FormEvent) => {
+      e.preventDefault();
+      if (formData) {
+        await handleSaveRound(formData);
+      }
+    };
+
+    if (!roundEditModal.isOpen || !formData) return null;
+
+    return (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div className="bg-card rounded-xl max-w-2xl w-full max-h-[90vh] overflow-hidden border border-border">
+          <div className="flex justify-between items-center p-6 border-b border-border">
+            <h2 className="text-xl font-bold text-card-foreground">차수 편집</h2>
+            <button
+              onClick={() => setRoundEditModal({ isOpen: false, round: null })}
+              className="text-muted-foreground hover:text-foreground"
+            >
+              ✕
+            </button>
+          </div>
+
+          <form onSubmit={handleSubmit} className="overflow-y-auto max-h-[calc(90vh-140px)]">
+            <div className="p-6 space-y-6">
+              {/* 제목 */}
+              <div>
+                <label className="block text-sm font-medium text-card-foreground mb-2">제목</label>
+                <input
+                  type="text"
+                  value={formData.title}
+                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                  className="w-full border border-input rounded-lg px-3 py-2 bg-background text-foreground focus:ring-2 focus:ring-ring"
+                  required
+                />
+              </div>
+
+              {/* 차수 번호 */}
+              <div>
+                <label className="block text-sm font-medium text-card-foreground mb-2">차수</label>
+                <input
+                  type="number"
+                  value={formData.round_number}
+                  onChange={(e) => setFormData({ ...formData, round_number: parseInt(e.target.value) || 1 })}
+                  className="w-full border border-input rounded-lg px-3 py-2 bg-background text-foreground focus:ring-2 focus:ring-ring"
+                  min="1"
+                  required
+                />
+              </div>
+
+              {/* 운영 담당자 */}
+              <div>
+                <label className="block text-sm font-medium text-card-foreground mb-2">운영 담당자</label>
+                <select
+                  value={formData.manager_id || ''}
+                  onChange={(e) => {
+                    const selectedManager = managers.find(m => m.id === e.target.value);
+                    setFormData({
+                      ...formData,
+                      manager_id: e.target.value || undefined,
+                      manager_name: selectedManager?.name || undefined
+                    });
+                  }}
+                  className="w-full border border-input rounded-lg px-3 py-2 bg-background text-foreground focus:ring-2 focus:ring-ring"
+                >
+                  <option value="">선택</option>
+                  {managers.map(manager => (
+                    <option key={manager.id} value={manager.id}>
+                      {manager.name}
+                    </option>
+                  ))}
+                </select>
+                <p className="text-xs text-muted-foreground mt-1">
+                  * 운영 담당자 (course_manager 역할)
+                </p>
+              </div>
+
+              {/* 시작일, 종료일 */}
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-card-foreground mb-2">시작일</label>
+                  <input
+                    type="date"
+                    value={formData.start_date}
+                    onChange={(e) => setFormData({ ...formData, start_date: e.target.value })}
+                    className="w-full border border-input rounded-lg px-3 py-2 bg-background text-foreground focus:ring-2 focus:ring-ring"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-card-foreground mb-2">종료일</label>
+                  <input
+                    type="date"
+                    value={formData.end_date}
+                    onChange={(e) => setFormData({ ...formData, end_date: e.target.value })}
+                    className="w-full border border-input rounded-lg px-3 py-2 bg-background text-foreground focus:ring-2 focus:ring-ring"
+                    required
+                  />
+                </div>
+              </div>
+
+              {/* 입과 인원 */}
+              <div>
+                <label className="block text-sm font-medium text-card-foreground mb-2">입과 인원</label>
+                <input
+                  type="number"
+                  value={formData.max_trainees}
+                  onChange={(e) => setFormData({ ...formData, max_trainees: parseInt(e.target.value) || 20 })}
+                  className="w-full border border-input rounded-lg px-3 py-2 bg-background text-foreground focus:ring-2 focus:ring-ring"
+                  min="1"
+                  required
+                />
+              </div>
+
+              {/* 강의 장소 */}
+              <div>
+                <label className="block text-sm font-medium text-card-foreground mb-2">장소</label>
+                <select
+                  value={formData.location}
+                  onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+                  className="w-full border border-input rounded-lg px-3 py-2 bg-background text-foreground focus:ring-2 focus:ring-ring"
+                  required
+                >
+                  <option value="">강의실을 선택하세요</option>
+                  {classrooms.map(classroom => (
+                    <option key={classroom.id} value={classroom.name}>
+                      {classroom.name} (위치: {classroom.location || '미지정'}, 수용: {classroom.capacity}명)
+                    </option>
+                  ))}
+                </select>
+                <p className="text-xs text-muted-foreground mt-1">
+                  * 자원 관리에서 생성한 강의실 목록
+                </p>
+              </div>
+
+              {/* 상태 */}
+              <div>
+                <label className="block text-sm font-medium text-card-foreground mb-2">상태</label>
+                <select
+                  value={formData.status}
+                  onChange={(e) => setFormData({ ...formData, status: e.target.value as any })}
+                  className="w-full border border-input rounded-lg px-3 py-2 bg-background text-foreground focus:ring-2 focus:ring-ring"
+                >
+                  <option value="planning">기획 중</option>
+                  <option value="recruiting">모집 중</option>
+                  <option value="in_progress">진행 중</option>
+                  <option value="completed">완료</option>
+                  <option value="cancelled">취소</option>
+                </select>
+              </div>
+
+              {/* 설명 */}
+              <div>
+                <label className="block text-sm font-medium text-card-foreground mb-2">설명</label>
+                <textarea
+                  value={formData.description || ''}
+                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                  className="w-full border border-input rounded-lg px-3 py-2 bg-background text-foreground focus:ring-2 focus:ring-ring"
+                  rows={4}
+                />
+              </div>
+            </div>
+
+            <div className="flex justify-between items-center p-6 border-t border-border">
+              <button
+                type="button"
+                onClick={() => handleDeleteRound(formData)}
+                className="btn-outline border-destructive text-destructive hover:bg-destructive hover:text-destructive-foreground px-4 py-2 text-sm font-medium rounded-lg"
+              >
+                삭제
+              </button>
+              <div className="flex space-x-3">
+                <button
+                  type="button"
+                  onClick={() => setRoundEditModal({ isOpen: false, round: null })}
+                  className="btn-neutral px-4 py-2 text-sm font-medium rounded-lg"
+                >
+                  취소
+                </button>
+                <button
+                  type="submit"
+                  className="btn-primary px-4 py-2 text-sm font-medium rounded-lg"
+                >
+                  저장
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    );
+  }
 
   // 새 차수 생성 모달
   function CreateRoundModal() {
@@ -960,6 +1442,8 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
       round_number: 1,
       title: '',
       instructor_name: '',
+      manager_id: '' as string | undefined,
+      manager_name: '' as string | undefined,
       start_date: '',
       end_date: '',
       max_trainees: 20,
@@ -978,15 +1462,18 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
           id: `round-${Date.now()}`,
           template_id: formData.template_id,
           round_number: formData.round_number,
-          title: formData.auto_generate_title 
+          title: formData.auto_generate_title
             ? `${selectedTemplate?.name} ${formData.round_number}차`
             : formData.title,
-          instructor_name: formData.instructor_name,
+          instructor_name: '강사 미배정', // 세션별로 배정 예정
+          manager_id: formData.manager_id,
+          manager_name: formData.manager_name,
           start_date: formData.start_date,
           end_date: formData.end_date,
           max_trainees: formData.max_trainees,
           current_trainees: 0,
           location: formData.location,
+          description: formData.description,
           status: 'planning' as const,
           sessions: [],
           created_at: new Date().toISOString(),
@@ -1002,6 +1489,8 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
           round_number: 1,
           title: '',
           instructor_name: '',
+          manager_id: undefined,
+          manager_name: undefined,
           start_date: '',
           end_date: '',
           max_trainees: 20,
@@ -1066,39 +1555,67 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
               {/* 등록된 과정 */}
               <div>
                 <h3 className="text-lg font-semibold text-card-foreground mb-4">등록된 과정</h3>
-                <div className="space-y-4">
-                  {templates.map(template => (
-                    <div 
-                      key={template.id}
-                      className={`border rounded-lg p-4 cursor-pointer transition-colors ${
-                        formData.template_id === template.id 
-                          ? 'border-primary bg-primary/5' 
-                          : 'border-border hover:border-primary/50'
-                      }`}
-                      onClick={() => setFormData(prev => ({ ...prev, template_id: template.id }))}
-                    >
-                      <div className="flex justify-between items-center">
-                        <div>
-                          <h4 className="font-medium text-card-foreground">{template.name}</h4>
-                          <p className="text-sm text-muted-foreground">{template.description}</p>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <button 
-                            type="button"
-                            className="p-2 text-muted-foreground hover:text-primary"
-                          >
-                            <PencilIcon className="w-4 h-4" />
-                          </button>
-                          <button 
-                            type="button"
-                            className="p-2 text-muted-foreground hover:text-destructive"
-                          >
-                            <TrashIcon className="w-4 h-4" />
-                          </button>
+                <div className="max-h-[300px] overflow-y-auto border border-border rounded-lg p-3 bg-muted/20">
+                  <div className="space-y-3">
+                    {templates.map(template => (
+                      <div
+                        key={template.id}
+                        className={`border rounded-lg p-3 cursor-pointer transition-colors bg-card ${
+                          formData.template_id === template.id
+                            ? 'border-primary bg-primary/5 ring-2 ring-primary/20'
+                            : 'border-border hover:border-primary/50 hover:bg-accent/50'
+                        }`}
+                        onClick={() => setFormData(prev => ({ ...prev, template_id: template.id }))}
+                      >
+                        <div className="flex justify-between items-start">
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2 mb-1">
+                              <h4 className="font-medium text-card-foreground">{template.name}</h4>
+                              {template.category_data && (
+                                <span
+                                  className="text-xs px-2 py-0.5 rounded-full font-medium"
+                                  style={{
+                                    backgroundColor: `${template.category_data.color}20`,
+                                    color: template.category_data.color
+                                  }}
+                                >
+                                  {template.category_data.name}
+                                </span>
+                              )}
+                            </div>
+                            <p className="text-sm text-muted-foreground">{template.description}</p>
+                            {template.category_data?.parent_name && (
+                              <p className="text-xs text-muted-foreground/70 mt-1">
+                                {template.category_data.parent_name}
+                              </p>
+                            )}
+                          </div>
+                          <div className="flex items-center space-x-1 ml-2">
+                            <button
+                              type="button"
+                              className="p-1.5 text-muted-foreground hover:text-primary rounded hover:bg-accent"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                // TODO: 편집 기능
+                              }}
+                            >
+                              <PencilIcon className="w-4 h-4" />
+                            </button>
+                            <button
+                              type="button"
+                              className="p-1.5 text-muted-foreground hover:text-destructive rounded hover:bg-accent"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                // TODO: 삭제 기능
+                              }}
+                            >
+                              <TrashIcon className="w-4 h-4" />
+                            </button>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
               </div>
 
@@ -1190,27 +1707,49 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
 
               {/* 강의 장소 */}
               <div>
-                <label className="block text-sm font-medium text-card-foreground mb-2">강의 장소</label>
-                <input
-                  type="text"
+                <label className="block text-sm font-medium text-card-foreground mb-2">장소</label>
+                <select
                   value={formData.location}
                   onChange={(e) => setFormData(prev => ({ ...prev, location: e.target.value }))}
                   className="w-full border border-input rounded-lg px-3 py-2 bg-background text-foreground focus:ring-2 focus:ring-ring"
-                  placeholder="강의실 또는 장소를 입력하세요"
-                />
+                >
+                  <option value="">강의실을 선택하세요</option>
+                  {classrooms.map(classroom => (
+                    <option key={classroom.id} value={classroom.name}>
+                      {classroom.name} (위치: {classroom.location || '미지정'}, 수용: {classroom.capacity}명)
+                    </option>
+                  ))}
+                </select>
+                <p className="text-xs text-muted-foreground mt-1">
+                  * 자원 관리에서 생성한 강의실 목록
+                </p>
               </div>
 
-              {/* 강사명 */}
+              {/* 운영 담당자 */}
               <div>
-                <label className="block text-sm font-medium text-card-foreground mb-2">강사명</label>
-                <input
-                  type="text"
-                  value={formData.instructor_name}
-                  onChange={(e) => setFormData(prev => ({ ...prev, instructor_name: e.target.value }))}
+                <label className="block text-sm font-medium text-card-foreground mb-2">운영 담당자</label>
+                <select
+                  value={formData.manager_id || ''}
+                  onChange={(e) => {
+                    const selectedManager = managers.find(m => m.id === e.target.value);
+                    setFormData(prev => ({
+                      ...prev,
+                      manager_id: e.target.value || undefined,
+                      manager_name: selectedManager?.name || undefined
+                    }));
+                  }}
                   className="w-full border border-input rounded-lg px-3 py-2 bg-background text-foreground focus:ring-2 focus:ring-ring"
-                  placeholder="담당 강사명을 입력하세요"
-                  required
-                />
+                >
+                  <option value="">선택</option>
+                  {managers.map(manager => (
+                    <option key={manager.id} value={manager.id}>
+                      {manager.name}
+                    </option>
+                  ))}
+                </select>
+                <p className="text-xs text-muted-foreground mt-1">
+                  * 운영 담당자 (course_manager 역할)
+                </p>
               </div>
 
               {/* 설명 */}

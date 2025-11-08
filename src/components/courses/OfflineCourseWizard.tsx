@@ -744,7 +744,7 @@ const OfflineCourseWizard: React.FC<OfflineCourseWizardProps> = ({
         <button
           type="button"
           onClick={addInstructor}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2"
+          className="btn-primary px-4 py-2 rounded-lg flex items-center space-x-2"
         >
           <PlusIcon className="h-4 w-4" />
           <span>강사 추가</span>
@@ -855,7 +855,7 @@ const OfflineCourseWizard: React.FC<OfflineCourseWizardProps> = ({
           <button
             type="button"
             onClick={() => setShowExcelImporter(true)}
-            className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2"
+            className="btn-success px-4 py-2 rounded-lg flex items-center space-x-2"
           >
             <DocumentArrowUpIcon className="h-4 w-4" />
             <span>엑셀 가져오기</span>
@@ -1157,7 +1157,7 @@ const OfflineCourseWizard: React.FC<OfflineCourseWizardProps> = ({
                 type="button"
                 onClick={nextStep}
                 disabled={currentStep === 1 && (!courseInfo.seriesId || !courseInfo.levelId)}
-                className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
+                className="btn-primary"
               >
                 <span>다음</span>
                 <ChevronRightIcon className="h-4 w-4" />
@@ -1166,7 +1166,7 @@ const OfflineCourseWizard: React.FC<OfflineCourseWizardProps> = ({
               <button
                 type="button"
                 onClick={handleSubmit}
-                className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 flex items-center space-x-2"
+                className="btn-success"
               >
                 <CheckCircleIcon className="h-4 w-4" />
                 <span>과정 개설</span>

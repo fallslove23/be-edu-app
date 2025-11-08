@@ -32,22 +32,22 @@ const tabs: TabConfig[] = [
     roles: ['admin', 'manager', 'operator']
   },
   {
-    id: 'rounds',
-    label: '과정 관리',
-    icon: CalendarDaysIcon,
-    description: '과정별 교육 운영 관리',
-    roles: ['admin', 'manager', 'operator']
-  },
-  {
     id: 'templates',
-    label: '교육 과정 운영 관리',
+    label: '과정 템플릿 관리',
     icon: DocumentDuplicateIcon,
-    description: '교육 과정 템플릿 통합 관리',
+    description: '교육 과정 템플릿 생성 및 관리',
     roles: ['admin', 'manager']
   },
   {
+    id: 'rounds',
+    label: '과정 운영 관리',
+    icon: CalendarDaysIcon,
+    description: '차수별 과정 진행 및 완료 관리',
+    roles: ['admin', 'manager', 'operator']
+  },
+  {
     id: 'attendance',
-    label: '출석',
+    label: '출석 관리',
     icon: CheckCircleIcon,
     description: '수강생 출석 관리',
     roles: ['admin', 'manager', 'operator', 'instructor']

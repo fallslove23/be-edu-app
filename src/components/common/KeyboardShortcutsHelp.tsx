@@ -46,7 +46,7 @@ const KeyboardShortcutsHelp: React.FC<KeyboardShortcutsHelpProps> = ({ shortcuts
     return (
       <button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-4 right-4 p-3 bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700 transition-colors z-50"
+        className="btn-primary"
         title="키보드 단축키 도움말 (? 키)"
       >
         <QuestionMarkCircleIcon className="h-5 w-5" />

@@ -53,7 +53,7 @@ class ErrorBoundary extends Component<Props, State> {
                 </details>
                 <button
                   onClick={() => window.location.reload()}
-                  className="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition-colors"
+                  className="btn-primary"
                 >
                   페이지 새로고침
                 </button>

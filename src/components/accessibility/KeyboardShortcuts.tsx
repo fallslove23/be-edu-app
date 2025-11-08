@@ -430,7 +430,7 @@ const AccessibilitySettings: React.FC<{
           </button>
           <button
             onClick={handleSave}
-            className="px-4 py-2 bg-blue-500 text-white text-sm rounded hover:bg-blue-600"
+            className="btn-primary"
           >
             저장
           </button>
@@ -740,7 +740,7 @@ const KeyboardShortcuts: React.FC = () => {
         <div className="flex flex-col space-y-1">
           <button
             onClick={() => setShowHelp(true)}
-            className="p-1.5 bg-blue-500/80 text-white rounded-full shadow-md hover:bg-blue-600/90 transition-all duration-200 backdrop-blur-sm"
+            className="btn-primary"
             title="키보드 단축키 도움말 (Ctrl+Shift+?)"
             aria-label="키보드 단축키 도움말"
           >

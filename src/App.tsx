@@ -1,4 +1,4 @@
-import React, { useState, useRef, Suspense, lazy } from 'react';
+import React, { useState, useRef, Suspense, lazy, useEffect } from 'react';
 import './index.css';
 import ErrorBoundary from './components/ErrorBoundary';
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
@@ -61,6 +61,37 @@ const ScheduleManager = lazy(() => import('./components/operations/ScheduleManag
 const MyProfile = lazy(() => import('./components/profile/MyProfile'));
 const MyHistory = lazy(() => import('./components/profile/MyHistory'));
 
+// 자원 관리 컴포넌트 추가
+const ResourceManagement = lazy(() => import('./components/admin/ResourceManagement'));
+const CategoryManagement = lazy(() => import('./components/admin/CategoryManagement').then(module => ({ default: module.CategoryManagement })));
+const SubjectManagement = lazy(() => import('./components/admin/SubjectManagement'));
+const ClassroomManagement = lazy(() => import('./components/admin/ClassroomManagement').then(module => ({ default: module.ClassroomManagement })));
+const InstructorProfileManagement = lazy(() => import('./components/admin/InstructorProfileManagement'));
+const InstructorManagement = lazy(() => import('./components/admin/InstructorManagement'));
+
+// 리포트 컴포넌트 추가
+const StudentReports = lazy(() => import('./components/reports/StudentReports'));
+
+// 교육 자료 관리 컴포넌트 추가
+const MaterialsLibrary = lazy(() => import('./components/materials/MaterialsLibrary').catch(() => ({ default: () => <div className="p-6 bg-white rounded-lg shadow"><h2 className="text-xl font-bold mb-4">📖 자료 라이브러리</h2><p className="text-gray-600">교육 자료 저장소 페이지입니다.</p></div> })));
+const MaterialsManager = lazy(() => import('./components/operations/MaterialsManager').catch(() => ({ default: () => <div className="p-6 bg-white rounded-lg shadow"><h2 className="text-xl font-bold mb-4">📚 교육 자료 관리</h2><p className="text-gray-600">교육 자료 통합 관리 페이지입니다.</p></div> })));
+
+// 종합 평가 시스템 컴포넌트 추가
+const EvaluationTemplatesPage = lazy(() => import('./components/evaluation/EvaluationTemplatesPage'));
+const InstructorEvaluationPage = lazy(() => import('./components/evaluation/InstructorEvaluationPage'));
+const ComprehensiveGradesPage = lazy(() => import('./components/evaluation/ComprehensiveGradesPage'));
+
+// 통합 일정 관리 컴포넌트 추가
+const IntegratedScheduleManager = lazy(() => import('./components/schedule/IntegratedScheduleManager'));
+const CurriculumManager = lazy(() => import('./components/schedule/CurriculumManager'));
+
+// 알림 컴포넌트 추가
+const NotificationCenter = lazy(() => import('./components/notifications/NotificationCenter'));
+const NotificationSettings = lazy(() => import('./components/notifications/NotificationSettings'));
+
+// 강사료 계산 컴포넌트 추가
+const InstructorPaymentManagement = lazy(() => import('./components/admin/InstructorPaymentManagement'));
+
 // 로딩 컴포넌트
 const LoadingSpinner: React.FC = () => (
   <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -91,13 +122,98 @@ const ErrorFallback: React.FC<{ error: string }> = ({ error }) => (
 
 const AppContent: React.FC = () => {
   const { user, loading, error, switchRole, logout } = useAuth();
-  const [activeView, setActiveView] = useState('dashboard');
+
+  // 초기 activeView를 URL 해시에서 읽어서 설정
+  const getInitialView = () => {
+    if (typeof window === 'undefined') return 'dashboard';
+
+    // URL 해시에서 읽기 (최우선)
+    const hash = window.location.hash.slice(1);
+    if (hash) {
+      console.log('📍 Initial view from URL hash:', hash);
+      return hash;
+    }
+
+    // 히스토리 상태에서 읽기
+    if (window.history.state?.view) {
+      console.log('📍 Initial view from history state:', window.history.state.view);
+      return window.history.state.view;
+    }
+
+    console.log('📍 Initial view: default dashboard');
+    return 'dashboard';
+  };
+
+  const [activeView, setActiveView] = useState(getInitialView);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [expandedMenus, setExpandedMenus] = useState<Set<string>>(new Set());
   const [showRoleMenu, setShowRoleMenu] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
   const roleMenuTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const userMenuRef = useRef<HTMLDivElement>(null);
+
+  // 컴포넌트 마운트 시 한 번만 URL/히스토리에서 복원
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const hash = window.location.hash.slice(1);
+    const historyView = window.history.state?.view;
+
+    if (hash && hash !== activeView) {
+      console.log('📍 Restoring from URL hash on mount:', hash);
+      setActiveView(hash);
+    } else if (historyView && historyView !== activeView) {
+      console.log('📍 Restoring from history state on mount:', historyView);
+      setActiveView(historyView);
+    }
+  }, []);
+
+  // 브라우저 히스토리 관리 (뒤로/앞으로 가기)
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const handlePopState = (event: PopStateEvent) => {
+      console.log('📍 popstate event:', event.state);
+
+      // 우선순위 1: event.state.view
+      if (event.state?.view) {
+        console.log('📍 Navigate via browser button (from state):', event.state.view);
+        setActiveView(event.state.view);
+        return;
+      }
+
+      // 우선순위 2: URL 해시
+      const hash = window.location.hash.slice(1);
+      if (hash) {
+        console.log('📍 Navigate via browser button (from hash):', hash);
+        setActiveView(hash);
+        return;
+      }
+
+      // 우선순위 3: 현재 activeView 유지 (대시보드로 가지 않음!)
+      console.log('📍 No state/hash found, keeping current view:', activeView);
+    };
+
+    window.addEventListener('popstate', handlePopState);
+
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, [activeView]);
+
+  // activeView가 변경될 때 히스토리와 URL 해시 업데이트
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const currentHash = window.location.hash.slice(1);
+    const currentHistoryView = window.history.state?.view;
+
+    // URL 해시 또는 히스토리 상태가 activeView와 다르면 업데이트
+    if (currentHash !== activeView || currentHistoryView !== activeView) {
+      console.log('📍 Updating history and URL:', activeView);
+      window.history.pushState({ view: activeView }, '', `#${activeView}`);
+    }
+  }, [activeView]);
 
   // 페이지 제목 매핑
   const pageTitles: Record<string, { title: string; description: string }> = {
@@ -112,6 +228,9 @@ const AppContent: React.FC = () => {
     'activity-journal': { title: '내 활동 일지', description: '치과 방문 활동 일지를 작성하고 관리합니다' },
     'exams': { title: '시험 관리', description: '시험 출제 및 채점을 관리합니다' },
     'practice': { title: '실습 평가', description: '실습 과제를 평가하고 관리합니다' },
+    'evaluation-templates': { title: '평가 템플릿', description: '과정별 평가 기준을 설정합니다' },
+    'instructor-evaluation': { title: '강사 평가', description: '학생 평가를 입력합니다' },
+    'comprehensive-grades': { title: '종합 성적', description: '최종 성적표를 확인합니다' },
     'performance-tracking': { title: '성과 분석', description: '학습 성과를 추적하고 분석합니다' },
     'advanced-analytics': { title: '고급 분석', description: '상세한 분석 도구를 제공합니다' },
     'integrated-analytics': { title: '통합 분석', description: '종합적인 리포팅을 제공합니다' },
@@ -131,6 +250,7 @@ const AppContent: React.FC = () => {
     'audio-player': { title: '오디오 재생', description: '오디오 파일을 재생합니다' },
     'video-player': { title: '비디오 재생', description: '비디오 파일을 재생합니다' },
     'schedule-manager': { title: '일정 관리', description: '교육 일정을 관리합니다' },
+    'student-reports': { title: '교육생 리포트', description: '교육생 종합 성과 및 이수 현황을 조회합니다' },
   };
 
   const currentPage = pageTitles[activeView] || pageTitles['dashboard'];
@@ -192,7 +312,7 @@ const AppContent: React.FC = () => {
                 <p className="text-sm text-gray-500 mt-2">전체 현황 및 통계 정보를 표시하는 메인 대시보드입니다.</p>
               </div>
             }>
-              <Dashboard />
+              <Dashboard onNavigate={setActiveView} />
             </ErrorBoundary>
           );
         case 'course-management':
@@ -246,19 +366,120 @@ const AppContent: React.FC = () => {
           );
         case 'course-schedule':
           return <CourseSchedule />;
-        case 'schedule-management':
+        case 'curriculum-management':
           return (
             <ErrorBoundary fallback={
               <div className="p-6 bg-white rounded-lg shadow">
-                <h2 className="text-xl font-bold mb-4">📅 일정 관리</h2>
-                <p className="text-gray-600">통합 캘린더 로드 중 오류가 발생했습니다.</p>
+                <h2 className="text-xl font-bold mb-4">📚 커리큘럼 관리</h2>
+                <p className="text-gray-600">커리큘럼 관리 시스템을 불러오는 중 오류가 발생했습니다.</p>
               </div>
             }>
-              <ScheduleManager />
+              <CurriculumManager />
+            </ErrorBoundary>
+          );
+        case 'schedule-management':
+          return <IntegratedScheduleManager />;
+        case 'resource-management':
+          return (
+            <ErrorBoundary fallback={
+              <div className="p-6 bg-white rounded-lg shadow">
+                <h2 className="text-xl font-bold mb-4">🏢 자원 관리</h2>
+                <p className="text-gray-600">자원 관리 시스템을 불러오는 중 오류가 발생했습니다.</p>
+              </div>
+            }>
+              <ResourceManagement />
+            </ErrorBoundary>
+          );
+        case 'category-management':
+          return (
+            <ErrorBoundary fallback={
+              <div className="p-6 bg-white rounded-lg shadow">
+                <h2 className="text-xl font-bold mb-4">📂 카테고리 관리</h2>
+                <p className="text-gray-600">카테고리 관리 시스템을 불러오는 중 오류가 발생했습니다.</p>
+              </div>
+            }>
+              <CategoryManagement />
+            </ErrorBoundary>
+          );
+        case 'subject-management':
+          return (
+            <ErrorBoundary fallback={
+              <div className="p-6 bg-white rounded-lg shadow">
+                <h2 className="text-xl font-bold mb-4">📚 과목 관리</h2>
+                <p className="text-gray-600">과목 관리 시스템을 불러오는 중 오류가 발생했습니다.</p>
+              </div>
+            }>
+              <SubjectManagement />
+            </ErrorBoundary>
+          );
+        case 'classroom-management':
+          return (
+            <ErrorBoundary fallback={
+              <div className="p-6 bg-white rounded-lg shadow">
+                <h2 className="text-xl font-bold mb-4">🏫 강의실 관리</h2>
+                <p className="text-gray-600">강의실 관리 시스템을 불러오는 중 오류가 발생했습니다.</p>
+              </div>
+            }>
+              <ClassroomManagement />
+            </ErrorBoundary>
+          );
+        case 'instructor-profile-management':
+          return (
+            <ErrorBoundary fallback={
+              <div className="p-6 bg-white rounded-lg shadow">
+                <h2 className="text-xl font-bold mb-4">👨‍🏫 강사 프로필 관리</h2>
+                <p className="text-gray-600">강사 프로필 관리 시스템을 불러오는 중 오류가 발생했습니다.</p>
+              </div>
+            }>
+              <InstructorProfileManagement />
+            </ErrorBoundary>
+          );
+        case 'instructor-management':
+          return (
+            <ErrorBoundary fallback={
+              <div className="p-6 bg-white rounded-lg shadow">
+                <h2 className="text-xl font-bold mb-4">👨‍🏫 강사 관리</h2>
+                <p className="text-gray-600">강사 관리 시스템을 불러오는 중 오류가 발생했습니다.</p>
+              </div>
+            }>
+              <InstructorManagement />
             </ErrorBoundary>
           );
         case 'student-reports':
-          return <div className="p-6 bg-white rounded-lg shadow"><h2 className="text-xl font-bold mb-4">📋 교육생 리포트</h2><p className="text-gray-600 mb-6">교육생 수료이력, 성과, 인증서 리포트 조회</p><div className="grid grid-cols-1 md:grid-cols-3 gap-4"><div className="p-4 bg-blue-50 rounded-lg"><div className="text-2xl mb-2">🎓</div><h3 className="font-semibold">수료 현황</h3><p className="text-sm text-gray-600">과정별 수료 현황</p></div><div className="p-4 bg-green-50 rounded-lg"><div className="text-2xl mb-2">📊</div><h3 className="font-semibold">성과 리포트</h3><p className="text-sm text-gray-600">교육생 성과 분석</p></div><div className="p-4 bg-purple-50 rounded-lg"><div className="text-2xl mb-2">🏆</div><h3 className="font-semibold">인증서 발급</h3><p className="text-sm text-gray-600">인증서 발급 현황</p></div></div></div>;
+          return (
+            <ErrorBoundary fallback={
+              <div className="p-6 bg-white rounded-lg shadow">
+                <h2 className="text-xl font-bold mb-4">📋 교육생 리포트</h2>
+                <p className="text-gray-600">교육생 리포트 시스템을 불러오는 중 오류가 발생했습니다.</p>
+              </div>
+            }>
+              <StudentReports />
+            </ErrorBoundary>
+          );
+        case 'materials-library':
+          return (
+            <ErrorBoundary fallback={
+              <div className="p-6 bg-white rounded-lg shadow">
+                <h2 className="text-xl font-bold mb-4">📖 자료 라이브러리</h2>
+                <p className="text-gray-600">자료 라이브러리 시스템을 불러오는 중 오류가 발생했습니다.</p>
+              </div>
+            }>
+              <MaterialsLibrary />
+            </ErrorBoundary>
+          );
+        case 'materials-upload':
+        case 'materials-categories':
+        case 'materials-distribution':
+          return (
+            <ErrorBoundary fallback={
+              <div className="p-6 bg-white rounded-lg shadow">
+                <h2 className="text-xl font-bold mb-4">📚 교육 자료 관리</h2>
+                <p className="text-gray-600">교육 자료 관리 시스템을 불러오는 중 오류가 발생했습니다.</p>
+              </div>
+            }>
+              <MaterialsManager />
+            </ErrorBoundary>
+          );
         case 'system':
           return <div className="p-6 bg-white rounded-lg shadow"><h2 className="text-xl font-bold mb-4">⚙️ 시스템 관리</h2><div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4"><button onClick={() => setActiveView('users')} className="p-4 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors text-left"><div className="flex items-center space-x-3"><span className="text-2xl">👥</span><div><h3 className="font-semibold">사용자 관리</h3><p className="text-sm text-gray-600">시스템 사용자 등록 및 관리</p></div></div></button><button onClick={() => setActiveView('notices')} className="p-4 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors text-left"><div className="flex items-center space-x-3"><span className="text-2xl">📢</span><div><h3 className="font-semibold">공지사항 관리</h3><p className="text-sm text-gray-600">시스템 공지사항 작성 및 관리</p></div></div></button><button onClick={() => setActiveView('security-dashboard')} className="p-4 bg-red-50 hover:bg-red-100 rounded-lg transition-colors text-left"><div className="flex items-center space-x-3"><span className="text-2xl">🛡️</span><div><h3 className="font-semibold">보안 대시보드</h3><p className="text-sm text-gray-600">보안 상태 모니터링</p></div></div></button><button onClick={() => setActiveView('advanced-security')} className="p-4 bg-red-50 hover:bg-red-100 rounded-lg transition-colors text-left"><div className="flex items-center space-x-3"><span className="text-2xl">🔒</span><div><h3 className="font-semibold">고급 보안</h3><p className="text-sm text-gray-600">보안 설정 및 관리</p></div></div></button><button onClick={() => setActiveView('advanced-pwa')} className="p-4 bg-purple-50 hover:bg-purple-100 rounded-lg transition-colors text-left"><div className="flex items-center space-x-3"><span className="text-2xl">📱</span><div><h3 className="font-semibold">PWA 관리</h3><p className="text-sm text-gray-600">Progressive Web App 설정</p></div></div></button><button onClick={() => setActiveView('offline-manager')} className="p-4 bg-green-50 hover:bg-green-100 rounded-lg transition-colors text-left"><div className="flex items-center space-x-3"><span className="text-2xl">📡</span><div><h3 className="font-semibold">오프라인 관리</h3><p className="text-sm text-gray-600">오프라인 데이터 동기화</p></div></div></button><button onClick={() => setActiveView('advanced-file-manager')} className="p-4 bg-yellow-50 hover:bg-yellow-100 rounded-lg transition-colors text-left"><div className="flex items-center space-x-3"><span className="text-2xl">📁</span><div><h3 className="font-semibold">고급 파일 관리</h3><p className="text-sm text-gray-600">파일 업로드 및 관리</p></div></div></button><button onClick={() => setActiveView('file-manager')} className="p-4 bg-orange-50 hover:bg-orange-100 rounded-lg transition-colors text-left"><div className="flex items-center space-x-3"><span className="text-2xl">📂</span><div><h3 className="font-semibold">파일 관리</h3><p className="text-sm text-gray-600">기본 파일 관리 도구</p></div></div></button></div></div>;
         case 'communication':
@@ -266,7 +487,6 @@ const AppContent: React.FC = () => {
         case 'my-learning':
           return <div className="p-6 bg-white rounded-lg shadow"><h2 className="text-xl font-bold mb-4">🎒 나의 학습</h2><p className="text-gray-600 mb-6">개인 학습 관련 메뉴</p><div className="grid grid-cols-1 md:grid-cols-2 gap-4"><div className="p-4 bg-green-50 rounded-lg"><div className="text-2xl mb-2">📚</div><h3 className="font-semibold">내 과정</h3><p className="text-sm text-gray-600">수강 중인 과정 확인</p></div><div className="p-4 bg-green-50 rounded-lg"><div className="text-2xl mb-2">📝</div><h3 className="font-semibold">내 시험</h3><p className="text-sm text-gray-600">시험 일정 및 결과</p></div></div></div>;
         case 'courses':
-          console.log('🎯 App.tsx: BSCourseManagement 렌더링 시작');
           return (
             <ErrorBoundary fallback={
               <div className="p-6 bg-white rounded-lg shadow">
@@ -298,6 +518,12 @@ const AppContent: React.FC = () => {
           return <ExamManagement />;
         case 'practice':
           return <PracticeEvaluation />;
+        case 'evaluation-templates':
+          return <EvaluationTemplatesPage />;
+        case 'instructor-evaluation':
+          return <InstructorEvaluationPage />;
+        case 'comprehensive-grades':
+          return <ComprehensiveGradesPage />;
         case 'performance':
           return <PerformanceTracking />;
         case 'security-dashboard':
@@ -328,6 +554,28 @@ const AppContent: React.FC = () => {
           return <MyProfile />;
         case 'my-history':
           return <MyHistory />;
+        case 'notification-settings':
+          return (
+            <ErrorBoundary fallback={
+              <div className="p-6 bg-white rounded-lg shadow">
+                <h2 className="text-xl font-bold mb-4">🔔 알림 설정</h2>
+                <p className="text-gray-600">알림 설정을 불러오는 중 오류가 발생했습니다.</p>
+              </div>
+            }>
+              <NotificationSettings />
+            </ErrorBoundary>
+          );
+        case 'instructor-payment':
+          return (
+            <ErrorBoundary fallback={
+              <div className="p-6 bg-white rounded-lg shadow">
+                <h2 className="text-xl font-bold mb-4">💰 강사료 계산</h2>
+                <p className="text-gray-600">강사료 계산 페이지를 불러오는 중 오류가 발생했습니다.</p>
+              </div>
+            }>
+              <InstructorPaymentManagement />
+            </ErrorBoundary>
+          );
         default:
           return <div className="p-6 bg-white rounded-lg shadow"><h2 className="text-xl font-bold mb-4">🔍 페이지를 찾을 수 없습니다</h2><p className="text-gray-600">요청하신 페이지가 존재하지 않습니다.</p></div>;
       }
@@ -339,11 +587,6 @@ const AppContent: React.FC = () => {
 
   return (
     <div className="modern-layout">
-      {/* 디버그: 렌더링 확인 */}
-      <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-2">
-        ✅ App 렌더링 성공 | 사용자: {user.name} ({user.role}) | 현재 페이지: {activeView}
-      </div>
-      
       {/* 상단 헤더 */}
       <header className="bg-background border-b border-border sticky top-0 z-50 shadow-sm">
         <div className="px-4 sm:px-6 py-4">
@@ -363,6 +606,11 @@ const AppContent: React.FC = () => {
               <h1 className="text-lg sm:text-xl font-semibold text-foreground">🎯 BS 학습 관리 시스템</h1>
             </div>
             <div className="flex items-center space-x-2 sm:space-x-4">
+              {/* 알림 센터 */}
+              <Suspense fallback={null}>
+                <NotificationCenter onNavigate={setActiveView} />
+              </Suspense>
+
               <DarkModeToggle />
 
               {/* 역할 배지 */}

@@ -519,7 +519,7 @@ const StudentManagement: React.FC = () => {
             {canModifyStudents && (
               <button
                 onClick={() => {/* 새 교육생 등록 */}}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2"
+                className="btn-primary px-4 py-2 rounded-lg flex items-center space-x-2"
               >
                 <UserPlusIcon className="h-4 w-4" />
                 <span>교육생 등록</span>
@@ -632,7 +632,7 @@ const StudentManagement: React.FC = () => {
 
           <button
             onClick={() => setShowReportGenerator(true)}
-            className="flex items-center space-x-1 bg-green-600 hover:bg-green-700 text-white rounded-lg px-3 py-2"
+            className="btn-success flex items-center space-x-1 rounded-lg px-3 py-2"
           >
             <ChartBarIcon className="h-4 w-4" />
             <span>성과 리포트</span>
@@ -821,7 +821,7 @@ const StudentManagement: React.FC = () => {
             </p>
             <button
               onClick={() => {/* 교육생 등록 */}}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg"
+              className="btn-primary px-4 py-2 rounded-lg"
             >
               첫 교육생 등록하기
             </button>

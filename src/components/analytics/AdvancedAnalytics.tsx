@@ -436,14 +436,14 @@ const AdvancedAnalytics: React.FC = () => {
             <div className="flex items-center space-x-2">
               <button
                 onClick={() => exportData('json')}
-                className="bg-green-600 text-white px-3 py-2 rounded-lg hover:bg-green-700 transition-colors flex items-center text-sm"
+                className="btn-success"
               >
                 <ArrowDownTrayIcon className="h-4 w-4 mr-1" />
                 JSON
               </button>
               <button
                 onClick={() => exportData('csv')}
-                className="bg-blue-600 text-white px-3 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center text-sm"
+                className="btn-primary"
               >
                 <DocumentChartBarIcon className="h-4 w-4 mr-1" />
                 CSV
@@ -864,7 +864,7 @@ const AdvancedAnalytics: React.FC = () => {
                     });
                     setLastUpdated(new Date());
                   }}
-                  className="p-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+                  className="btn-primary"
                 >
                   <ArrowPathIcon className="h-4 w-4" />
                 </button>

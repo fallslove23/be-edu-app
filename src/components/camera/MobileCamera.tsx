@@ -167,7 +167,7 @@ const MobileCamera: React.FC<MobileCameraProps> = ({
       </p>
       <button
         onClick={startCamera}
-        className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 flex items-center space-x-2"
+        className="btn-primary"
       >
         <CameraIcon className="h-5 w-5" />
         <span>카메라 켜기</span>
@@ -204,7 +204,7 @@ const MobileCamera: React.FC<MobileCameraProps> = ({
             <p className="text-white text-center mb-4">{error}</p>
             <button
               onClick={startCamera}
-              className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+              className="btn-primary"
             >
               다시 시도
             </button>
@@ -233,7 +233,7 @@ const MobileCamera: React.FC<MobileCameraProps> = ({
                   </button>
                   <button
                     onClick={confirmPhoto}
-                    className="flex-1 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700"
+                    className="btn-success"
                   >
                     사용하기
                   </button>

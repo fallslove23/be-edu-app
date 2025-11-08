@@ -362,7 +362,7 @@ const CourseManagement: React.FC = () => {
                   console.log('과정 개설 버튼 클릭됨, currentView를 create로 변경');
                   setCurrentView('create');
                 }}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2"
+                className="btn-primary px-4 py-2 rounded-lg flex items-center space-x-2"
               >
                 <PlusIcon className="h-4 w-4" />
                 <span>과정 개설</span>
@@ -500,7 +500,7 @@ const CourseManagement: React.FC = () => {
             {isManager && (
               <button
                 onClick={() => setCurrentView('create')}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg"
+                className="btn-primary px-4 py-2 rounded-lg"
               >
                 첫 과정 개설하기
               </button>

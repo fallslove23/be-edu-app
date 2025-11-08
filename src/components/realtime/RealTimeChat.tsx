@@ -557,7 +557,7 @@ const RealTimeChat: React.FC = () => {
       <div className="fixed bottom-4 right-4 z-50">
         <button
           onClick={() => setIsOpen(true)}
-          className="bg-blue-500 hover:bg-blue-600 text-white p-3 rounded-full shadow-lg transition-colors"
+          className="btn-primary p-3 rounded-full shadow-lg transition-colors"
         >
           <ChatBubbleLeftRightIcon className="h-6 w-6" />
           {rooms.reduce((total, room) => total + room.unreadCount, 0) > 0 && (
@@ -727,7 +727,7 @@ const RealTimeChat: React.FC = () => {
                   <button
                     onClick={sendMessage}
                     disabled={!currentMessage.trim()}
-                    className="p-2 bg-blue-500 text-white rounded-full hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="btn-primary"
                   >
                     <PaperAirplaneIcon className="h-4 w-4" />
                   </button>

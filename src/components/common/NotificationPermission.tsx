@@ -148,7 +148,7 @@ const NotificationPermission: React.FC = () => {
                 <button
                   onClick={handleEnableNotifications}
                   disabled={loading}
-                  className="mobile-button flex-1 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white py-2 px-3 rounded-lg text-sm font-medium flex items-center justify-center"
+                  className="btn-primary mobile-button flex-1 disabled:opacity-50 py-2 px-3 rounded-lg text-sm font-medium flex items-center justify-center"
                 >
                   {loading ? (
                     <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -239,7 +239,7 @@ const NotificationPermission: React.FC = () => {
                       <button
                         onClick={handleDisableNotifications}
                         disabled={loading}
-                        className="mobile-button bg-red-500 hover:bg-red-600 disabled:opacity-50 text-white px-3 py-1 rounded text-sm"
+                        className="btn-danger mobile-button disabled:opacity-50 px-3 py-1 rounded text-sm"
                       >
                         비활성화
                       </button>
@@ -247,7 +247,7 @@ const NotificationPermission: React.FC = () => {
                       <button
                         onClick={handleEnableNotifications}
                         disabled={loading}
-                        className="mobile-button bg-blue-500 hover:bg-blue-600 disabled:opacity-50 text-white px-3 py-1 rounded text-sm"
+                        className="btn-primary mobile-button disabled:opacity-50 px-3 py-1 rounded text-sm"
                       >
                         활성화
                       </button>

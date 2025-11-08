@@ -30,7 +30,7 @@ const SurveyManagement: React.FC = () => {
           
           <button
             onClick={openEducationFeedback}
-            className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg flex items-center space-x-2 transition-colors"
+            className="btn-success px-6 py-3 rounded-lg flex items-center space-x-2 transition-colors"
           >
             <ArrowTopRightOnSquareIcon className="h-5 w-5" />
             <span>교육 피드백 시스템</span>
@@ -76,7 +76,7 @@ const SurveyManagement: React.FC = () => {
             <div className="flex items-center space-x-4">
               <button
                 onClick={openEducationFeedback}
-                className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2"
+                className="btn-success px-4 py-2 rounded-lg flex items-center space-x-2"
               >
                 <ArrowTopRightOnSquareIcon className="h-4 w-4" />
                 <span>설문 시스템 접속</span>
@@ -104,7 +104,7 @@ const SurveyManagement: React.FC = () => {
           </p>
           <button
             onClick={openEducationFeedback}
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg flex items-center justify-center space-x-2"
+            className="btn-primary w-full py-2 px-4 rounded-lg flex items-center justify-center space-x-2"
           >
             <ArrowTopRightOnSquareIcon className="h-4 w-4" />
             <span>설문 생성하기</span>
@@ -122,7 +122,7 @@ const SurveyManagement: React.FC = () => {
           </p>
           <button
             onClick={openEducationFeedback}
-            className="w-full bg-purple-600 hover:bg-purple-700 text-white py-2 px-4 rounded-lg flex items-center justify-center space-x-2"
+            className="btn-purple w-full flex items-center justify-center space-x-2"
           >
             <ArrowTopRightOnSquareIcon className="h-4 w-4" />
             <span>결과 분석하기</span>
@@ -140,7 +140,7 @@ const SurveyManagement: React.FC = () => {
           </p>
           <button
             onClick={openEducationFeedback}
-            className="w-full bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-lg flex items-center justify-center space-x-2"
+            className="btn-success w-full py-2 px-4 rounded-lg flex items-center justify-center space-x-2"
           >
             <ArrowTopRightOnSquareIcon className="h-4 w-4" />
             <span>과정 연동하기</span>

@@ -83,7 +83,7 @@ const PerformanceDebug: React.FC = () => {
       <div className="fixed bottom-4 right-4 z-50">
         <button
           onClick={() => setIsOpen(true)}
-          className="bg-indigo-600 text-white p-3 rounded-full shadow-lg hover:bg-indigo-700 transition-colors"
+          className="btn-info"
           title="성능 디버그 (개발 모드)"
         >
           <ChartBarIcon className="h-6 w-6" />
@@ -102,13 +102,13 @@ const PerformanceDebug: React.FC = () => {
                 <div className="flex items-center space-x-2">
                   <button
                     onClick={exportLogs}
-                    className="text-sm bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700"
+                    className="btn-primary"
                   >
                     내보내기
                   </button>
                   <button
                     onClick={clearLogs}
-                    className="text-sm bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
+                    className="btn-danger"
                   >
                     초기화
                   </button>

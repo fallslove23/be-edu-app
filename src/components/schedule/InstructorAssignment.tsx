@@ -205,8 +205,8 @@ const InstructorAssignment: React.FC<InstructorAssignmentProps> = ({
 
   // 강사의 전문 분야와 매치되는지 확인
   const isInstructorSpecialized = (instructor: Instructor, subject?: string): boolean => {
-    if (!subject) return false;
-    return instructor.specializations.some(spec => 
+    if (!subject || !instructor.specializations) return false;
+    return instructor.specializations.some(spec =>
       subject.toLowerCase().includes(spec.toLowerCase()) ||
       spec.toLowerCase().includes(subject.toLowerCase())
     );
@@ -313,7 +313,7 @@ const InstructorAssignment: React.FC<InstructorAssignmentProps> = ({
                               {assignedInstructor.name}
                             </div>
                             <div className="text-xs text-blue-600">
-                              {assignedInstructor.specializations.slice(0, 2).join(', ')}
+                              {assignedInstructor.specializations ? assignedInstructor.specializations.slice(0, 2).join(', ') : '전문분야 없음'}
                             </div>
                           </div>
                         </div>
@@ -423,7 +423,7 @@ const InstructorAssignment: React.FC<InstructorAssignmentProps> = ({
                               )}
                             </div>
                             <p className="text-xs text-gray-600 mt-1">
-                              {instructor.specializations.join(' • ')}
+                              {instructor.specializations ? instructor.specializations.join(' • ') : '전문분야 없음'}
                             </p>
                             <p className="text-xs text-gray-500 mt-1">
                               경력 {instructor.years_of_experience}년

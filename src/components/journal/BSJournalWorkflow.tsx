@@ -130,7 +130,7 @@ const BSJournalWorkflow: React.FC = () => {
           </div>
           <button
             onClick={() => setCurrentStep('main')}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2"
+            className="btn-primary px-4 py-2 rounded-lg flex items-center space-x-2"
           >
             <DocumentTextIcon className="h-4 w-4" />
             <span>활동일지 관리</span>

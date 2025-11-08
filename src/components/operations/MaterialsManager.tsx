@@ -277,7 +277,7 @@ const MaterialsManager: React.FC = () => {
             </button>
             <button 
               onClick={() => setShowUploadModal(true)}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2"
+              className="btn-primary px-4 py-2 rounded-lg flex items-center space-x-2"
             >
               <CloudArrowUpIcon className="h-4 w-4" />
               <span>업로드</span>
@@ -600,7 +600,7 @@ const MaterialsManager: React.FC = () => {
                 <p className="text-sm text-gray-500 dark:text-gray-400">
                   최대 100MB, 모든 파일 형식 지원
                 </p>
-                <button className="mt-4 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
+                <button className="mt-4 btn-primary">
                   파일 선택
                 </button>
               </div>
@@ -609,11 +609,11 @@ const MaterialsManager: React.FC = () => {
             <div className="px-6 py-4 border-t border-gray-200 dark:border-gray-700 flex justify-end space-x-3">
               <button
                 onClick={() => setShowUploadModal(false)}
-                className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+                className="btn-secondary"
               >
                 취소
               </button>
-              <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
+              <button className="btn-primary">
                 업로드
               </button>
             </div>

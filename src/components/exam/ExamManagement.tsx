@@ -7,51 +7,26 @@ import {
   ChartBarIcon,
   BookOpenIcon,
   UserGroupIcon,
-  ClipboardDocumentListIcon
+  ClipboardDocumentListIcon,
+  DocumentDuplicateIcon,
+  TvIcon
 } from '@heroicons/react/24/outline';
-import { CourseService } from '../../services/course.services';
-import type { Course } from '../../services/course.services';
+import { CourseTemplateService } from '../../services/course-template.service';
+import type { CourseRound } from '../../types/course-template.types';
+import { ExamService } from '../../services/exam.services';
+import type { Exam } from '../../types/exam.types';
+import { QuestionBankService } from '../../services/question-bank.service';
+import type { QuestionBank as QB } from '../../services/question-bank.service';
 import ExamForm from './ExamForm';
 import ExamTaking from './ExamTaking';
 import ExamResults from './ExamResults';
+import QuestionBankManagement from './QuestionBankManagement';
+import ExamList from './ExamList';
+import ExamCloneWizard from './ExamCloneWizard';
+import LiveExamDashboard from './LiveExamDashboard';
+import InteractiveExamAnalytics from './InteractiveExamAnalytics';
 
 type ViewType = 'list' | 'form' | 'taking' | 'results' | 'question-bank' | 'target-selection';
-
-interface Exam {
-  id: string;
-  title: string;
-  course_name: string;
-  description?: string;
-  duration_minutes: number;
-  total_questions: number;
-  passing_score: number;
-  status: 'draft' | 'scheduled' | 'active' | 'completed' | 'cancelled';
-  created_at: string;
-}
-
-interface Question {
-  id: string;
-  type: 'multiple-choice' | 'true-false' | 'short-answer' | 'essay';
-  question: string;
-  options?: string[];
-  correct_answer: string | number;
-  explanation?: string;
-  difficulty: 'easy' | 'medium' | 'hard';
-  category: string;
-  tags: string[];
-  created_at: string;
-  updated_at: string;
-}
-
-interface QuestionBank {
-  id: string;
-  name: string;
-  description?: string;
-  course_category: string;
-  questions: Question[];
-  created_at: string;
-  updated_at: string;
-}
 
 interface ExamTarget {
   id: string;
@@ -68,15 +43,17 @@ interface ExamTarget {
 const ExamManagement: React.FC = () => {
   const [currentView, setCurrentView] = useState<ViewType>('list');
   const [exams, setExams] = useState<Exam[]>([]);
-  const [courses, setCourses] = useState<Course[]>([]);
+  const [courseRounds, setCourseRounds] = useState<CourseRound[]>([]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [selectedExam, setSelectedExam] = useState<Exam | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
-  const [questionBanks, setQuestionBanks] = useState<QuestionBank[]>([]);
+  const [questionBanks, setQuestionBanks] = useState<QB[]>([]);
   const [examTargets, setExamTargets] = useState<ExamTarget[]>([]);
-  const [selectedQuestionBank, setSelectedQuestionBank] = useState<QuestionBank | null>(null);
+  const [selectedQuestionBank, setSelectedQuestionBank] = useState<QB | null>(null);
   const [selectedTargets, setSelectedTargets] = useState<string[]>([]);
+  const [cloningExam, setCloningExam] = useState<Exam | null>(null);
+  const [liveExam, setLiveExam] = useState<Exam | null>(null);
+  const [analyticsExam, setAnalyticsExam] = useState<Exam | null>(null);
 
   // 초기 데이터 로드
   useEffect(() => {
@@ -97,50 +74,21 @@ const ExamManagement: React.FC = () => {
   const loadExams = async () => {
     try {
       setLoading(true);
-      // 과정 데이터 로드 (static 메서드 호출)
-      const coursesData = await CourseService.getCourses();
-      setCourses(coursesData);
 
-      // 목업 데이터
-      const mockExams: Exam[] = [
-        {
-          id: '1',
-          title: '영업 기초 이론 평가',
-          course_name: 'BS 영업 기초과정',
-          description: '영업의 기본 개념과 프로세스에 대한 이해도를 평가하는 시험입니다.',
-          duration_minutes: 60,
-          total_questions: 30,
-          passing_score: 70,
-          status: 'active',
-          created_at: '2024-08-15T10:00:00Z'
-        },
-        {
-          id: '2',
-          title: '고급 영업 전략 종합 평가',
-          course_name: 'BS 고급 영업 전략',
-          description: '고급 영업 전략과 실무 적용에 대한 종합적인 평가입니다.',
-          duration_minutes: 90,
-          total_questions: 25,
-          passing_score: 75,
-          status: 'scheduled',
-          created_at: '2024-08-20T14:30:00Z'
-        },
-        {
-          id: '3',
-          title: 'CRM 활용 능력 평가',
-          course_name: 'BS 고객 관리 시스템',
-          description: 'CRM 시스템 활용법과 고객 관리 전략에 대한 실무 평가입니다.',
-          duration_minutes: 45,
-          total_questions: 20,
-          passing_score: 80,
-          status: 'completed',
-          created_at: '2024-08-18T11:15:00Z'
-        }
-      ];
-      
-      setExams(mockExams);
+      // 과정 차수 데이터 로드
+      console.log('📊 Loading course rounds...');
+      const roundsData = await CourseTemplateService.getRounds();
+      console.log('📊 Loaded course rounds:', roundsData);
+      console.log('📊 Course rounds count:', roundsData?.length);
+      setCourseRounds(roundsData);
+
+      // 실제 시험 데이터 로드
+      const examsData = await ExamService.getExams();
+      console.log('✅ Loaded exams from database:', examsData);
+      setExams(examsData);
+
     } catch (error) {
-      console.error('Failed to load exams:', error);
+      console.error('❌ Failed to load exams:', error);
     } finally {
       setLoading(false);
     }
@@ -148,70 +96,12 @@ const ExamManagement: React.FC = () => {
 
   const loadQuestionBanks = async () => {
     try {
-      // 목업 문제은행 데이터
-      const mockQuestionBanks: QuestionBank[] = [
-        {
-          id: '1',
-          name: 'BS 영업 기초 문제은행',
-          description: '영업의 기본 개념과 프로세스에 대한 문제들',
-          course_category: 'BS 영업 기초과정',
-          questions: [
-            {
-              id: '1',
-              type: 'multiple-choice',
-              question: '영업의 기본 단계 중 첫 번째는 무엇인가요?',
-              options: ['고객 발굴', '상품 소개', '계약 체결', '사후 관리'],
-              correct_answer: 0,
-              explanation: '영업 프로세스의 첫 번째 단계는 잠재 고객을 발굴하는 것입니다.',
-              difficulty: 'easy',
-              category: '영업 프로세스',
-              tags: ['기초', '프로세스'],
-              created_at: '2024-08-15T10:00:00Z',
-              updated_at: '2024-08-15T10:00:00Z'
-            },
-            {
-              id: '2',
-              type: 'true-false',
-              question: '고객의 니즈를 파악하지 않고도 성공적인 영업이 가능하다.',
-              correct_answer: false,
-              explanation: '고객의 니즈 파악은 성공적인 영업의 핵심 요소입니다.',
-              difficulty: 'easy',
-              category: '고객 관리',
-              tags: ['기초', '고객 니즈'],
-              created_at: '2024-08-15T10:00:00Z',
-              updated_at: '2024-08-15T10:00:00Z'
-            }
-          ],
-          created_at: '2024-08-15T10:00:00Z',
-          updated_at: '2024-08-15T10:00:00Z'
-        },
-        {
-          id: '2',
-          name: '고급 영업 전략 문제은행',
-          description: '고급 영업 전략과 실무 적용 문제들',
-          course_category: 'BS 고급 영업 전략',
-          questions: [
-            {
-              id: '3',
-              type: 'multiple-choice',
-              question: 'SPIN 영업 기법에서 "S"는 무엇을 의미하나요?',
-              options: ['Situation', 'Solution', 'Strategy', 'Success'],
-              correct_answer: 0,
-              explanation: 'SPIN에서 S는 Situation(상황)을 의미합니다.',
-              difficulty: 'medium',
-              category: '영업 기법',
-              tags: ['고급', 'SPIN', '전략'],
-              created_at: '2024-08-20T14:30:00Z',
-              updated_at: '2024-08-20T14:30:00Z'
-            }
-          ],
-          created_at: '2024-08-20T14:30:00Z',
-          updated_at: '2024-08-20T14:30:00Z'
-        }
-      ];
-      setQuestionBanks(mockQuestionBanks);
+      console.log('📚 Loading question banks...');
+      const banks = await QuestionBankService.getQuestionBanks({ includeQuestions: false });
+      console.log('✅ Loaded question banks:', banks);
+      setQuestionBanks(banks);
     } catch (error) {
-      console.error('Failed to load question banks:', error);
+      console.error('❌ Failed to load question banks:', error);
     }
   };
 
@@ -316,6 +206,24 @@ const ExamManagement: React.FC = () => {
     setCurrentView('results');
   };
 
+  const handleExamClone = async (clonedExamData: Partial<Exam>, options: any) => {
+    try {
+      console.log('🔄 시험 복제:', clonedExamData, options);
+      // TODO: ExamService에 cloneExam 메서드 추가 필요
+      // const newExam = await ExamService.cloneExam(cloningExam!.id, clonedExamData, options);
+
+      // 임시: 새 시험으로 저장
+      await handleExamSave(clonedExamData);
+
+      alert('시험이 복제되었습니다!');
+      setCloningExam(null);
+      await fetchExams();
+    } catch (error) {
+      console.error('❌ 시험 복제 실패:', error);
+      alert('시험 복제에 실패했습니다.');
+    }
+  };
+
   const handleBackToList = () => {
     setCurrentView('list');
     setSelectedExam(null);
@@ -323,7 +231,7 @@ const ExamManagement: React.FC = () => {
     setSelectedTargets([]);
   };
 
-  const handleQuestionBankSelect = (questionBank: QuestionBank) => {
+  const handleQuestionBankSelect = (questionBank: QB) => {
     setSelectedQuestionBank(questionBank);
     setCurrentView('target-selection');
   };
@@ -346,81 +254,10 @@ const ExamManagement: React.FC = () => {
   // 뷰별 렌더링
   if (currentView === 'question-bank') {
     return (
-      <div className="space-y-6">
-        {/* 헤더 */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <button
-                onClick={handleBackToList}
-                className="mb-4 text-gray-600 hover:text-gray-800 flex items-center"
-              >
-                ← 뒤로 가기
-              </button>
-              <h1 className="text-2xl font-bold text-gray-900 flex items-center">
-                <BookOpenIcon className="h-8 w-8 mr-3 text-gray-600" />
-                문제은행 관리
-              </h1>
-              <p className="mt-2 text-gray-600">
-                시험 문제를 체계적으로 관리하고 재사용하세요.
-              </p>
-            </div>
-            <button className="bg-gray-700 text-white px-4 py-2 rounded-lg hover:bg-gray-800 transition-colors flex items-center">
-              <PlusIcon className="h-5 w-5 mr-2" />
-              새 문제은행
-            </button>
-          </div>
-        </div>
-
-        {/* 문제은행 목록 */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <h2 className="text-lg font-medium text-gray-900 mb-4">문제은행 목록</h2>
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {questionBanks.map((bank) => (
-              <div
-                key={bank.id}
-                className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
-              >
-                <div className="flex items-start justify-between mb-3">
-                  <div className="flex-1">
-                    <h3 className="font-medium text-gray-900 line-clamp-1">
-                      {bank.name}
-                    </h3>
-                    <p className="text-sm text-gray-600 mt-1">{bank.course_category}</p>
-                  </div>
-                </div>
-
-                {bank.description && (
-                  <p className="text-sm text-gray-600 mb-4 line-clamp-2">
-                    {bank.description}
-                  </p>
-                )}
-
-                <div className="space-y-2 mb-4">
-                  <div className="flex items-center text-sm text-gray-600">
-                    <span>📝 {bank.questions.length}개 문제</span>
-                  </div>
-                  <div className="text-sm text-gray-600">
-                    📅 {new Date(bank.updated_at).toLocaleDateString()}
-                  </div>
-                </div>
-
-                <div className="flex items-center space-x-2">
-                  <button 
-                    onClick={() => handleQuestionBankSelect(bank)}
-                    className="flex-1 bg-gray-600 text-white px-3 py-2 rounded text-sm hover:bg-gray-700 transition-colors"
-                  >
-                    시험 생성
-                  </button>
-                  <button className="px-3 py-2 border border-gray-300 text-gray-700 rounded text-sm hover:bg-gray-50 transition-colors">
-                    편집
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
+      <QuestionBankManagement
+        onBack={handleBackToList}
+        onSelectBank={handleQuestionBankSelect}
+      />
     );
   }
 
@@ -469,12 +306,12 @@ const ExamManagement: React.FC = () => {
               <div className="font-medium">{selectedQuestionBank.name}</div>
             </div>
             <div className="text-sm">
-              <span className="text-gray-600">과정 카테고리:</span>
-              <div className="font-medium">{selectedQuestionBank.course_category}</div>
+              <span className="text-gray-600">카테고리:</span>
+              <div className="font-medium">{selectedQuestionBank.category || '-'}</div>
             </div>
             <div className="text-sm">
               <span className="text-gray-600">문제 수:</span>
-              <div className="font-medium">{selectedQuestionBank.questions.length}개</div>
+              <div className="font-medium">{selectedQuestionBank.question_count || 0}개</div>
             </div>
           </div>
         </div>
@@ -530,10 +367,14 @@ const ExamManagement: React.FC = () => {
     return (
       <ExamForm
         exam={selectedExam}
-        courses={courses}
+        courseRounds={courseRounds}
         onBack={handleBackToList}
         onSave={handleExamSave}
-        questionBank={selectedQuestionBank}
+        questionBank={selectedQuestionBank ? {
+          id: selectedQuestionBank.id,
+          name: selectedQuestionBank.name,
+          questions: selectedQuestionBank.questions || []
+        } : undefined}
         selectedTargets={selectedTargets}
       />
     );
@@ -698,23 +539,46 @@ const ExamManagement: React.FC = () => {
                 )}
 
                 <div className="flex items-center space-x-2">
-                  <button 
+                  <button
                     onClick={() => handleExamTake(exam)}
                     className="flex-1 bg-gray-600 text-white px-3 py-2 rounded text-sm hover:bg-gray-700 transition-colors"
                   >
                     시험 응시
                   </button>
-                  <button 
+                  <button
                     onClick={() => handleExamEdit(exam)}
                     className="px-3 py-2 border border-gray-300 text-gray-700 rounded text-sm hover:bg-gray-50 transition-colors"
                   >
                     편집
                   </button>
-                  <button 
+                  {exam.status === 'active' && (
+                    <button
+                      onClick={() => setLiveExam(exam)}
+                      className="px-3 py-2 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded text-sm hover:from-green-600 hover:to-emerald-600 transition-all shadow-md"
+                      title="실시간 현황"
+                    >
+                      <TvIcon className="h-4 w-4" />
+                    </button>
+                  )}
+                  <button
+                    onClick={() => setCloningExam(exam)}
+                    className="px-3 py-2 border border-gray-300 text-gray-700 rounded text-sm hover:bg-gray-50 transition-colors"
+                    title="시험 복제"
+                  >
+                    <DocumentDuplicateIcon className="h-4 w-4" />
+                  </button>
+                  <button
                     onClick={() => handleExamResults(exam)}
                     className="px-3 py-2 border border-gray-300 text-gray-700 rounded text-sm hover:bg-gray-50 transition-colors"
                   >
                     결과
+                  </button>
+                  <button
+                    onClick={() => setAnalyticsExam(exam)}
+                    className="px-3 py-2 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded text-sm hover:from-blue-600 hover:to-cyan-600 transition-all shadow-md"
+                    title="인터랙티브 분석"
+                  >
+                    <ChartBarIcon className="h-4 w-4" />
                   </button>
                 </div>
               </div>
@@ -722,6 +586,31 @@ const ExamManagement: React.FC = () => {
           </div>
         )}
       </div>
+
+      {/* 시험 복제 마법사 */}
+      {cloningExam && (
+        <ExamCloneWizard
+          exam={cloningExam}
+          onClone={handleExamClone}
+          onClose={() => setCloningExam(null)}
+        />
+      )}
+
+      {/* 실시간 응시 대시보드 */}
+      {liveExam && (
+        <LiveExamDashboard
+          exam={liveExam}
+          onClose={() => setLiveExam(null)}
+        />
+      )}
+
+      {/* 인터랙티브 분석 대시보드 */}
+      {analyticsExam && (
+        <InteractiveExamAnalytics
+          exam={analyticsExam}
+          onClose={() => setAnalyticsExam(null)}
+        />
+      )}
     </div>
   );
 };

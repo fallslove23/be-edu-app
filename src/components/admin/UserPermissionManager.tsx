@@ -239,7 +239,7 @@ const UserPermissionManager: React.FC = () => {
                 setIsEditing(true);
                 setShowModal(true);
               }}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2"
+              className="btn-primary px-4 py-2 rounded-lg flex items-center space-x-2"
             >
               <PlusIcon className="h-4 w-4" />
               <span>새 사용자</span>
@@ -389,7 +389,7 @@ const UserPermissionManager: React.FC = () => {
                 setIsEditing(true);
                 setShowModal(true);
               }}
-              className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2"
+              className="btn-success px-4 py-2 rounded-lg flex items-center space-x-2"
             >
               <PlusIcon className="h-4 w-4" />
               <span>새 역할</span>
@@ -624,7 +624,7 @@ const UserPermissionManager: React.FC = () => {
                   setSelectedRole(null);
                   setIsEditing(false);
                 }}
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                className="btn-primary"
               >
                 저장
               </button>

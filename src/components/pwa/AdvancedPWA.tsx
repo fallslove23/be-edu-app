@@ -287,7 +287,7 @@ const OfflineManager: React.FC = () => {
           <button
             onClick={handleManualSync}
             disabled={isSyncing}
-            className="flex items-center space-x-1 px-3 py-1 bg-blue-500 text-white rounded text-sm hover:bg-blue-600 disabled:opacity-50"
+            className="btn-primary"
           >
             <ArrowPathIcon className={`h-4 w-4 ${isSyncing ? 'animate-spin' : ''}`} />
             <span>{isSyncing ? '동기화 중' : '동기화'}</span>
@@ -497,7 +497,7 @@ const CacheManager: React.FC = () => {
         <h3 className="font-medium">캐시 관리</h3>
         <button
           onClick={clearCache}
-          className="px-3 py-1 bg-red-500 text-white rounded text-sm hover:bg-red-600"
+          className="btn-danger"
         >
           캐시 정리
         </button>
@@ -592,7 +592,7 @@ const AdvancedPWA: React.FC = () => {
           {isInstallable && !isInstalled && (
             <button
               onClick={handleInstall}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+              className="btn-primary"
             >
               <DocumentArrowDownIcon className="w-5 h-5 inline mr-2" />
               앱 설치
@@ -602,7 +602,7 @@ const AdvancedPWA: React.FC = () => {
           {updateAvailable && (
             <button
               onClick={handleUpdate}
-              className="px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700"
+              className="btn-warning"
             >
               <ArrowPathIcon className="w-5 h-5 inline mr-2" />
               업데이트

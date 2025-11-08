@@ -51,7 +51,7 @@ const UserDetail: React.FC<UserDetailProps> = ({ user, onBack, onEdit }) => {
           </div>
           <button
             onClick={() => onEdit(user)}
-            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center"
+            className="btn-primary"
           >
             <PencilIcon className="h-4 w-4 mr-2" />
             수정
@@ -242,7 +242,7 @@ const UserDetail: React.FC<UserDetailProps> = ({ user, onBack, onEdit }) => {
           </button>
           <button
             onClick={() => onEdit(user)}
-            className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center"
+            className="btn-primary"
           >
             <PencilIcon className="h-4 w-4 mr-2" />
             정보 수정

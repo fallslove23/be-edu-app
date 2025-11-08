@@ -475,7 +475,7 @@ const ReportGenerator: React.FC = () => {
             <button
               onClick={generateReport}
               disabled={!selectedTemplate || generating}
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg font-medium disabled:opacity-50 disabled:cursor-not-allowed mb-3"
+              className="btn-primary w-full py-2 px-4 rounded-lg font-medium disabled:opacity-50 disabled:cursor-not-allowed mb-3"
             >
               {generating ? (
                 <div className="flex items-center justify-center">
@@ -491,7 +491,7 @@ const ReportGenerator: React.FC = () => {
               <div className="space-y-2">
                 <button
                   onClick={() => downloadReport('pdf')}
-                  className="w-full bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-lg font-medium flex items-center justify-center"
+                  className="btn-success w-full py-2 px-4 rounded-lg font-medium flex items-center justify-center"
                 >
                   <ArrowDownTrayIcon className="h-4 w-4 mr-2" />
                   PDF 다운로드

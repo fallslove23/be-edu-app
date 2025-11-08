@@ -22,7 +22,19 @@ export class CourseTemplateService {
     try {
       const { data, error } = await supabase
         .from('course_templates')
-        .select('*')
+        .select(`
+          *,
+          category_data:categories!category_id (
+            id,
+            name,
+            color,
+            icon,
+            parent_id,
+            parent:categories!parent_id (
+              name
+            )
+          )
+        `)
         .eq('is_active', true)
         .order('category');
 
@@ -31,7 +43,20 @@ export class CourseTemplateService {
         return DEFAULT_COURSE_TEMPLATES;
       }
 
-      return data || DEFAULT_COURSE_TEMPLATES;
+      // category_data 구조 변환
+      const templates = (data || []).map(template => ({
+        ...template,
+        category_data: template.category_data ? {
+          id: template.category_data.id,
+          name: template.category_data.name,
+          color: template.category_data.color,
+          icon: template.category_data.icon,
+          parent_id: template.category_data.parent_id,
+          parent_name: template.category_data.parent?.name
+        } : undefined
+      }));
+
+      return templates.length > 0 ? templates : DEFAULT_COURSE_TEMPLATES;
     } catch (error) {
       console.error('[CourseTemplateService] Error fetching templates:', error);
       return DEFAULT_COURSE_TEMPLATES;
@@ -295,7 +320,7 @@ export class CourseTemplateService {
    * 차수 수정
    */
   static async updateRound(
-    roundId: string, 
+    roundId: string,
     updates: Partial<Pick<CourseRound, 'instructor_id' | 'start_date' | 'end_date' | 'max_trainees' | 'location' | 'status'>>
   ): Promise<CourseRound> {
     try {
@@ -309,11 +334,96 @@ export class CourseTemplateService {
         .select()
         .single();
 
-      if (error) throw error;
+      if (error) {
+        console.error('[CourseTemplateService] Supabase error updating round:', {
+          message: error.message,
+          details: error.details,
+          hint: error.hint,
+          code: error.code
+        });
+        throw error;
+      }
       return data;
-    } catch (error) {
-      console.error('[CourseTemplateService] Error updating round:', error);
+    } catch (error: any) {
+      console.error('[CourseTemplateService] Error updating round:', {
+        message: error?.message || 'Unknown error',
+        error: error
+      });
       throw error;
+    }
+  }
+
+  /**
+   * 차수 삭제
+   */
+  static async deleteRound(roundId: string): Promise<void> {
+    try {
+      const { error } = await supabase
+        .from('course_rounds')
+        .delete()
+        .eq('id', roundId);
+
+      if (error) throw error;
+    } catch (error) {
+      console.error('[CourseTemplateService] Error deleting round:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * 날짜 기반 자동 상태 업데이트
+   * - 시작일이 지난 recruiting 상태 → in_progress로 변경
+   * - 종료일이 지난 in_progress 상태 → completed로 변경
+   */
+  static async autoUpdateRoundStatus(): Promise<void> {
+    try {
+      const today = new Date().toISOString().split('T')[0];
+
+      // recruiting -> in_progress (시작일이 오늘이거나 지났을 때)
+      const { data: startData, error: startError } = await supabase
+        .from('course_rounds')
+        .update({
+          status: 'in_progress',
+          updated_at: new Date().toISOString()
+        })
+        .eq('status', 'recruiting')
+        .lte('start_date', today)
+        .select();
+
+      if (startError) {
+        // 테이블이 없거나 접근 권한이 없는 경우 조용히 처리
+        if (startError.code === '42P01' || startError.code === 'PGRST116') {
+          console.log('[CourseTemplateService] course_rounds table not found or no data, skipping auto-start');
+        } else {
+          console.warn('[CourseTemplateService] Error auto-starting rounds:', startError.message);
+        }
+      } else if (startData && startData.length > 0) {
+        console.log(`[CourseTemplateService] Auto-started ${startData.length} rounds`);
+      }
+
+      // in_progress -> completed (종료일이 지났을 때)
+      const { data: endData, error: endError } = await supabase
+        .from('course_rounds')
+        .update({
+          status: 'completed',
+          updated_at: new Date().toISOString()
+        })
+        .eq('status', 'in_progress')
+        .lt('end_date', today)
+        .select();
+
+      if (endError) {
+        // 테이블이 없거나 접근 권한이 없는 경우 조용히 처리
+        if (endError.code === '42P01' || endError.code === 'PGRST116') {
+          console.log('[CourseTemplateService] course_rounds table not found or no data, skipping auto-complete');
+        } else {
+          console.warn('[CourseTemplateService] Error auto-completing rounds:', endError.message);
+        }
+      } else if (endData && endData.length > 0) {
+        console.log(`[CourseTemplateService] Auto-completed ${endData.length} rounds`);
+      }
+    } catch (error) {
+      console.warn('[CourseTemplateService] Error in autoUpdateRoundStatus:', error);
     }
   }
 
@@ -728,4 +838,191 @@ export class CourseTemplateService {
       }
     ];
   }
+
+  // =============================================
+  // 차수 수강생 관리 Functions
+  // =============================================
+
+  /**
+   * 차수 수강생 목록 조회
+   */
+  static async getRoundEnrollments(roundId: string) {
+    try {
+      const { data, error } = await supabase
+        .from('round_enrollments')
+        .select(`
+          *,
+          trainee:users!trainee_id (
+            id,
+            name,
+            email,
+            department,
+            employee_id
+          )
+        `)
+        .eq('round_id', roundId)
+        .order('enrolled_at', { ascending: false });
+
+      if (error) {
+        console.error('[CourseTemplateService] Supabase error fetching enrollments:', {
+          message: error.message,
+          code: error.code,
+          details: error.details
+        });
+
+        // 테이블이 없는 경우 빈 배열 반환
+        if (error.code === '42P01' || error.message?.includes('does not exist')) {
+          console.log('[CourseTemplateService] round_enrollments table not found, returning empty array');
+          return [];
+        }
+
+        throw error;
+      }
+
+      // 데이터 변환
+      return (data || []).map((enrollment: any) => ({
+        id: enrollment.id,
+        round_id: enrollment.round_id,
+        trainee_id: enrollment.trainee_id,
+        trainee_name: enrollment.trainee?.name || 'Unknown',
+        trainee_email: enrollment.trainee?.email || 'Unknown',
+        trainee_department: enrollment.trainee?.department,
+        trainee_employee_id: enrollment.trainee?.employee_id,
+        enrolled_at: enrollment.enrolled_at,
+        status: enrollment.status,
+        completion_date: enrollment.completion_date,
+        final_score: enrollment.final_score,
+        notes: enrollment.notes,
+        created_at: enrollment.created_at,
+        updated_at: enrollment.updated_at
+      }));
+    } catch (error: any) {
+      console.error('[CourseTemplateService] Error fetching round enrollments:', {
+        message: error?.message,
+        error
+      });
+      return [];
+    }
+  }
+
+  /**
+   * 차수에 수강생 추가
+   */
+  static async addRoundTrainees(roundId: string, traineeIds: string[]) {
+    try {
+      // 차수 정보 조회
+      const allRounds = await this.getRounds({});
+      const round = allRounds.find(r => r.id === roundId);
+      if (!round) {
+        throw new Error('차수를 찾을 수 없습니다.');
+      }
+
+      // 정원 확인
+      const availableSpots = round.max_trainees - round.current_trainees;
+      if (traineeIds.length > availableSpots) {
+        throw new Error(`정원이 ${availableSpots}명 남았습니다. ${traineeIds.length - availableSpots}명 초과입니다.`);
+      }
+
+      // 이미 등록된 수강생 확인
+      const existingEnrollments = await this.getRoundEnrollments(roundId);
+      const existingTraineeIds = existingEnrollments.map(e => e.trainee_id);
+      const duplicates = traineeIds.filter(id => existingTraineeIds.includes(id));
+
+      if (duplicates.length > 0) {
+        throw new Error('이미 등록된 수강생이 있습니다.');
+      }
+
+      // 수강생 등록
+      const enrollments = traineeIds.map(traineeId => ({
+        round_id: roundId,
+        trainee_id: traineeId,
+        status: 'active' as const,
+        enrolled_at: new Date().toISOString()
+      }));
+
+      const { data, error } = await supabase
+        .from('round_enrollments')
+        .insert(enrollments)
+        .select();
+
+      if (error) {
+        console.error('[CourseTemplateService] Supabase error adding trainees:', {
+          message: error.message,
+          code: error.code,
+          details: error.details
+        });
+        throw error;
+      }
+
+      return data;
+    } catch (error: any) {
+      console.error('[CourseTemplateService] Error adding round trainees:', {
+        message: error?.message,
+        error
+      });
+      throw error;
+    }
+  }
+
+  /**
+   * 차수 수강생 등록 해제
+   */
+  static async removeRoundTrainee(enrollmentId: string) {
+    try {
+      const { error } = await supabase
+        .from('round_enrollments')
+        .delete()
+        .eq('id', enrollmentId);
+
+      if (error) throw error;
+
+      return true;
+    } catch (error) {
+      console.error('[CourseTemplateService] Error removing round trainee:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * 차수 수강생 상태 업데이트
+   */
+  static async updateRoundEnrollment(
+    enrollmentId: string,
+    updates: {
+      status?: 'active' | 'completed' | 'dropped';
+      completion_date?: string;
+      final_score?: number;
+      notes?: string;
+    }
+  ) {
+    try {
+      const { data, error } = await supabase
+        .from('round_enrollments')
+        .update({
+          ...updates,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', enrollmentId)
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      return data;
+    } catch (error) {
+      console.error('[CourseTemplateService] Error updating round enrollment:', error);
+      throw error;
+    }
+  }
 }
+
+// 기본 export 추가
+export const courseTemplateService = {
+  getAll: () => CourseTemplateService.getTemplates(),
+  getById: (id: string) => CourseTemplateService.getTemplateById(id),
+  create: (data: any) => CourseTemplateService.createTemplate(data),
+  update: (id: string, data: any) => CourseTemplateService.updateTemplate(id, data),
+  delete: (id: string) => CourseTemplateService.deleteTemplate(id),
+  getRounds: (filter?: any) => CourseTemplateService.getRounds(filter),
+  getRoundEnrollments: (roundId: string) => CourseTemplateService.getRoundEnrollments(roundId),
+};

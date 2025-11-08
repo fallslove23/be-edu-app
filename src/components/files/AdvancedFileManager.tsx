@@ -369,21 +369,21 @@ const FileList: React.FC<{
                 <div className="flex space-x-1">
                   <button
                     onClick={() => onFileView(file)}
-                    className="p-1 bg-blue-500 text-white rounded hover:bg-blue-600"
+                    className="btn-primary"
                     title="미리보기"
                   >
                     <EyeIcon className="h-4 w-4" />
                   </button>
                   <button
                     onClick={() => localFileManager.downloadFile(file)}
-                    className="p-1 bg-green-500 text-white rounded hover:bg-green-600"
+                    className="btn-success"
                     title="다운로드"
                   >
                     <CloudArrowDownIcon className="h-4 w-4" />
                   </button>
                   <button
                     onClick={() => onFileDelete(file.id)}
-                    className="p-1 bg-red-500 text-white rounded hover:bg-red-600"
+                    className="btn-danger"
                     title="삭제"
                   >
                     <TrashIcon className="h-4 w-4" />
@@ -481,7 +481,7 @@ const FilePreviewModal: React.FC<{
             <p className="text-gray-500">미리보기를 사용할 수 없습니다</p>
             <button
               onClick={() => localFileManager.downloadFile(file)}
-              className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+              className="btn-primary"
             >
               다운로드
             </button>
@@ -530,7 +530,7 @@ const FilePreviewModal: React.FC<{
           <div className="flex justify-end space-x-3 p-6 border-t border-gray-200 dark:border-gray-700">
             <button
               onClick={() => localFileManager.downloadFile(file)}
-              className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+              className="btn-success"
             >
               다운로드
             </button>

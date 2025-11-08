@@ -273,7 +273,7 @@ const PerformanceBudgetMonitor: React.FC<PerformanceBudgetMonitorProps> = ({
                   console.log('📊 성능 리포트:', report);
                   navigator.clipboard?.writeText(JSON.stringify(report, null, 2));
                 }}
-                className="flex-1 bg-blue-600 text-white px-2 py-1 rounded text-xs hover:bg-blue-700"
+                className="btn-primary"
               >
                 📋 리포트 복사
               </button>

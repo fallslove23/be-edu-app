@@ -103,7 +103,7 @@ const DefaultErrorFallback: React.FC<{ error: Error; resetErrorBoundary: () => v
       <div className="space-y-2">
         <button
           onClick={resetErrorBoundary}
-          className="mobile-button w-full bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded-lg text-sm font-medium"
+          className="btn-danger mobile-button w-full py-2 px-4 rounded-lg text-sm font-medium"
         >
           다시 시도
         </button>

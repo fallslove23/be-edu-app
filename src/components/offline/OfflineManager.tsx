@@ -296,7 +296,7 @@ const OfflineManager: React.FC<OfflineManagerProps> = ({ compact = false }) => {
           <button
             onClick={handleSync}
             disabled={!syncStatus.isOnline || syncing}
-            className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+            className="btn-primary"
           >
             <ArrowPathIcon className={`h-4 w-4 mr-2 ${syncing ? 'animate-spin' : ''}`} />
             {syncing ? '동기화 중...' : '지금 동기화'}
@@ -354,7 +354,7 @@ const OfflineManager: React.FC<OfflineManagerProps> = ({ compact = false }) => {
                 {item.status === 'conflict' && (
                   <button
                     onClick={() => setSelectedConflict(item)}
-                    className="px-3 py-1 text-sm bg-purple-600 text-white rounded hover:bg-purple-700"
+                    className="btn-purple"
                   >
                     충돌 해결
                   </button>
@@ -400,13 +400,13 @@ const OfflineManager: React.FC<OfflineManagerProps> = ({ compact = false }) => {
             <div className="flex space-x-3 mt-6">
               <button
                 onClick={() => handleResolveConflict(selectedConflict.id, 'use_local')}
-                className="flex-1 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                className="btn-primary"
               >
                 로컬 사용
               </button>
               <button
                 onClick={() => handleResolveConflict(selectedConflict.id, 'use_remote')}
-                className="flex-1 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+                className="btn-success"
               >
                 서버 사용
               </button>
@@ -474,7 +474,7 @@ const OfflineManager: React.FC<OfflineManagerProps> = ({ compact = false }) => {
             <div className="flex space-x-3 mt-6">
               <button
                 onClick={() => handleConfigUpdate(config)}
-                className="flex-1 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                className="btn-primary"
               >
                 저장
               </button>

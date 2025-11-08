@@ -282,7 +282,7 @@ const BSActivityDashboard: React.FC<BSActivityDashboardProps> = ({ courseId }) =
                 <div className="flex flex-col gap-2 ml-4">
                   <button
                     onClick={() => setSelectedActivity(activity)}
-                    className="px-3 py-1 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700"
+                    className="btn-primary"
                   >
                     <EyeIcon className="h-4 w-4 inline mr-1" />
                     상세
@@ -427,7 +427,7 @@ const BSActivityDashboard: React.FC<BSActivityDashboardProps> = ({ courseId }) =
                     </div>
                     <button
                       onClick={handleSubmitFeedback}
-                      className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                      className="btn-primary"
                     >
                       피드백 제출
                     </button>

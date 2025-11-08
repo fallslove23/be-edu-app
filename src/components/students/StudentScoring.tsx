@@ -259,7 +259,7 @@ const StudentScoring: React.FC<StudentScoringProps> = ({ studentId, onBack }) =>
             </button>
             <button
               onClick={() => {/* 새 점수 입력 */}}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 sm:py-2 rounded-lg flex items-center justify-center space-x-2 min-h-[44px]"
+              className="btn-primary px-4 py-3 sm:py-2 rounded-lg flex items-center justify-center space-x-2 min-h-[44px]"
             >
               <PlusIcon className="h-4 w-4" />
               <span className="text-sm sm:text-base">점수 입력</span>
@@ -450,7 +450,7 @@ const StudentScoring: React.FC<StudentScoringProps> = ({ studentId, onBack }) =>
             </p>
             <button
               onClick={() => {/* 새 점수 입력 */}}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg"
+              className="btn-primary px-4 py-2 rounded-lg"
             >
               첫 점수 입력하기
             </button>
@@ -617,7 +617,7 @@ const StudentScoring: React.FC<StudentScoringProps> = ({ studentId, onBack }) =>
                     // 저장 로직
                     setIsEditing(false);
                   }}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                  className="btn-primary"
                 >
                   저장
                 </button>
@@ -648,7 +648,7 @@ const StudentScoring: React.FC<StudentScoringProps> = ({ studentId, onBack }) =>
                 <p className="text-gray-600">점수 항목을 추가하거나 삭제할 수 있습니다.</p>
                 <button
                   onClick={() => {/* 새 항목 추가 */}}
-                  className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2"
+                  className="btn-success px-4 py-2 rounded-lg flex items-center space-x-2"
                 >
                   <PlusIcon className="h-4 w-4" />
                   <span>항목 추가</span>
@@ -735,7 +735,7 @@ const StudentScoring: React.FC<StudentScoringProps> = ({ studentId, onBack }) =>
                   // 설정 저장 로직
                   setShowCategoryConfig(false);
                 }}
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                className="btn-primary"
               >
                 저장
               </button>

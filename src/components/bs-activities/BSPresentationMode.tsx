@@ -136,7 +136,7 @@ const BSPresentationMode: React.FC<BSPresentationModeProps> = ({
         <p className="text-xl">발표 순서가 설정되지 않았습니다.</p>
         <button
           onClick={onClose}
-          className="mt-6 px-6 py-3 bg-blue-600 rounded-lg hover:bg-blue-700"
+          className="mt-6 btn-primary"
         >
           닫기
         </button>

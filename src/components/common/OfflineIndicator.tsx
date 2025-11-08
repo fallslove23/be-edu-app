@@ -157,7 +157,7 @@ const OfflineIndicator: React.FC = () => {
                         e.stopPropagation();
                         setShowDetails(true);
                       }}
-                      className="flex-1 bg-blue-600 text-white px-3 py-1.5 rounded text-sm hover:bg-blue-700 transition-colors"
+                      className="btn-primary"
                     >
                       상세 보기
                     </button>

@@ -369,7 +369,7 @@ const SystemMonitor: React.FC = () => {
             <button
               onClick={() => setIsMonitoring(!isMonitoring)}
               className={`px-4 py-2 rounded-lg text-white flex items-center space-x-2 ${
-                isMonitoring ? 'bg-red-600 hover:bg-red-700' : 'bg-green-600 hover:bg-green-700'
+                isMonitoring ? 'btn-danger' : 'btn-success'
               }`}
             >
               {isMonitoring ? (

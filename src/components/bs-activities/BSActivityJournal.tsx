@@ -397,7 +397,7 @@ const BSActivityJournal: React.FC<BSActivityJournalProps> = ({
                     {!readonly && (
                       <button
                         onClick={() => handlePhotoDelete(photo.id)}
-                        className="absolute top-1 right-1 bg-red-600 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                        className="btn-danger absolute top-1 right-1 p-1 opacity-0 group-hover:opacity-100 transition-opacity"
                       >
                         <XMarkIcon className="w-4 h-4" />
                       </button>
@@ -612,7 +612,7 @@ const BSActivityJournal: React.FC<BSActivityJournalProps> = ({
           {!readonly && (
             <button
               onClick={() => setShowActivityForm(true)}
-              className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center"
+              className="btn-primary"
             >
               <PlusIcon className="w-4 h-4 mr-2" />
               활동 추가
@@ -845,7 +845,7 @@ const BSActivityJournal: React.FC<BSActivityJournalProps> = ({
               </button>
               <button
                 onClick={handleActivitySave}
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                className="btn-primary"
               >
                 저장
               </button>
