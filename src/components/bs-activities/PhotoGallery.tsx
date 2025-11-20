@@ -63,7 +63,7 @@ const PhotoViewer: React.FC<PhotoViewerProps> = ({
               {!readonly && onUpdateDescription && (
                 <button
                   onClick={() => setIsEditing(!isEditing)}
-                  className="p-2 hover:bg-white/10 rounded-full transition-colors"
+                  className="p-2 hover:bg-white/10 rounded-lg transition-colors"
                 >
                   <PencilIcon className="w-5 h-5" />
                 </button>
@@ -104,7 +104,7 @@ const PhotoViewer: React.FC<PhotoViewerProps> = ({
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="사진 설명을 입력하세요"
                 rows={3}
-                className="w-full px-3 py-2 bg-white/90 text-gray-900 rounded-lg focus:bg-white focus:ring-2 focus:ring-blue-500 resize-none"
+                className="w-full px-3 py-2 bg-white/90 text-gray-900 rounded-full focus:bg-white focus:ring-2 focus:ring-blue-500 resize-none"
               />
               <div className="flex justify-end space-x-2">
                 <button
@@ -112,7 +112,7 @@ const PhotoViewer: React.FC<PhotoViewerProps> = ({
                     setDescription(photo.description);
                     setIsEditing(false);
                   }}
-                  className="px-4 py-2 bg-white/20 text-white rounded-lg hover:bg-white/30 transition-colors"
+                  className="px-4 py-2 bg-white/20 text-white rounded-full hover:bg-white/30 transition-colors"
                 >
                   취소
                 </button>
@@ -232,7 +232,7 @@ const PhotoGallery: React.FC<PhotoGalleryProps> = ({
           {!readonly && (
             <button
               onClick={onAddPhoto}
-              className="aspect-square border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center text-gray-500 hover:border-gray-400 hover:text-gray-600 transition-colors"
+              className="aspect-square border-2 border-dashed border-gray-300 rounded-full flex flex-col items-center justify-center text-gray-500 hover:border-gray-400 hover:text-gray-600 transition-colors"
             >
               <PlusIcon className="w-8 h-8 mb-2" />
               <span className="text-sm">사진 추가</span>

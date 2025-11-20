@@ -68,13 +68,13 @@ export default function ComprehensiveGradesDashboard({ courseRoundId }: Comprehe
   const getGradeColor = (score: number, passingScore?: number) => {
     if (!passingScore) return 'text-gray-900 dark:text-gray-100';
     if (score >= passingScore) return 'text-green-600 dark:text-green-400';
-    return 'text-red-600 dark:text-red-400';
+    return 'text-destructive dark:text-red-400';
   };
 
   const getGradeBgColor = (score: number, passingScore?: number) => {
     if (!passingScore) return 'bg-gray-100 dark:bg-gray-700';
-    if (score >= passingScore) return 'bg-green-100 dark:bg-green-900/30';
-    return 'bg-red-100 dark:bg-red-900/30';
+    if (score >= passingScore) return 'bg-green-500/10 dark:bg-green-900/30';
+    return 'bg-destructive/10 dark:bg-red-900/30';
   };
 
   if (loading) {
@@ -87,8 +87,8 @@ export default function ComprehensiveGradesDashboard({ courseRoundId }: Comprehe
 
   if (error) {
     return (
-      <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
-        <p className="text-red-800 dark:text-red-200">{error}</p>
+      <div className="bg-destructive/10 dark:bg-red-900/20 border border-destructive/50 dark:border-red-800 rounded-lg p-4">
+        <p className="text-destructive dark:text-red-200">{error}</p>
       </div>
     );
   }
@@ -124,10 +124,10 @@ export default function ComprehensiveGradesDashboard({ courseRoundId }: Comprehe
 
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow border border-gray-200 dark:border-gray-700 p-6">
             <div className="flex items-center">
-              <XCircleIcon className="w-8 h-8 text-red-600 dark:text-red-400 mr-3" />
+              <XCircleIcon className="w-8 h-8 text-destructive dark:text-red-400 mr-3" />
               <div>
                 <p className="text-sm text-gray-500 dark:text-gray-400">미수료</p>
-                <p className="text-2xl font-bold text-red-600 dark:text-red-400">
+                <p className="text-2xl font-bold text-destructive dark:text-red-400">
                   {statistics.failed_count}명
                 </p>
               </div>
@@ -212,12 +212,12 @@ export default function ComprehensiveGradesDashboard({ courseRoundId }: Comprehe
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     {grade.is_passed ? (
-                      <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200">
+                      <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-500/10 dark:bg-green-900/30 text-green-800 dark:text-green-200">
                         <CheckCircleIcon className="w-4 h-4 mr-1" />
                         수료
                       </span>
                     ) : (
-                      <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-200">
+                      <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-destructive/10 dark:bg-red-900/30 text-destructive dark:text-red-200">
                         <XCircleIcon className="w-4 h-4 mr-1" />
                         미수료
                       </span>
@@ -269,7 +269,7 @@ export default function ComprehensiveGradesDashboard({ courseRoundId }: Comprehe
               </div>
 
               {/* 최종 점수 */}
-              <div className={`p-6 rounded-lg mb-6 ${getGradeBgColor(selectedGrade.total_score, selectedGrade.passing_score)}`}>
+              <div className={`p-6 rounded-full mb-6 ${getGradeBgColor(selectedGrade.total_score, selectedGrade.passing_score)}`}>
                 <div className="text-center">
                   <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">최종 점수</p>
                   <p className={`text-5xl font-bold ${getGradeColor(selectedGrade.total_score, selectedGrade.passing_score)}`}>
@@ -280,12 +280,12 @@ export default function ComprehensiveGradesDashboard({ courseRoundId }: Comprehe
                   </p>
                   <div className="mt-4">
                     {selectedGrade.is_passed ? (
-                      <span className="inline-flex items-center px-4 py-2 rounded-full text-lg font-medium bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-200">
+                      <span className="inline-flex items-center px-4 py-2 rounded-full text-lg font-medium bg-green-500/10 dark:bg-green-900/50 text-green-800 dark:text-green-200">
                         <CheckCircleIcon className="w-6 h-6 mr-2" />
                         수료
                       </span>
                     ) : (
-                      <span className="inline-flex items-center px-4 py-2 rounded-full text-lg font-medium bg-red-100 dark:bg-red-900/50 text-red-800 dark:text-red-200">
+                      <span className="inline-flex items-center px-4 py-2 rounded-full text-lg font-medium bg-destructive/10 dark:bg-red-900/50 text-destructive dark:text-red-200">
                         <XCircleIcon className="w-6 h-6 mr-2" />
                         미수료
                       </span>
@@ -379,7 +379,7 @@ export default function ComprehensiveGradesDashboard({ courseRoundId }: Comprehe
               <div className="mt-6 flex justify-end">
                 <button
                   onClick={() => setSelectedGrade(null)}
-                  className="px-6 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600"
+                  className="px-6 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full hover:bg-gray-200 dark:hover:bg-gray-600"
                 >
                   닫기
                 </button>

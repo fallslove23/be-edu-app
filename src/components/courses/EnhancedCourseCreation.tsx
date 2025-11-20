@@ -365,7 +365,7 @@ const EnhancedCourseCreation: React.FC = () => {
             value={courseData.title}
             onChange={(e) => setCourseData(prev => ({ ...prev, title: e.target.value }))}
             placeholder="예: 신입 영업사원 기초 교육"
-            className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
+            className="w-full px-3 py-2 border border-border rounded-full bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
           />
         </div>
 
@@ -376,7 +376,7 @@ const EnhancedCourseCreation: React.FC = () => {
           <select
             value={courseData.category}
             onChange={(e) => setCourseData(prev => ({ ...prev, category: e.target.value as any }))}
-            className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
+            className="w-full px-3 py-2 border border-border rounded-full bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
           >
             <option value="BS-BASIC">BS 기초 과정</option>
             <option value="BS-ADVANCED">BS 고급 과정</option>
@@ -392,7 +392,7 @@ const EnhancedCourseCreation: React.FC = () => {
             type="date"
             value={courseData.startDate}
             onChange={(e) => setCourseData(prev => ({ ...prev, startDate: e.target.value }))}
-            className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
+            className="w-full px-3 py-2 border border-border rounded-full bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
           />
         </div>
 
@@ -404,7 +404,7 @@ const EnhancedCourseCreation: React.FC = () => {
             type="date"
             value={courseData.endDate}
             onChange={(e) => setCourseData(prev => ({ ...prev, endDate: e.target.value }))}
-            className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
+            className="w-full px-3 py-2 border border-border rounded-full bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
           />
         </div>
 
@@ -418,7 +418,7 @@ const EnhancedCourseCreation: React.FC = () => {
             onChange={(e) => setCourseData(prev => ({ ...prev, maxStudents: parseInt(e.target.value) }))}
             min="1"
             max="50"
-            className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
+            className="w-full px-3 py-2 border border-border rounded-full bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
           />
         </div>
 
@@ -434,7 +434,7 @@ const EnhancedCourseCreation: React.FC = () => {
                 generateScheduleFromTemplate(e.target.value);
               }
             }}
-            className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
+            className="w-full px-3 py-2 border border-border rounded-full bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
           >
             <option value="">템플릿 선택 (선택사항)</option>
             {templates.map(template => (
@@ -455,7 +455,7 @@ const EnhancedCourseCreation: React.FC = () => {
           onChange={(e) => setCourseData(prev => ({ ...prev, description: e.target.value }))}
           placeholder="과정에 대한 상세 설명을 입력하세요."
           rows={4}
-          className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
+          className="w-full px-3 py-2 border border-border rounded-full bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
         />
       </div>
     </div>

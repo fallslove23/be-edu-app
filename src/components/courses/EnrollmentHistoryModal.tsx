@@ -110,9 +110,9 @@ const EnrollmentHistoryModal: React.FC<EnrollmentHistoryModalProps> = ({
       case 'enrolled':
         return 'bg-blue-100 text-blue-800';
       case 'unenrolled':
-        return 'bg-red-100 text-red-800';
+        return 'bg-destructive/10 text-destructive';
       case 'completed':
-        return 'bg-green-100 text-green-800';
+        return 'bg-green-500/10 text-green-700';
       case 'dropped':
         return 'bg-yellow-100 text-yellow-800';
       case 'transferred':
@@ -186,7 +186,7 @@ const EnrollmentHistoryModal: React.FC<EnrollmentHistoryModalProps> = ({
                   <select
                     value={actionFilter}
                     onChange={(e) => setActionFilter(e.target.value)}
-                    className="block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    className="block w-full px-3 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-1 focus:ring-blue-500"
                   >
                     <option value="all">전체</option>
                     <option value="enrolled">등록</option>
@@ -202,7 +202,7 @@ const EnrollmentHistoryModal: React.FC<EnrollmentHistoryModalProps> = ({
                   <select
                     value={dateFilter}
                     onChange={(e) => setDateFilter(e.target.value)}
-                    className="block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    className="block w-full px-3 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-1 focus:ring-blue-500"
                   >
                     <option value="all">전체</option>
                     <option value="today">오늘</option>
@@ -219,11 +219,11 @@ const EnrollmentHistoryModal: React.FC<EnrollmentHistoryModalProps> = ({
         <div className="flex-1 overflow-y-auto" style={{ maxHeight: '500px' }}>
           {loading ? (
             <div className="flex items-center justify-center py-12">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+              <div className="animate-spin rounded-lg h-8 w-8 border-b-2 border-blue-600"></div>
               <span className="ml-2 text-gray-600">이력을 불러오는 중...</span>
             </div>
           ) : error ? (
-            <div className="text-center py-12 text-red-500">
+            <div className="text-center py-12 text-destructive">
               <DocumentTextIcon className="h-12 w-12 mx-auto mb-4 text-red-300" />
               <p>{error}</p>
             </div>
@@ -295,7 +295,7 @@ const EnrollmentHistoryModal: React.FC<EnrollmentHistoryModalProps> = ({
           <div className="flex justify-end">
             <button
               onClick={onClose}
-              className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+              className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-full hover:bg-gray-50 transition-colors"
             >
               닫기
             </button>

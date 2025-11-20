@@ -47,7 +47,7 @@ const PracticeResults: React.FC<PracticeResultsProps> = ({
         <div className="flex items-center">
           <button
             onClick={onBack}
-            className="mr-4 p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
+            className="mr-4 p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-full transition-colors"
           >
             <ArrowLeftIcon className="h-5 w-5" />
           </button>
@@ -90,7 +90,7 @@ const PracticeResults: React.FC<PracticeResultsProps> = ({
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <ChartBarIcon className="h-8 w-8 text-yellow-600" />
+              <ChartBarIcon className="h-8 w-8 text-foreground" />
             </div>
             <div className="ml-4">
               <p className="text-sm font-medium text-gray-500">최고 점수</p>
@@ -148,7 +148,7 @@ const PracticeResults: React.FC<PracticeResultsProps> = ({
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
                       <div className="flex-shrink-0 h-8 w-8">
-                        <div className="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center">
+                        <div className="h-8 w-8 rounded-lg bg-gray-200 flex items-center justify-center">
                           <UserIcon className="h-4 w-4 text-gray-500" />
                         </div>
                       </div>
@@ -159,7 +159,7 @@ const PracticeResults: React.FC<PracticeResultsProps> = ({
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm font-medium text-gray-900">{result.score}점</div>
-                    <div className="w-20 bg-gray-200 rounded-full h-2">
+                    <div className="w-20 bg-gray-200 rounded-lg h-2">
                       <div 
                         className={`h-2 rounded-full ${
                           result.score >= 90 ? 'bg-green-500' :
@@ -173,10 +173,10 @@ const PracticeResults: React.FC<PracticeResultsProps> = ({
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                      result.score >= 90 ? 'bg-green-100 text-green-800' :
+                      result.score >= 90 ? 'bg-green-500/10 text-green-700' :
                       result.score >= 80 ? 'bg-blue-100 text-blue-800' :
                       result.score >= 70 ? 'bg-yellow-100 text-yellow-800' :
-                      'bg-red-100 text-red-800'
+                      'bg-destructive/10 text-destructive'
                     }`}>
                       {result.grade}
                     </span>
@@ -208,9 +208,9 @@ const PracticeResults: React.FC<PracticeResultsProps> = ({
                   평균 {Math.floor(Math.random() * 20) + 80}% ({criteria.max_points}점 만점)
                 </span>
               </div>
-              <div className="mt-1 w-full bg-gray-200 rounded-full h-2">
+              <div className="mt-1 w-full bg-gray-200 rounded-lg h-2">
                 <div 
-                  className="bg-blue-600 h-2 rounded-full"
+                  className="bg-blue-600 h-2 rounded-lg"
                   style={{ width: `${Math.floor(Math.random() * 20) + 80}%` }}
                 ></div>
               </div>

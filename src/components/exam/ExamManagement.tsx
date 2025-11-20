@@ -285,7 +285,7 @@ const ExamManagement: React.FC = () => {
             <button
               onClick={handleCreateExamFromBank}
               disabled={selectedTargets.length === 0}
-              className={`px-4 py-2 rounded-lg flex items-center transition-colors ${
+              className={`px-4 py-2 rounded-full flex items-center transition-colors ${
                 selectedTargets.length === 0
                   ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
                   : 'bg-gray-700 text-white hover:bg-gray-800'
@@ -323,7 +323,7 @@ const ExamManagement: React.FC = () => {
             {examTargets.map((target) => (
               <label
                 key={target.id}
-                className={`flex items-center p-4 border rounded-lg cursor-pointer transition-colors ${
+                className={`flex items-center p-4 border rounded-full cursor-pointer transition-colors ${
                   selectedTargets.includes(target.id)
                     ? 'border-gray-600 bg-gray-50'
                     : 'border-gray-200 hover:border-gray-300'
@@ -421,14 +421,14 @@ const ExamManagement: React.FC = () => {
           <div className="flex space-x-3">
             <button
               onClick={() => setCurrentView('question-bank')}
-              className="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors flex items-center"
+              className="bg-gray-600 text-white px-4 py-2 rounded-full hover:bg-gray-700 transition-colors flex items-center"
             >
               <BookOpenIcon className="h-5 w-5 mr-2" />
               문제은행 관리
             </button>
             <button
               onClick={() => setCurrentView('form')}
-              className="bg-gray-700 text-white px-4 py-2 rounded-lg hover:bg-gray-800 transition-colors flex items-center"
+              className="bg-gray-700 text-white px-4 py-2 rounded-full hover:bg-gray-800 transition-colors flex items-center"
             >
               <PlusIcon className="h-5 w-5 mr-2" />
               새 시험 생성
@@ -477,7 +477,7 @@ const ExamManagement: React.FC = () => {
           </div>
 
           {/* 결과 카운트 */}
-          <div className="flex items-center px-4 py-2.5 bg-secondary/30 rounded-lg border border-border">
+          <div className="flex items-center px-4 py-2.5 bg-secondary/30 rounded-full border border-border">
             <FunnelIcon className="h-4 w-4 mr-2 text-muted-foreground" />
             <span className="text-sm font-medium text-foreground whitespace-nowrap">
               총 <span className="text-primary font-semibold">{filteredExams.length}</span>개 시험
@@ -492,7 +492,7 @@ const ExamManagement: React.FC = () => {
         
         {loading ? (
           <div className="flex items-center justify-center py-12">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+            <div className="animate-spin rounded-lg h-8 w-8 border-b-2 border-blue-600"></div>
             <span className="ml-3 text-gray-600">시험 목록을 불러오는 중...</span>
           </div>
         ) : (

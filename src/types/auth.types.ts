@@ -14,6 +14,9 @@ export interface User {
   avatar?: string;
   permissions?: string[];
   last_login?: string;
+  password_hash?: string;
+  first_login?: boolean;
+  password_changed_at?: string;
   created_at: string;
   updated_at: string;
   emergency_contact?: {

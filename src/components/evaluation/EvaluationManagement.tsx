@@ -57,7 +57,7 @@ export default function EvaluationManagement() {
                 <p className="text-yellow-800 dark:text-yellow-200">
                   과정 회차를 선택해주세요.
                 </p>
-                <p className="text-sm text-yellow-600 dark:text-yellow-300 mt-2">
+                <p className="text-sm text-foreground dark:text-yellow-300 mt-2">
                   향후 과정 회차 선택 UI가 추가될 예정입니다.
                 </p>
               </div>

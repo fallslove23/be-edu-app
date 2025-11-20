@@ -40,7 +40,7 @@ const UserDetail: React.FC<UserDetailProps> = ({ user, onBack, onEdit }) => {
           <div className="flex items-center">
             <button
               onClick={onBack}
-              className="mr-4 p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
+              className="mr-4 p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-full transition-colors"
             >
               <ArrowLeftIcon className="h-5 w-5" />
             </button>
@@ -67,7 +67,7 @@ const UserDetail: React.FC<UserDetailProps> = ({ user, onBack, onEdit }) => {
           <div className="space-y-4">
             <div className="flex items-center space-x-3">
               <div className="flex-shrink-0 h-16 w-16">
-                <div className="h-16 w-16 rounded-full bg-blue-100 flex items-center justify-center">
+                <div className="h-16 w-16 rounded-lg bg-blue-100 flex items-center justify-center">
                   <UserIcon className="h-8 w-8 text-blue-600" />
                 </div>
               </div>
@@ -93,9 +93,9 @@ const UserDetail: React.FC<UserDetailProps> = ({ user, onBack, onEdit }) => {
             <div>
               <label className="block text-sm font-medium text-gray-500 mb-1">상태</label>
               <span className={`inline-flex px-3 py-1 text-sm font-semibold rounded-full ${
-                user.status === 'active' ? 'bg-green-100 text-green-800' :
+                user.status === 'active' ? 'bg-green-500/10 text-green-700' :
                 user.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                user.status === 'suspended' ? 'bg-red-100 text-red-800' :
+                user.status === 'suspended' ? 'bg-destructive/10 text-destructive' :
                 'bg-gray-100 text-gray-800'
               }`}>
                 {userStatusLabels[user.status]}
@@ -105,10 +105,10 @@ const UserDetail: React.FC<UserDetailProps> = ({ user, onBack, onEdit }) => {
             <div>
               <label className="block text-sm font-medium text-gray-500 mb-1">역할</label>
               <span className={`inline-flex px-3 py-1 text-sm font-semibold rounded-full ${
-                user.role === 'admin' ? 'bg-red-100 text-red-800' :
+                user.role === 'admin' ? 'bg-destructive/10 text-destructive' :
                 user.role === 'manager' ? 'bg-purple-100 text-purple-800' :
                 user.role === 'operator' ? 'bg-yellow-100 text-yellow-800' :
-                user.role === 'instructor' ? 'bg-green-100 text-green-800' :
+                user.role === 'instructor' ? 'bg-green-500/10 text-green-700' :
                 'bg-blue-100 text-blue-800'
               }`}>
                 {roleLabels[user.role]}
@@ -236,7 +236,7 @@ const UserDetail: React.FC<UserDetailProps> = ({ user, onBack, onEdit }) => {
         <div className="flex items-center justify-between">
           <button
             onClick={onBack}
-            className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+            className="px-6 py-2 border border-gray-300 text-gray-700 rounded-full hover:bg-gray-50 transition-colors"
           >
             목록으로
           </button>

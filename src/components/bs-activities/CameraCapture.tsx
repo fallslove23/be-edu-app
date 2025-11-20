@@ -189,7 +189,7 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({
             {isLoading && (
               <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
                 <div className="text-white text-center">
-                  <div className="animate-spin w-8 h-8 border-2 border-white border-t-transparent rounded-full mx-auto mb-2"></div>
+                  <div className="animate-spin w-8 h-8 border-2 border-white border-t-transparent rounded-lg mx-auto mb-2"></div>
                   <p>카메라를 시작하는 중...</p>
                 </div>
               </div>
@@ -209,7 +209,7 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({
                   disabled={isLoading || !stream}
                   className="w-20 h-20 bg-white rounded-full flex items-center justify-center hover:bg-gray-100 transition-colors disabled:opacity-50"
                 >
-                  <div className="w-16 h-16 bg-white border-4 border-gray-300 rounded-full"></div>
+                  <div className="w-16 h-16 bg-white border-4 border-gray-300 rounded-lg"></div>
                 </button>
 
                 {/* 카메라 전환 버튼 */}
@@ -243,14 +243,14 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({
                   onChange={(e) => setDescription(e.target.value)}
                   placeholder="이 사진에 대한 설명을 입력하세요"
                   rows={3}
-                  className="w-full px-3 py-2 bg-white/90 text-gray-900 rounded-lg focus:bg-white focus:ring-2 focus:ring-blue-500 resize-none"
+                  className="w-full px-3 py-2 bg-white/90 text-gray-900 rounded-full focus:bg-white focus:ring-2 focus:ring-blue-500 resize-none"
                 />
               </div>
 
               <div className="flex justify-center space-x-4">
                 <button
                   onClick={retakePhoto}
-                  className="flex items-center px-6 py-3 bg-white/20 text-white rounded-lg hover:bg-white/30 transition-colors"
+                  className="flex items-center px-6 py-3 bg-white/20 text-white rounded-full hover:bg-white/30 transition-colors"
                 >
                   <TrashIcon className="w-5 h-5 mr-2" />
                   재촬영

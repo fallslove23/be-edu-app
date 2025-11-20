@@ -283,7 +283,7 @@ const TraineeManagement: React.FC = () => {
 
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-        <div className="bg-card rounded-xl max-w-md w-full border border-border">
+        <div className="bg-card rounded-lg max-w-md w-full border border-border">
           <div className="flex justify-between items-center p-6 border-b border-border">
             <h2 className="text-xl font-bold text-card-foreground">새 교육생 등록</h2>
             <button
@@ -439,7 +439,7 @@ const TraineeManagement: React.FC = () => {
 
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-        <div className="bg-card rounded-xl max-w-md w-full border border-border">
+        <div className="bg-card rounded-lg max-w-md w-full border border-border">
           <div className="flex justify-between items-center p-6 border-b border-border">
             <h2 className="text-xl font-bold text-card-foreground">교육생 정보 수정</h2>
             <button
@@ -560,7 +560,7 @@ const TraineeManagement: React.FC = () => {
 
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-        <div className="bg-card rounded-xl max-w-lg w-full border border-border">
+        <div className="bg-card rounded-lg max-w-lg w-full border border-border">
           <div className="flex justify-between items-center p-6 border-b border-border">
             <h2 className="text-xl font-bold text-card-foreground">교육생 상세 정보</h2>
             <button
@@ -681,7 +681,7 @@ const TraineeManagement: React.FC = () => {
                 setSelectedTrainee(selectedTrainee);
                 setIsEditModalOpen(true);
               }}
-              className="bg-slate-600 text-white hover:bg-slate-700 px-4 py-2 text-sm font-medium rounded-lg transition-colors"
+              className="btn-base btn-secondary"
             >
               편집
             </button>
@@ -690,7 +690,7 @@ const TraineeManagement: React.FC = () => {
                 setIsDetailModalOpen(false);
                 setSelectedTrainee(null);
               }}
-              className="btn-neutral px-4 py-2 text-sm font-medium rounded-lg"
+              className="btn-base btn-outline"
             >
               닫기
             </button>
@@ -706,7 +706,7 @@ const TraineeManagement: React.FC = () => {
 
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-        <div className="bg-card rounded-xl max-w-lg w-full border border-border">
+        <div className="bg-card rounded-lg max-w-lg w-full border border-border">
           <div className="flex justify-between items-center p-6 border-b border-border">
             <h2 className="text-xl font-bold text-card-foreground">엑셀 파일로 교육생 등록</h2>
             <button
@@ -819,7 +819,7 @@ const TraineeManagement: React.FC = () => {
 
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-        <div className="bg-card rounded-xl max-w-2xl w-full border border-border max-h-[80vh] overflow-hidden">
+        <div className="bg-card rounded-lg max-w-2xl w-full border border-border max-h-[80vh] overflow-hidden">
           <div className="flex justify-between items-center p-6 border-b border-border">
             <h2 className="text-xl font-bold text-card-foreground">업로드 결과</h2>
             <button
@@ -917,7 +917,7 @@ const TraineeManagement: React.FC = () => {
                 setShowResultModal(false);
                 setUploadResult(null);
               }}
-              className="bg-primary text-primary-foreground hover:bg-primary/90 px-6 py-2 text-sm font-medium rounded-lg transition-colors"
+              className="btn-base btn-primary"
             >
               확인
             </button>
@@ -947,7 +947,7 @@ const TraineeManagement: React.FC = () => {
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
       {/* 헤더 */}
-      <div className="bg-card rounded-xl shadow-sm border border-border p-6">
+      <div className="bg-card rounded-lg shadow-sm border border-border p-6">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div className="flex items-center space-x-3">
             <UsersIcon className="h-8 w-8 text-primary" />
@@ -960,16 +960,16 @@ const TraineeManagement: React.FC = () => {
           <div className="flex items-center space-x-3">
             <button
               onClick={() => setIsExcelModalOpen(true)}
-              className="bg-slate-600 text-white hover:bg-slate-700 flex items-center px-4 py-2 rounded-lg transition-colors text-sm font-medium"
+              className="btn-base btn-lg btn-success"
             >
-              <DocumentArrowUpIcon className="w-4 h-4 mr-2" />
+              <DocumentArrowUpIcon className="w-4 h-4" />
               엑셀 가져오기
             </button>
             <button
               onClick={() => setIsCreateModalOpen(true)}
-              className="bg-primary text-primary-foreground hover:bg-primary/90 flex items-center px-4 py-2 rounded-lg transition-colors text-sm font-medium"
+              className="btn-base btn-lg btn-dark"
             >
-              <PlusIcon className="w-4 h-4 mr-2" />
+              <PlusIcon className="w-5 h-5" />
               새 교육생 등록
             </button>
           </div>
@@ -1039,7 +1039,7 @@ const TraineeManagement: React.FC = () => {
 
       {/* 통계 카드 */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div className="bg-card rounded-xl shadow-sm border border-border p-6">
+        <div className="bg-card rounded-lg shadow-sm border border-border p-6">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-muted-foreground text-sm">전체 교육생</p>
@@ -1048,7 +1048,7 @@ const TraineeManagement: React.FC = () => {
           </div>
         </div>
 
-        <div className="bg-card rounded-xl shadow-sm border border-border p-6">
+        <div className="bg-card rounded-lg shadow-sm border border-border p-6">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-muted-foreground text-sm">활성 교육생</p>
@@ -1059,7 +1059,7 @@ const TraineeManagement: React.FC = () => {
           </div>
         </div>
 
-        <div className="bg-card rounded-xl shadow-sm border border-border p-6">
+        <div className="bg-card rounded-lg shadow-sm border border-border p-6">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-muted-foreground text-sm">수료생</p>
@@ -1070,7 +1070,7 @@ const TraineeManagement: React.FC = () => {
           </div>
         </div>
 
-        <div className="bg-card rounded-xl shadow-sm border border-border p-6">
+        <div className="bg-card rounded-lg shadow-sm border border-border p-6">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-muted-foreground text-sm">부서 수</p>
@@ -1084,7 +1084,7 @@ const TraineeManagement: React.FC = () => {
       </div>
 
       {/* 교육생 목록 */}
-      <div className="bg-card rounded-xl shadow-sm border border-border">
+      <div className="bg-card rounded-lg shadow-sm border border-border">
         <div className="p-6 border-b border-border">
           <div className="flex justify-between items-center">
             <h2 className="text-lg font-bold text-card-foreground">
@@ -1141,7 +1141,7 @@ const TraineeManagement: React.FC = () => {
                           setSelectedTrainee(trainee);
                           setIsDetailModalOpen(true);
                         }}
-                        className="btn-neutral btn-sm p-2 rounded-lg"
+                        className="btn-base btn-sm btn-primary"
                         title="상세보기"
                       >
                         <EyeIcon className="w-4 h-4" />
@@ -1150,7 +1150,7 @@ const TraineeManagement: React.FC = () => {
                         onClick={() => {
                           setShowReportForTrainee(trainee.id);
                         }}
-                        className="btn-primary btn-sm p-2 rounded-lg transition-colors flex items-center justify-center"
+                        className="btn-base btn-sm btn-primary"
                         title="리포트 보기"
                       >
                         <ClipboardDocumentListIcon className="w-4 h-4" />
@@ -1160,7 +1160,7 @@ const TraineeManagement: React.FC = () => {
                           setSelectedTrainee(trainee);
                           setIsEditModalOpen(true);
                         }}
-                        className="btn-slate btn-sm p-2 rounded-lg"
+                        className="btn-base btn-sm btn-secondary"
                         title="편집"
                       >
                         <PencilIcon className="w-4 h-4" />
@@ -1177,7 +1177,7 @@ const TraineeManagement: React.FC = () => {
                             }
                           }
                         }}
-                        className="btn-danger btn-sm p-2 rounded-lg transition-colors flex items-center justify-center"
+                        className="btn-base btn-sm btn-danger"
                         title="삭제"
                       >
                         <TrashIcon className="w-4 h-4" />
@@ -1231,7 +1231,7 @@ const TraineeManagement: React.FC = () => {
 
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 overflow-y-auto">
-        <div className="bg-card rounded-xl max-w-5xl w-full max-h-[90vh] overflow-y-auto border border-border">
+        <div className="bg-card rounded-lg max-w-5xl w-full max-h-[90vh] overflow-y-auto border border-border">
           {/* 헤더 */}
           <div className="sticky top-0 bg-card border-b border-border p-6 flex justify-between items-center z-10">
             <div>
@@ -1325,7 +1325,7 @@ const TraineeManagement: React.FC = () => {
                         <div className="flex justify-between items-start mb-2">
                           <h3 className="font-semibold">{course.course_name}</h3>
                           <span className={`px-2 py-1 text-xs font-medium rounded ${
-                            course.completion_status === 'completed' ? 'bg-green-100 text-green-800' :
+                            course.completion_status === 'completed' ? 'bg-green-500/10 text-green-700' :
                             course.completion_status === 'in_progress' ? 'bg-blue-100 text-blue-800' :
                             'bg-gray-100 text-gray-800'
                           }`}>
@@ -1377,17 +1377,17 @@ const TraineeManagement: React.FC = () => {
                         <p className="text-sm text-muted-foreground mb-1">총 일수</p>
                         <p className="text-2xl font-bold">{reportData.attendance_summary.total_days}</p>
                       </div>
-                      <div className="bg-green-50 p-4 rounded-lg text-center">
+                      <div className="bg-green-500/10 p-4 rounded-lg text-center">
                         <p className="text-sm text-muted-foreground mb-1">출석</p>
                         <p className="text-2xl font-bold text-green-600">{reportData.attendance_summary.present_days}</p>
                       </div>
                       <div className="bg-yellow-50 p-4 rounded-lg text-center">
                         <p className="text-sm text-muted-foreground mb-1">지각</p>
-                        <p className="text-2xl font-bold text-yellow-600">{reportData.attendance_summary.late_days}</p>
+                        <p className="text-2xl font-bold text-foreground">{reportData.attendance_summary.late_days}</p>
                       </div>
-                      <div className="bg-red-50 p-4 rounded-lg text-center">
+                      <div className="bg-destructive/10 p-4 rounded-lg text-center">
                         <p className="text-sm text-muted-foreground mb-1">결석</p>
-                        <p className="text-2xl font-bold text-red-600">{reportData.attendance_summary.absent_days}</p>
+                        <p className="text-2xl font-bold text-destructive">{reportData.attendance_summary.absent_days}</p>
                       </div>
                       <div className="bg-blue-50 p-4 rounded-lg text-center">
                         <p className="text-sm text-muted-foreground mb-1">출석률</p>

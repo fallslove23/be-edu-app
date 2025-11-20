@@ -57,11 +57,11 @@ const SecurityDashboard: React.FC = () => {
       case 'successful_login':
         return <ShieldCheckIcon className="h-4 w-4 text-green-500" />;
       case 'failed_login_attempt':
-        return <ExclamationTriangleIcon className="h-4 w-4 text-red-500" />;
+        return <ExclamationTriangleIcon className="h-4 w-4 text-destructive" />;
       case 'token_refreshed':
         return <KeyIcon className="h-4 w-4 text-blue-500" />;
       case 'session_restored':
-        return <ClockIcon className="h-4 w-4 text-yellow-500" />;
+        return <ClockIcon className="h-4 w-4 text-foreground" />;
       default:
         return <ComputerDesktopIcon className="h-4 w-4 text-gray-500" />;
     }
@@ -118,7 +118,7 @@ const SecurityDashboard: React.FC = () => {
         <div className="p-6 space-y-6">
           {/* 현재 세션 정보 */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg border border-green-200 dark:border-green-800">
+            <div className="bg-green-500/10 dark:bg-green-900/20 p-4 rounded-lg border border-green-200 dark:border-green-800">
               <div className="flex items-center">
                 <ShieldCheckIcon className="h-8 w-8 text-green-600 dark:text-green-400" />
                 <div className="ml-3">
@@ -140,10 +140,10 @@ const SecurityDashboard: React.FC = () => {
 
             <div className="bg-yellow-50 dark:bg-yellow-900/20 p-4 rounded-lg border border-yellow-200 dark:border-yellow-800">
               <div className="flex items-center">
-                <ClockIcon className="h-8 w-8 text-yellow-600 dark:text-yellow-400" />
+                <ClockIcon className="h-8 w-8 text-foreground dark:text-yellow-400" />
                 <div className="ml-3">
                   <p className="text-sm font-medium text-yellow-900 dark:text-yellow-100">세션 시간</p>
-                  <p className="text-xs text-yellow-700 dark:text-yellow-300">
+                  <p className="text-xs text-foreground dark:text-yellow-300">
                     {sessionInfo ? formatDuration(Date.now() - sessionInfo.createdAt) : '알 수 없음'}
                   </p>
                 </div>
@@ -206,7 +206,7 @@ const SecurityDashboard: React.FC = () => {
                   </div>
                   
                   <div className="flex items-center space-x-2">
-                    <span className="text-xs px-2 py-1 bg-green-100 text-green-800 rounded-full">
+                    <span className="text-xs px-2 py-1 bg-green-500/10 text-green-700 rounded-full">
                       활성
                     </span>
                   </div>

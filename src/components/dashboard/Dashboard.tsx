@@ -78,7 +78,7 @@ const Dashboard: React.FC = () => {
         {stats.map((stat, index) => (
           <div
             key={index}
-            className="bg-card rounded-xl border border-border p-6 hover:shadow-md transition-shadow"
+            className="bg-card rounded-lg border border-border p-6 hover:shadow-md transition-shadow"
           >
             {/* 헤더 */}
             <div className="flex items-start justify-between mb-4">
@@ -88,8 +88,8 @@ const Dashboard: React.FC = () => {
               </div>
               <div className={`flex items-center space-x-1 px-2 py-1 rounded-md ${
                 stat.trend === 'up'
-                  ? 'bg-green-50 text-green-700'
-                  : 'bg-red-50 text-red-700'
+                  ? 'bg-green-500/10 text-green-700'
+                  : 'bg-destructive/10 text-destructive'
               }`}>
                 {stat.trend === 'up' ? (
                   <ArrowTrendingUpIcon className="w-4 h-4" />
@@ -114,7 +114,7 @@ const Dashboard: React.FC = () => {
       </div>
 
       {/* 차트 섹션 */}
-      <div className="bg-card rounded-xl border border-border p-6">
+      <div className="bg-card rounded-lg border border-border p-6">
         {/* 차트 헤더 */}
         <div className="flex items-center justify-between mb-6">
           <div>
@@ -207,22 +207,22 @@ const Dashboard: React.FC = () => {
       </div>
 
       {/* 하단 테이블 섹션 */}
-      <div className="bg-card rounded-xl border border-border overflow-hidden">
+      <div className="bg-card rounded-lg border border-border overflow-hidden">
         {/* 테이블 헤더 */}
         <div className="border-b border-border">
           <div className="flex items-center space-x-4 px-6 py-4">
-            <button className="text-sm font-medium text-card-foreground pb-2 border-b-2 border-primary">
+            <button className="text-sm font-medium text-card-foreground pb-2 border-b-2 border-primary rounded-full">
               개요
             </button>
-            <button className="text-sm text-muted-foreground hover:text-foreground pb-2">
+            <button className="text-sm text-muted-foreground hover:text-foreground pb-2 rounded-full">
               과거 성과
               <span className="ml-1 px-1.5 py-0.5 text-xs bg-secondary text-secondary-foreground rounded">3</span>
             </button>
-            <button className="text-sm text-muted-foreground hover:text-foreground pb-2">
+            <button className="text-sm text-muted-foreground hover:text-foreground pb-2 rounded-full">
               주요 인원
               <span className="ml-1 px-1.5 py-0.5 text-xs bg-secondary text-secondary-foreground rounded">2</span>
             </button>
-            <button className="text-sm text-muted-foreground hover:text-foreground pb-2">
+            <button className="text-sm text-muted-foreground hover:text-foreground pb-2 rounded-full">
               집중 문서
             </button>
           </div>
@@ -265,7 +265,7 @@ const Dashboard: React.FC = () => {
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center space-x-3">
                       <div className="flex items-center space-x-2">
-                        <button className="text-muted-foreground hover:text-foreground">
+                        <button className="text-muted-foreground hover:text-foreground rounded-full">
                           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8h16M4 16h16" />
                           </svg>
@@ -276,7 +276,7 @@ const Dashboard: React.FC = () => {
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-medium bg-secondary text-secondary-foreground">
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-secondary text-secondary-foreground">
                       {row.type}
                     </span>
                   </td>
@@ -290,7 +290,7 @@ const Dashboard: React.FC = () => {
                     {row.reviewer}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right">
-                    <button className="text-muted-foreground hover:text-foreground">
+                    <button className="text-muted-foreground hover:text-foreground rounded-full">
                       <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                         <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
                       </svg>

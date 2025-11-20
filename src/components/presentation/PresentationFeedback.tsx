@@ -160,7 +160,7 @@ const PresentationFeedback: React.FC<PresentationFeedbackProps> = ({
               onClick={() => handleScoreChange(field, star)}
               className={`p-1 rounded transition-colors ${
                 star <= feedbackData[field]
-                  ? 'text-yellow-400 hover:text-yellow-500'
+                  ? 'text-yellow-400 hover:text-foreground'
                   : 'text-gray-300 hover:text-gray-400'
               }`}
             >
@@ -198,10 +198,10 @@ const PresentationFeedback: React.FC<PresentationFeedbackProps> = ({
                   </span>
                   <button
                     onClick={() => setTimerActive(!timerActive)}
-                    className={`px-3 py-1 text-sm rounded-lg ${
+                    className={`px-3 py-1 text-sm rounded-full ${
                       timerActive 
-                        ? 'bg-red-100 text-red-700 hover:bg-red-200' 
-                        : 'bg-green-100 text-green-700 hover:bg-green-200'
+                        ? 'bg-destructive/10 text-destructive hover:bg-red-200' 
+                        : 'bg-green-500/10 text-green-700 hover:bg-green-200'
                     }`}
                   >
                     {timerActive ? '일시정지' : '시작'}
@@ -210,7 +210,7 @@ const PresentationFeedback: React.FC<PresentationFeedbackProps> = ({
               )}
               <button
                 onClick={onClose}
-                className="p-2 hover:bg-gray-100 rounded-lg"
+                className="p-2 hover:bg-gray-100 rounded-full"
               >
                 <XMarkIcon className="h-6 w-6 text-gray-600" />
               </button>
@@ -232,7 +232,7 @@ const PresentationFeedback: React.FC<PresentationFeedbackProps> = ({
                         onChange={(e) => setCurrentNote(e.target.value)}
                         onKeyPress={(e) => e.key === 'Enter' && addQuickNote()}
                         placeholder="빠른 메모 입력..."
-                        className="flex-1 px-3 py-2 border border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="flex-1 px-3 py-2 border border-blue-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       />
                       <button
                         onClick={addQuickNote}
@@ -256,28 +256,28 @@ const PresentationFeedback: React.FC<PresentationFeedbackProps> = ({
                     <div className="grid grid-cols-2 gap-2">
                       <button
                         onClick={() => addLiveComment('발표 내용이 명확합니다', 'positive')}
-                        className="flex items-center justify-center space-x-1 bg-green-100 text-green-700 p-2 rounded-lg hover:bg-green-200"
+                        className="flex items-center justify-center space-x-1 bg-green-500/10 text-green-700 p-2 rounded-lg hover:bg-green-200"
                       >
                         <HandThumbUpIcon className="h-4 w-4" />
                         <span>내용 명확</span>
                       </button>
                       <button
                         onClick={() => addLiveComment('목소리를 크게 해주세요', 'improvement')}
-                        className="flex items-center justify-center space-x-1 bg-yellow-100 text-yellow-700 p-2 rounded-lg hover:bg-yellow-200"
+                        className="flex items-center justify-center space-x-1 bg-yellow-100 text-orange-700 p-2 rounded-lg hover:bg-yellow-200"
                       >
                         <MicrophoneIcon className="h-4 w-4" />
                         <span>목소리 크게</span>
                       </button>
                       <button
                         onClick={() => addLiveComment('아이컨택이 좋습니다', 'positive')}
-                        className="flex items-center justify-center space-x-1 bg-green-100 text-green-700 p-2 rounded-lg hover:bg-green-200"
+                        className="flex items-center justify-center space-x-1 bg-green-500/10 text-green-700 p-2 rounded-lg hover:bg-green-200"
                       >
                         <EyeIcon className="h-4 w-4" />
                         <span>아이컨택 좋음</span>
                       </button>
                       <button
                         onClick={() => addLiveComment('속도 조절이 필요합니다', 'improvement')}
-                        className="flex items-center justify-center space-x-1 bg-orange-100 text-orange-700 p-2 rounded-lg hover:bg-orange-200"
+                        className="flex items-center justify-center space-x-1 bg-orange-500/10 text-orange-700 p-2 rounded-lg hover:bg-orange-200"
                       >
                         <ClockIcon className="h-4 w-4" />
                         <span>속도 조절</span>
@@ -292,11 +292,11 @@ const PresentationFeedback: React.FC<PresentationFeedbackProps> = ({
                       {liveComments.map((comment) => (
                         <div
                           key={comment.id}
-                          className={`p-2 rounded-lg text-sm ${
+                          className={`p-2 rounded-full text-sm ${
                             comment.type === 'positive' 
-                              ? 'bg-green-50 border border-green-200 text-green-800'
+                              ? 'bg-green-500/10 border border-green-200 text-green-800'
                               : comment.type === 'improvement'
-                                ? 'bg-orange-50 border border-orange-200 text-orange-800'
+                                ? 'bg-orange-500/10 border border-orange-200 text-orange-800'
                                 : 'bg-gray-50 border border-gray-200 text-gray-800'
                           }`}
                         >
@@ -342,14 +342,14 @@ const PresentationFeedback: React.FC<PresentationFeedbackProps> = ({
               
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  잘한 점 <span className="text-red-500">*</span>
+                  잘한 점 <span className="text-destructive">*</span>
                 </label>
                 <textarea
                   value={feedbackData.strengths}
                   onChange={(e) => setFeedbackData(prev => ({ ...prev, strengths: e.target.value }))}
                   placeholder="발표에서 특히 잘한 부분을 구체적으로 작성해주세요..."
                   rows={3}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
                 />
               </div>
 
@@ -362,7 +362,7 @@ const PresentationFeedback: React.FC<PresentationFeedbackProps> = ({
                   onChange={(e) => setFeedbackData(prev => ({ ...prev, areasForImprovement: e.target.value }))}
                   placeholder="개선이 필요한 부분을 건설적으로 제안해주세요..."
                   rows={3}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
                 />
               </div>
 
@@ -375,20 +375,20 @@ const PresentationFeedback: React.FC<PresentationFeedbackProps> = ({
                   onChange={(e) => setFeedbackData(prev => ({ ...prev, specificSuggestions: e.target.value }))}
                   placeholder="다음 발표를 위한 구체적인 제안사항을 작성해주세요..."
                   rows={3}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
                 />
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  격려 메시지 <span className="text-red-500">*</span>
+                  격려 메시지 <span className="text-destructive">*</span>
                 </label>
                 <textarea
                   value={feedbackData.encouragement}
                   onChange={(e) => setFeedbackData(prev => ({ ...prev, encouragement: e.target.value }))}
                   placeholder="학습자에게 동기부여가 되는 격려 메시지를 작성해주세요..."
                   rows={2}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
                 />
               </div>
 
@@ -414,7 +414,7 @@ const PresentationFeedback: React.FC<PresentationFeedbackProps> = ({
           <div className="mt-6 flex justify-end space-x-3">
             <button
               onClick={onClose}
-              className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
+              className="px-4 py-2 border border-gray-300 rounded-full text-gray-700 hover:bg-gray-50"
             >
               취소
             </button>
@@ -424,7 +424,7 @@ const PresentationFeedback: React.FC<PresentationFeedbackProps> = ({
               className="btn-primary"
             >
               {isSubmitting ? (
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                <div className="animate-spin rounded-lg h-4 w-4 border-b-2 border-white"></div>
               ) : (
                 <PaperAirplaneIcon className="h-4 w-4" />
               )}

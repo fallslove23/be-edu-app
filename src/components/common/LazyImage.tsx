@@ -179,7 +179,7 @@ const LazyImage: React.FC<LazyImageProps> = ({
       {!isLoaded && !isError && (
         <div className="absolute inset-0 flex items-center justify-center bg-gray-100 bg-opacity-50">
           <div className="flex flex-col items-center space-y-2">
-            <div className="w-6 h-6 border-2 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
+            <div className="w-6 h-6 border-2 border-blue-200 border-t-blue-600 rounded-lg animate-spin"></div>
             <span className="text-xs text-gray-500">로딩 중...</span>
           </div>
         </div>
@@ -197,7 +197,7 @@ const LazyImage: React.FC<LazyImageProps> = ({
             <p className="text-xs text-gray-500 mb-2">이미지를 불러올 수 없습니다</p>
             <button
               onClick={handleRetry}
-              className="mobile-button text-xs bg-gray-200 hover:bg-gray-300 text-gray-700 px-2 py-1 rounded"
+              className="mobile-button text-xs bg-gray-200 hover:bg-gray-300 text-gray-700 px-2 py-1 rounded-full"
             >
               다시 시도
             </button>
@@ -268,7 +268,7 @@ export const LazyGalleryImage: React.FC<{
     <div
       className={`
         ${aspectClasses[aspectRatio]} 
-        rounded-lg overflow-hidden cursor-pointer 
+        rounded-full overflow-hidden cursor-pointer 
         hover:shadow-lg transition-shadow duration-200
         ${className}
       `}

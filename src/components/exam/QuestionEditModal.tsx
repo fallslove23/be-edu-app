@@ -34,7 +34,7 @@ export default function QuestionEditModal({
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col">
+      <div className="bg-white rounded-lg shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col">
         {/* 헤더 */}
         <div className="p-6 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-indigo-50">
           <div className="flex items-center justify-between">
@@ -60,7 +60,7 @@ export default function QuestionEditModal({
             <select
               value={question.question_type}
               onChange={(e) => updateField('question_type', e.target.value)}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             >
               <option value="multiple_choice">객관식</option>
               <option value="true_false">O/X</option>
@@ -78,7 +78,7 @@ export default function QuestionEditModal({
               value={question.question_text}
               onChange={(e) => updateField('question_text', e.target.value)}
               rows={4}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               placeholder="문제를 입력하세요."
             />
           </div>
@@ -99,7 +99,7 @@ export default function QuestionEditModal({
                       type="text"
                       value={option}
                       onChange={(e) => updateOption(optionIndex, e.target.value)}
-                      className="flex-1 border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="flex-1 border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       placeholder={`선택지 ${optionIndex + 1}`}
                     />
                   </div>
@@ -118,7 +118,7 @@ export default function QuestionEditModal({
                 type="number"
                 value={question.points}
                 onChange={(e) => updateField('points', parseInt(e.target.value) || 1)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 min="1"
               />
             </div>
@@ -131,7 +131,7 @@ export default function QuestionEditModal({
                 <select
                   value={question.correct_answer}
                   onChange={(e) => updateField('correct_answer', e.target.value)}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 >
                   <option value="true">O (참)</option>
                   <option value="false">X (거짓)</option>
@@ -140,7 +140,7 @@ export default function QuestionEditModal({
                 <select
                   value={question.correct_answer}
                   onChange={(e) => updateField('correct_answer', e.target.value)}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 >
                   <option value="">선택하세요</option>
                   {(question.options || []).map((_, i) => (
@@ -154,7 +154,7 @@ export default function QuestionEditModal({
                   type="text"
                   value={question.correct_answer}
                   onChange={(e) => updateField('correct_answer', e.target.value)}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   placeholder="정답을 입력하세요."
                 />
               )}
@@ -170,7 +170,7 @@ export default function QuestionEditModal({
               value={question.explanation || ''}
               onChange={(e) => updateField('explanation', e.target.value)}
               rows={3}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               placeholder="정답 해설을 입력하세요."
             />
           </div>
@@ -180,13 +180,13 @@ export default function QuestionEditModal({
         <div className="p-6 border-t border-gray-200 bg-gray-50 flex items-center justify-end gap-3">
           <button
             onClick={onClose}
-            className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors"
+            className="px-6 py-2 border border-gray-300 text-gray-700 rounded-full hover:bg-gray-100 transition-colors"
           >
             취소
           </button>
           <button
             onClick={handleSave}
-            className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            className="px-6 py-2 bg-primary text-primary-foreground rounded-full hover:bg-primary/90 transition-colors"
           >
             저장
           </button>

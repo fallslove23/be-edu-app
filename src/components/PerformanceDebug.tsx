@@ -197,19 +197,19 @@ const PerformanceDebug: React.FC = () => {
                             <div>
                               로드: {log.metrics.loadTime}ms
                               {log.metrics.loadTime > 3000 && (
-                                <span className="text-red-500 ml-1">⚠️</span>
+                                <span className="text-destructive ml-1">⚠️</span>
                               )}
                             </div>
                             <div>
                               렌더: {log.metrics.renderTime}ms
                               {log.metrics.renderTime > 100 && (
-                                <span className="text-red-500 ml-1">⚠️</span>
+                                <span className="text-destructive ml-1">⚠️</span>
                               )}
                             </div>
                             <div>
                               메모리: {log.metrics.memoryUsage}MB
                               {log.metrics.memoryUsage > 50 && (
-                                <span className="text-red-500 ml-1">⚠️</span>
+                                <span className="text-destructive ml-1">⚠️</span>
                               )}
                             </div>
                           </div>

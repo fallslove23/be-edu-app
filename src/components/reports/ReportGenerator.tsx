@@ -371,7 +371,7 @@ const ReportGenerator: React.FC = () => {
                       {['A', 'B', 'C'][Math.floor(Math.random() * 3)]}등급
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                      <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-lg bg-green-500/10 text-green-700">
                         완료
                       </span>
                     </td>
@@ -414,7 +414,7 @@ const ReportGenerator: React.FC = () => {
               {reportTemplates.map((template) => (
                 <div
                   key={template.id}
-                  className={`p-3 rounded-lg border cursor-pointer transition-colors ${
+                  className={`p-3 rounded-full border cursor-pointer transition-colors ${
                     selectedTemplate?.id === template.id
                       ? 'border-blue-500 bg-blue-50'
                       : 'border-gray-200 hover:border-gray-300'
@@ -442,7 +442,7 @@ const ReportGenerator: React.FC = () => {
                       ...prev,
                       dateRange: { ...prev.dateRange, start: e.target.value }
                     }))}
-                    className="border border-gray-300 rounded-lg px-3 py-2 text-sm"
+                    className="border border-gray-300 rounded-full px-3 py-2 text-sm"
                   />
                   <input
                     type="date"
@@ -451,7 +451,7 @@ const ReportGenerator: React.FC = () => {
                       ...prev,
                       dateRange: { ...prev.dateRange, end: e.target.value }
                     }))}
-                    className="border border-gray-300 rounded-lg px-3 py-2 text-sm"
+                    className="border border-gray-300 rounded-full px-3 py-2 text-sm"
                   />
                 </div>
               </div>
@@ -460,7 +460,7 @@ const ReportGenerator: React.FC = () => {
                 <label className="block text-sm font-medium text-gray-700 mb-2">부서</label>
                 <select
                   multiple
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
+                  className="w-full border border-gray-300 rounded-full px-3 py-2 text-sm"
                 >
                   <option value="sales">영업팀</option>
                   <option value="marketing">마케팅팀</option>
@@ -475,11 +475,11 @@ const ReportGenerator: React.FC = () => {
             <button
               onClick={generateReport}
               disabled={!selectedTemplate || generating}
-              className="btn-primary w-full py-2 px-4 rounded-lg font-medium disabled:opacity-50 disabled:cursor-not-allowed mb-3"
+              className="btn-primary w-full py-2 px-4 rounded-full font-medium disabled:opacity-50 disabled:cursor-not-allowed mb-3"
             >
               {generating ? (
                 <div className="flex items-center justify-center">
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                  <div className="animate-spin rounded-lg h-4 w-4 border-b-2 border-white mr-2"></div>
                   생성 중...
                 </div>
               ) : (
@@ -491,7 +491,7 @@ const ReportGenerator: React.FC = () => {
               <div className="space-y-2">
                 <button
                   onClick={() => downloadReport('pdf')}
-                  className="btn-success w-full py-2 px-4 rounded-lg font-medium flex items-center justify-center"
+                  className="btn-success w-full py-2 px-4 rounded-full font-medium flex items-center justify-center"
                 >
                   <ArrowDownTrayIcon className="h-4 w-4 mr-2" />
                   PDF 다운로드
@@ -499,7 +499,7 @@ const ReportGenerator: React.FC = () => {
                 
                 <button
                   onClick={printReport}
-                  className="w-full bg-gray-600 hover:bg-gray-700 text-white py-2 px-4 rounded-lg font-medium flex items-center justify-center"
+                  className="w-full bg-gray-600 hover:bg-gray-700 text-white py-2 px-4 rounded-full font-medium flex items-center justify-center"
                 >
                   <PrinterIcon className="h-4 w-4 mr-2" />
                   인쇄
@@ -580,7 +580,7 @@ const ReportGenerator: React.FC = () => {
                       {renderSection(section)}
                       <button
                         onClick={() => removeCustomSection(section.id)}
-                        className="absolute top-2 right-2 text-red-600 hover:text-red-700"
+                        className="absolute top-2 right-2 text-destructive hover:text-destructive"
                       >
                         <XMarkIcon className="h-5 w-5" />
                       </button>

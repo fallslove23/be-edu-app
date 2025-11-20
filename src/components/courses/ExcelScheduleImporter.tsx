@@ -322,7 +322,7 @@ const ExcelScheduleImporter: React.FC<ExcelScheduleImporterProps> = ({
               </div>
               <button
                 onClick={downloadTemplate}
-                className="btn-primary px-4 py-2 rounded-lg flex items-center space-x-2"
+                className="btn-primary px-4 py-2 rounded-full flex items-center space-x-2"
               >
                 <DocumentArrowDownIcon className="h-4 w-4" />
                 <span>템플릿 다운로드</span>
@@ -368,7 +368,7 @@ const ExcelScheduleImporter: React.FC<ExcelScheduleImporterProps> = ({
             </h3>
             
             <div
-              className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
+              className={`border-2 border-dashed rounded-full p-8 text-center transition-colors ${
                 dragActive
                   ? 'border-blue-400 bg-blue-50'
                   : 'border-gray-300 hover:border-gray-400'
@@ -388,7 +388,7 @@ const ExcelScheduleImporter: React.FC<ExcelScheduleImporterProps> = ({
                 </p>
                 <button
                   onClick={() => fileInputRef.current?.click()}
-                  className="mt-4 bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg"
+                  className="mt-4 bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-full"
                 >
                   파일 선택
                 </button>
@@ -406,20 +406,20 @@ const ExcelScheduleImporter: React.FC<ExcelScheduleImporterProps> = ({
           {/* 처리 중 표시 */}
           {isProcessing && (
             <div className="text-center py-4">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+              <div className="animate-spin rounded-lg h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
               <p className="text-gray-600 mt-2">파일을 처리하는 중...</p>
             </div>
           )}
 
           {/* 검증 오류 표시 */}
           {validationErrors.length > 0 && (
-            <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+            <div className="bg-destructive/10 border border-destructive/50 rounded-lg p-4">
               <div className="flex items-start space-x-3">
-                <ExclamationTriangleIcon className="h-5 w-5 text-red-600 mt-0.5" />
+                <ExclamationTriangleIcon className="h-5 w-5 text-destructive mt-0.5" />
                 <div className="flex-1">
-                  <h3 className="font-medium text-red-900">데이터 검증 오류</h3>
+                  <h3 className="font-medium text-destructive">데이터 검증 오류</h3>
                   <div className="mt-2 max-h-32 overflow-y-auto">
-                    <ul className="list-disc list-inside space-y-1 text-sm text-red-800">
+                    <ul className="list-disc list-inside space-y-1 text-sm text-destructive">
                       {validationErrors.map((error, index) => (
                         <li key={index}>{error}</li>
                       ))}
@@ -440,7 +440,7 @@ const ExcelScheduleImporter: React.FC<ExcelScheduleImporterProps> = ({
                 </h3>
                 <button
                   onClick={handleImportData}
-                  className="btn-success px-6 py-2 rounded-lg"
+                  className="btn-success px-6 py-2 rounded-full"
                 >
                   일정 가져오기
                 </button>

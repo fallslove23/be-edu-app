@@ -133,7 +133,7 @@ const ValidatedInput: React.FC<ValidatedInputProps> = ({
     if (!showValidation || !touched) return '';
     
     if (!validation.isValid) {
-      return 'border-red-500 focus:border-red-500 focus:ring-red-200';
+      return 'border-destructive/50 focus:border-destructive/50 focus:ring-red-200';
     } else if (validation.warnings.length > 0) {
       return 'border-yellow-500 focus:border-yellow-500 focus:ring-yellow-200';
     } else {
@@ -145,9 +145,9 @@ const ValidatedInput: React.FC<ValidatedInputProps> = ({
     if (!showValidation || !touched) return null;
 
     if (!validation.isValid) {
-      return <XCircleIcon className="h-5 w-5 text-red-500" />;
+      return <XCircleIcon className="h-5 w-5 text-destructive" />;
     } else if (validation.warnings.length > 0) {
-      return <ExclamationTriangleIcon className="h-5 w-5 text-yellow-500" />;
+      return <ExclamationTriangleIcon className="h-5 w-5 text-foreground" />;
     } else {
       return <CheckCircleIcon className="h-5 w-5 text-green-500" />;
     }
@@ -169,7 +169,7 @@ const ValidatedInput: React.FC<ValidatedInputProps> = ({
       {label && (
         <label className="block text-sm font-medium text-gray-700 mb-2">
           {label}
-          {required && <span className="text-red-500 ml-1">*</span>}
+          {required && <span className="text-destructive ml-1">*</span>}
         </label>
       )}
       
@@ -184,7 +184,7 @@ const ValidatedInput: React.FC<ValidatedInputProps> = ({
           required={required}
           {...getNumberProps()}
           className={`
-            w-full px-3 py-2 border rounded-lg
+            w-full px-3 py-2 border rounded-full
             focus:ring-2 focus:ring-blue-200 focus:border-blue-500
             disabled:bg-gray-100 disabled:cursor-not-allowed
             ${getValidationClass()}
@@ -202,14 +202,14 @@ const ValidatedInput: React.FC<ValidatedInputProps> = ({
       {showValidation && touched && (
         <div className="mt-2 space-y-1">
           {validation.errors.map((error, index) => (
-            <div key={`error-${index}`} className="flex items-center space-x-1 text-sm text-red-600">
+            <div key={`error-${index}`} className="flex items-center space-x-1 text-sm text-destructive">
               <XCircleIcon className="h-4 w-4" />
               <span>{error}</span>
             </div>
           ))}
           
           {validation.warnings.map((warning, index) => (
-            <div key={`warning-${index}`} className="flex items-center space-x-1 text-sm text-yellow-600">
+            <div key={`warning-${index}`} className="flex items-center space-x-1 text-sm text-foreground">
               <ExclamationTriangleIcon className="h-4 w-4" />
               <span>{warning}</span>
             </div>

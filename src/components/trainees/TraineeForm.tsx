@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { ArrowLeftIcon, CheckIcon } from '@heroicons/react/24/outline';
 import type { Trainee, TraineeStatus } from '../../types/trainee.types';
 import { traineeStatusLabels } from '../../types/trainee.types';
+import { CommonCodeService, CommonCode } from '@/services/common-code.service';
 
 interface TraineeFormProps {
   trainee: Trainee | null;
@@ -29,6 +30,12 @@ const TraineeForm: React.FC<TraineeFormProps> = ({
   onBack,
   onSave
 }) => {
+  // 공통 코드 상태
+  const [departments, setDepartments] = useState<CommonCode[]>([]);
+  const [positions, setPositions] = useState<CommonCode[]>([]);
+  const [relationships, setRelationships] = useState<CommonCode[]>([]);
+  const [loading, setLoading] = useState(true);
+
   const {
     register,
     handleSubmit,
@@ -61,6 +68,29 @@ const TraineeForm: React.FC<TraineeFormProps> = ({
     }
   });
 
+  // 공통 코드 로드
+  useEffect(() => {
+    const loadCommonCodes = async () => {
+      try {
+        setLoading(true);
+        const [deptCodes, posCodes, relCodes] = await Promise.all([
+          CommonCodeService.getDepartments(),
+          CommonCodeService.getPositions(),
+          CommonCodeService.getRelationships()
+        ]);
+        setDepartments(deptCodes);
+        setPositions(posCodes);
+        setRelationships(relCodes);
+      } catch (error) {
+        console.error('공통 코드 로드 실패:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadCommonCodes();
+  }, []);
+
   const onSubmit = async (data: TraineeFormData) => {
     const traineeData: Partial<Trainee> = {
       name: data.name,
@@ -82,35 +112,6 @@ const TraineeForm: React.FC<TraineeFormProps> = ({
     onSave(traineeData);
   };
 
-  const departments = [
-    '영업팀',
-    '마케팅팀',
-    '고객서비스팀',
-    '기술팀',
-    '인사팀',
-    '재무팀',
-    '기획팀'
-  ];
-
-  const positions = [
-    '사원',
-    '주임',
-    '대리',
-    '과장',
-    '차장',
-    '부장',
-    '이사'
-  ];
-
-  const relationships = [
-    '부모',
-    '배우자',
-    '형제/자매',
-    '친구',
-    '동료',
-    '기타'
-  ];
-
   return (
     <div className="max-w-4xl mx-auto space-y-6">
       {/* 헤더 */}
@@ -118,7 +119,7 @@ const TraineeForm: React.FC<TraineeFormProps> = ({
         <div className="flex items-center">
           <button
             onClick={onBack}
-            className="mr-4 p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
+            className="mr-4 p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-full transition-colors"
           >
             <ArrowLeftIcon className="h-5 w-5" />
           </button>
@@ -146,11 +147,11 @@ const TraineeForm: React.FC<TraineeFormProps> = ({
               <input
                 type="text"
                 {...register('name', { required: '이름을 입력해주세요.' })}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 placeholder="홍길동"
               />
               {errors.name && (
-                <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>
+                <p className="mt-1 text-sm text-destructive">{errors.name.message}</p>
               )}
             </div>
 
@@ -167,11 +168,11 @@ const TraineeForm: React.FC<TraineeFormProps> = ({
                     message: '올바른 이메일 형식을 입력해주세요.'
                   }
                 })}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 placeholder="example@company.com"
               />
               {errors.email && (
-                <p className="mt-1 text-sm text-red-600">{errors.email.message}</p>
+                <p className="mt-1 text-sm text-destructive">{errors.email.message}</p>
               )}
             </div>
 
@@ -182,11 +183,11 @@ const TraineeForm: React.FC<TraineeFormProps> = ({
               <input
                 type="tel"
                 {...register('phone', { required: '전화번호를 입력해주세요.' })}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 placeholder="010-1234-5678"
               />
               {errors.phone && (
-                <p className="mt-1 text-sm text-red-600">{errors.phone.message}</p>
+                <p className="mt-1 text-sm text-destructive">{errors.phone.message}</p>
               )}
             </div>
 
@@ -197,11 +198,11 @@ const TraineeForm: React.FC<TraineeFormProps> = ({
               <input
                 type="text"
                 {...register('employee_id', { required: '사번을 입력해주세요.' })}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 placeholder="EMP001"
               />
               {errors.employee_id && (
-                <p className="mt-1 text-sm text-red-600">{errors.employee_id.message}</p>
+                <p className="mt-1 text-sm text-destructive">{errors.employee_id.message}</p>
               )}
             </div>
           </div>
@@ -218,15 +219,16 @@ const TraineeForm: React.FC<TraineeFormProps> = ({
               </label>
               <select
                 {...register('department', { required: '부서를 선택해주세요.' })}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                disabled={loading}
               >
                 <option value="">부서 선택</option>
                 {departments.map(dept => (
-                  <option key={dept} value={dept}>{dept}</option>
+                  <option key={dept.id} value={dept.name}>{dept.name}</option>
                 ))}
               </select>
               {errors.department && (
-                <p className="mt-1 text-sm text-red-600">{errors.department.message}</p>
+                <p className="mt-1 text-sm text-destructive">{errors.department.message}</p>
               )}
             </div>
 
@@ -236,15 +238,16 @@ const TraineeForm: React.FC<TraineeFormProps> = ({
               </label>
               <select
                 {...register('position', { required: '직급을 선택해주세요.' })}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                disabled={loading}
               >
                 <option value="">직급 선택</option>
                 {positions.map(pos => (
-                  <option key={pos} value={pos}>{pos}</option>
+                  <option key={pos.id} value={pos.name}>{pos.name}</option>
                 ))}
               </select>
               {errors.position && (
-                <p className="mt-1 text-sm text-red-600">{errors.position.message}</p>
+                <p className="mt-1 text-sm text-destructive">{errors.position.message}</p>
               )}
             </div>
 
@@ -255,10 +258,10 @@ const TraineeForm: React.FC<TraineeFormProps> = ({
               <input
                 type="date"
                 {...register('hire_date', { required: '입사일을 선택해주세요.' })}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               />
               {errors.hire_date && (
-                <p className="mt-1 text-sm text-red-600">{errors.hire_date.message}</p>
+                <p className="mt-1 text-sm text-destructive">{errors.hire_date.message}</p>
               )}
             </div>
           </div>
@@ -269,7 +272,7 @@ const TraineeForm: React.FC<TraineeFormProps> = ({
             </label>
             <select
               {...register('status', { required: '상태를 선택해주세요.' })}
-              className="w-full md:w-1/3 border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full md:w-1/3 border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             >
               {(Object.keys(traineeStatusLabels) as TraineeStatus[]).map(status => (
                 <option key={status} value={status}>{traineeStatusLabels[status]}</option>
@@ -290,11 +293,11 @@ const TraineeForm: React.FC<TraineeFormProps> = ({
               <input
                 type="text"
                 {...register('emergency_contact_name', { required: '비상 연락처 이름을 입력해주세요.' })}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 placeholder="김가족"
               />
               {errors.emergency_contact_name && (
-                <p className="mt-1 text-sm text-red-600">{errors.emergency_contact_name.message}</p>
+                <p className="mt-1 text-sm text-destructive">{errors.emergency_contact_name.message}</p>
               )}
             </div>
 
@@ -304,15 +307,16 @@ const TraineeForm: React.FC<TraineeFormProps> = ({
               </label>
               <select
                 {...register('emergency_contact_relationship', { required: '관계를 선택해주세요.' })}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                disabled={loading}
               >
                 <option value="">관계 선택</option>
                 {relationships.map(rel => (
-                  <option key={rel} value={rel}>{rel}</option>
+                  <option key={rel.id} value={rel.name}>{rel.name}</option>
                 ))}
               </select>
               {errors.emergency_contact_relationship && (
-                <p className="mt-1 text-sm text-red-600">{errors.emergency_contact_relationship.message}</p>
+                <p className="mt-1 text-sm text-destructive">{errors.emergency_contact_relationship.message}</p>
               )}
             </div>
 
@@ -323,11 +327,11 @@ const TraineeForm: React.FC<TraineeFormProps> = ({
               <input
                 type="tel"
                 {...register('emergency_contact_phone', { required: '비상 연락처 전화번호를 입력해주세요.' })}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 placeholder="010-9876-5432"
               />
               {errors.emergency_contact_phone && (
-                <p className="mt-1 text-sm text-red-600">{errors.emergency_contact_phone.message}</p>
+                <p className="mt-1 text-sm text-destructive">{errors.emergency_contact_phone.message}</p>
               )}
             </div>
           </div>
@@ -339,7 +343,7 @@ const TraineeForm: React.FC<TraineeFormProps> = ({
             <button
               type="button"
               onClick={onBack}
-              className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+              className="px-6 py-2 border border-gray-300 text-gray-700 rounded-full hover:bg-gray-50 transition-colors"
             >
               취소
             </button>

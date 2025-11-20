@@ -143,7 +143,7 @@ const AdvancedSearch: React.FC<AdvancedSearchProps> = ({
             value={value || ''}
             onChange={(e) => updateFilter(filter.id, e.target.value)}
             placeholder={filter.placeholder}
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500"
+            className="w-full border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500"
           />
         );
 
@@ -152,7 +152,7 @@ const AdvancedSearch: React.FC<AdvancedSearchProps> = ({
           <select
             value={value || ''}
             onChange={(e) => updateFilter(filter.id, e.target.value)}
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500"
+            className="w-full border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500"
           >
             <option value="">전체</option>
             {filter.options?.map(option => (
@@ -218,7 +218,7 @@ const AdvancedSearch: React.FC<AdvancedSearchProps> = ({
             type="date"
             value={value || ''}
             onChange={(e) => updateFilter(filter.id, e.target.value)}
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500"
+            className="w-full border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500"
           />
         );
 
@@ -311,7 +311,7 @@ const AdvancedSearch: React.FC<AdvancedSearchProps> = ({
             )}
             <button
               onClick={() => setShowFilterPanel(!showFilterPanel)}
-              className={`p-1 rounded-lg hover:bg-gray-100 ${
+              className={`p-1 rounded-full hover:bg-gray-100 ${
                 showFilterPanel ? 'text-blue-600 bg-blue-50' : 'text-gray-400'
               }`}
             >
@@ -319,7 +319,7 @@ const AdvancedSearch: React.FC<AdvancedSearchProps> = ({
             </button>
             <button
               onClick={executeSearch}
-              className="btn-primary px-4 py-2 rounded-lg text-sm font-medium"
+              className="btn-primary px-4 py-2 rounded-full text-sm font-medium"
             >
               검색
             </button>
@@ -412,7 +412,7 @@ const AdvancedSearch: React.FC<AdvancedSearchProps> = ({
           <div className="mt-6 flex justify-end">
             <button
               onClick={executeSearch}
-              className="btn-primary px-6 py-2 rounded-lg"
+              className="btn-primary px-6 py-2 rounded-full"
             >
               필터 적용
             </button>
@@ -461,7 +461,7 @@ const AdvancedSearch: React.FC<AdvancedSearchProps> = ({
 
       {/* 검색 결과 요약 */}
       {showResults && (
-        <div className="flex items-center justify-between text-sm text-gray-600 bg-gray-50 px-4 py-2 rounded-lg">
+        <div className="flex items-center justify-between text-sm text-gray-600 bg-gray-50 px-4 py-2 rounded-full">
           <span>
             총 <span className="font-medium text-gray-900">{resultCount.toLocaleString()}</span>개의 결과를 찾았습니다.
           </span>

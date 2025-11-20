@@ -26,7 +26,7 @@ const ScheduleViewerWrapper: React.FC = () => {
               </div>
             )}
             {index === 2 && (
-              <div className="bg-green-50 border border-green-200 rounded p-2 mb-2">
+              <div className="bg-green-500/10 border border-green-200 rounded p-2 mb-2">
                 <div className="text-sm font-medium text-green-800">BS 심화과정</div>
                 <div className="text-xs text-green-600">14:00 - 17:00</div>
                 <div className="text-xs text-green-600">2강의실</div>
@@ -37,13 +37,13 @@ const ScheduleViewerWrapper: React.FC = () => {
       </div>
       
       <div className="mt-6 flex justify-between items-center">
-        <button className="btn-primary">
+        <button className="btn-primary rounded-full">
           이전 주
         </button>
         <span className="font-medium text-gray-700">
           2025년 1월 6일 - 1월 12일
         </span>
-        <button className="btn-primary">
+        <button className="btn-primary rounded-full">
           다음 주
         </button>
       </div>

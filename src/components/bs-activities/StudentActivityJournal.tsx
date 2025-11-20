@@ -96,8 +96,8 @@ const StudentActivityJournal: React.FC = () => {
     switch (status) {
       case 'draft': return 'bg-gray-100 text-gray-700 border-gray-200';
       case 'submitted': return 'bg-blue-100 text-blue-700 border-blue-200';
-      case 'reviewed': return 'bg-yellow-100 text-yellow-700 border-yellow-200';
-      case 'approved': return 'bg-green-100 text-green-700 border-green-200';
+      case 'reviewed': return 'bg-yellow-100 text-orange-700 border-yellow-200';
+      case 'approved': return 'bg-green-500/10 text-green-700 border-green-200';
       default: return 'bg-gray-100 text-gray-700 border-gray-200';
     }
   };
@@ -107,7 +107,7 @@ const StudentActivityJournal: React.FC = () => {
     return (
       <div className="max-w-6xl mx-auto space-y-6">
         {/* 헤더 */}
-        <div className="bg-white rounded-xl shadow-sm border p-6">
+        <div className="bg-white rounded-lg shadow-sm border p-6">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div>
               <h1 className="text-2xl font-bold text-gray-900">내 활동 일지</h1>
@@ -125,7 +125,7 @@ const StudentActivityJournal: React.FC = () => {
 
         {/* 통계 요약 */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          <div className="bg-white rounded-xl shadow-sm border p-6">
+          <div className="bg-white rounded-lg shadow-sm border p-6">
             <div className="flex items-center">
               <DocumentTextIcon className="w-8 h-8 text-blue-600 mr-3" />
               <div>
@@ -135,7 +135,7 @@ const StudentActivityJournal: React.FC = () => {
             </div>
           </div>
 
-          <div className="bg-white rounded-xl shadow-sm border p-6">
+          <div className="bg-white rounded-lg shadow-sm border p-6">
             <div className="flex items-center">
               <CheckIcon className="w-8 h-8 text-green-600 mr-3" />
               <div>
@@ -147,9 +147,9 @@ const StudentActivityJournal: React.FC = () => {
             </div>
           </div>
 
-          <div className="bg-white rounded-xl shadow-sm border p-6">
+          <div className="bg-white rounded-lg shadow-sm border p-6">
             <div className="flex items-center">
-              <ExclamationTriangleIcon className="w-8 h-8 text-yellow-600 mr-3" />
+              <ExclamationTriangleIcon className="w-8 h-8 text-foreground mr-3" />
               <div>
                 <p className="text-sm text-gray-600">작성 중</p>
                 <p className="text-2xl font-bold text-gray-900">
@@ -159,7 +159,7 @@ const StudentActivityJournal: React.FC = () => {
             </div>
           </div>
 
-          <div className="bg-white rounded-xl shadow-sm border p-6">
+          <div className="bg-white rounded-lg shadow-sm border p-6">
             <div className="flex items-center">
               <PhotoIcon className="w-8 h-8 text-purple-600 mr-3" />
               <div>
@@ -173,7 +173,7 @@ const StudentActivityJournal: React.FC = () => {
         </div>
 
         {/* 활동 목록 */}
-        <div className="bg-white rounded-xl shadow-sm border">
+        <div className="bg-white rounded-lg shadow-sm border">
           <div className="p-6 border-b border-gray-200">
             <h2 className="text-lg font-bold text-gray-900">
               나의 활동 일지 ({myActivities.length})
@@ -243,14 +243,14 @@ const StudentActivityJournal: React.FC = () => {
                               setSelectedActivity(activity);
                               setViewMode('edit');
                             }}
-                            className="p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors"
+                            className="p-2 text-gray-400 hover:text-green-600 hover:bg-green-500/10 rounded-lg transition-colors"
                             title="편집"
                           >
                             <DocumentTextIcon className="w-4 h-4" />
                           </button>
                           <button
                             onClick={() => handleDeleteActivity(activity.id)}
-                            className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                            className="p-2 text-gray-400 hover:text-destructive hover:bg-destructive/10 rounded-lg transition-colors"
                             title="삭제"
                           >
                             <TrashIcon className="w-4 h-4" />

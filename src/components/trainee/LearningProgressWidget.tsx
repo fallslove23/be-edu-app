@@ -31,8 +31,8 @@ const LearningProgressWidget: React.FC<LearningProgressWidgetProps> = ({
   const getAchievementLevel = () => {
     if (learningOverview.averageScore >= 90) return { level: 'Excellent', color: 'text-purple-600', bg: 'bg-purple-100' };
     if (learningOverview.averageScore >= 80) return { level: 'Great', color: 'text-blue-600', bg: 'bg-blue-100' };
-    if (learningOverview.averageScore >= 70) return { level: 'Good', color: 'text-green-600', bg: 'bg-green-100' };
-    return { level: 'Needs Improvement', color: 'text-yellow-600', bg: 'bg-yellow-100' };
+    if (learningOverview.averageScore >= 70) return { level: 'Good', color: 'text-green-600', bg: 'bg-green-500/10' };
+    return { level: 'Needs Improvement', color: 'text-orange-600', bg: 'bg-yellow-100' };
   };
 
   const achievement = getAchievementLevel();
@@ -91,7 +91,7 @@ const LearningProgressWidget: React.FC<LearningProgressWidgetProps> = ({
           </div>
           <div className="text-sm text-blue-700">수강 중인 과정</div>
         </div>
-        <div className="text-center p-3 bg-green-50 rounded-lg">
+        <div className="text-center p-3 bg-green-500/10 rounded-lg">
           <div className="text-lg font-semibold text-green-900">
             {learningOverview.completedCourses}
           </div>
@@ -107,7 +107,7 @@ const LearningProgressWidget: React.FC<LearningProgressWidgetProps> = ({
           <div className="text-lg font-semibold text-yellow-900">
             {learningOverview.attendanceRate}%
           </div>
-          <div className="text-sm text-yellow-700">출석률</div>
+          <div className="text-sm text-foreground">출석률</div>
         </div>
       </div>
 
@@ -117,7 +117,7 @@ const LearningProgressWidget: React.FC<LearningProgressWidgetProps> = ({
         
         {/* BS Basic */}
         {basicCourses.length > 0 && (
-          <div className="border border-green-200 rounded-lg p-4 bg-green-50">
+          <div className="border border-green-200 rounded-lg p-4 bg-green-500/10">
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center">
                 <BookOpenIcon className="h-5 w-5 text-green-600 mr-2" />
@@ -127,9 +127,9 @@ const LearningProgressWidget: React.FC<LearningProgressWidgetProps> = ({
                 {basicCourses[0]?.progressPercentage || 0}%
               </span>
             </div>
-            <div className="w-full bg-green-200 rounded-full h-2">
+            <div className="w-full bg-green-200 rounded-lg h-2">
               <div
-                className="bg-green-600 h-2 rounded-full transition-all duration-300"
+                className="bg-green-600 h-2 rounded-lg transition-all duration-300"
                 style={{ width: `${basicCourses[0]?.progressPercentage || 0}%` }}
               ></div>
             </div>
@@ -153,9 +153,9 @@ const LearningProgressWidget: React.FC<LearningProgressWidgetProps> = ({
                 {advancedCourses[0]?.progressPercentage || 0}%
               </span>
             </div>
-            <div className="w-full bg-purple-200 rounded-full h-2">
+            <div className="w-full bg-purple-200 rounded-lg h-2">
               <div
-                className="bg-purple-600 h-2 rounded-full transition-all duration-300"
+                className="bg-purple-600 h-2 rounded-lg transition-all duration-300"
                 style={{ width: `${advancedCourses[0]?.progressPercentage || 0}%` }}
               ></div>
             </div>
@@ -181,7 +181,7 @@ const LearningProgressWidget: React.FC<LearningProgressWidgetProps> = ({
         <h3 className="text-lg font-medium text-gray-900 mb-3">BS 활동 현황</h3>
         <div className="flex items-center justify-between">
           <div className="flex items-center">
-            <ClockIcon className="h-5 w-5 text-yellow-600 mr-2" />
+            <ClockIcon className="h-5 w-5 text-foreground mr-2" />
             <span className="text-gray-700">제출 현황</span>
           </div>
           <div className="text-right">
@@ -193,9 +193,9 @@ const LearningProgressWidget: React.FC<LearningProgressWidgetProps> = ({
             </div>
           </div>
         </div>
-        <div className="mt-2 w-full bg-gray-200 rounded-full h-2">
+        <div className="mt-2 w-full bg-gray-200 rounded-lg h-2">
           <div
-            className="bg-yellow-500 h-2 rounded-full transition-all duration-300"
+            className="bg-yellow-500 h-2 rounded-lg transition-all duration-300"
             style={{ 
               width: `${Math.round((learningOverview.bsActivitiesSubmitted / learningOverview.bsActivitiesRequired) * 100)}%` 
             }}
@@ -212,7 +212,7 @@ const LearningProgressWidget: React.FC<LearningProgressWidgetProps> = ({
         <ul className="text-sm text-blue-800 space-y-1">
           {learningOverview.attendanceRate < 90 && (
             <li className="flex items-center">
-              <ExclamationTriangleIcon className="h-4 w-4 mr-2 text-yellow-500" />
+              <ExclamationTriangleIcon className="h-4 w-4 mr-2 text-foreground" />
               출석률 향상이 필요합니다 (현재 {learningOverview.attendanceRate}%)
             </li>
           )}

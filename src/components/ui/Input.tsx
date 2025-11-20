@@ -7,12 +7,12 @@ import { cva, type VariantProps } from 'class-variance-authority';
  */
 
 const inputVariants = cva(
-  'block w-full rounded-lg border transition-all duration-200 focus:outline-none focus:ring-2 disabled:opacity-50 disabled:cursor-not-allowed',
+  'block w-full rounded-full border transition-all duration-200 focus:outline-none focus:ring-2 disabled:opacity-50 disabled:cursor-not-allowed',
   {
     variants: {
       variant: {
         default: 'border-gray-300 focus:border-indigo-500 focus:ring-indigo-500',
-        error: 'border-red-300 focus:border-red-500 focus:ring-red-500',
+        error: 'border-destructive/50 focus:border-destructive/50 focus:ring-red-500',
         success: 'border-green-300 focus:border-green-500 focus:ring-green-500',
       },
       size: {
@@ -81,7 +81,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
             className="block text-sm font-medium text-gray-700 mb-1.5"
           >
             {label}
-            {props.required && <span className="text-red-500 ml-1">*</span>}
+            {props.required && <span className="text-destructive ml-1">*</span>}
           </label>
         )}
 
@@ -111,7 +111,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
         </div>
 
         {error && (
-          <p className="mt-1.5 text-sm text-red-600">{error}</p>
+          <p className="mt-1.5 text-sm text-destructive">{error}</p>
         )}
 
         {helperText && !error && (

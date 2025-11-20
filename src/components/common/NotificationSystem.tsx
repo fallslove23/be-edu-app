@@ -160,8 +160,8 @@ const NotificationSystem: React.FC<NotificationSystemProps> = ({
   };
 
   const getNotificationIcon = (type: string, category: string) => {
-    if (type === 'urgent') return <ExclamationTriangleIcon className="h-5 w-5 text-red-500" />;
-    if (type === 'warning') return <ExclamationTriangleIcon className="h-5 w-5 text-yellow-500" />;
+    if (type === 'urgent') return <ExclamationTriangleIcon className="h-5 w-5 text-destructive" />;
+    if (type === 'warning') return <ExclamationTriangleIcon className="h-5 w-5 text-foreground" />;
     if (type === 'success') return <CheckCircleIcon className="h-5 w-5 text-green-500" />;
     
     switch (category) {
@@ -175,9 +175,9 @@ const NotificationSystem: React.FC<NotificationSystemProps> = ({
 
   const getNotificationColor = (type: string) => {
     switch (type) {
-      case 'urgent': return 'border-l-red-500 bg-red-50';
+      case 'urgent': return 'border-l-red-500 bg-destructive/10';
       case 'warning': return 'border-l-yellow-500 bg-yellow-50';
-      case 'success': return 'border-l-green-500 bg-green-50';
+      case 'success': return 'border-l-green-500 bg-green-500/10';
       default: return 'border-l-blue-500 bg-blue-50';
     }
   };
@@ -217,7 +217,7 @@ const NotificationSystem: React.FC<NotificationSystemProps> = ({
           )}
           
           {unreadCount > 0 && (
-            <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-medium">
+            <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-lg h-5 w-5 flex items-center justify-center font-medium">
               {unreadCount > 9 ? '9+' : unreadCount}
             </span>
           )}
@@ -271,7 +271,7 @@ const NotificationSystem: React.FC<NotificationSystemProps> = ({
                             </p>
                             <div className="flex items-center space-x-1">
                               {!notification.readAt && (
-                                <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                                <div className="w-2 h-2 bg-blue-500 rounded-lg"></div>
                               )}
                               <button
                                 onClick={() => removeNotification(notification.id)}
@@ -313,7 +313,7 @@ const NotificationSystem: React.FC<NotificationSystemProps> = ({
             {/* 푸터 */}
             {notifications.length > maxVisible && (
               <div className="px-4 py-3 border-t border-gray-200 text-center">
-                <button className="text-sm text-blue-600 hover:text-blue-800 font-medium">
+                <button className="text-sm text-blue-600 hover:text-blue-800 font-medium rounded-full">
                   모든 알림 보기 ({notifications.length})
                 </button>
               </div>

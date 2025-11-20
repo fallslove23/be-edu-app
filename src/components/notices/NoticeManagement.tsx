@@ -189,7 +189,7 @@ const NoticeManagement: React.FC = () => {
       </div>
 
       {/* 검색 및 필터 */}
-      <div className="bg-white rounded-2xl shadow-md border border-gray-100 p-6">
+      <div className="bg-white rounded-lg shadow-md border border-gray-100 p-6">
         <div className="flex flex-col md:flex-row gap-3">
           {/* 검색 입력 */}
           <div className="flex-1 relative">
@@ -207,7 +207,7 @@ const NoticeManagement: React.FC = () => {
           <select
             value={filterStatus}
             onChange={(e) => setFilterStatus(e.target.value as any)}
-            className="flex-1 sm:w-64 border-2 border-gray-200 rounded-xl px-6 py-3.5 text-base bg-white text-gray-700 font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all shadow-sm hover:border-gray-300 appearance-none cursor-pointer"
+            className="flex-1 sm:w-64 border-2 border-gray-200 rounded-lg px-6 py-3.5 text-base bg-white text-gray-700 font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all shadow-sm hover:border-gray-300 appearance-none cursor-pointer"
             style={{
               backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`,
               backgroundPosition: 'right 0.75rem center',
@@ -223,7 +223,7 @@ const NoticeManagement: React.FC = () => {
           </select>
 
           {/* 결과 카운트 */}
-          <div className="flex items-center px-4 py-2.5 bg-secondary/30 rounded-lg border border-border">
+          <div className="flex items-center px-4 py-2.5 bg-secondary/30 rounded-full border border-border">
             <FunnelIcon className="h-4 w-4 mr-2 text-muted-foreground" />
             <span className="text-sm font-medium text-foreground whitespace-nowrap">
               총 <span className="text-primary font-semibold">{filteredNotices.length}</span>개 공지
@@ -239,7 +239,7 @@ const NoticeManagement: React.FC = () => {
           
           {loading ? (
             <div className="flex items-center justify-center py-12">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+              <div className="animate-spin rounded-lg h-8 w-8 border-b-2 border-blue-600"></div>
               <span className="ml-3 text-gray-600">공지사항을 불러오는 중...</span>
             </div>
           ) : (
@@ -247,7 +247,7 @@ const NoticeManagement: React.FC = () => {
               {filteredNotices.map((notice) => (
                 <div
                   key={notice.id}
-                  className={`border rounded-lg p-4 hover:shadow-md transition-shadow ${
+                  className={`border rounded-full p-4 hover:shadow-md transition-shadow ${
                     notice.is_pinned ? 'border-primary bg-accent/10' : 'border-border bg-card'
                   }`}
                 >
@@ -294,13 +294,13 @@ const NoticeManagement: React.FC = () => {
                     </div>
                     
                     <div className="flex items-center gap-2 flex-shrink-0">
-                      <button className="btn-ghost p-2">
+                      <button className="btn-ghost p-2 rounded-full">
                         <EyeIcon className="h-4 w-4" />
                       </button>
-                      <button className="btn-ghost p-2">
+                      <button className="btn-ghost p-2 rounded-full">
                         <PencilIcon className="h-4 w-4" />
                       </button>
-                      <button className="btn-ghost p-2 text-destructive hover:bg-destructive hover:text-destructive-foreground">
+                      <button className="btn-ghost p-2 text-destructive hover:bg-destructive hover:text-destructive-foreground rounded-full">
                         <TrashIcon className="h-4 w-4" />
                       </button>
                     </div>

@@ -216,7 +216,7 @@ const InstructorAssignment: React.FC<InstructorAssignmentProps> = ({
     return (
       <div className="flex items-center justify-center min-h-32 p-4">
         <div className="flex flex-col items-center space-y-2">
-          <div className="w-8 h-8 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
+          <div className="w-8 h-8 border-4 border-blue-200 border-t-blue-600 rounded-lg animate-spin"></div>
           <p className="text-gray-600 text-sm">강사 정보 로딩 중...</p>
         </div>
       </div>
@@ -227,20 +227,20 @@ const InstructorAssignment: React.FC<InstructorAssignmentProps> = ({
     <div className="space-y-6">
       {/* 충돌 경고 */}
       {conflicts.length > 0 && (
-        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+        <div className="bg-destructive/10 border border-destructive/50 rounded-lg p-4">
           <div className="flex items-start">
-            <ExclamationTriangleIcon className="h-5 w-5 text-red-600 mr-2 mt-0.5" />
+            <ExclamationTriangleIcon className="h-5 w-5 text-destructive mr-2 mt-0.5" />
             <div className="flex-1">
-              <h3 className="text-sm font-medium text-red-900">강사 배정 충돌 감지</h3>
+              <h3 className="text-sm font-medium text-destructive">강사 배정 충돌 감지</h3>
               <div className="mt-2 space-y-2">
                 {conflicts.map(conflict => (
-                  <div key={conflict.id} className="bg-white border border-red-200 rounded p-3">
-                    <div className="text-sm text-red-800">
+                  <div key={conflict.id} className="bg-white border border-destructive/50 rounded p-3">
+                    <div className="text-sm text-destructive">
                       <span className="font-medium">{conflict.resource_name}</span>
                       {' - '}
                       {conflict.date} 시간대 중복
                     </div>
-                    <div className="text-xs text-red-600 mt-1">
+                    <div className="text-xs text-destructive mt-1">
                       {conflict.conflicting_schedules.map(cs => (
                         <div key={cs.schedule_id}>{cs.time_range}</div>
                       ))}
@@ -279,7 +279,7 @@ const InstructorAssignment: React.FC<InstructorAssignmentProps> = ({
                     <div className="flex items-center space-x-2">
                       <h4 className="text-sm font-medium text-gray-900">{schedule.title}</h4>
                       {hasConflict && (
-                        <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">
+                        <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-destructive/10 text-destructive">
                           충돌
                         </span>
                       )}
@@ -306,7 +306,7 @@ const InstructorAssignment: React.FC<InstructorAssignmentProps> = ({
                   <div className="flex items-center space-x-2">
                     {assignedInstructor ? (
                       <div className="flex items-center space-x-2">
-                        <div className="flex items-center bg-blue-50 rounded-lg px-3 py-2">
+                        <div className="flex items-center bg-blue-50 rounded-full px-3 py-2">
                           <UserIcon className="h-4 w-4 text-blue-600 mr-2" />
                           <div>
                             <div className="text-sm font-medium text-blue-900">
@@ -319,7 +319,7 @@ const InstructorAssignment: React.FC<InstructorAssignmentProps> = ({
                         </div>
                         <button
                           onClick={() => openAssignmentModal(schedule)}
-                          className="px-3 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-md hover:bg-blue-100"
+                          className="px-3 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-full hover:bg-blue-100"
                         >
                           변경
                         </button>
@@ -327,7 +327,7 @@ const InstructorAssignment: React.FC<InstructorAssignmentProps> = ({
                     ) : (
                       <button
                         onClick={() => openAssignmentModal(schedule)}
-                        className="flex items-center px-3 py-2 text-sm font-medium text-gray-600 bg-gray-50 border border-gray-300 rounded-md hover:bg-gray-100"
+                        className="flex items-center px-3 py-2 text-sm font-medium text-gray-600 bg-gray-50 border border-gray-300 rounded-full hover:bg-gray-100"
                       >
                         <PlusIcon className="h-4 w-4 mr-1" />
                         강사 배정
@@ -381,7 +381,7 @@ const InstructorAssignment: React.FC<InstructorAssignmentProps> = ({
                   {selectedSchedule.instructor_id && (
                     <button
                       onClick={() => assignInstructor(null)}
-                      className="text-sm text-red-600 hover:text-red-700"
+                      className="text-sm text-destructive hover:text-destructive"
                     >
                       배정 해제
                     </button>
@@ -396,7 +396,7 @@ const InstructorAssignment: React.FC<InstructorAssignmentProps> = ({
                   return (
                     <div
                       key={instructor.id}
-                      className={`border rounded-lg p-4 cursor-pointer transition-all ${
+                      className={`border rounded-full p-4 cursor-pointer transition-all ${
                         isCurrentlyAssigned 
                           ? 'border-blue-500 bg-blue-50' 
                           : isAvailable 
@@ -417,7 +417,7 @@ const InstructorAssignment: React.FC<InstructorAssignmentProps> = ({
                                 <CheckIcon className="h-4 w-4 text-blue-600" />
                               )}
                               {isSpecialized && (
-                                <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
+                                <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-500/10 text-green-700">
                                   전문 분야
                                 </span>
                               )}
@@ -433,11 +433,11 @@ const InstructorAssignment: React.FC<InstructorAssignmentProps> = ({
 
                         <div className="text-right">
                           {isAvailable ? (
-                            <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
+                            <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-500/10 text-green-700">
                               사용 가능
                             </span>
                           ) : (
-                            <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">
+                            <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-destructive/10 text-destructive">
                               시간 충돌
                             </span>
                           )}

@@ -118,7 +118,7 @@ export const MobileUXOptimizer: React.FC<MobileUXOptimizerProps> = ({
       {/* Pull to Refresh 인디케이터 */}
       {enablePullToRefresh && (
         <div 
-          className="pull-refresh-indicator fixed top-0 left-1/2 transform -translate-x-1/2 z-50 bg-white dark:bg-gray-800 rounded-full p-2 shadow-lg"
+          className="pull-refresh-indicator fixed top-0 left-1/2 transform -translate-x-1/2 z-50 bg-white dark:bg-gray-800 rounded-lg p-2 shadow-lg"
           style={refreshIndicatorStyle}
         >
           <div className={`w-6 h-6 border-2 border-gray-300 border-t-blue-600 rounded-full ${isRefreshing ? 'animate-spin' : ''}`} />
@@ -151,7 +151,7 @@ export const TouchOptimizedButton: React.FC<TouchOptimizedButtonProps> = ({
   const baseClasses = 'mobile-button inline-flex items-center justify-center font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed';
   
   const variantClasses = {
-    primary: 'bg-blue-600 hover:bg-blue-700 text-white focus:ring-blue-500',
+    primary: 'bg-primary hover:bg-primary/90 text-primary-foreground focus:ring-primary',
     secondary: 'bg-gray-200 hover:bg-gray-300 text-gray-900 focus:ring-gray-500 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-white',
     ghost: 'bg-transparent hover:bg-gray-100 text-gray-900 focus:ring-gray-500 dark:hover:bg-gray-800 dark:text-white'
   };
@@ -199,7 +199,7 @@ export const TouchOptimizedInput: React.FC<TouchOptimizedInputProps> = ({
       onChange={(e) => onChange?.(e.target.value)}
       disabled={disabled}
       className={`
-        w-full px-4 py-3 text-base border border-gray-300 rounded-lg
+        w-full px-4 py-3 text-base border border-gray-300 rounded-full
         focus:ring-2 focus:ring-blue-500 focus:border-blue-500
         disabled:opacity-50 disabled:cursor-not-allowed
         bg-white dark:bg-gray-800 text-gray-900 dark:text-white

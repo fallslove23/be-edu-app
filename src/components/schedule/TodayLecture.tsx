@@ -156,9 +156,9 @@ const TodayLecture: React.FC<TodayLectureProps> = ({
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'scheduled': return 'text-blue-600 bg-blue-100';
-      case 'ongoing': return 'text-green-600 bg-green-100';
+      case 'ongoing': return 'text-green-600 bg-green-500/10';
       case 'completed': return 'text-gray-600 bg-gray-100';
-      case 'cancelled': return 'text-red-600 bg-red-100';
+      case 'cancelled': return 'text-destructive bg-destructive/10';
       default: return 'text-gray-600 bg-gray-100';
     }
   };
@@ -188,7 +188,7 @@ const TodayLecture: React.FC<TodayLectureProps> = ({
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-lg h-8 w-8 border-b-2 border-blue-600"></div>
         <span className="ml-2">강의 일정을 불러오는 중...</span>
       </div>
     );
@@ -314,7 +314,7 @@ const TodayLecture: React.FC<TodayLectureProps> = ({
             {lecture.announcement && (
               <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
                 <div className="flex items-start">
-                  <ExclamationCircleIcon className="h-4 w-4 text-yellow-600 mr-2 mt-0.5" />
+                  <ExclamationCircleIcon className="h-4 w-4 text-foreground mr-2 mt-0.5" />
                   <div className="text-sm text-yellow-800">
                     <strong>공지:</strong> {lecture.announcement}
                   </div>

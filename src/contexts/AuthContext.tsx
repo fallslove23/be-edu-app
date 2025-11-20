@@ -1,10 +1,13 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import type { AuthState, User, UserRole } from '../types/auth.types';
+import { AuthService } from '@/services/auth.service';
 
 interface AuthContextType extends AuthState {
-  login: (email: string, password: string) => Promise<void>;
+  login: (employeeId: string, password: string) => Promise<void>;
   logout: () => void;
   switchRole: (role: UserRole) => void; // 테스트용
+  updateUser: (user: User) => void;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -22,6 +25,7 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
+  const router = useRouter();
   const [authState, setAuthState] = useState<AuthState>({
     isAuthenticated: false,
     user: null,
@@ -29,10 +33,16 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     error: null
   });
 
-  // 테스트용 - 실제로는 localStorage나 API에서 가져올 것
+  // 저장된 사용자 정보 복원
   useEffect(() => {
+    // 클라이언트 사이드에서만 실행
+    if (typeof window === 'undefined') {
+      setAuthState(prev => ({ ...prev, loading: false }));
+      return;
+    }
+
     try {
-      const savedUser = localStorage.getItem('bs_learning_user');
+      const savedUser = localStorage.getItem('currentUser');
       if (savedUser) {
         const user = JSON.parse(savedUser);
         setAuthState(prev => ({
@@ -42,89 +52,87 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           loading: false
         }));
       } else {
-        // 기본적으로 관리자로 설정 (테스트용)
-        const defaultUser: User = {
-          id: '1',
-          name: '관리자',
-          email: 'admin@company.com',
-          phone: '010-1234-5678',
-          employee_id: 'EMP001',
-          role: 'admin',
-          department: 'IT팀',
-          position: '시스템 관리자',
-          hire_date: new Date().toISOString(),
-          status: 'active',
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
-        };
-        
         setAuthState(prev => ({
           ...prev,
-          isAuthenticated: true,
-          user: defaultUser,
           loading: false
         }));
-        localStorage.setItem('bs_learning_user', JSON.stringify(defaultUser));
       }
     } catch (error) {
       console.error('Auth 초기화 오류:', error);
       setAuthState(prev => ({
         ...prev,
         loading: false,
-        error: '사용자 정보를 불러올 수 없습니다.'
+        error: null // 에러 메시지 제거 (초기화 실패는 정상적인 상황)
       }));
     }
   }, []);
 
-  const login = async (email: string, password: string): Promise<void> => {
+  const login = async (employeeId: string, password: string): Promise<void> => {
     setAuthState(prev => ({ ...prev, loading: true, error: null }));
-    
+
     try {
-      // 실제로는 API 호출
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Mock user data
-      const mockUser: User = {
-        id: '1',
-        name: email === 'trainee@test.com' ? '김교육' : '관리자',
-        email,
-        phone: '010-1234-5678',
-        employee_id: email === 'trainee@test.com' ? 'EMP002' : 'EMP001',
-        role: email === 'trainee@test.com' ? 'trainee' : 'admin',
-        department: email === 'trainee@test.com' ? '영업팀' : 'IT팀',
-        position: email === 'trainee@test.com' ? '사원' : '관리자',
-        hire_date: new Date().toISOString(),
-        status: 'active',
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-        last_login: new Date().toISOString()
-      };
+      // AuthService를 사용한 실제 인증
+      const result = await AuthService.loginWithEmployeeId(employeeId, password);
+
+      if (!result) {
+        throw new Error('사번 또는 비밀번호가 올바르지 않습니다.');
+      }
+
+      const { user, firstLogin } = result;
 
       setAuthState({
         isAuthenticated: true,
-        user: mockUser,
+        user,
         loading: false,
         error: null
       });
 
-      localStorage.setItem('bs_learning_user', JSON.stringify(mockUser));
-    } catch (error) {
+      // 로컬 스토리지에 저장
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('currentUser', JSON.stringify(user));
+      }
+
+      // 최초 로그인인 경우 비밀번호 변경 페이지로 리다이렉트
+      if (firstLogin) {
+        router.push('/change-password');
+      } else {
+        router.push('/dashboard');
+      }
+    } catch (error: any) {
+      console.error('로그인 실패:', error);
       setAuthState(prev => ({
         ...prev,
         loading: false,
-        error: '로그인에 실패했습니다.'
+        error: error.message || '로그인에 실패했습니다.'
       }));
+      throw error;
     }
   };
 
-  const logout = () => {
-    setAuthState({
-      isAuthenticated: false,
-      user: null,
-      loading: false,
-      error: null
-    });
-    localStorage.removeItem('bs_learning_user');
+  const logout = async () => {
+    try {
+      await AuthService.logout();
+      setAuthState({
+        isAuthenticated: false,
+        user: null,
+        loading: false,
+        error: null
+      });
+      router.push('/login');
+    } catch (error) {
+      console.error('로그아웃 오류:', error);
+    }
+  };
+
+  // 사용자 정보 업데이트
+  const updateUser = (user: User) => {
+    setAuthState(prev => ({
+      ...prev,
+      user
+    }));
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('currentUser', JSON.stringify(user));
+    }
   };
 
   // 테스트용 역할 전환 함수
@@ -144,7 +152,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         user: updatedUser
       }));
 
-      localStorage.setItem('bs_learning_user', JSON.stringify(updatedUser));
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('currentUser', JSON.stringify(updatedUser));
+      }
     }
   };
 
@@ -152,7 +162,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     ...authState,
     login,
     logout,
-    switchRole
+    switchRole,
+    updateUser
   };
 
   return (

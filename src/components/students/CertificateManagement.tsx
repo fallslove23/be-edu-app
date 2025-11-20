@@ -273,13 +273,13 @@ const CertificateManagement: React.FC = () => {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'issued':
-        return 'text-green-600 bg-green-100';
+        return 'text-green-600 bg-green-500/10';
       case 'approved':
         return 'text-blue-600 bg-blue-100';
       case 'pending':
-        return 'text-yellow-600 bg-yellow-100';
+        return 'text-orange-600 bg-yellow-100';
       case 'rejected':
-        return 'text-red-600 bg-red-100';
+        return 'text-destructive bg-destructive/10';
       default:
         return 'text-gray-600 bg-gray-100';
     }
@@ -388,7 +388,7 @@ const CertificateManagement: React.FC = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-lg h-12 w-12 border-b-2 border-blue-600"></div>
       </div>
     );
   }
@@ -402,11 +402,11 @@ const CertificateManagement: React.FC = () => {
           <p className="text-gray-600">수료증 및 인증서 발급 요청을 관리합니다</p>
         </div>
         <div className="flex space-x-3">
-          <button className="flex items-center space-x-2 bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors">
+          <button className="flex items-center space-x-2 bg-gray-600 text-white px-4 py-2 rounded-full hover:bg-gray-700 transition-colors">
             <PlusIcon className="h-5 w-5" />
             <span>수동 발급</span>
           </button>
-          <button className="btn-primary">
+          <button className="btn-primary rounded-full">
             <DocumentArrowDownIcon className="h-5 w-5" />
             <span>일괄 다운로드</span>
           </button>
@@ -417,8 +417,8 @@ const CertificateManagement: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <div className="bg-white p-6 rounded-lg shadow border">
           <div className="flex items-center">
-            <div className="p-3 rounded-full bg-yellow-100">
-              <ClockIcon className="h-6 w-6 text-yellow-600" />
+            <div className="p-3 rounded-lg bg-yellow-100">
+              <ClockIcon className="h-6 w-6 text-foreground" />
             </div>
             <div className="ml-4">
               <p className="text-sm font-medium text-gray-600">승인 대기</p>
@@ -431,7 +431,7 @@ const CertificateManagement: React.FC = () => {
 
         <div className="bg-white p-6 rounded-lg shadow border">
           <div className="flex items-center">
-            <div className="p-3 rounded-full bg-blue-100">
+            <div className="p-3 rounded-lg bg-blue-100">
               <CheckBadgeIcon className="h-6 w-6 text-blue-600" />
             </div>
             <div className="ml-4">
@@ -445,7 +445,7 @@ const CertificateManagement: React.FC = () => {
 
         <div className="bg-white p-6 rounded-lg shadow border">
           <div className="flex items-center">
-            <div className="p-3 rounded-full bg-green-100">
+            <div className="p-3 rounded-lg bg-green-500/10">
               <DocumentTextIcon className="h-6 w-6 text-green-600" />
             </div>
             <div className="ml-4">
@@ -459,8 +459,8 @@ const CertificateManagement: React.FC = () => {
 
         <div className="bg-white p-6 rounded-lg shadow border">
           <div className="flex items-center">
-            <div className="p-3 rounded-full bg-red-100">
-              <ExclamationTriangleIcon className="h-6 w-6 text-red-600" />
+            <div className="p-3 rounded-lg bg-destructive/10">
+              <ExclamationTriangleIcon className="h-6 w-6 text-destructive" />
             </div>
             <div className="ml-4">
               <p className="text-sm font-medium text-gray-600">반려됨</p>
@@ -491,7 +491,7 @@ const CertificateManagement: React.FC = () => {
           <select
             value={selectedStatus}
             onChange={(e) => setSelectedStatus(e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+            className="px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500"
           >
             <option value="all">전체 상태</option>
             <option value="pending">승인 대기</option>
@@ -504,7 +504,7 @@ const CertificateManagement: React.FC = () => {
           <select
             value={selectedTemplate}
             onChange={(e) => setSelectedTemplate(e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+            className="px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500"
           >
             <option value="all">전체 템플릿</option>
             {templates.map(template => (
@@ -516,7 +516,7 @@ const CertificateManagement: React.FC = () => {
           <select
             value={selectedPeriod}
             onChange={(e) => setSelectedPeriod(e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+            className="px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500"
           >
             <option value="all">전체 기간</option>
             <option value="1month">최근 1개월</option>
@@ -605,7 +605,7 @@ const CertificateManagement: React.FC = () => {
                           </button>
                           <button
                             onClick={() => handleReject(certificate.id, '승인 기준 미충족')}
-                            className="text-red-600 hover:text-red-900"
+                            className="text-destructive hover:text-destructive"
                             title="반려"
                           >
                             <XMarkIcon className="h-4 w-4" />

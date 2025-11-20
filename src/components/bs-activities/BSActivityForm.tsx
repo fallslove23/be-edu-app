@@ -186,7 +186,7 @@ const BSActivityForm: React.FC<BSActivityFormProps> = ({
     <form onSubmit={handleSubmit} className="space-y-6 pb-24">
       {/* 에러 메시지 */}
       {error && (
-        <div className="bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-lg">
+        <div className="bg-destructive/10 border border-destructive/50 text-destructive px-4 py-3 rounded-full">
           {error}
         </div>
       )}
@@ -201,7 +201,7 @@ const BSActivityForm: React.FC<BSActivityFormProps> = ({
           type="date"
           value={activityDate}
           onChange={(e) => setActivityDate(e.target.value)}
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg"
+          className="w-full px-4 py-3 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg"
           required
         />
       </div>
@@ -218,7 +218,7 @@ const BSActivityForm: React.FC<BSActivityFormProps> = ({
               key={cat}
               type="button"
               onClick={() => setCategory(cat)}
-              className={`px-4 py-3 rounded-lg text-sm font-medium transition-colors ${
+              className={`px-4 py-3 rounded-full text-sm font-medium transition-colors ${
                 category === cat
                   ? 'bg-blue-600 text-white'
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -242,7 +242,7 @@ const BSActivityForm: React.FC<BSActivityFormProps> = ({
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           placeholder="활동 제목을 입력하세요"
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg"
+          className="w-full px-4 py-3 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg"
           required
         />
       </div>
@@ -257,7 +257,7 @@ const BSActivityForm: React.FC<BSActivityFormProps> = ({
           onChange={(e) => setContent(e.target.value)}
           placeholder="활동 내용을 상세히 기록해주세요"
           rows={8}
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg resize-none"
+          className="w-full px-4 py-3 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg resize-none"
           required
         />
       </div>
@@ -321,7 +321,7 @@ const BSActivityForm: React.FC<BSActivityFormProps> = ({
           위치 정보
         </label>
         {location ? (
-          <div className="bg-green-50 border border-green-200 rounded-lg p-3">
+          <div className="bg-green-500/10 border border-green-200 rounded-lg p-3">
             <p className="text-sm text-green-800">📍 {location.address}</p>
             <button
               type="button"
@@ -335,7 +335,7 @@ const BSActivityForm: React.FC<BSActivityFormProps> = ({
           <button
             type="button"
             onClick={handleGetLocation}
-            className="w-full py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+            className="w-full py-3 border border-gray-300 rounded-full hover:bg-gray-50 transition-colors"
           >
             현재 위치 가져오기
           </button>
@@ -348,7 +348,7 @@ const BSActivityForm: React.FC<BSActivityFormProps> = ({
           <button
             type="button"
             onClick={onCancel}
-            className="px-4 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium"
+            className="px-4 py-3 bg-gray-100 text-gray-700 rounded-full hover:bg-gray-200 transition-colors font-medium"
           >
             취소
           </button>
@@ -357,7 +357,7 @@ const BSActivityForm: React.FC<BSActivityFormProps> = ({
           type="button"
           onClick={handleSaveDraft}
           disabled={isSubmitting}
-          className="px-4 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors font-medium disabled:opacity-50"
+          className="px-4 py-3 bg-gray-600 text-white rounded-full hover:bg-gray-700 transition-colors font-medium disabled:opacity-50"
         >
           임시저장
         </button>

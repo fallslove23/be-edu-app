@@ -91,7 +91,7 @@ const BSActivityDashboard: React.FC<BSActivityDashboardProps> = ({ courseId }) =
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-lg h-8 w-8 border-b-2 border-blue-600"></div>
         <span className="ml-2">로딩 중...</span>
       </div>
     );
@@ -139,9 +139,9 @@ const BSActivityDashboard: React.FC<BSActivityDashboardProps> = ({ courseId }) =
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-gray-600">우수 사례</p>
-              <p className="text-3xl font-bold text-yellow-600 mt-2">{stats.best_practices_count}</p>
+              <p className="text-3xl font-bold text-foreground mt-2">{stats.best_practices_count}</p>
             </div>
-            <TrophyIcon className="h-12 w-12 text-yellow-500" />
+            <TrophyIcon className="h-12 w-12 text-foreground" />
           </div>
         </div>
       </div>
@@ -169,7 +169,7 @@ const BSActivityDashboard: React.FC<BSActivityDashboardProps> = ({ courseId }) =
           </h3>
           <div className="space-y-2">
             {upcoming_deadlines.map(deadline => (
-              <div key={deadline.id} className="flex items-center justify-between p-3 bg-orange-50 rounded-lg">
+              <div key={deadline.id} className="flex items-center justify-between p-3 bg-orange-500/10 rounded-lg">
                 <div>
                   <p className="font-medium text-gray-900">{deadline.week_number}주차</p>
                   <p className="text-sm text-gray-600">필수 제출: {deadline.required_count}건</p>
@@ -184,7 +184,7 @@ const BSActivityDashboard: React.FC<BSActivityDashboardProps> = ({ courseId }) =
       )}
 
       {/* 검색 */}
-      <div className="bg-card rounded-xl border border-border p-6">
+      <div className="bg-card rounded-lg border border-border p-6">
         <div className="relative">
           <MagnifyingGlassIcon className="h-5 w-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
           <input
@@ -198,13 +198,13 @@ const BSActivityDashboard: React.FC<BSActivityDashboardProps> = ({ courseId }) =
       </div>
 
       {/* 필터 */}
-      <div className="bg-white rounded-2xl shadow-md border border-gray-100 p-6">
+      <div className="bg-white rounded-lg shadow-md border border-gray-100 p-6">
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
           <select
             id="category-filter"
             value={filterCategory}
             onChange={(e) => setFilterCategory(e.target.value as any)}
-            className="flex-1 sm:w-64 border-2 border-gray-200 rounded-xl px-6 py-3.5 text-base bg-white text-gray-700 font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all shadow-sm hover:border-gray-300 appearance-none cursor-pointer"
+            className="flex-1 sm:w-64 border-2 border-gray-200 rounded-lg px-6 py-3.5 text-base bg-white text-gray-700 font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all shadow-sm hover:border-gray-300 appearance-none cursor-pointer"
             style={{
               backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`,
               backgroundPosition: 'right 0.75rem center',
@@ -223,7 +223,7 @@ const BSActivityDashboard: React.FC<BSActivityDashboardProps> = ({ courseId }) =
             id="status-filter"
             value={filterStatus}
             onChange={(e) => setFilterStatus(e.target.value as any)}
-            className="flex-1 sm:w-64 border-2 border-gray-200 rounded-xl px-6 py-3.5 text-base bg-white text-gray-700 font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all shadow-sm hover:border-gray-300 appearance-none cursor-pointer"
+            className="flex-1 sm:w-64 border-2 border-gray-200 rounded-lg px-6 py-3.5 text-base bg-white text-gray-700 font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all shadow-sm hover:border-gray-300 appearance-none cursor-pointer"
             style={{
               backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`,
               backgroundPosition: 'right 0.75rem center',
@@ -258,7 +258,7 @@ const BSActivityDashboard: React.FC<BSActivityDashboardProps> = ({ courseId }) =
                     )}
                     <span className={`px-2 py-1 text-xs font-medium rounded-full ${
                       activity.submission_status === 'submitted'
-                        ? 'bg-green-100 text-green-800'
+                        ? 'bg-green-500/10 text-green-700'
                         : 'bg-gray-100 text-gray-800'
                     }`}>
                       {activity.submission_status === 'submitted' ? '제출완료' : '임시저장'}
@@ -289,7 +289,7 @@ const BSActivityDashboard: React.FC<BSActivityDashboardProps> = ({ courseId }) =
                   </button>
                   <button
                     onClick={() => handleToggleBestPractice(activity.id, !activity.is_best_practice)}
-                    className={`px-3 py-1 text-sm rounded-lg ${
+                    className={`px-3 py-1 text-sm rounded-full ${
                       activity.is_best_practice
                         ? 'bg-yellow-100 text-yellow-800 hover:bg-yellow-200'
                         : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -339,7 +339,7 @@ const BSActivityDashboard: React.FC<BSActivityDashboardProps> = ({ courseId }) =
                     <span className="text-gray-600">제출 상태:</span>
                     <span className={`ml-2 px-2 py-1 text-xs font-medium rounded-full ${
                       selectedActivity.submission_status === 'submitted'
-                        ? 'bg-green-100 text-green-800'
+                        ? 'bg-green-500/10 text-green-700'
                         : 'bg-gray-100 text-gray-800'
                     }`}>
                       {selectedActivity.submission_status === 'submitted' ? '제출완료' : '임시저장'}
@@ -421,7 +421,7 @@ const BSActivityDashboard: React.FC<BSActivityDashboardProps> = ({ courseId }) =
                         value={feedbackForm.comment}
                         onChange={(e) => setFeedbackForm({ ...feedbackForm, comment: e.target.value })}
                         rows={4}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         placeholder="피드백을 작성해주세요"
                       />
                     </div>

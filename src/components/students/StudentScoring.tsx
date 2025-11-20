@@ -180,9 +180,9 @@ const StudentScoring: React.FC<StudentScoringProps> = ({ studentId, onBack }) =>
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'PASS': return 'text-green-600 bg-green-100';
-      case 'FAIL': return 'text-red-600 bg-red-100';
-      case 'PENDING': return 'text-yellow-600 bg-yellow-100';
+      case 'PASS': return 'text-green-600 bg-green-500/10';
+      case 'FAIL': return 'text-destructive bg-destructive/10';
+      case 'PENDING': return 'text-orange-600 bg-yellow-100';
       default: return 'text-gray-600 bg-gray-100';
     }
   };
@@ -214,7 +214,7 @@ const StudentScoring: React.FC<StudentScoringProps> = ({ studentId, onBack }) =>
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-lg h-8 w-8 border-b-2 border-blue-600"></div>
         <span className="ml-2">점수 정보를 불러오는 중...</span>
       </div>
     );
@@ -245,21 +245,21 @@ const StudentScoring: React.FC<StudentScoringProps> = ({ studentId, onBack }) =>
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center space-y-2 sm:space-y-0 sm:space-x-3">
             <button
               onClick={() => setShowDataManager(true)}
-              className="flex items-center justify-center space-x-2 border border-gray-300 rounded-lg px-4 py-3 sm:py-2 hover:bg-gray-50 min-h-[44px]"
+              className="flex items-center justify-center space-x-2 border border-gray-300 rounded-full px-4 py-3 sm:py-2 hover:bg-gray-50 min-h-[44px]"
             >
               <ArrowUpTrayIcon className="h-4 w-4" />
               <span className="text-sm sm:text-base">데이터 관리</span>
             </button>
             <button
               onClick={() => setShowCategoryConfig(true)}
-              className="flex items-center justify-center space-x-2 border border-gray-300 rounded-lg px-4 py-3 sm:py-2 hover:bg-gray-50 min-h-[44px] hide-on-mobile"
+              className="flex items-center justify-center space-x-2 border border-gray-300 rounded-full px-4 py-3 sm:py-2 hover:bg-gray-50 min-h-[44px] hide-on-mobile"
             >
               <Cog6ToothIcon className="h-4 w-4" />
               <span className="text-sm sm:text-base">점수 항목 설정</span>
             </button>
             <button
               onClick={() => {/* 새 점수 입력 */}}
-              className="btn-primary px-4 py-3 sm:py-2 rounded-lg flex items-center justify-center space-x-2 min-h-[44px]"
+              className="btn-primary px-4 py-3 sm:py-2 rounded-full flex items-center justify-center space-x-2 min-h-[44px]"
             >
               <PlusIcon className="h-4 w-4" />
               <span className="text-sm sm:text-base">점수 입력</span>
@@ -277,7 +277,7 @@ const StudentScoring: React.FC<StudentScoringProps> = ({ studentId, onBack }) =>
             <select
               value={filter.courseId}
               onChange={(e) => setFilter(prev => ({ ...prev, courseId: e.target.value }))}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500"
+              className="w-full border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500"
             >
               <option value="all">전체 과정</option>
               <option value="BS-BASIC">BS 기초과정</option>
@@ -289,7 +289,7 @@ const StudentScoring: React.FC<StudentScoringProps> = ({ studentId, onBack }) =>
             <select
               value={filter.round}
               onChange={(e) => setFilter(prev => ({ ...prev, round: e.target.value }))}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500"
+              className="w-full border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500"
             >
               <option value="all">전체 차수</option>
               <option value="1">1차</option>
@@ -302,7 +302,7 @@ const StudentScoring: React.FC<StudentScoringProps> = ({ studentId, onBack }) =>
             <select
               value={filter.passFail}
               onChange={(e) => setFilter(prev => ({ ...prev, passFail: e.target.value }))}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500"
+              className="w-full border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500"
             >
               <option value="all">전체</option>
               <option value="PASS">합격</option>
@@ -450,7 +450,7 @@ const StudentScoring: React.FC<StudentScoringProps> = ({ studentId, onBack }) =>
             </p>
             <button
               onClick={() => {/* 새 점수 입력 */}}
-              className="btn-primary px-4 py-2 rounded-lg"
+              className="btn-primary px-4 py-2 rounded-full"
             >
               첫 점수 입력하기
             </button>
@@ -510,7 +510,7 @@ const StudentScoring: React.FC<StudentScoringProps> = ({ studentId, onBack }) =>
                       min="0"
                       max="100"
                       defaultValue={selectedScore.theoryScore}
-                      className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                      className="w-full border border-gray-300 rounded-full px-3 py-2"
                     />
                   ) : (
                     <div className="text-sm text-gray-900">{selectedScore.theoryScore}점</div>
@@ -524,7 +524,7 @@ const StudentScoring: React.FC<StudentScoringProps> = ({ studentId, onBack }) =>
                       min="0"
                       max="100"
                       defaultValue={selectedScore.practicalScore}
-                      className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                      className="w-full border border-gray-300 rounded-full px-3 py-2"
                     />
                   ) : (
                     <div className="text-sm text-gray-900">{selectedScore.practicalScore}점</div>
@@ -539,7 +539,7 @@ const StudentScoring: React.FC<StudentScoringProps> = ({ studentId, onBack }) =>
                         min="0"
                         max="100"
                         defaultValue={selectedScore.bsActivityScore}
-                        className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                        className="w-full border border-gray-300 rounded-full px-3 py-2"
                       />
                     ) : (
                       <div className="text-sm text-gray-900">{selectedScore.bsActivityScore}점</div>
@@ -554,7 +554,7 @@ const StudentScoring: React.FC<StudentScoringProps> = ({ studentId, onBack }) =>
                       min="0"
                       max="100"
                       defaultValue={selectedScore.attitudeScore}
-                      className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                      className="w-full border border-gray-300 rounded-full px-3 py-2"
                     />
                   ) : (
                     <div className="text-sm text-gray-900">{selectedScore.attitudeScore}점</div>
@@ -569,7 +569,7 @@ const StudentScoring: React.FC<StudentScoringProps> = ({ studentId, onBack }) =>
                   <textarea
                     rows={3}
                     defaultValue={selectedScore.remarks}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                    className="w-full border border-gray-300 rounded-full px-3 py-2"
                     placeholder="특이사항이나 추가 의견을 입력하세요..."
                   />
                 ) : (
@@ -607,7 +607,7 @@ const StudentScoring: React.FC<StudentScoringProps> = ({ studentId, onBack }) =>
                   setSelectedScore(null);
                   setIsEditing(false);
                 }}
-                className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
+                className="px-4 py-2 border border-gray-300 rounded-full text-gray-700 hover:bg-gray-50"
               >
                 {isEditing ? '취소' : '닫기'}
               </button>
@@ -648,7 +648,7 @@ const StudentScoring: React.FC<StudentScoringProps> = ({ studentId, onBack }) =>
                 <p className="text-gray-600">점수 항목을 추가하거나 삭제할 수 있습니다.</p>
                 <button
                   onClick={() => {/* 새 항목 추가 */}}
-                  className="btn-success px-4 py-2 rounded-lg flex items-center space-x-2"
+                  className="btn-success px-4 py-2 rounded-full flex items-center space-x-2"
                 >
                   <PlusIcon className="h-4 w-4" />
                   <span>항목 추가</span>
@@ -700,7 +700,7 @@ const StudentScoring: React.FC<StudentScoringProps> = ({ studentId, onBack }) =>
                       <div className="ml-4">
                         <button
                           onClick={() => {/* 항목 삭제 */}}
-                          className="text-red-600 hover:text-red-900 p-2"
+                          className="text-destructive hover:text-destructive p-2"
                           title="삭제"
                         >
                           <TrashIcon className="h-4 w-4" />
@@ -726,7 +726,7 @@ const StudentScoring: React.FC<StudentScoringProps> = ({ studentId, onBack }) =>
             <div className="px-6 py-4 border-t border-gray-200 flex justify-end space-x-3">
               <button
                 onClick={() => setShowCategoryConfig(false)}
-                className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
+                className="px-4 py-2 border border-gray-300 rounded-full text-gray-700 hover:bg-gray-50"
               >
                 취소
               </button>

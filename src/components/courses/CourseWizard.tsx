@@ -311,7 +311,7 @@ const CourseWizard: React.FC<CourseWizardProps> = ({ onSave, onCancel, available
       {/* 시리즈 선택 */}
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-3">
-          교육 시리즈 <span className="text-red-500">*</span>
+          교육 시리즈 <span className="text-destructive">*</span>
         </label>
         <div className="grid grid-cols-2 gap-4">
           {availableSeries.filter(s => s.isActive).map(series => (
@@ -319,7 +319,7 @@ const CourseWizard: React.FC<CourseWizardProps> = ({ onSave, onCancel, available
               key={series.id}
               type="button"
               onClick={() => handleTemplateChange('seriesId', series.id)}
-              className={`p-4 border-2 rounded-lg text-left transition-all ${
+              className={`p-4 border-2 rounded-full text-left transition-all ${
                 courseTemplate.seriesId === series.id
                   ? 'border-blue-500 bg-blue-50 text-blue-900'
                   : 'border-gray-200 hover:border-gray-300'
@@ -341,7 +341,7 @@ const CourseWizard: React.FC<CourseWizardProps> = ({ onSave, onCancel, available
       {/* 레벨 선택 */}
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-3">
-          과정 레벨 <span className="text-red-500">*</span>
+          과정 레벨 <span className="text-destructive">*</span>
         </label>
         {(() => {
           const selectedSeries = getSelectedSeries();
@@ -362,7 +362,7 @@ const CourseWizard: React.FC<CourseWizardProps> = ({ onSave, onCancel, available
                     key={level.id}
                     type="button"
                     onClick={() => handleTemplateChange('levelId', level.id)}
-                    className={`p-4 border-2 rounded-lg text-left transition-all ${
+                    className={`p-4 border-2 rounded-full text-left transition-all ${
                       courseTemplate.levelId === level.id
                         ? level.scheduleType === 'biennial' 
                           ? 'border-orange-500 bg-orange-50 text-orange-900'
@@ -451,7 +451,7 @@ const CourseWizard: React.FC<CourseWizardProps> = ({ onSave, onCancel, available
       {/* 과정 코드 설정 */}
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
-          과정 코드 설정 <span className="text-red-500">*</span>
+          과정 코드 설정 <span className="text-destructive">*</span>
         </label>
         
         <div className="grid grid-cols-3 gap-4 mb-3">
@@ -460,7 +460,7 @@ const CourseWizard: React.FC<CourseWizardProps> = ({ onSave, onCancel, available
             <select
               value={courseDetails.year}
               onChange={(e) => setCourseDetails(prev => ({ ...prev, year: parseInt(e.target.value) }))}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
               <option value={new Date().getFullYear() - 1}>{new Date().getFullYear() - 1}</option>
               <option value={new Date().getFullYear()}>{new Date().getFullYear()}</option>
@@ -471,7 +471,7 @@ const CourseWizard: React.FC<CourseWizardProps> = ({ onSave, onCancel, available
           
           <div>
             <label className="block text-xs text-gray-600 mb-1">과정 코드</label>
-            <div className="px-3 py-2 bg-gray-100 border border-gray-300 rounded-lg text-gray-700">
+            <div className="px-3 py-2 bg-gray-100 border border-gray-300 rounded-full text-gray-700">
               {(() => {
                 const series = getSelectedSeries();
                 const level = getSelectedLevel();
@@ -489,8 +489,8 @@ const CourseWizard: React.FC<CourseWizardProps> = ({ onSave, onCancel, available
                 onChange={(e) => setCourseDetails(prev => ({ ...prev, sessionNumber: parseInt(e.target.value) || 1 }))}
                 min="1"
                 max="99"
-                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                  isDuplicateCode() ? 'border-red-300 bg-red-50' : 'border-gray-300'
+                className={`w-full px-3 py-2 border rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                  isDuplicateCode() ? 'border-destructive/50 bg-destructive/10' : 'border-gray-300'
                 }`}
               />
               {(() => {
@@ -510,23 +510,23 @@ const CourseWizard: React.FC<CourseWizardProps> = ({ onSave, onCancel, available
           </div>
         </div>
         
-        <div className={`border rounded-lg p-3 ${
+        <div className={`border rounded-full p-3 ${
           isDuplicateCode() 
-            ? 'bg-red-50 border-red-200' 
+            ? 'bg-destructive/10 border-destructive/50' 
             : 'bg-blue-50 border-blue-200'
         }`}>
           <div className={`text-sm font-medium ${
-            isDuplicateCode() ? 'text-red-900' : 'text-blue-900'
+            isDuplicateCode() ? 'text-destructive' : 'text-blue-900'
           }`}>
             {isDuplicateCode() ? '⚠️ 중복된 과정 코드' : '생성될 과정 코드'}
           </div>
           <div className={`text-lg font-bold mt-1 font-mono ${
-            isDuplicateCode() ? 'text-red-800' : 'text-blue-800'
+            isDuplicateCode() ? 'text-destructive' : 'text-blue-800'
           }`}>
             {generateCourseCode() || '과정을 선택해주세요'}
           </div>
           <div className={`text-xs mt-1 ${
-            isDuplicateCode() ? 'text-red-700' : 'text-blue-700'
+            isDuplicateCode() ? 'text-destructive' : 'text-blue-700'
           }`}>
             {isDuplicateCode() 
               ? '이미 존재하는 과정 코드입니다. 차수를 변경해주세요.'
@@ -546,7 +546,7 @@ const CourseWizard: React.FC<CourseWizardProps> = ({ onSave, onCancel, available
           value={courseDetails.customName}
           onChange={(e) => setCourseDetails(prev => ({ ...prev, customName: e.target.value }))}
           placeholder={getCourseName()}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
         />
         <p className="text-xs text-gray-500 mt-1">
           비워두면 기본 과정명이 사용됩니다: {getCourseName()}
@@ -556,14 +556,14 @@ const CourseWizard: React.FC<CourseWizardProps> = ({ onSave, onCancel, available
       {/* 과정 설명 */}
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
-          과정 설명 <span className="text-red-500">*</span>
+          과정 설명 <span className="text-destructive">*</span>
         </label>
         <textarea
           value={courseDetails.description}
           onChange={(e) => setCourseDetails(prev => ({ ...prev, description: e.target.value }))}
           rows={4}
           placeholder="교육 과정의 목적과 내용을 설명해주세요"
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+          className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
         />
       </div>
 
@@ -571,7 +571,7 @@ const CourseWizard: React.FC<CourseWizardProps> = ({ onSave, onCancel, available
       <div className="grid grid-cols-3 gap-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            총 회차 수 <span className="text-red-500">*</span>
+            총 회차 수 <span className="text-destructive">*</span>
           </label>
           <input
             type="number"
@@ -579,18 +579,18 @@ const CourseWizard: React.FC<CourseWizardProps> = ({ onSave, onCancel, available
             onChange={(e) => setCourseDetails(prev => ({ ...prev, totalSessions: parseInt(e.target.value) || 0 }))}
             min="1"
             max="100"
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           />
         </div>
         
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            회차당 시간 (분) <span className="text-red-500">*</span>
+            회차당 시간 (분) <span className="text-destructive">*</span>
           </label>
           <select
             value={courseDetails.sessionDuration}
             onChange={(e) => setCourseDetails(prev => ({ ...prev, sessionDuration: parseInt(e.target.value) }))}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           >
             <option value={90}>1.5시간 (90분)</option>
             <option value={120}>2시간 (120분)</option>
@@ -603,7 +603,7 @@ const CourseWizard: React.FC<CourseWizardProps> = ({ onSave, onCancel, available
         
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            최대 수강생 <span className="text-red-500">*</span>
+            최대 수강생 <span className="text-destructive">*</span>
           </label>
           <input
             type="number"
@@ -611,7 +611,7 @@ const CourseWizard: React.FC<CourseWizardProps> = ({ onSave, onCancel, available
             onChange={(e) => setCourseDetails(prev => ({ ...prev, maxStudents: parseInt(e.target.value) || 0 }))}
             min="1"
             max="100"
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           />
         </div>
       </div>
@@ -619,7 +619,7 @@ const CourseWizard: React.FC<CourseWizardProps> = ({ onSave, onCancel, available
       {/* 학습 목표 */}
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
-          학습 목표 <span className="text-red-500">*</span>
+          학습 목표 <span className="text-destructive">*</span>
         </label>
         {courseDetails.objectives.map((objective, index) => (
           <div key={index} className="flex space-x-2 mb-2">
@@ -632,7 +632,7 @@ const CourseWizard: React.FC<CourseWizardProps> = ({ onSave, onCancel, available
                 setCourseDetails(prev => ({ ...prev, objectives: newObjectives }));
               }}
               placeholder={`학습 목표 ${index + 1}`}
-              className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="flex-1 px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
             {courseDetails.objectives.length > 1 && (
               <button
@@ -641,7 +641,7 @@ const CourseWizard: React.FC<CourseWizardProps> = ({ onSave, onCancel, available
                   const newObjectives = courseDetails.objectives.filter((_, i) => i !== index);
                   setCourseDetails(prev => ({ ...prev, objectives: newObjectives }));
                 }}
-                className="px-3 py-2 text-red-600 hover:bg-red-100 rounded-lg"
+                className="px-3 py-2 text-destructive hover:bg-destructive/10 rounded-full"
               >
                 삭제
               </button>
@@ -673,7 +673,7 @@ const CourseWizard: React.FC<CourseWizardProps> = ({ onSave, onCancel, available
                 setCourseDetails(prev => ({ ...prev, prerequisites: newPrerequisites }));
               }}
               placeholder={`수강 요건 ${index + 1}`}
-              className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="flex-1 px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
             {courseDetails.prerequisites.length > 1 && (
               <button
@@ -682,7 +682,7 @@ const CourseWizard: React.FC<CourseWizardProps> = ({ onSave, onCancel, available
                   const newPrerequisites = courseDetails.prerequisites.filter((_, i) => i !== index);
                   setCourseDetails(prev => ({ ...prev, prerequisites: newPrerequisites }));
                 }}
-                className="px-3 py-2 text-red-600 hover:bg-red-100 rounded-lg"
+                className="px-3 py-2 text-destructive hover:bg-destructive/10 rounded-full"
               >
                 삭제
               </button>
@@ -711,25 +711,25 @@ const CourseWizard: React.FC<CourseWizardProps> = ({ onSave, onCancel, available
       <div className="grid grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            교육 시작일 <span className="text-red-500">*</span>
+            교육 시작일 <span className="text-destructive">*</span>
           </label>
           <input
             type="date"
             value={scheduleInfo.startDate}
             onChange={(e) => setScheduleInfo(prev => ({ ...prev, startDate: e.target.value }))}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           />
         </div>
         
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            교육 종료일 <span className="text-red-500">*</span>
+            교육 종료일 <span className="text-destructive">*</span>
           </label>
           <input
             type="date"
             value={scheduleInfo.endDate}
             onChange={(e) => setScheduleInfo(prev => ({ ...prev, endDate: e.target.value }))}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           />
         </div>
       </div>
@@ -737,13 +737,13 @@ const CourseWizard: React.FC<CourseWizardProps> = ({ onSave, onCancel, available
       {/* 진행 빈도 */}
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
-          진행 빈도 <span className="text-red-500">*</span>
+          진행 빈도 <span className="text-destructive">*</span>
         </label>
         <select
           value={scheduleInfo.frequency}
           onChange={(e) => setScheduleInfo(prev => ({ ...prev, frequency: e.target.value }))}
           disabled={courseTemplate.scheduleType === 'biennial'}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100"
+          className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100"
         >
           <option value="monthly">월별 진행</option>
           <option value="quarterly">분기별 진행</option>
@@ -767,7 +767,7 @@ const CourseWizard: React.FC<CourseWizardProps> = ({ onSave, onCancel, available
           value={scheduleInfo.location}
           onChange={(e) => setScheduleInfo(prev => ({ ...prev, location: e.target.value }))}
           placeholder="예: 본사 교육장, 외부 연수원, 온라인"
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
         />
       </div>
 
@@ -781,7 +781,7 @@ const CourseWizard: React.FC<CourseWizardProps> = ({ onSave, onCancel, available
           onChange={(e) => setScheduleInfo(prev => ({ ...prev, instructorRequirements: e.target.value }))}
           rows={3}
           placeholder="강사의 자격 요건이나 특별 요구사항을 입력해주세요"
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+          className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
         />
       </div>
 
@@ -795,7 +795,7 @@ const CourseWizard: React.FC<CourseWizardProps> = ({ onSave, onCancel, available
           onChange={(e) => setCourseDetails(prev => ({ ...prev, specialNotes: e.target.value }))}
           rows={3}
           placeholder="기타 특별한 운영 방침이나 주의사항을 입력해주세요"
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+          className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
         />
       </div>
     </div>
@@ -901,7 +901,7 @@ const CourseWizard: React.FC<CourseWizardProps> = ({ onSave, onCancel, available
       )}
 
       {/* 경고 메시지 */}
-      <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
+      <div className="bg-orange-500/10 border border-orange-200 rounded-lg p-4">
         <div className="flex items-start space-x-3">
           <ExclamationTriangleIcon className="h-5 w-5 text-orange-600 mt-0.5" />
           <div>
@@ -955,7 +955,7 @@ const CourseWizard: React.FC<CourseWizardProps> = ({ onSave, onCancel, available
             type="button"
             onClick={prevStep}
             disabled={currentStep === 1}
-            className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
+            className="px-6 py-3 border border-gray-300 text-gray-700 rounded-full hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
           >
             <ChevronLeftIcon className="h-4 w-4" />
             <span>이전</span>
@@ -965,7 +965,7 @@ const CourseWizard: React.FC<CourseWizardProps> = ({ onSave, onCancel, available
             <button
               type="button"
               onClick={onCancel}
-              className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
+              className="px-6 py-3 border border-gray-300 text-gray-700 rounded-full hover:bg-gray-50"
             >
               취소
             </button>

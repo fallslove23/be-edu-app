@@ -41,7 +41,7 @@ const ThemeToggle: React.FC = () => {
       <button
         onClick={toggleTheme}
         className={`
-          p-2 rounded-lg transition-colors duration-200 
+          p-2 rounded-full transition-colors duration-200 
           ${actualTheme === 'dark' 
             ? 'bg-gray-700 text-yellow-400 hover:bg-gray-600' 
             : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
@@ -61,7 +61,7 @@ export const ThemeSelector: React.FC = () => {
   return (
     <div className={`
       bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 
-      rounded-lg shadow-lg p-4 space-y-3
+      rounded-full shadow-lg p-4 space-y-3
     `}>
       <h3 className="text-sm font-medium text-gray-900 dark:text-white mb-3">
         테마 설정
@@ -77,7 +77,7 @@ export const ThemeSelector: React.FC = () => {
             key={key}
             onClick={() => setTheme(key as any)}
             className={`
-              w-full flex items-center space-x-3 p-2 rounded-lg text-left transition-colors
+              w-full flex items-center space-x-3 p-2 rounded-full text-left transition-colors
               ${theme === key
                 ? `${actualTheme === 'dark' 
                     ? 'bg-blue-600 text-white' 

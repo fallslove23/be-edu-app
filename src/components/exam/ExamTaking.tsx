@@ -178,8 +178,8 @@ const ExamTaking: React.FC<ExamTakingProps> = ({
   // 시간 경고 색상
   const getTimeColor = () => {
     const percentage = (timeLeft / (exam.duration_minutes * 60)) * 100;
-    if (percentage <= 10) return 'text-red-600';
-    if (percentage <= 25) return 'text-yellow-600';
+    if (percentage <= 10) return 'text-destructive';
+    if (percentage <= 25) return 'text-foreground';
     return 'text-green-600';
   };
 
@@ -189,7 +189,7 @@ const ExamTaking: React.FC<ExamTakingProps> = ({
       <div className="max-w-2xl mx-auto">
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto"></div>
+            <div className="animate-spin rounded-lg h-12 w-12 border-b-2 border-gray-900 mx-auto"></div>
             <p className="mt-4 text-gray-600">시험 문제를 불러오는 중...</p>
           </div>
         </div>
@@ -203,13 +203,13 @@ const ExamTaking: React.FC<ExamTakingProps> = ({
       <div className="max-w-2xl mx-auto">
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
           <div className="text-center">
-            <ExclamationTriangleIcon className="h-12 w-12 text-red-600 mx-auto" />
+            <ExclamationTriangleIcon className="h-12 w-12 text-destructive mx-auto" />
             <h3 className="mt-4 text-lg font-medium text-gray-900">문제 로딩 실패</h3>
             <p className="mt-2 text-gray-600">{error}</p>
             <div className="mt-6 space-x-3">
               <button
                 onClick={onBack}
-                className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300"
+                className="px-4 py-2 bg-gray-200 text-gray-700 rounded-full hover:bg-gray-300"
               >
                 돌아가기
               </button>
@@ -232,7 +232,7 @@ const ExamTaking: React.FC<ExamTakingProps> = ({
       <div className="max-w-2xl mx-auto">
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
           <div className="text-center">
-            <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-blue-100">
+            <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-lg bg-blue-100">
               <ClockIcon className="h-6 w-6 text-blue-600" />
             </div>
             <h2 className="mt-4 text-2xl font-bold text-gray-900">{exam.title}</h2>
@@ -274,7 +274,7 @@ const ExamTaking: React.FC<ExamTakingProps> = ({
                 <ExclamationTriangleIcon className="h-5 w-5 text-yellow-400 mr-2 mt-0.5" />
                 <div>
                   <h3 className="font-medium text-yellow-800">주의사항</h3>
-                  <ul className="mt-2 text-sm text-yellow-700 space-y-1">
+                  <ul className="mt-2 text-sm text-foreground space-y-1">
                     <li>• 시험 시작 후에는 중도에 나갈 수 없습니다.</li>
                     <li>• 제한 시간이 지나면 자동으로 제출됩니다.</li>
                     <li>• 브라우저를 새로고침하면 답안이 초기화될 수 있습니다.</li>
@@ -338,9 +338,9 @@ const ExamTaking: React.FC<ExamTakingProps> = ({
             <span>진행도</span>
             <span>{Math.round(((currentQuestionIndex + 1) / questions.length) * 100)}%</span>
           </div>
-          <div className="w-full bg-gray-200 rounded-full h-2">
+          <div className="w-full bg-gray-200 rounded-lg h-2">
             <div 
-              className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+              className="bg-blue-600 h-2 rounded-lg transition-all duration-300"
               style={{ width: `${((currentQuestionIndex + 1) / questions.length) * 100}%` }}
             />
           </div>
@@ -363,9 +363,9 @@ const ExamTaking: React.FC<ExamTakingProps> = ({
                 </div>
                 <button
                   onClick={() => toggleFlag(currentQuestion.id)}
-                  className={`p-2 rounded-lg transition-colors ${
+                  className={`p-2 rounded-full transition-colors ${
                     flaggedQuestions.has(currentQuestion.id)
-                      ? 'text-yellow-600 bg-yellow-100 hover:bg-yellow-200'
+                      ? 'text-foreground bg-yellow-100 hover:bg-yellow-200'
                       : 'text-gray-400 hover:text-gray-600 hover:bg-gray-100'
                   }`}
                   title="문제 플래그"
@@ -386,7 +386,7 @@ const ExamTaking: React.FC<ExamTakingProps> = ({
                   {currentQuestion.options.map((option, index) => (
                     <label
                       key={option.id}
-                      className={`flex items-center p-4 border rounded-lg cursor-pointer transition-colors ${
+                      className={`flex items-center p-4 border rounded-full cursor-pointer transition-colors ${
                         currentAnswer?.answer === option.option_text
                           ? 'border-blue-500 bg-blue-50'
                           : 'border-gray-200 hover:bg-gray-50'
@@ -418,7 +418,7 @@ const ExamTaking: React.FC<ExamTakingProps> = ({
                     value={currentAnswer?.answer || ''}
                     onChange={(e) => saveAnswer(currentQuestion.id, e.target.value)}
                     rows={currentQuestion.question_type === 'essay' ? 8 : 3}
-                    className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full border border-gray-300 rounded-full px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     placeholder="답안을 입력하세요."
                   />
                 </div>
@@ -439,7 +439,7 @@ const ExamTaking: React.FC<ExamTakingProps> = ({
                   {currentAnswer ? (
                     <CheckCircleIcon className="h-5 w-5 text-green-600" />
                   ) : (
-                    <div className="h-5 w-5 border-2 border-gray-300 rounded-full" />
+                    <div className="h-5 w-5 border-2 border-gray-300 rounded-lg" />
                   )}
                   <span className="text-sm text-gray-600">
                     {currentAnswer ? '답변 완료' : '답변 대기'}
@@ -473,17 +473,17 @@ const ExamTaking: React.FC<ExamTakingProps> = ({
                   <button
                     key={question.id}
                     onClick={() => setCurrentQuestionIndex(index)}
-                    className={`relative p-2 text-sm font-medium rounded-lg transition-colors ${
+                    className={`relative p-2 text-sm font-medium rounded-full transition-colors ${
                       isCurrent
                         ? 'bg-blue-600 text-white'
                         : hasAnswer
-                        ? 'bg-green-100 text-green-800 hover:bg-green-200'
+                        ? 'bg-green-500/10 text-green-700 hover:bg-green-200'
                         : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                     }`}
                   >
                     {index + 1}
                     {isFlagged && (
-                      <FlagIcon className="absolute -top-1 -right-1 h-3 w-3 text-yellow-500" />
+                      <FlagIcon className="absolute -top-1 -right-1 h-3 w-3 text-foreground" />
                     )}
                   </button>
                 );
@@ -492,7 +492,7 @@ const ExamTaking: React.FC<ExamTakingProps> = ({
 
             <div className="mt-4 pt-4 border-t border-gray-200 text-xs text-gray-600 space-y-2">
               <div className="flex items-center">
-                <div className="w-3 h-3 bg-green-100 rounded mr-2"></div>
+                <div className="w-3 h-3 bg-green-500/10 rounded mr-2"></div>
                 <span>답변 완료</span>
               </div>
               <div className="flex items-center">
@@ -500,7 +500,7 @@ const ExamTaking: React.FC<ExamTakingProps> = ({
                 <span>답변 대기</span>
               </div>
               <div className="flex items-center">
-                <FlagIcon className="w-3 h-3 text-yellow-500 mr-2" />
+                <FlagIcon className="w-3 h-3 text-foreground mr-2" />
                 <span>플래그</span>
               </div>
             </div>
@@ -533,7 +533,7 @@ const ExamTaking: React.FC<ExamTakingProps> = ({
                 </div>
                 <div className="flex justify-between mb-2">
                   <span>답변한 문제:</span>
-                  <span className={answers.size === questions.length ? 'text-green-600' : 'text-yellow-600'}>
+                  <span className={answers.size === questions.length ? 'text-green-600' : 'text-foreground'}>
                     {answers.size}문항
                   </span>
                 </div>
@@ -543,7 +543,7 @@ const ExamTaking: React.FC<ExamTakingProps> = ({
                 </div>
               </div>
               {answers.size < questions.length && (
-                <p className="text-yellow-600 text-sm mt-3">
+                <p className="text-foreground text-sm mt-3">
                   ⚠️ 아직 답변하지 않은 문제가 있습니다.
                 </p>
               )}
@@ -551,7 +551,7 @@ const ExamTaking: React.FC<ExamTakingProps> = ({
             <div className="flex items-center space-x-3">
               <button
                 onClick={() => setShowConfirmSubmit(false)}
-                className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-full hover:bg-gray-50 transition-colors"
               >
                 취소
               </button>

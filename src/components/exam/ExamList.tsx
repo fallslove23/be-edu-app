@@ -36,7 +36,7 @@ const ExamList: React.FC<ExamListProps> = ({
   const getStatusStyle = (status: string) => {
     switch (status) {
       case 'active':
-        return 'bg-green-100 text-green-800 border-green-200';
+        return 'bg-green-500/10 text-green-700 border-green-200';
       case 'scheduled':
         return 'bg-blue-100 text-blue-800 border-blue-200';
       case 'completed':
@@ -44,7 +44,7 @@ const ExamList: React.FC<ExamListProps> = ({
       case 'draft':
         return 'bg-yellow-100 text-yellow-800 border-yellow-200';
       case 'cancelled':
-        return 'bg-red-100 text-red-800 border-red-200';
+        return 'bg-destructive/10 text-destructive border-destructive/50';
       default:
         return 'bg-gray-100 text-gray-800 border-gray-200';
     }
@@ -73,7 +73,7 @@ const ExamList: React.FC<ExamListProps> = ({
       <div className="bg-white rounded-lg shadow-sm border border-gray-200">
         <div className="p-6">
           <div className="flex items-center justify-center py-12">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+            <div className="animate-spin rounded-lg h-8 w-8 border-b-2 border-blue-600"></div>
             <span className="ml-3 text-gray-600">시험 목록을 불러오는 중...</span>
           </div>
         </div>
@@ -87,7 +87,7 @@ const ExamList: React.FC<ExamListProps> = ({
         <div className="p-6">
           <div className="text-center py-12">
             <ExclamationTriangleIcon className="h-12 w-12 mx-auto mb-4 text-red-300" />
-            <p className="text-red-600 mb-4">{error}</p>
+            <p className="text-destructive mb-4">{error}</p>
             <button
               onClick={onRefresh}
               className="btn-danger"
@@ -229,13 +229,13 @@ const ExamList: React.FC<ExamListProps> = ({
                 <div className="flex items-center space-x-3 text-xs text-gray-500">
                   {exam.is_randomized && (
                     <span className="flex items-center">
-                      <div className="w-2 h-2 bg-blue-400 rounded-full mr-1"></div>
+                      <div className="w-2 h-2 bg-blue-400 rounded-lg mr-1"></div>
                       문제 랜덤
                     </span>
                   )}
                   {exam.show_results_immediately && (
                     <span className="flex items-center">
-                      <div className="w-2 h-2 bg-green-400 rounded-full mr-1"></div>
+                      <div className="w-2 h-2 bg-green-400 rounded-lg mr-1"></div>
                       즉시 결과
                     </span>
                   )}

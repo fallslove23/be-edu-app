@@ -215,7 +215,7 @@ const FileUpload: React.FC<FileUploadProps> = ({
     <div className={`w-full ${className}`}>
       {/* 파일 드롭 영역 */}
       <div
-        className={`relative border-2 border-dashed rounded-lg p-6 transition-colors ${
+        className={`relative border-2 border-dashed rounded-full p-6 transition-colors ${
           dragActive
             ? 'border-blue-500 bg-blue-50'
             : 'border-gray-300 bg-gray-50 hover:border-gray-400'
@@ -309,9 +309,9 @@ const FileUpload: React.FC<FileUploadProps> = ({
                     {/* 업로드 진행률 */}
                     {uploadedFile.status === 'uploading' && (
                       <div className="mt-1">
-                        <div className="w-full bg-gray-200 rounded-full h-1">
+                        <div className="w-full bg-gray-200 rounded-lg h-1">
                           <div
-                            className="bg-blue-600 h-1 rounded-full transition-all duration-300"
+                            className="bg-blue-600 h-1 rounded-lg transition-all duration-300"
                             style={{ width: `${uploadedFile.uploadProgress || 0}%` }}
                           ></div>
                         </div>
@@ -323,7 +323,7 @@ const FileUpload: React.FC<FileUploadProps> = ({
 
                     {/* 에러 메시지 */}
                     {uploadedFile.status === 'error' && uploadedFile.errorMessage && (
-                      <p className="text-xs text-red-600 mt-1">
+                      <p className="text-xs text-destructive mt-1">
                         {uploadedFile.errorMessage}
                       </p>
                     )}
@@ -336,7 +336,7 @@ const FileUpload: React.FC<FileUploadProps> = ({
                     <CheckCircleIcon className="h-5 w-5 text-green-500" />
                   )}
                   {uploadedFile.status === 'error' && (
-                    <ExclamationTriangleIcon className="h-5 w-5 text-red-500" />
+                    <ExclamationTriangleIcon className="h-5 w-5 text-destructive" />
                   )}
                   {uploadedFile.status === 'pending' && (
                     <button

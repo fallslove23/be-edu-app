@@ -368,13 +368,13 @@ const OrganizationEditor: React.FC<OrganizationEditorProps> = ({ onClose }) => {
       <div key={department.id} style={{ marginLeft: `${level * 24}px` }}>
         <div className="flex items-center justify-between p-3 border border-gray-200 rounded-lg mb-2 bg-white">
           <div className="flex items-center space-x-3">
-            <div className={`p-2 rounded-lg ${
+            <div className={`p-2 rounded-full ${
               department.type === 'division' ? 'bg-blue-100' :
-              department.type === 'team' ? 'bg-green-100' : 'bg-yellow-100'
+              department.type === 'team' ? 'bg-green-500/10' : 'bg-yellow-100'
             }`}>
               <BuildingOfficeIcon className={`h-4 w-4 ${
                 department.type === 'division' ? 'text-blue-600' :
-                department.type === 'team' ? 'text-green-600' : 'text-yellow-600'
+                department.type === 'team' ? 'text-green-600' : 'text-orange-600'
               }`} />
             </div>
             <div>
@@ -389,7 +389,7 @@ const OrganizationEditor: React.FC<OrganizationEditorProps> = ({ onClose }) => {
           <div className="flex items-center space-x-2">
             <span className={`px-2 py-1 text-xs font-medium rounded-full ${
               department.type === 'division' ? 'bg-blue-100 text-blue-700' :
-              department.type === 'team' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'
+              department.type === 'team' ? 'bg-green-500/10 text-green-700' : 'bg-yellow-100 text-orange-700'
             }`}>
               {department.type === 'division' ? '본부' : 
                department.type === 'team' ? '팀' : '그룹'}
@@ -405,7 +405,7 @@ const OrganizationEditor: React.FC<OrganizationEditorProps> = ({ onClose }) => {
             
             <button
               onClick={() => handleDeleteDepartment(department.id)}
-              className="p-1 text-red-600 hover:bg-red-100 rounded"
+              className="p-1 text-destructive hover:bg-destructive/10 rounded"
               title="삭제"
             >
               <TrashIcon className="h-4 w-4" />
@@ -423,7 +423,7 @@ const OrganizationEditor: React.FC<OrganizationEditorProps> = ({ onClose }) => {
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
         <div className="bg-white rounded-lg p-8">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+          <div className="animate-spin rounded-lg h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
           <div className="mt-4 text-center">조직 정보를 불러오는 중...</div>
         </div>
       </div>
@@ -488,7 +488,7 @@ const OrganizationEditor: React.FC<OrganizationEditorProps> = ({ onClose }) => {
                 </div>
                 <button
                   onClick={handleAddDepartment}
-                  className="btn-primary px-4 py-2 rounded-lg flex items-center space-x-2"
+                  className="btn-primary px-4 py-2 rounded-full flex items-center space-x-2"
                 >
                   <PlusIcon className="h-4 w-4" />
                   <span>부서 추가</span>
@@ -520,7 +520,7 @@ const OrganizationEditor: React.FC<OrganizationEditorProps> = ({ onClose }) => {
                 </div>
                 <button
                   onClick={handleAddCourseSeries}
-                  className="btn-primary px-4 py-2 rounded-lg flex items-center space-x-2"
+                  className="btn-primary px-4 py-2 rounded-full flex items-center space-x-2"
                 >
                   <PlusIcon className="h-4 w-4" />
                   <span>과정 시리즈 추가</span>
@@ -567,7 +567,7 @@ const OrganizationEditor: React.FC<OrganizationEditorProps> = ({ onClose }) => {
                           </div>
                           
                           <div className="flex items-center space-x-2">
-                            <span className="px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-700">
+                            <span className="px-2 py-1 text-xs font-medium rounded-full bg-green-500/10 text-green-700">
                               {series.levels.length}개 레벨
                             </span>
                             
@@ -581,7 +581,7 @@ const OrganizationEditor: React.FC<OrganizationEditorProps> = ({ onClose }) => {
                             
                             <button
                               onClick={() => handleDeleteCourseSeries(series.id)}
-                              className="p-1 text-red-600 hover:bg-red-100 rounded"
+                              className="p-1 text-destructive hover:bg-destructive/10 rounded"
                               title="삭제"
                             >
                               <TrashIcon className="h-4 w-4" />
@@ -613,8 +613,8 @@ const OrganizationEditor: React.FC<OrganizationEditorProps> = ({ onClose }) => {
                                     </div>
                                     
                                     <span className={`px-2 py-1 text-xs font-medium rounded-full ${
-                                      level.scheduleType === 'biennial' ? 'bg-orange-100 text-orange-700' :
-                                      level.scheduleType === 'irregular' ? 'bg-yellow-100 text-yellow-700' :
+                                      level.scheduleType === 'biennial' ? 'bg-orange-500/10 text-orange-700' :
+                                      level.scheduleType === 'irregular' ? 'bg-yellow-100 text-orange-700' :
                                       'bg-blue-100 text-blue-700'
                                     }`}>
                                       {level.scheduleType === 'biennial' ? '2년주기' :
@@ -700,26 +700,26 @@ const DepartmentEditor: React.FC<DepartmentEditorProps> = ({
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              부서명 <span className="text-red-500">*</span>
+              부서명 <span className="text-destructive">*</span>
             </label>
             <input
               type="text"
               value={formData.name}
               onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="예: 영업팀"
             />
           </div>
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              부서코드 <span className="text-red-500">*</span>
+              부서코드 <span className="text-destructive">*</span>
             </label>
             <input
               type="text"
               value={formData.code}
               onChange={(e) => setFormData(prev => ({ ...prev, code: e.target.value.toUpperCase() }))}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="예: SALES_TEAM"
             />
           </div>
@@ -731,7 +731,7 @@ const DepartmentEditor: React.FC<DepartmentEditorProps> = ({
             <select
               value={formData.type}
               onChange={(e) => setFormData(prev => ({ ...prev, type: e.target.value as Department['type'] }))}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
               <option value="division">본부</option>
               <option value="team">팀</option>
@@ -746,7 +746,7 @@ const DepartmentEditor: React.FC<DepartmentEditorProps> = ({
             <select
               value={formData.parentId || ''}
               onChange={(e) => setFormData(prev => ({ ...prev, parentId: e.target.value || undefined }))}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
               <option value="">없음 (최상위)</option>
               {availableParents.map(dept => (
@@ -765,7 +765,7 @@ const DepartmentEditor: React.FC<DepartmentEditorProps> = ({
               value={formData.description || ''}
               onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
               rows={3}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+              className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
               placeholder="부서의 역할과 업무를 설명해주세요"
             />
           </div>
@@ -787,7 +787,7 @@ const DepartmentEditor: React.FC<DepartmentEditorProps> = ({
             <button
               type="button"
               onClick={onCancel}
-              className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
+              className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-full hover:bg-gray-50"
             >
               취소
             </button>
@@ -888,26 +888,26 @@ const CourseSeriesEditor: React.FC<CourseSeriesEditorProps> = ({
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                시리즈명 <span className="text-red-500">*</span>
+                시리즈명 <span className="text-destructive">*</span>
               </label>
               <input
                 type="text"
                 value={formData.name}
                 onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="예: Business Skills"
               />
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                시리즈코드 <span className="text-red-500">*</span>
+                시리즈코드 <span className="text-destructive">*</span>
               </label>
               <input
                 type="text"
                 value={formData.code}
                 onChange={(e) => setFormData(prev => ({ ...prev, code: e.target.value.toUpperCase() }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="예: BS"
               />
             </div>
@@ -921,7 +921,7 @@ const CourseSeriesEditor: React.FC<CourseSeriesEditorProps> = ({
               value={formData.description}
               onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
               rows={3}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+              className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
               placeholder="과정 시리즈의 목적과 내용을 설명해주세요"
             />
           </div>
@@ -967,7 +967,7 @@ const CourseSeriesEditor: React.FC<CourseSeriesEditorProps> = ({
               <button
                 type="button"
                 onClick={handleAddLevel}
-                className="btn-success text-sm px-3 py-1 rounded flex items-center space-x-1"
+                className="btn-success text-sm px-3 py-1 rounded-full flex items-center space-x-1"
               >
                 <PlusIcon className="h-3 w-3" />
                 <span>레벨 추가</span>
@@ -1002,7 +1002,7 @@ const CourseSeriesEditor: React.FC<CourseSeriesEditorProps> = ({
                       <button
                         type="button"
                         onClick={() => handleDeleteLevel(level.id)}
-                        className="p-1 text-red-600 hover:bg-red-100 rounded"
+                        className="p-1 text-destructive hover:bg-destructive/10 rounded"
                         title="삭제"
                       >
                         <TrashIcon className="h-4 w-4" />
@@ -1030,7 +1030,7 @@ const CourseSeriesEditor: React.FC<CourseSeriesEditorProps> = ({
             <button
               type="button"
               onClick={onCancel}
-              className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
+              className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-full hover:bg-gray-50"
             >
               취소
             </button>
@@ -1112,26 +1112,26 @@ const CourseLevelEditor: React.FC<CourseLevelEditorProps> = ({
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                레벨명 <span className="text-red-500">*</span>
+                레벨명 <span className="text-destructive">*</span>
               </label>
               <input
                 type="text"
                 value={formData.name}
                 onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="예: Basic"
               />
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                레벨코드 <span className="text-red-500">*</span>
+                레벨코드 <span className="text-destructive">*</span>
               </label>
               <input
                 type="text"
                 value={formData.code}
                 onChange={(e) => setFormData(prev => ({ ...prev, code: e.target.value.toUpperCase() }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="예: BASIC"
               />
             </div>
@@ -1145,7 +1145,7 @@ const CourseLevelEditor: React.FC<CourseLevelEditorProps> = ({
               value={formData.description}
               onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
               rows={2}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+              className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
             />
           </div>
 
@@ -1159,7 +1159,7 @@ const CourseLevelEditor: React.FC<CourseLevelEditorProps> = ({
                 value={formData.order}
                 onChange={(e) => setFormData(prev => ({ ...prev, order: parseInt(e.target.value) || 1 }))}
                 min="1"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
             </div>
 
@@ -1172,7 +1172,7 @@ const CourseLevelEditor: React.FC<CourseLevelEditorProps> = ({
                 value={formData.defaultSessions}
                 onChange={(e) => setFormData(prev => ({ ...prev, defaultSessions: parseInt(e.target.value) || 1 }))}
                 min="1"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
             </div>
 
@@ -1183,7 +1183,7 @@ const CourseLevelEditor: React.FC<CourseLevelEditorProps> = ({
               <select
                 value={formData.defaultDuration}
                 onChange={(e) => setFormData(prev => ({ ...prev, defaultDuration: parseInt(e.target.value) }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               >
                 <option value={90}>90분</option>
                 <option value={120}>120분</option>
@@ -1203,7 +1203,7 @@ const CourseLevelEditor: React.FC<CourseLevelEditorProps> = ({
                 value={formData.defaultMaxStudents}
                 onChange={(e) => setFormData(prev => ({ ...prev, defaultMaxStudents: parseInt(e.target.value) || 1 }))}
                 min="1"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
             </div>
           </div>
@@ -1215,7 +1215,7 @@ const CourseLevelEditor: React.FC<CourseLevelEditorProps> = ({
             <select
               value={formData.scheduleType}
               onChange={(e) => setFormData(prev => ({ ...prev, scheduleType: e.target.value as CourseLevel['scheduleType'] }))}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
               <option value="regular">정기</option>
               <option value="biennial">2년 주기</option>
@@ -1234,14 +1234,14 @@ const CourseLevelEditor: React.FC<CourseLevelEditorProps> = ({
                   type="text"
                   value={objective}
                   onChange={(e) => updateObjective(index, e.target.value)}
-                  className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="flex-1 px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder={`목표 ${index + 1}`}
                 />
                 {formData.defaultObjectives.length > 1 && (
                   <button
                     type="button"
                     onClick={() => removeObjective(index)}
-                    className="px-3 py-2 text-red-600 hover:bg-red-100 rounded-lg"
+                    className="px-3 py-2 text-destructive hover:bg-destructive/10 rounded-full"
                   >
                     삭제
                   </button>
@@ -1261,7 +1261,7 @@ const CourseLevelEditor: React.FC<CourseLevelEditorProps> = ({
             <button
               type="button"
               onClick={onCancel}
-              className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
+              className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-full hover:bg-gray-50"
             >
               취소
             </button>

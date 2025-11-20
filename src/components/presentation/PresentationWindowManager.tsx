@@ -119,11 +119,11 @@ const PresentationWindowManager: React.FC<PresentationWindowManagerProps> = ({
     const windowDate = new Date(window.windowDate);
     
     if (now > windowDate) return 'bg-gray-100 text-gray-700'; // 완료
-    if (now >= deadline) return 'bg-green-100 text-green-700'; // 발표일
+    if (now >= deadline) return 'bg-green-500/10 text-green-700'; // 발표일
     
     const hoursUntilDeadline = (deadline.getTime() - now.getTime()) / (1000 * 60 * 60);
-    if (hoursUntilDeadline <= 24) return 'bg-red-100 text-red-700'; // 마감 임박
-    if (hoursUntilDeadline <= 72) return 'bg-yellow-100 text-yellow-700'; // 주의
+    if (hoursUntilDeadline <= 24) return 'bg-destructive/10 text-destructive'; // 마감 임박
+    if (hoursUntilDeadline <= 72) return 'bg-yellow-100 text-orange-700'; // 주의
     
     return 'bg-blue-100 text-blue-700'; // 정상
   };
@@ -204,7 +204,7 @@ const PresentationWindowManager: React.FC<PresentationWindowManagerProps> = ({
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-lg h-8 w-8 border-b-2 border-blue-600"></div>
         <span className="ml-2">발표 윈도우를 불러오는 중...</span>
       </div>
     );
@@ -228,7 +228,7 @@ const PresentationWindowManager: React.FC<PresentationWindowManagerProps> = ({
           </div>
           
           <div className="flex items-center space-x-3">
-            <div className="flex items-center space-x-2 px-3 py-2 bg-blue-50 rounded-lg">
+            <div className="flex items-center space-x-2 px-3 py-2 bg-blue-50 rounded-full">
               <CalendarDaysIcon className="h-5 w-5 text-blue-600" />
               <span className="text-sm font-medium text-blue-900">
                 과정 시작: {new Date(courseStartDate).toLocaleDateString('ko-KR')}
@@ -244,7 +244,7 @@ const PresentationWindowManager: React.FC<PresentationWindowManagerProps> = ({
         if (nextWindow) {
           const isUrgent = new Date(nextWindow.deadline).getTime() - new Date().getTime() <= 24 * 60 * 60 * 1000;
           return (
-            <div className={`p-4 rounded-lg border-l-4 ${isUrgent ? 'bg-red-50 border-red-400' : 'bg-blue-50 border-blue-400'}`}>
+            <div className={`p-4 rounded-full border-l-4 ${isUrgent ? 'bg-destructive/10 border-destructive/50' : 'bg-blue-50 border-blue-400'}`}>
               <div className="flex items-center">
                 {isUrgent ? (
                   <ExclamationTriangleIcon className="h-5 w-5 text-red-400 mr-3" />
@@ -252,10 +252,10 @@ const PresentationWindowManager: React.FC<PresentationWindowManagerProps> = ({
                   <ClockIcon className="h-5 w-5 text-blue-400 mr-3" />
                 )}
                 <div>
-                  <p className={`font-medium ${isUrgent ? 'text-red-900' : 'text-blue-900'}`}>
+                  <p className={`font-medium ${isUrgent ? 'text-destructive' : 'text-blue-900'}`}>
                     다음 발표: {nextWindow.day}일차 ({new Date(nextWindow.windowDate).toLocaleDateString('ko-KR')})
                   </p>
-                  <p className={`text-sm ${isUrgent ? 'text-red-700' : 'text-blue-700'}`}>
+                  <p className={`text-sm ${isUrgent ? 'text-destructive' : 'text-blue-700'}`}>
                     제출 마감까지: {getTimeUntilDeadline(nextWindow.deadline)}
                   </p>
                 </div>
@@ -324,7 +324,7 @@ const PresentationWindowManager: React.FC<PresentationWindowManagerProps> = ({
               <div className="flex space-x-2 pt-2">
                 <button
                   onClick={() => setSelectedWindow(window)}
-                  className="flex-1 flex items-center justify-center space-x-1 px-3 py-2 text-sm text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg"
+                  className="flex-1 flex items-center justify-center space-x-1 px-3 py-2 text-sm text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-full"
                 >
                   <EyeIcon className="h-4 w-4" />
                   <span>상세보기</span>

@@ -347,8 +347,8 @@ export default function InteractiveExamAnalytics({
   if (loading) {
     return (
       <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-        <div className="bg-white rounded-xl p-8">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+        <div className="bg-white rounded-lg p-8">
+          <div className="animate-spin rounded-lg h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
           <p className="mt-4 text-gray-600">데이터 로딩 중...</p>
         </div>
       </div>
@@ -357,7 +357,7 @@ export default function InteractiveExamAnalytics({
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-xl shadow-2xl w-full max-w-7xl max-h-[90vh] overflow-hidden flex flex-col">
+      <div className="bg-white rounded-lg shadow-2xl w-full max-w-7xl max-h-[90vh] overflow-hidden flex flex-col">
         {/* 헤더 */}
         <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-6">
           <div className="flex items-center justify-between">
@@ -370,7 +370,7 @@ export default function InteractiveExamAnalytics({
             </div>
             <button
               onClick={onClose}
-              className="p-2 hover:bg-white/20 rounded-lg transition-colors"
+              className="p-2 hover:bg-white/20 rounded-full transition-colors"
             >
               <XMarkIcon className="h-6 w-6" />
             </button>
@@ -410,7 +410,7 @@ export default function InteractiveExamAnalytics({
           <div className="flex space-x-1 p-2">
             <button
               onClick={() => setActiveTab('overview')}
-              className={`flex-1 px-4 py-3 rounded-lg font-medium transition-all ${
+              className={`flex-1 px-4 py-3 rounded-full font-medium transition-all ${
                 activeTab === 'overview'
                   ? 'bg-white text-blue-600 shadow'
                   : 'text-gray-600 hover:bg-white/50'
@@ -421,7 +421,7 @@ export default function InteractiveExamAnalytics({
             </button>
             <button
               onClick={() => setActiveTab('questions')}
-              className={`flex-1 px-4 py-3 rounded-lg font-medium transition-all ${
+              className={`flex-1 px-4 py-3 rounded-full font-medium transition-all ${
                 activeTab === 'questions'
                   ? 'bg-white text-blue-600 shadow'
                   : 'text-gray-600 hover:bg-white/50'
@@ -432,7 +432,7 @@ export default function InteractiveExamAnalytics({
             </button>
             <button
               onClick={() => setActiveTab('students')}
-              className={`flex-1 px-4 py-3 rounded-lg font-medium transition-all ${
+              className={`flex-1 px-4 py-3 rounded-full font-medium transition-all ${
                 activeTab === 'students'
                   ? 'bg-white text-blue-600 shadow'
                   : 'text-gray-600 hover:bg-white/50'
@@ -443,7 +443,7 @@ export default function InteractiveExamAnalytics({
             </button>
             <button
               onClick={() => setActiveTab('trends')}
-              className={`flex-1 px-4 py-3 rounded-lg font-medium transition-all ${
+              className={`flex-1 px-4 py-3 rounded-full font-medium transition-all ${
                 activeTab === 'trends'
                   ? 'bg-white text-blue-600 shadow'
                   : 'text-gray-600 hover:bg-white/50'
@@ -460,7 +460,7 @@ export default function InteractiveExamAnalytics({
           {activeTab === 'overview' && (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* 점수 분포 */}
-              <div className="bg-white border border-gray-200 rounded-xl p-6">
+              <div className="bg-white border border-gray-200 rounded-lg p-6">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">점수 분포</h3>
                 <div className="h-80">
                   <Bar data={scoreDistributionData} options={barChartOptions} />
@@ -468,7 +468,7 @@ export default function InteractiveExamAnalytics({
               </div>
 
               {/* 난이도 분포 */}
-              <div className="bg-white border border-gray-200 rounded-xl p-6">
+              <div className="bg-white border border-gray-200 rounded-lg p-6">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">문제 난이도 분포</h3>
                 <div className="h-80">
                   <Doughnut data={difficultyDistributionData} options={doughnutChartOptions} />
@@ -480,7 +480,7 @@ export default function InteractiveExamAnalytics({
           {activeTab === 'questions' && (
             <div className="space-y-6">
               {/* 문제별 정답률 차트 */}
-              <div className="bg-white border border-gray-200 rounded-xl p-6">
+              <div className="bg-white border border-gray-200 rounded-lg p-6">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">문제별 정답률</h3>
                 <div className="h-96">
                   <Bar data={questionAccuracyData} options={barChartOptions} />
@@ -488,7 +488,7 @@ export default function InteractiveExamAnalytics({
               </div>
 
               {/* 문제별 상세 테이블 */}
-              <div className="bg-white border border-gray-200 rounded-xl p-6">
+              <div className="bg-white border border-gray-200 rounded-lg p-6">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">문제별 상세 분석</h3>
                 <div className="overflow-x-auto">
                   <table className="w-full">
@@ -507,9 +507,9 @@ export default function InteractiveExamAnalytics({
                           <td className="px-4 py-3 text-sm text-gray-900">문제 {q.question_number}</td>
                           <td className="px-4 py-3 text-sm">
                             <span className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${
-                              q.difficulty === 'easy' ? 'bg-green-100 text-green-800' :
+                              q.difficulty === 'easy' ? 'bg-green-500/10 text-green-700' :
                               q.difficulty === 'medium' ? 'bg-yellow-100 text-yellow-800' :
-                              'bg-red-100 text-red-800'
+                              'bg-destructive/10 text-destructive'
                             }`}>
                               {q.difficulty === 'easy' ? '쉬움' : q.difficulty === 'medium' ? '보통' : '어려움'}
                             </span>
@@ -520,8 +520,8 @@ export default function InteractiveExamAnalytics({
                           <td className="px-4 py-3 text-sm text-right font-semibold">
                             <span className={
                               q.correct_rate >= 80 ? 'text-green-600' :
-                              q.correct_rate >= 60 ? 'text-yellow-600' :
-                              'text-red-600'
+                              q.correct_rate >= 60 ? 'text-foreground' :
+                              'text-destructive'
                             }>
                               {q.correct_rate.toFixed(1)}%
                             </span>
@@ -543,7 +543,7 @@ export default function InteractiveExamAnalytics({
           {activeTab === 'students' && (
             <div className="space-y-6">
               {/* 학습자별 성과 */}
-              <div className="bg-white border border-gray-200 rounded-xl p-6">
+              <div className="bg-white border border-gray-200 rounded-lg p-6">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">학습자별 성과</h3>
                 <div className="overflow-x-auto">
                   <table className="w-full">
@@ -580,7 +580,7 @@ export default function InteractiveExamAnalytics({
                               <td className="px-4 py-3 text-sm text-gray-900">{attempt.user_name}</td>
                               <td className="px-4 py-3 text-sm text-right">
                                 <span className={`font-semibold ${
-                                  attempt.score >= exam.passing_score ? 'text-green-600' : 'text-red-600'
+                                  attempt.score >= exam.passing_score ? 'text-green-600' : 'text-destructive'
                                 }`}>
                                   {attempt.score}점
                                 </span>
@@ -589,8 +589,8 @@ export default function InteractiveExamAnalytics({
                               <td className="px-4 py-3 text-sm">
                                 <span className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${
                                   attempt.score >= exam.passing_score
-                                    ? 'bg-green-100 text-green-800'
-                                    : 'bg-red-100 text-red-800'
+                                    ? 'bg-green-500/10 text-green-700'
+                                    : 'bg-destructive/10 text-destructive'
                                 }`}>
                                   {attempt.score >= exam.passing_score ? '합격' : '불합격'}
                                 </span>
@@ -608,7 +608,7 @@ export default function InteractiveExamAnalytics({
           {activeTab === 'trends' && (
             <div className="space-y-6">
               {/* 시간대별 응시 추세 */}
-              <div className="bg-white border border-gray-200 rounded-xl p-6">
+              <div className="bg-white border border-gray-200 rounded-lg p-6">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">시간대별 응시 추세</h3>
                 <div className="h-96">
                   <Line data={timeSeriesData} options={lineChartOptions} />
@@ -620,7 +620,7 @@ export default function InteractiveExamAnalytics({
 
               {/* 인사이트 카드 */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="bg-gradient-to-br from-green-50 to-emerald-50 border border-green-200 rounded-xl p-6">
+                <div className="bg-gradient-to-br from-green-50 to-emerald-50 border border-green-200 rounded-lg p-6">
                   <div className="text-green-600 font-semibold mb-2">✨ 우수 문제</div>
                   <div className="text-2xl font-bold text-green-900 mb-2">
                     {questionAnalytics.filter(q => q.correct_rate >= 80).length}개
@@ -628,20 +628,20 @@ export default function InteractiveExamAnalytics({
                   <p className="text-sm text-green-700">정답률 80% 이상</p>
                 </div>
 
-                <div className="bg-gradient-to-br from-yellow-50 to-amber-50 border border-yellow-200 rounded-xl p-6">
-                  <div className="text-yellow-600 font-semibold mb-2">⚠️ 주의 문제</div>
+                <div className="bg-gradient-to-br from-yellow-50 to-amber-50 border border-yellow-200 rounded-lg p-6">
+                  <div className="text-foreground font-semibold mb-2">⚠️ 주의 문제</div>
                   <div className="text-2xl font-bold text-yellow-900 mb-2">
                     {questionAnalytics.filter(q => q.correct_rate >= 60 && q.correct_rate < 80).length}개
                   </div>
-                  <p className="text-sm text-yellow-700">정답률 60-80%</p>
+                  <p className="text-sm text-foreground">정답률 60-80%</p>
                 </div>
 
-                <div className="bg-gradient-to-br from-red-50 to-rose-50 border border-red-200 rounded-xl p-6">
-                  <div className="text-red-600 font-semibold mb-2">🚨 개선 필요</div>
-                  <div className="text-2xl font-bold text-red-900 mb-2">
+                <div className="bg-gradient-to-br from-red-50 to-rose-50 border border-destructive/50 rounded-lg p-6">
+                  <div className="text-destructive font-semibold mb-2">🚨 개선 필요</div>
+                  <div className="text-2xl font-bold text-destructive mb-2">
                     {questionAnalytics.filter(q => q.correct_rate < 60).length}개
                   </div>
-                  <p className="text-sm text-red-700">정답률 60% 미만</p>
+                  <p className="text-sm text-destructive">정답률 60% 미만</p>
                 </div>
               </div>
             </div>
@@ -655,7 +655,7 @@ export default function InteractiveExamAnalytics({
           </div>
           <button
             onClick={onClose}
-            className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+            className="px-4 py-2 bg-gray-600 text-white rounded-full hover:bg-gray-700 transition-colors"
           >
             닫기
           </button>

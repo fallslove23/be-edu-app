@@ -77,18 +77,18 @@ const AttendanceStatistics: React.FC<AttendanceStatisticsProps> = ({
 
   // 출석률 색상 클래스
   const getAttendanceRateColor = (rate: number) => {
-    if (rate >= 95) return 'text-green-600 bg-green-100';
+    if (rate >= 95) return 'text-green-600 bg-green-500/10';
     if (rate >= 90) return 'text-blue-600 bg-blue-100';
-    if (rate >= 85) return 'text-yellow-600 bg-yellow-100';
-    return 'text-red-600 bg-red-100';
+    if (rate >= 85) return 'text-orange-600 bg-yellow-100';
+    return 'text-destructive bg-destructive/10';
   };
 
   if (loading) {
     return (
-      <div className="bg-card rounded-xl shadow-sm border border-border">
+      <div className="bg-card rounded-lg shadow-sm border border-border">
         <div className="p-6">
           <div className="flex items-center justify-center py-8">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+            <div className="animate-spin rounded-lg h-8 w-8 border-b-2 border-primary"></div>
             <span className="ml-2 text-muted-foreground">통계를 불러오는 중...</span>
           </div>
         </div>
@@ -98,14 +98,14 @@ const AttendanceStatistics: React.FC<AttendanceStatisticsProps> = ({
 
   if (error) {
     return (
-      <div className="bg-card rounded-xl shadow-sm border border-border">
+      <div className="bg-card rounded-lg shadow-sm border border-border">
         <div className="p-6">
           <div className="text-center py-8 text-destructive">
             <ExclamationTriangleIcon className="h-12 w-12 mx-auto mb-4 text-destructive/50" />
             <p>{error}</p>
             <button
               onClick={loadStatistics}
-              className="mt-4 px-4 py-2 bg-destructive text-destructive-foreground rounded-lg hover:bg-destructive/90 transition-colors"
+              className="mt-4 px-4 py-2 bg-destructive text-destructive-foreground rounded-full hover:bg-destructive/90 transition-colors"
             >
               다시 시도
             </button>
@@ -117,7 +117,7 @@ const AttendanceStatistics: React.FC<AttendanceStatisticsProps> = ({
 
   if (!stats) {
     return (
-      <div className="bg-card rounded-xl shadow-sm border border-border">
+      <div className="bg-card rounded-lg shadow-sm border border-border">
         <div className="p-6">
           <div className="text-center py-8 text-muted-foreground">
             <ChartBarIcon className="h-12 w-12 mx-auto mb-4 text-muted-foreground/50" />
@@ -133,7 +133,7 @@ const AttendanceStatistics: React.FC<AttendanceStatisticsProps> = ({
   }
 
   return (
-    <div className="bg-card rounded-xl shadow-sm border border-border">
+    <div className="bg-card rounded-lg shadow-sm border border-border">
       <div className="p-6 border-b border-border">
         <h2 className="text-lg font-bold text-card-foreground flex items-center">
           <ChartBarIcon className="h-5 w-5 mr-2" />
@@ -211,7 +211,7 @@ const AttendanceStatistics: React.FC<AttendanceStatisticsProps> = ({
                       {stat.presentCount}/{stat.totalTrainees}명
                     </span>
                   </div>
-                  <div className="w-full bg-muted rounded-full h-2">
+                  <div className="w-full bg-muted rounded-lg h-2">
                     <div
                       className={`h-2 rounded-full transition-all duration-300 ${
                         stat.attendanceRate >= 95 ? 'bg-green-500' :

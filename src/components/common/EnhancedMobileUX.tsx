@@ -114,7 +114,7 @@ const EnhancedMobileUX: React.FC<EnhancedMobileUXProps> = ({
         >
           {isRefreshing ? (
             <div className="flex items-center justify-center space-x-2">
-              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+              <div className="animate-spin rounded-lg h-4 w-4 border-b-2 border-white"></div>
               <span>새로고침 중...</span>
             </div>
           ) : pullDistance > 80 ? (
@@ -160,16 +160,16 @@ const EnhancedMobileUX: React.FC<EnhancedMobileUXProps> = ({
             
             {/* 빠른 액션 버튼들 */}
             <div className="grid grid-cols-2 gap-2">
-              <button className="mobile-button bg-blue-500 text-white rounded-lg text-sm">
+              <button className="mobile-button bg-blue-500 text-white rounded-full text-sm">
                 새 과정 추가
               </button>
-              <button className="mobile-button bg-green-500 text-white rounded-lg text-sm">
+              <button className="mobile-button bg-green-500 text-white rounded-full text-sm">
                 출석 체크
               </button>
-              <button className="mobile-button bg-purple-500 text-white rounded-lg text-sm">
+              <button className="mobile-button bg-purple-500 text-white rounded-full text-sm">
                 시험 관리
               </button>
-              <button className="mobile-button bg-orange-500 text-white rounded-lg text-sm">
+              <button className="mobile-button bg-orange-500 text-white rounded-full text-sm">
                 성과 분석
               </button>
             </div>
@@ -233,7 +233,7 @@ const EnhancedMobileUX: React.FC<EnhancedMobileUXProps> = ({
                 </div>
               )}
             </div>
-            <button className="mt-4 w-full mobile-button bg-blue-500 text-white rounded-lg">
+            <button className="mt-4 w-full mobile-button bg-blue-500 text-white rounded-full">
               확인
             </button>
           </div>

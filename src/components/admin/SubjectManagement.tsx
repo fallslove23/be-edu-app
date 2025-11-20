@@ -12,12 +12,12 @@ import {
   TrashIcon,
   MagnifyingGlassIcon,
 } from '@heroicons/react/24/outline';
-import { subjectService } from '../../services/subject.service';
+import { subjectService, instructorSubjectService } from '../../services/subject.service';
 import type { Subject, SubjectCreate } from '../../types/integrated-schedule.types';
 
 const CATEGORIES = ['이론', '실습', '세미나', '기타'];
 
-export default function SubjectManagement() {
+export function SubjectManagement() {
   const [subjects, setSubjects] = useState<Subject[]>([]);
   const [loading, setLoading] = useState(true);
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -26,6 +26,7 @@ export default function SubjectManagement() {
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [filterCategory, setFilterCategory] = useState<string>('');
+  const [instructorCounts, setInstructorCounts] = useState<Map<string, number>>(new Map());
 
   // 폼 상태
   const [form, setForm] = useState<SubjectCreate>({
@@ -44,6 +45,14 @@ export default function SubjectManagement() {
       setError(null);
       const data = await subjectService.getAll();
       setSubjects(data);
+
+      // 각 과목별 강사 수 조회
+      const counts = new Map<string, number>();
+      for (const subject of data) {
+        const instructors = await instructorSubjectService.getBySubject(subject.id);
+        counts.set(subject.id, instructors.length);
+      }
+      setInstructorCounts(counts);
     } catch (error: any) {
       console.error('Failed to load subjects:', error);
       setError('과목 정보를 불러오는데 실패했습니다.');
@@ -154,7 +163,7 @@ export default function SubjectManagement() {
         </div>
         <button
           onClick={openCreateModal}
-          className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
+          className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-full hover:bg-primary/90"
         >
           <PlusIcon className="w-5 h-5" />
           과목 추가
@@ -162,8 +171,8 @@ export default function SubjectManagement() {
       </div>
 
       {error && (
-        <div className="mb-4 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
-          <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
+        <div className="mb-4 p-4 bg-destructive/10 dark:bg-red-900/20 border border-destructive/50 dark:border-red-800 rounded-lg">
+          <p className="text-sm text-destructive dark:text-red-400">{error}</p>
         </div>
       )}
 
@@ -182,7 +191,7 @@ export default function SubjectManagement() {
         <select
           value={filterCategory}
           onChange={(e) => setFilterCategory(e.target.value)}
-          className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+          className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
         >
           <option value="">전체 카테고리</option>
           {CATEGORIES.map((cat) => (
@@ -209,10 +218,10 @@ export default function SubjectManagement() {
                   className="px-6 py-4 hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center justify-between"
                 >
                   <div className="flex items-center gap-4">
-                    <div className="flex-shrink-0 h-10 w-10 rounded-full bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center">
+                    <div className="flex-shrink-0 h-10 w-10 rounded-lg bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center">
                       <AcademicCapIcon className="h-6 w-6 text-indigo-600 dark:text-indigo-400" />
                     </div>
-                    <div>
+                    <div className="flex-1">
                       <div className="text-sm font-medium text-gray-900 dark:text-white">
                         {subject.name}
                       </div>
@@ -222,18 +231,26 @@ export default function SubjectManagement() {
                         </div>
                       )}
                     </div>
+                    <div className="flex items-center gap-2 px-3 py-1 bg-teal-50 dark:bg-teal-900/20 rounded-lg border border-teal-200 dark:border-teal-800">
+                      <svg className="w-4 h-4 text-teal-600 dark:text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                      </svg>
+                      <span className="text-sm font-medium text-teal-700 dark:text-teal-300">
+                        {instructorCounts.get(subject.id) || 0}명
+                      </span>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 ml-4">
                     <button
                       onClick={() => openEditModal(subject)}
-                      className="p-2 text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400"
+                      className="p-2 text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 rounded-full"
                       title="수정"
                     >
                       <PencilIcon className="w-5 h-5" />
                     </button>
                     <button
                       onClick={() => handleDelete(subject.id, subject.name)}
-                      className="p-2 text-gray-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400"
+                      className="p-2 text-gray-600 dark:text-gray-400 hover:text-destructive dark:hover:text-red-400 rounded-full"
                       title="삭제"
                     >
                       <TrashIcon className="w-5 h-5" />
@@ -273,7 +290,7 @@ export default function SubjectManagement() {
                   type="text"
                   value={form.name}
                   onChange={(e) => setForm({ ...form, name: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                   placeholder="예: BS 영업"
                   required
                 />
@@ -286,7 +303,7 @@ export default function SubjectManagement() {
                 <select
                   value={form.category}
                   onChange={(e) => setForm({ ...form, category: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                 >
                   <option value="">선택</option>
                   {CATEGORIES.map((cat) => (
@@ -305,7 +322,7 @@ export default function SubjectManagement() {
                   value={form.description}
                   onChange={(e) => setForm({ ...form, description: e.target.value })}
                   rows={3}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                   placeholder="과목 설명을 입력해주세요"
                 />
               </div>
@@ -314,14 +331,14 @@ export default function SubjectManagement() {
             <div className="mt-6 flex justify-end gap-3">
               <button
                 onClick={() => setShowCreateModal(false)}
-                className="px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"
+                className="px-4 py-2 text-foreground hover:bg-muted rounded-full"
               >
                 취소
               </button>
               <button
                 onClick={handleCreate}
                 disabled={!form.name}
-                className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-4 py-2 bg-primary text-primary-foreground rounded-full hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 생성
               </button>
@@ -345,7 +362,7 @@ export default function SubjectManagement() {
                   type="text"
                   value={form.name}
                   onChange={(e) => setForm({ ...form, name: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                   required
                 />
               </div>
@@ -357,7 +374,7 @@ export default function SubjectManagement() {
                 <select
                   value={form.category}
                   onChange={(e) => setForm({ ...form, category: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                 >
                   <option value="">선택</option>
                   {CATEGORIES.map((cat) => (
@@ -376,7 +393,7 @@ export default function SubjectManagement() {
                   value={form.description}
                   onChange={(e) => setForm({ ...form, description: e.target.value })}
                   rows={3}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                 />
               </div>
             </div>
@@ -387,14 +404,14 @@ export default function SubjectManagement() {
                   setShowEditModal(false);
                   setSelectedSubject(null);
                 }}
-                className="px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"
+                className="px-4 py-2 text-foreground hover:bg-muted rounded-full"
               >
                 취소
               </button>
               <button
                 onClick={handleUpdate}
                 disabled={!form.name}
-                className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-4 py-2 bg-primary text-primary-foreground rounded-full hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 수정
               </button>

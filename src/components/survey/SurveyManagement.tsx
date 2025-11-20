@@ -30,7 +30,7 @@ const SurveyManagement: React.FC = () => {
           
           <button
             onClick={openEducationFeedback}
-            className="btn-success px-6 py-3 rounded-lg flex items-center space-x-2 transition-colors"
+            className="btn-success px-6 py-3 rounded-full flex items-center space-x-2 transition-colors"
           >
             <ArrowTopRightOnSquareIcon className="h-5 w-5" />
             <span>교육 피드백 시스템</span>
@@ -76,7 +76,7 @@ const SurveyManagement: React.FC = () => {
             <div className="flex items-center space-x-4">
               <button
                 onClick={openEducationFeedback}
-                className="btn-success px-4 py-2 rounded-lg flex items-center space-x-2"
+                className="btn-success px-4 py-2 rounded-full flex items-center space-x-2"
               >
                 <ArrowTopRightOnSquareIcon className="h-4 w-4" />
                 <span>설문 시스템 접속</span>
@@ -104,7 +104,7 @@ const SurveyManagement: React.FC = () => {
           </p>
           <button
             onClick={openEducationFeedback}
-            className="btn-primary w-full py-2 px-4 rounded-lg flex items-center justify-center space-x-2"
+            className="btn-primary w-full py-2 px-4 rounded-full flex items-center justify-center space-x-2"
           >
             <ArrowTopRightOnSquareIcon className="h-4 w-4" />
             <span>설문 생성하기</span>
@@ -140,7 +140,7 @@ const SurveyManagement: React.FC = () => {
           </p>
           <button
             onClick={openEducationFeedback}
-            className="btn-success w-full py-2 px-4 rounded-lg flex items-center justify-center space-x-2"
+            className="btn-success w-full py-2 px-4 rounded-full flex items-center justify-center space-x-2"
           >
             <ArrowTopRightOnSquareIcon className="h-4 w-4" />
             <span>과정 연동하기</span>
@@ -157,25 +157,25 @@ const SurveyManagement: React.FC = () => {
             <h4 className="font-medium text-gray-800 mb-3">설문 시기별 운영</h4>
             <div className="space-y-3 text-sm text-gray-600">
               <div className="flex items-start space-x-3">
-                <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
+                <div className="w-2 h-2 bg-blue-500 rounded-lg mt-2"></div>
                 <div>
                   <strong className="text-gray-800">과정 시작 전:</strong> 사전 기대도 및 학습 목표 설문
                 </div>
               </div>
               <div className="flex items-start space-x-3">
-                <div className="w-2 h-2 bg-green-500 rounded-full mt-2"></div>
+                <div className="w-2 h-2 bg-green-500 rounded-lg mt-2"></div>
                 <div>
                   <strong className="text-gray-800">일차별:</strong> 일일 교육 만족도 및 이해도 체크
                 </div>
               </div>
               <div className="flex items-start space-x-3">
-                <div className="w-2 h-2 bg-purple-500 rounded-full mt-2"></div>
+                <div className="w-2 h-2 bg-purple-500 rounded-lg mt-2"></div>
                 <div>
                   <strong className="text-gray-800">과정 종료 후:</strong> 전체 과정 평가 및 개선 사항
                 </div>
               </div>
               <div className="flex items-start space-x-3">
-                <div className="w-2 h-2 bg-orange-500 rounded-full mt-2"></div>
+                <div className="w-2 h-2 bg-orange-500 rounded-lg mt-2"></div>
                 <div>
                   <strong className="text-gray-800">추후 관리:</strong> 교육 효과성 및 현업 적용도 조사
                 </div>

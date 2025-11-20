@@ -132,7 +132,7 @@ export default function RoundTraineesTab({ round, onUpdate }: RoundTraineesTabPr
     return (
       <div className="bg-card rounded-lg border border-border p-6">
         <div className="text-center py-8">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+          <div className="animate-spin rounded-lg h-8 w-8 border-b-2 border-primary mx-auto"></div>
           <p className="text-muted-foreground mt-2">수강생 목록을 불러오는 중...</p>
         </div>
       </div>
@@ -164,7 +164,7 @@ export default function RoundTraineesTab({ round, onUpdate }: RoundTraineesTabPr
         {enrolledTrainees.length === 0 ? (
           <div className="text-center py-12 bg-muted/30 rounded-lg border border-border">
             <p className="text-muted-foreground mb-4">등록된 수강생이 없습니다.</p>
-            <button onClick={handleOpenAddModal} className="btn-primary btn-sm">
+            <button onClick={handleOpenAddModal} className="btn-primary btn-sm rounded-full">
               <PlusIcon className="w-4 h-4 mr-1" />
               첫 수강생 추가하기
             </button>
@@ -194,7 +194,7 @@ export default function RoundTraineesTab({ round, onUpdate }: RoundTraineesTabPr
                       <span
                         className={`px-2 py-1 text-xs font-medium rounded-full ${
                           enrollment.status === 'active'
-                            ? 'bg-green-100 text-green-700'
+                            ? 'bg-green-500/10 text-green-700'
                             : enrollment.status === 'completed'
                             ? 'bg-blue-100 text-blue-700'
                             : 'bg-gray-100 text-gray-700'
@@ -230,7 +230,7 @@ export default function RoundTraineesTab({ round, onUpdate }: RoundTraineesTabPr
             {/* 모달 헤더 */}
             <div className="flex items-center justify-between p-6 border-b border-border">
               <h3 className="text-xl font-bold text-foreground">교육생 추가</h3>
-              <button onClick={handleCloseAddModal} className="text-muted-foreground hover:text-foreground">
+              <button onClick={handleCloseAddModal} className="text-muted-foreground hover:text-foreground rounded-full">
                 <XMarkIcon className="w-6 h-6" />
               </button>
             </div>
@@ -262,7 +262,7 @@ export default function RoundTraineesTab({ round, onUpdate }: RoundTraineesTabPr
                     <div
                       key={trainee.id}
                       onClick={() => handleToggleTrainee(trainee.id)}
-                      className={`flex items-center justify-between p-4 rounded-lg border cursor-pointer transition-colors ${
+                      className={`flex items-center justify-between p-4 rounded-full border cursor-pointer transition-colors ${
                         selectedTrainees.includes(trainee.id)
                           ? 'border-primary bg-primary/10'
                           : 'border-border hover:bg-muted/30'
@@ -286,7 +286,7 @@ export default function RoundTraineesTab({ round, onUpdate }: RoundTraineesTabPr
 
             {/* 모달 푸터 */}
             <div className="flex items-center justify-end gap-3 p-6 border-t border-border">
-              <button onClick={handleCloseAddModal} className="btn-slate btn-sm">
+              <button onClick={handleCloseAddModal} className="btn-slate btn-sm rounded-full">
                 취소
               </button>
               <button

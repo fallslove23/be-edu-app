@@ -270,9 +270,9 @@ const NotificationItem: React.FC<{
       case 'success':
         return <CheckCircleIcon className="h-5 w-5 text-green-500" />;
       case 'warning':
-        return <ExclamationTriangleIcon className="h-5 w-5 text-yellow-500" />;
+        return <ExclamationTriangleIcon className="h-5 w-5 text-foreground" />;
       case 'error':
-        return <ExclamationTriangleIcon className="h-5 w-5 text-red-500" />;
+        return <ExclamationTriangleIcon className="h-5 w-5 text-destructive" />;
       default:
         return <InformationCircleIcon className="h-5 w-5 text-blue-500" />;
     }
@@ -293,7 +293,7 @@ const NotificationItem: React.FC<{
 
   return (
     <div
-      className={`bg-white dark:bg-gray-800 border-l-4 ${getBorderColor()} shadow-lg rounded-lg p-4 mb-3 transition-all duration-300 ${
+      className={`bg-white dark:bg-gray-800 border-l-4 ${getBorderColor()} shadow-lg rounded-full p-4 mb-3 transition-all duration-300 ${
         isClosing ? 'opacity-0 transform translate-x-full' : 'opacity-100'
       } ${!notification.read ? 'ring-2 ring-blue-200' : ''}`}
     >
@@ -381,7 +381,7 @@ const NotificationSettings: React.FC<{
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6 w-full max-w-md">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-medium">알림 설정</h3>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
+          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 rounded-full">
             <XMarkIcon className="h-5 w-5" />
           </button>
         </div>
@@ -632,10 +632,10 @@ const RealTimeNotifications: React.FC = () => {
       <div className="relative">
         <button
           onClick={() => setShowPanel(!showPanel)}
-          className={`relative p-2 rounded-lg transition-colors ${
+          className={`relative p-2 rounded-full transition-colors ${
             wsStatus.connected
               ? 'text-gray-600 hover:text-gray-800 hover:bg-gray-100'
-              : 'text-red-600 hover:text-red-800 hover:bg-red-50'
+              : 'text-destructive hover:text-destructive hover:bg-destructive/10'
           }`}
           title={wsStatus.connected ? '알림' : '연결 끊김'}
         >
@@ -643,7 +643,7 @@ const RealTimeNotifications: React.FC = () => {
           
           {/* 읽지 않은 알림 배지 */}
           {unreadCount > 0 && (
-            <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+            <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-lg h-5 w-5 flex items-center justify-center">
               {unreadCount > 99 ? '99+' : unreadCount}
             </span>
           )}
@@ -697,13 +697,13 @@ const RealTimeNotifications: React.FC = () => {
                 <div className="flex space-x-2 mt-3">
                   <button
                     onClick={markAllAsRead}
-                    className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded hover:bg-blue-200"
+                    className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full hover:bg-blue-200"
                   >
                     모두 읽음
                   </button>
                   <button
                     onClick={clearAll}
-                    className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded hover:bg-gray-200"
+                    className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded-full hover:bg-gray-200"
                   >
                     모두 삭제
                   </button>

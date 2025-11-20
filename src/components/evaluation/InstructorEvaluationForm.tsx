@@ -227,7 +227,7 @@ export default function InstructorEvaluationForm({
               <button
                 key={component.id}
                 onClick={() => handleComponentChange(component)}
-                className={`p-3 rounded-lg border-2 text-left transition-colors ${
+                className={`p-3 rounded-full border-2 text-left transition-colors ${
                   selectedComponent.id === component.id
                     ? 'border-blue-600 dark:border-blue-500 bg-blue-50 dark:bg-blue-900/20'
                     : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
@@ -284,10 +284,10 @@ export default function InstructorEvaluationForm({
                   <button
                     key={score}
                     onClick={() => handleScoreChange(subItem.id, score)}
-                    className={`py-3 rounded-lg font-medium transition-colors ${
+                    className={`py-3 rounded-full font-medium transition-colors ${
                       scores[subItem.id] === score
                         ? 'bg-blue-600 dark:bg-blue-500 text-white'
-                        : 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 hover:bg-gray-200 dark:hover:bg-gray-600'
+                        : 'bg-gray-100 dark:bg-gray-700 text-foreground hover:bg-muted'
                     }`}
                   >
                     {score}
@@ -326,7 +326,7 @@ export default function InstructorEvaluationForm({
               setFeedback(e.target.value);
               setSaved(false);
             }}
-            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
             rows={3}
             placeholder="학생에게 전달할 피드백을 입력하세요..."
           />

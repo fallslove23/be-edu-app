@@ -250,7 +250,7 @@ const JournalForm: React.FC<JournalFormProps> = ({
           <div className="flex items-center justify-between mb-2">
             <button
               onClick={onCancel}
-              className="p-2 hover:bg-gray-100 rounded-lg"
+              className="p-2 hover:bg-gray-100 rounded-full"
             >
               <XMarkIcon className="h-6 w-6 text-gray-600" />
             </button>
@@ -267,9 +267,9 @@ const JournalForm: React.FC<JournalFormProps> = ({
           {/* 마감일 표시 */}
           <div className={`text-xs text-center mt-2 p-2 rounded-md ${
             deadlineInfo.expired 
-              ? 'bg-red-100 text-red-700' 
+              ? 'bg-destructive/10 text-destructive' 
               : new Date(submissionDeadline).getTime() - Date.now() < 24 * 60 * 60 * 1000
-                ? 'bg-yellow-100 text-yellow-700'
+                ? 'bg-yellow-100 text-orange-700'
                 : 'bg-blue-100 text-blue-700'
           }`}>
             <ClockIcon className="h-4 w-4 inline mr-1" />
@@ -285,7 +285,7 @@ const JournalForm: React.FC<JournalFormProps> = ({
 
       {/* 성공 메시지 */}
       {showSuccess && (
-        <div className="fixed top-20 left-4 right-4 z-20 bg-green-100 border border-green-200 rounded-lg p-3 flex items-center">
+        <div className="fixed top-20 left-4 right-4 z-20 bg-green-500/10 border border-green-200 rounded-lg p-3 flex items-center">
           <CheckCircleIcon className="h-5 w-5 text-green-600 mr-2" />
           <span className="text-green-800 text-sm">임시저장되었습니다</span>
         </div>
@@ -300,53 +300,53 @@ const JournalForm: React.FC<JournalFormProps> = ({
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                제목 <span className="text-red-500">*</span>
+                제목 <span className="text-destructive">*</span>
               </label>
               <input
                 type="text"
                 value={formData.title}
                 onChange={(e) => handleInputChange('title', e.target.value)}
                 placeholder="오늘의 활동을 한 줄로 요약해주세요"
-                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                  errors.title ? 'border-red-500' : 'border-gray-300'
+                className={`w-full px-3 py-2 border rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                  errors.title ? 'border-destructive/50' : 'border-gray-300'
                 }`}
               />
-              {errors.title && <p className="text-red-500 text-xs mt-1">{errors.title}</p>}
+              {errors.title && <p className="text-destructive text-xs mt-1">{errors.title}</p>}
             </div>
 
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   <MapPinIcon className="h-4 w-4 inline mr-1" />
-                  현장 장소 <span className="text-red-500">*</span>
+                  현장 장소 <span className="text-destructive">*</span>
                 </label>
                 <input
                   type="text"
                   value={formData.workSite}
                   onChange={(e) => handleInputChange('workSite', e.target.value)}
                   placeholder="OO지점, OO현장 등"
-                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                    errors.workSite ? 'border-red-500' : 'border-gray-300'
+                  className={`w-full px-3 py-2 border rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                    errors.workSite ? 'border-destructive/50' : 'border-gray-300'
                   }`}
                 />
-                {errors.workSite && <p className="text-red-500 text-xs mt-1">{errors.workSite}</p>}
+                {errors.workSite && <p className="text-destructive text-xs mt-1">{errors.workSite}</p>}
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   <CalendarDaysIcon className="h-4 w-4 inline mr-1" />
-                  업무 날짜 <span className="text-red-500">*</span>
+                  업무 날짜 <span className="text-destructive">*</span>
                 </label>
                 <input
                   type="date"
                   value={formData.workDate}
                   onChange={(e) => handleInputChange('workDate', e.target.value)}
                   max={new Date().toISOString().split('T')[0]}
-                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                    errors.workDate ? 'border-red-500' : 'border-gray-300'
+                  className={`w-full px-3 py-2 border rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                    errors.workDate ? 'border-destructive/50' : 'border-gray-300'
                   }`}
                 />
-                {errors.workDate && <p className="text-red-500 text-xs mt-1">{errors.workDate}</p>}
+                {errors.workDate && <p className="text-destructive text-xs mt-1">{errors.workDate}</p>}
               </div>
             </div>
           </div>
@@ -359,34 +359,34 @@ const JournalForm: React.FC<JournalFormProps> = ({
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                수행한 업무 내용 <span className="text-red-500">*</span>
+                수행한 업무 내용 <span className="text-destructive">*</span>
               </label>
               <textarea
                 value={formData.workContent}
                 onChange={(e) => handleInputChange('workContent', e.target.value)}
                 placeholder="오늘 어떤 업무를 수행했는지 구체적으로 작성해주세요"
                 rows={4}
-                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none ${
-                  errors.workContent ? 'border-red-500' : 'border-gray-300'
+                className={`w-full px-3 py-2 border rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none ${
+                  errors.workContent ? 'border-destructive/50' : 'border-gray-300'
                 }`}
               />
-              {errors.workContent && <p className="text-red-500 text-xs mt-1">{errors.workContent}</p>}
+              {errors.workContent && <p className="text-destructive text-xs mt-1">{errors.workContent}</p>}
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                학습 포인트 <span className="text-red-500">*</span>
+                학습 포인트 <span className="text-destructive">*</span>
               </label>
               <textarea
                 value={formData.learningPoints}
                 onChange={(e) => handleInputChange('learningPoints', e.target.value)}
                 placeholder="오늘 업무에서 배운 점, 새롭게 알게 된 점을 작성해주세요"
                 rows={3}
-                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none ${
-                  errors.learningPoints ? 'border-red-500' : 'border-gray-300'
+                className={`w-full px-3 py-2 border rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none ${
+                  errors.learningPoints ? 'border-destructive/50' : 'border-gray-300'
                 }`}
               />
-              {errors.learningPoints && <p className="text-red-500 text-xs mt-1">{errors.learningPoints}</p>}
+              {errors.learningPoints && <p className="text-destructive text-xs mt-1">{errors.learningPoints}</p>}
             </div>
           </div>
         </div>
@@ -405,7 +405,7 @@ const JournalForm: React.FC<JournalFormProps> = ({
                 onChange={(e) => handleInputChange('challenges', e.target.value)}
                 placeholder="업무 수행 중 어렵거나 힘들었던 점이 있다면 작성해주세요"
                 rows={3}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
               />
             </div>
 
@@ -418,7 +418,7 @@ const JournalForm: React.FC<JournalFormProps> = ({
                 onChange={(e) => handleInputChange('solutions', e.target.value)}
                 placeholder="어려움을 어떻게 해결했는지, 또는 해결 방안을 작성해주세요"
                 rows={3}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
               />
             </div>
           </div>
@@ -438,7 +438,7 @@ const JournalForm: React.FC<JournalFormProps> = ({
                 onChange={(e) => handleInputChange('insights', e.target.value)}
                 placeholder="오늘의 경험을 통해 깨달은 점이나 느낀 점을 작성해주세요"
                 rows={3}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
               />
             </div>
 
@@ -451,7 +451,7 @@ const JournalForm: React.FC<JournalFormProps> = ({
                 onChange={(e) => handleInputChange('improvementAreas', e.target.value)}
                 placeholder="앞으로 개선하거나 보완해야 할 부분을 작성해주세요"
                 rows={3}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
               />
             </div>
 
@@ -464,7 +464,7 @@ const JournalForm: React.FC<JournalFormProps> = ({
                 onChange={(e) => handleInputChange('nextActions', e.target.value)}
                 placeholder="다음 업무나 학습에서 시도해볼 것들을 작성해주세요"
                 rows={3}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
               />
             </div>
           </div>
@@ -474,7 +474,7 @@ const JournalForm: React.FC<JournalFormProps> = ({
         <div className="bg-white rounded-lg border border-gray-200 p-4">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">
             📷 현장 사진 및 첨부파일 
-            <span className="text-red-500 text-sm ml-1">(사진 필수)</span>
+            <span className="text-destructive text-sm ml-1">(사진 필수)</span>
           </h2>
           
           <div className="space-y-4">
@@ -522,10 +522,10 @@ const JournalForm: React.FC<JournalFormProps> = ({
 
             {/* 에러 메시지 */}
             {errors.photos && (
-              <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+              <div className="bg-destructive/10 border border-destructive/50 rounded-lg p-3">
                 <div className="flex items-center space-x-2">
-                  <ExclamationTriangleIcon className="h-5 w-5 text-red-600" />
-                  <p className="text-sm text-red-700">{errors.photos}</p>
+                  <ExclamationTriangleIcon className="h-5 w-5 text-destructive" />
+                  <p className="text-sm text-destructive">{errors.photos}</p>
                 </div>
               </div>
             )}
@@ -546,7 +546,7 @@ const JournalForm: React.FC<JournalFormProps> = ({
                         >
                           <PhotoIcon className="h-5 w-5 text-green-500 group-hover:text-green-600" />
                           {attachment.fileUrl.startsWith('data:') && (
-                            <div className="absolute -top-1 -right-1 w-2 h-2 bg-green-500 rounded-full"></div>
+                            <div className="absolute -top-1 -right-1 w-2 h-2 bg-green-500 rounded-lg"></div>
                           )}
                         </button>
                       ) : (
@@ -561,7 +561,7 @@ const JournalForm: React.FC<JournalFormProps> = ({
                     </div>
                     <button
                       onClick={() => removeAttachment(attachment.id)}
-                      className="p-1 text-red-500 hover:bg-red-100 rounded"
+                      className="p-1 text-destructive hover:bg-destructive/10 rounded"
                       title="삭제"
                     >
                       <TrashIcon className="h-4 w-4" />
@@ -598,7 +598,7 @@ const JournalForm: React.FC<JournalFormProps> = ({
           <button
             onClick={handleSaveDraft}
             disabled={isSubmitting}
-            className="flex-1 py-3 px-4 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 disabled:opacity-50 font-medium"
+            className="flex-1 py-3 px-4 border border-gray-300 rounded-full text-foreground hover:bg-muted disabled:opacity-50 font-medium"
           >
             임시저장
           </button>
@@ -612,7 +612,7 @@ const JournalForm: React.FC<JournalFormProps> = ({
         </div>
         
         {deadlineInfo.expired && (
-          <div className="mt-2 flex items-center justify-center text-red-600 text-sm">
+          <div className="mt-2 flex items-center justify-center text-destructive text-sm">
             <ExclamationTriangleIcon className="h-4 w-4 mr-1" />
             제출 마감일이 지났습니다
           </div>

@@ -127,7 +127,7 @@ const SupabaseAnalytics: React.FC = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-lg h-8 w-8 border-b-2 border-blue-600"></div>
         <span className="ml-2">분석 데이터를 불러오는 중...</span>
       </div>
     );
@@ -148,7 +148,7 @@ const SupabaseAnalytics: React.FC = () => {
             <select
               value={dateRange}
               onChange={(e) => setDateRange(e.target.value)}
-              className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
               <option value="7d">최근 7일</option>
               <option value="30d">최근 30일</option>
@@ -175,7 +175,7 @@ const SupabaseAnalytics: React.FC = () => {
 
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
           <div className="flex items-center">
-            <div className="p-2 bg-green-100 rounded-lg">
+            <div className="p-2 bg-green-500/10 rounded-lg">
               <AcademicCapIcon className="h-6 w-6 text-green-600" />
             </div>
             <div className="ml-4">
@@ -189,7 +189,7 @@ const SupabaseAnalytics: React.FC = () => {
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
           <div className="flex items-center">
             <div className="p-2 bg-yellow-100 rounded-lg">
-              <DocumentChartBarIcon className="h-6 w-6 text-yellow-600" />
+              <DocumentChartBarIcon className="h-6 w-6 text-foreground" />
             </div>
             <div className="ml-4">
               <p className="text-sm font-medium text-gray-600">활동일지 제출률</p>
@@ -218,7 +218,7 @@ const SupabaseAnalytics: React.FC = () => {
         <div className="flex space-x-1">
           <button
             onClick={() => setSelectedMetric('users')}
-            className={`flex-1 px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
+            className={`flex-1 px-4 py-2 text-sm font-medium rounded-full transition-colors ${
               selectedMetric === 'users'
                 ? 'bg-blue-100 text-blue-700'
                 : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
@@ -228,9 +228,9 @@ const SupabaseAnalytics: React.FC = () => {
           </button>
           <button
             onClick={() => setSelectedMetric('courses')}
-            className={`flex-1 px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
+            className={`flex-1 px-4 py-2 text-sm font-medium rounded-full transition-colors ${
               selectedMetric === 'courses'
-                ? 'bg-green-100 text-green-700'
+                ? 'bg-green-500/10 text-green-700'
                 : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
             }`}
           >
@@ -238,9 +238,9 @@ const SupabaseAnalytics: React.FC = () => {
           </button>
           <button
             onClick={() => setSelectedMetric('activities')}
-            className={`flex-1 px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
+            className={`flex-1 px-4 py-2 text-sm font-medium rounded-full transition-colors ${
               selectedMetric === 'activities'
-                ? 'bg-yellow-100 text-yellow-700'
+                ? 'bg-yellow-100 text-orange-700'
                 : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
             }`}
           >

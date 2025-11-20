@@ -373,7 +373,7 @@ const ScoreDataManager: React.FC<ScoreDataManagerProps> = ({
                   </div>
                   <button
                     onClick={downloadTemplate}
-                    className="btn-primary px-4 py-2 rounded-lg flex items-center space-x-2"
+                    className="btn-primary px-4 py-2 rounded-full flex items-center space-x-2"
                   >
                     <TableCellsIcon className="h-4 w-4" />
                     <span>템플릿 다운로드</span>
@@ -383,7 +383,7 @@ const ScoreDataManager: React.FC<ScoreDataManagerProps> = ({
 
               {/* 파일 업로드 영역 */}
               <div
-                className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
+                className={`border-2 border-dashed rounded-full p-8 text-center transition-colors ${
                   dragOver 
                     ? 'border-blue-400 bg-blue-50' 
                     : 'border-gray-300 hover:border-gray-400'
@@ -406,7 +406,7 @@ const ScoreDataManager: React.FC<ScoreDataManagerProps> = ({
                 />
                 <label
                   htmlFor="file-input"
-                  className="bg-white border border-gray-300 rounded-lg px-4 py-2 hover:bg-gray-50 cursor-pointer inline-flex items-center space-x-2"
+                  className="bg-white border border-gray-300 rounded-full px-4 py-2 hover:bg-gray-50 cursor-pointer inline-flex items-center space-x-2"
                 >
                   <span>파일 선택</span>
                 </label>
@@ -416,7 +416,7 @@ const ScoreDataManager: React.FC<ScoreDataManagerProps> = ({
               {isProcessing && (
                 <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
                   <div className="flex items-center">
-                    <ClockIcon className="h-5 w-5 text-yellow-600 animate-spin mr-3" />
+                    <ClockIcon className="h-5 w-5 text-foreground animate-spin mr-3" />
                     <span className="text-yellow-800">파일을 처리하는 중...</span>
                   </div>
                 </div>
@@ -434,13 +434,13 @@ const ScoreDataManager: React.FC<ScoreDataManagerProps> = ({
                         <div className="text-sm text-gray-600">성공</div>
                       </div>
                       <div className="text-center">
-                        <XCircleIcon className="h-8 w-8 text-red-600 mx-auto mb-2" />
-                        <div className="text-2xl font-bold text-red-600">{importResult.failed}</div>
+                        <XCircleIcon className="h-8 w-8 text-destructive mx-auto mb-2" />
+                        <div className="text-2xl font-bold text-destructive">{importResult.failed}</div>
                         <div className="text-sm text-gray-600">실패</div>
                       </div>
                       <div className="text-center">
-                        <ExclamationTriangleIcon className="h-8 w-8 text-yellow-600 mx-auto mb-2" />
-                        <div className="text-2xl font-bold text-yellow-600">{importResult.duplicates}</div>
+                        <ExclamationTriangleIcon className="h-8 w-8 text-foreground mx-auto mb-2" />
+                        <div className="text-2xl font-bold text-foreground">{importResult.duplicates}</div>
                         <div className="text-sm text-gray-600">중복</div>
                       </div>
                     </div>
@@ -448,11 +448,11 @@ const ScoreDataManager: React.FC<ScoreDataManagerProps> = ({
 
                   {/* 오류 목록 */}
                   {importResult.errors.length > 0 && (
-                    <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-                      <h5 className="font-medium text-red-900 mb-2">오류 목록</h5>
+                    <div className="bg-destructive/10 border border-destructive/50 rounded-lg p-4">
+                      <h5 className="font-medium text-destructive mb-2">오류 목록</h5>
                       <div className="space-y-1 max-h-40 overflow-y-auto">
                         {importResult.errors.map((error, index) => (
-                          <div key={index} className="text-sm text-red-700">
+                          <div key={index} className="text-sm text-destructive">
                             • {error}
                           </div>
                         ))}
@@ -488,7 +488,7 @@ const ScoreDataManager: React.FC<ScoreDataManagerProps> = ({
                 </p>
               </div>
 
-              <div className="bg-green-50 border border-green-200 rounded-lg p-6 text-center">
+              <div className="bg-green-500/10 border border-green-200 rounded-lg p-6 text-center">
                 <DocumentArrowDownIcon className="h-12 w-12 text-green-600 mx-auto mb-4" />
                 <h5 className="text-lg font-medium text-green-900 mb-2">전체 점수 데이터 내보내기</h5>
                 <p className="text-green-700 mb-4">
@@ -496,7 +496,7 @@ const ScoreDataManager: React.FC<ScoreDataManagerProps> = ({
                 </p>
                 <button
                   onClick={handleExport}
-                  className="btn-success px-6 py-3 rounded-lg flex items-center space-x-2 mx-auto"
+                  className="btn-success px-6 py-3 rounded-full flex items-center space-x-2 mx-auto"
                 >
                   <DocumentArrowDownIcon className="h-5 w-5" />
                   <span>CSV 파일 다운로드</span>
@@ -525,7 +525,7 @@ const ScoreDataManager: React.FC<ScoreDataManagerProps> = ({
         <div className="px-6 py-4 border-t border-gray-200 flex justify-end">
           <button
             onClick={onClose}
-            className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
+            className="px-4 py-2 border border-gray-300 rounded-full text-gray-700 hover:bg-gray-50"
           >
             닫기
           </button>

@@ -206,10 +206,10 @@ const PerformanceTracking: React.FC = () => {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'excellent': return 'bg-green-100 text-green-800';
+      case 'excellent': return 'bg-green-500/10 text-green-700';
       case 'good': return 'bg-blue-100 text-blue-800';
       case 'average': return 'bg-yellow-100 text-yellow-800';
-      case 'needs_improvement': return 'bg-red-100 text-red-800';
+      case 'needs_improvement': return 'bg-destructive/10 text-destructive';
       default: return 'bg-gray-100 text-gray-800';
     }
   };
@@ -247,7 +247,7 @@ const PerformanceTracking: React.FC = () => {
             <p className="text-gray-600">교육생들의 학습 성과를 추적하고 분석합니다.</p>
           </div>
           <div className="flex items-center space-x-3">
-            <button className="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors flex items-center">
+            <button className="bg-gray-600 text-white px-4 py-2 rounded-full hover:bg-gray-700 transition-colors flex items-center">
               <ArrowDownTrayIcon className="h-4 w-4 mr-2" />
               진도 리포트
             </button>
@@ -255,13 +255,13 @@ const PerformanceTracking: React.FC = () => {
         </div>
 
         {/* 필터 카드 */}
-        <div className="bg-white rounded-2xl shadow-md border border-gray-100 p-6 mt-6">
+        <div className="bg-white rounded-lg shadow-md border border-gray-100 p-6 mt-6">
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
             <select
               id="period-filter"
               value={selectedPeriod}
               onChange={(e) => setSelectedPeriod(e.target.value)}
-              className="flex-1 sm:w-64 border-2 border-gray-200 rounded-xl px-6 py-3.5 text-base bg-white text-gray-700 font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all shadow-sm hover:border-gray-300 appearance-none cursor-pointer"
+              className="flex-1 sm:w-64 border-2 border-gray-200 rounded-lg px-6 py-3.5 text-base bg-white text-gray-700 font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all shadow-sm hover:border-gray-300 appearance-none cursor-pointer"
               style={{
                 backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`,
                 backgroundPosition: 'right 0.75rem center',
@@ -280,7 +280,7 @@ const PerformanceTracking: React.FC = () => {
               id="course-filter"
               value={selectedCourse}
               onChange={(e) => setSelectedCourse(e.target.value)}
-              className="flex-1 sm:w-64 border-2 border-gray-200 rounded-xl px-6 py-3.5 text-base bg-white text-gray-700 font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all shadow-sm hover:border-gray-300 appearance-none cursor-pointer"
+              className="flex-1 sm:w-64 border-2 border-gray-200 rounded-lg px-6 py-3.5 text-base bg-white text-gray-700 font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all shadow-sm hover:border-gray-300 appearance-none cursor-pointer"
               style={{
                 backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`,
                 backgroundPosition: 'right 0.75rem center',
@@ -348,9 +348,9 @@ const PerformanceTracking: React.FC = () => {
                       <span className="text-sm font-medium text-gray-700">전체 진도율</span>
                       <span className="text-sm text-gray-600">{course.overall_completion}%</span>
                     </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2">
+                    <div className="w-full bg-gray-200 rounded-lg h-2">
                       <div 
-                        className="bg-gray-600 h-2 rounded-full transition-all duration-300"
+                        className="bg-gray-600 h-2 rounded-lg transition-all duration-300"
                         style={{ width: `${course.overall_completion}%` }}
                       />
                     </div>
@@ -365,12 +365,12 @@ const PerformanceTracking: React.FC = () => {
                       const isBehind = day.completion_rate < 80 && day.day < course.current_day;
                       
                       return (
-                        <div 
-                          key={day.day} 
-                          className={`border rounded-lg p-4 transition-all ${
+                        <div
+                          key={day.day}
+                          className={`border rounded-md p-4 transition-all shadow-sm ${
                             isCurrentDay ? 'border-gray-500 bg-gray-50' :
-                            isCompleted ? 'border-gray-300 bg-gray-50' :
-                            isBehind ? 'border-red-300 bg-red-50' :
+                            isCompleted ? 'border-gray-300 bg-white' :
+                            isBehind ? 'border-red-200 bg-red-50' :
                             'border-gray-200 bg-white'
                           }`}
                         >
@@ -379,19 +379,19 @@ const PerformanceTracking: React.FC = () => {
                               <span className={`text-sm font-semibold ${
                                 isCurrentDay ? 'text-gray-700' :
                                 isCompleted ? 'text-gray-600' :
-                                isBehind ? 'text-red-600' :
+                                isBehind ? 'text-destructive' :
                                 'text-gray-500'
                               }`}>
                                 {day.day}일차
                               </span>
                               {isCurrentDay && <ClockIcon className="h-4 w-4 text-gray-600" />}
                               {isCompleted && <CheckCircleIcon className="h-4 w-4 text-gray-600" />}
-                              {isBehind && <ExclamationTriangleIcon className="h-4 w-4 text-red-500" />}
+                              {isBehind && <ExclamationTriangleIcon className="h-4 w-4 text-destructive" />}
                             </div>
                             <span className={`text-xs px-2 py-1 rounded-full ${
                               day.completion_rate >= 80 ? 'bg-gray-100 text-gray-700' :
-                              day.completion_rate >= 50 ? 'bg-yellow-100 text-yellow-700' :
-                              'bg-red-100 text-red-700'
+                              day.completion_rate >= 50 ? 'bg-yellow-100 text-orange-700' :
+                              'bg-destructive/10 text-destructive'
                             }`}>
                               {day.completion_rate}%
                             </span>
@@ -420,8 +420,8 @@ const PerformanceTracking: React.FC = () => {
                               <span className="text-gray-500">출석률</span>
                               <span className={`font-medium ${
                                 attendanceRate >= 90 ? 'text-gray-700' :
-                                attendanceRate >= 80 ? 'text-yellow-600' :
-                                'text-red-600'
+                                attendanceRate >= 80 ? 'text-foreground' :
+                                'text-destructive'
                               }`}>
                                 {day.attendance_count}/{day.total_students} ({attendanceRate}%)
                               </span>
@@ -441,7 +441,7 @@ const PerformanceTracking: React.FC = () => {
                     {Array.from({ length: course.total_days - course.daily_progress.length }, (_, i) => {
                       const dayNumber = course.daily_progress.length + i + 1;
                       return (
-                        <div key={`future-${dayNumber}`} className="border border-gray-200 rounded-lg p-4 bg-gray-50">
+                        <div key={`future-${dayNumber}`} className="border border-gray-200 rounded-md p-4 bg-gray-50 shadow-sm">
                           <div className="flex items-center justify-between mb-2">
                             <span className="text-sm font-semibold text-gray-400">{dayNumber}일차</span>
                             <span className="text-xs px-2 py-1 rounded-full bg-gray-200 text-gray-500">예정</span>
@@ -467,8 +467,8 @@ const PerformanceTracking: React.FC = () => {
                               <span className={`text-xs px-2 py-1 rounded-full ${
                                 student.status === 'ahead' ? 'bg-gray-100 text-gray-700' :
                                 student.status === 'on_track' ? 'bg-gray-100 text-gray-600' :
-                                student.status === 'behind' ? 'bg-yellow-100 text-yellow-700' :
-                                'bg-red-100 text-red-700'
+                                student.status === 'behind' ? 'bg-yellow-100 text-orange-700' :
+                                'bg-destructive/10 text-destructive'
                               }`}>
                                 {student.status === 'ahead' ? '앞서감' :
                                  student.status === 'on_track' ? '정상' :
@@ -476,7 +476,7 @@ const PerformanceTracking: React.FC = () => {
                               </span>
                             </div>
                             <div className="text-xs text-gray-600 mb-2">진도 {student.overall_progress}% • 출석 {attendanceRate}%</div>
-                            <div className="w-full bg-gray-200 rounded-full h-1.5">
+                            <div className="w-full bg-gray-200 rounded-lg h-1.5">
                               <div 
                                 className={`h-1.5 rounded-full ${
                                   student.overall_progress >= 80 ? 'bg-gray-600' :
@@ -559,9 +559,9 @@ const PerformanceTracking: React.FC = () => {
                             <span className="font-medium text-gray-900">{course}</span>
                             <span className="text-gray-600">{avgScore}점</span>
                           </div>
-                          <div className="w-full bg-gray-200 rounded-full h-2">
+                          <div className="w-full bg-gray-200 rounded-lg h-2">
                             <div 
-                              className="bg-gray-600 h-2 rounded-full"
+                              className="bg-gray-600 h-2 rounded-lg"
                               style={{ width: `${avgScore}%` }}
                             />
                           </div>
@@ -661,7 +661,7 @@ const PerformanceTracking: React.FC = () => {
                 <div className="border border-gray-200 rounded-lg p-4 hover:shadow-sm transition-shadow">
                   <h4 className="font-medium text-gray-900 mb-2">📊 종합 성과 리포트</h4>
                   <p className="text-sm text-gray-600 mb-4">전체 수강생의 출석, 시험, 진도 현황을 종합한 리포트</p>
-                  <button className="w-full bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700 transition-colors text-sm">
+                  <button className="w-full bg-gray-600 text-white px-4 py-2 rounded-full hover:bg-gray-700 transition-colors text-sm">
                     리포트 생성
                   </button>
                 </div>
@@ -669,7 +669,7 @@ const PerformanceTracking: React.FC = () => {
                 <div className="border border-gray-200 rounded-lg p-4 hover:shadow-sm transition-shadow">
                   <h4 className="font-medium text-gray-900 mb-2">📈 개별 수강생 리포트</h4>
                   <p className="text-sm text-gray-600 mb-4">특정 수강생의 상세한 학습 성과 분석 리포트</p>
-                  <button className="w-full bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700 transition-colors text-sm">
+                  <button className="w-full bg-gray-600 text-white px-4 py-2 rounded-full hover:bg-gray-700 transition-colors text-sm">
                     리포트 생성
                   </button>
                 </div>
@@ -677,7 +677,7 @@ const PerformanceTracking: React.FC = () => {
                 <div className="border border-gray-200 rounded-lg p-4 hover:shadow-sm transition-shadow">
                   <h4 className="font-medium text-gray-900 mb-2">📚 과정별 분석 리포트</h4>
                   <p className="text-sm text-gray-600 mb-4">과정별 수강생 성과 비교 및 분석 리포트</p>
-                  <button className="w-full bg-gray-700 text-white px-4 py-2 rounded hover:bg-gray-800 transition-colors text-sm">
+                  <button className="w-full bg-gray-700 text-white px-4 py-2 rounded-full hover:bg-gray-800 transition-colors text-sm">
                     리포트 생성
                   </button>
                 </div>
@@ -685,7 +685,7 @@ const PerformanceTracking: React.FC = () => {
                 <div className="border border-gray-200 rounded-lg p-4 hover:shadow-sm transition-shadow">
                   <h4 className="font-medium text-gray-900 mb-2">⚠️ 개선 필요 수강생 리포트</h4>
                   <p className="text-sm text-gray-600 mb-4">추가 지원이 필요한 수강생 현황 및 권장사항</p>
-                  <button className="w-full bg-gray-700 text-white px-4 py-2 rounded hover:bg-gray-800 transition-colors text-sm">
+                  <button className="w-full bg-gray-700 text-white px-4 py-2 rounded-full hover:bg-gray-800 transition-colors text-sm">
                     리포트 생성
                   </button>
                 </div>
@@ -705,7 +705,7 @@ const PerformanceTracking: React.FC = () => {
                         <div className="font-medium text-gray-900">{report.name}</div>
                         <div className="text-sm text-gray-600">{report.type} • {report.date} • {report.size}</div>
                       </div>
-                      <button className="text-gray-600 hover:text-gray-700 text-sm font-medium">
+                      <button className="text-gray-600 hover:text-gray-700 text-sm font-medium rounded-full">
                         다운로드
                       </button>
                     </div>

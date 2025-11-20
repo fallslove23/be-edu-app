@@ -161,11 +161,11 @@ const AttendanceForm: React.FC<AttendanceFormProps> = ({
     const baseClasses = "px-2 py-1 rounded text-xs font-medium";
     switch (status) {
       case 'present':
-        return `${baseClasses} bg-green-100 text-green-800`;
+        return `${baseClasses} bg-green-500/10 text-green-700`;
       case 'late':
         return `${baseClasses} bg-yellow-100 text-yellow-800`;
       case 'absent':
-        return `${baseClasses} bg-red-100 text-red-800`;
+        return `${baseClasses} bg-destructive/10 text-destructive`;
       case 'excused':
         return `${baseClasses} bg-blue-100 text-blue-800`;
       default:
@@ -242,11 +242,11 @@ const AttendanceForm: React.FC<AttendanceFormProps> = ({
               <div className="text-sm text-gray-600">출석</div>
             </div>
             <div>
-              <div className="text-2xl font-bold text-yellow-600">{stats.late}</div>
+              <div className="text-2xl font-bold text-foreground">{stats.late}</div>
               <div className="text-sm text-gray-600">지각</div>
             </div>
             <div>
-              <div className="text-2xl font-bold text-red-600">{stats.absent}</div>
+              <div className="text-2xl font-bold text-destructive">{stats.absent}</div>
               <div className="text-sm text-gray-600">결석</div>
             </div>
             <div>
@@ -264,16 +264,16 @@ const AttendanceForm: React.FC<AttendanceFormProps> = ({
         <div className="flex-1 overflow-y-auto" style={{ maxHeight: '400px' }}>
           {loading ? (
             <div className="flex items-center justify-center py-12">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+              <div className="animate-spin rounded-lg h-8 w-8 border-b-2 border-blue-600"></div>
               <span className="ml-2 text-gray-600">수강생 목록을 불러오는 중...</span>
             </div>
           ) : error ? (
-            <div className="text-center py-12 text-red-500">
+            <div className="text-center py-12 text-destructive">
               <ExclamationTriangleIcon className="h-12 w-12 mx-auto mb-4 text-red-300" />
               <p>{error}</p>
               <button
                 onClick={loadTrainees}
-                className="mt-4 bg-destructive text-destructive-foreground hover:bg-destructive/90 px-4 py-2 rounded transition-colors"
+                className="mt-4 bg-destructive text-destructive-foreground hover:bg-destructive/90 px-4 py-2 rounded-full transition-colors"
               >
                 다시 시도
               </button>
@@ -285,7 +285,7 @@ const AttendanceForm: React.FC<AttendanceFormProps> = ({
                   <div className="flex items-center justify-between">
                     {/* 수강생 정보 */}
                     <div className="flex items-center space-x-4">
-                      <div className="flex-shrink-0 w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
+                      <div className="flex-shrink-0 w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center">
                         <span className="text-sm font-medium text-gray-600">
                           {index + 1}
                         </span>
@@ -319,7 +319,7 @@ const AttendanceForm: React.FC<AttendanceFormProps> = ({
                     <input
                       type="text"
                       placeholder="메모 (선택사항)"
-                      className="block w-full px-3 py-2 border border-gray-300 rounded-md text-sm placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                      className="block w-full px-3 py-2 border border-gray-300 rounded-full text-sm placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
                       value={trainee.notes || ''}
                       onChange={(e) => handleNotesChange(trainee.trainee_id, e.target.value)}
                     />
@@ -357,7 +357,7 @@ const AttendanceForm: React.FC<AttendanceFormProps> = ({
             >
               {saving ? (
                 <div className="flex items-center">
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                  <div className="animate-spin rounded-lg h-4 w-4 border-b-2 border-white mr-2"></div>
                   저장 중...
                 </div>
               ) : (

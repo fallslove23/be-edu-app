@@ -56,7 +56,7 @@ const ScheduleTracker: React.FC<ScheduleTrackerProps> = ({
       case 'completed':
         return <CheckCircleIcon className="h-4 w-4 text-green-500" />;
       case 'cancelled':
-        return <XCircleIcon className="h-4 w-4 text-red-500" />;
+        return <XCircleIcon className="h-4 w-4 text-destructive" />;
       default:
         return <ClockIcon className="h-4 w-4 text-blue-500" />;
     }
@@ -66,9 +66,9 @@ const ScheduleTracker: React.FC<ScheduleTrackerProps> = ({
   const getStatusBgClass = (status: string) => {
     switch (status) {
       case 'completed':
-        return 'bg-green-50 border-green-200';
+        return 'bg-green-500/10 border-green-200';
       case 'cancelled':
-        return 'bg-red-50 border-red-200';
+        return 'bg-destructive/10 border-destructive/50';
       case 'in_progress':
         return 'bg-yellow-50 border-yellow-200';
       default:
@@ -80,11 +80,11 @@ const ScheduleTracker: React.FC<ScheduleTrackerProps> = ({
   const getTypeColor = (type: string) => {
     switch (type) {
       case 'exam':
-        return 'text-red-600 bg-red-100';
+        return 'text-destructive bg-destructive/10';
       case 'bs_activity':
         return 'text-purple-600 bg-purple-100';
       case 'assignment':
-        return 'text-orange-600 bg-orange-100';
+        return 'text-orange-600 bg-orange-500/10';
       default:
         return 'text-blue-600 bg-blue-100';
     }
@@ -130,7 +130,7 @@ const ScheduleTracker: React.FC<ScheduleTrackerProps> = ({
           <div className="flex items-center justify-between mb-6">
             <button
               onClick={goToPreviousWeek}
-              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              className="p-2 hover:bg-gray-100 rounded-full transition-colors"
             >
               <ChevronLeftIcon className="h-5 w-5 text-gray-600" />
             </button>
@@ -149,7 +149,7 @@ const ScheduleTracker: React.FC<ScheduleTrackerProps> = ({
             
             <button
               onClick={goToNextWeek}
-              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              className="p-2 hover:bg-gray-100 rounded-full transition-colors"
             >
               <ChevronRightIcon className="h-5 w-5 text-gray-600" />
             </button>
@@ -172,7 +172,7 @@ const ScheduleTracker: React.FC<ScheduleTrackerProps> = ({
               return (
                 <div
                   key={day.toString()}
-                  className={`min-h-[120px] p-2 border rounded-lg ${
+                  className={`min-h-[120px] p-2 border rounded-full ${
                     isCurrentDay 
                       ? 'bg-blue-50 border-blue-200' 
                       : 'bg-gray-50 border-gray-200'
@@ -227,7 +227,7 @@ const ScheduleTracker: React.FC<ScheduleTrackerProps> = ({
               <div
                 key={schedule.id}
                 onClick={() => onScheduleClick?.(schedule)}
-                className={`p-4 rounded-lg border cursor-pointer transition-all hover:shadow-md ${getStatusBgClass(schedule.status)}`}
+                className={`p-4 rounded-full border cursor-pointer transition-all hover:shadow-md ${getStatusBgClass(schedule.status)}`}
               >
                 {/* 일정 헤더 */}
                 <div className="flex items-center justify-between mb-3">
@@ -237,7 +237,7 @@ const ScheduleTracker: React.FC<ScheduleTrackerProps> = ({
                       {schedule.title}
                     </h3>
                     {schedule.isToday && (
-                      <span className="ml-2 px-2 py-1 bg-red-100 text-red-800 rounded-full text-xs font-medium">
+                      <span className="ml-2 px-2 py-1 bg-destructive/10 text-destructive rounded-full text-xs font-medium">
                         오늘
                       </span>
                     )}
@@ -300,7 +300,7 @@ const ScheduleTracker: React.FC<ScheduleTrackerProps> = ({
             예정
           </div>
           <div className="flex items-center">
-            <XCircleIcon className="h-4 w-4 text-red-500 mr-1" />
+            <XCircleIcon className="h-4 w-4 text-destructive mr-1" />
             취소
           </div>
         </div>

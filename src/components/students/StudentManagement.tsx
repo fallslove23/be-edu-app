@@ -442,15 +442,15 @@ const StudentManagement: React.FC = () => {
   const getGradeColor = (grade: number) => {
     if (grade >= 4.0) return 'text-green-600';
     if (grade >= 3.5) return 'text-blue-600';
-    if (grade >= 3.0) return 'text-yellow-600';
-    return 'text-red-600';
+    if (grade >= 3.0) return 'text-foreground';
+    return 'text-destructive';
   };
 
   const getAttendanceColor = (rate: number) => {
     if (rate >= 95) return 'text-green-600';
     if (rate >= 90) return 'text-blue-600';
-    if (rate >= 80) return 'text-yellow-600';
-    return 'text-red-600';
+    if (rate >= 80) return 'text-foreground';
+    return 'text-destructive';
   };
 
   // 학생 프로필 뷰
@@ -466,7 +466,7 @@ const StudentManagement: React.FC = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-lg h-8 w-8 border-b-2 border-blue-600"></div>
         <span className="ml-2">교육생 정보를 불러오는 중...</span>
       </div>
     );
@@ -519,7 +519,7 @@ const StudentManagement: React.FC = () => {
             {canModifyStudents && (
               <button
                 onClick={() => {/* 새 교육생 등록 */}}
-                className="btn-primary px-4 py-2 rounded-lg flex items-center space-x-2"
+                className="btn-primary px-4 py-2 rounded-full flex items-center space-x-2"
               >
                 <UserPlusIcon className="h-4 w-4" />
                 <span>교육생 등록</span>
@@ -546,7 +546,7 @@ const StudentManagement: React.FC = () => {
 
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
             <div className="flex items-center">
-              <div className="p-2 bg-green-100 rounded-lg">
+              <div className="p-2 bg-green-500/10 rounded-lg">
                 <ClockIcon className="h-6 w-6 text-green-600" />
               </div>
               <div className="ml-4">
@@ -571,7 +571,7 @@ const StudentManagement: React.FC = () => {
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
             <div className="flex items-center">
               <div className="p-2 bg-yellow-100 rounded-lg">
-                <TrophyIcon className="h-6 w-6 text-yellow-600" />
+                <TrophyIcon className="h-6 w-6 text-foreground" />
               </div>
               <div className="ml-4">
                 <p className="text-sm font-medium text-gray-600">평균 성적</p>
@@ -582,7 +582,7 @@ const StudentManagement: React.FC = () => {
 
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
             <div className="flex items-center">
-              <div className="p-2 bg-orange-100 rounded-lg">
+              <div className="p-2 bg-orange-500/10 rounded-lg">
                 <ChartBarIcon className="h-6 w-6 text-orange-600" />
               </div>
               <div className="ml-4">
@@ -624,7 +624,7 @@ const StudentManagement: React.FC = () => {
         <div className="flex justify-end space-x-3 mt-4">
           <button
             onClick={() => {/* 엑셀 다운로드 */}}
-            className="flex items-center space-x-1 border border-gray-300 rounded-lg px-3 py-2 hover:bg-gray-50"
+            className="flex items-center space-x-1 border border-gray-300 rounded-full px-3 py-2 hover:bg-gray-50"
           >
             <DocumentArrowDownIcon className="h-4 w-4" />
             <span>엑셀 다운로드</span>
@@ -632,7 +632,7 @@ const StudentManagement: React.FC = () => {
 
           <button
             onClick={() => setShowReportGenerator(true)}
-            className="btn-success flex items-center space-x-1 rounded-lg px-3 py-2"
+            className="btn-success flex items-center space-x-1 rounded-full px-3 py-2"
           >
             <ChartBarIcon className="h-4 w-4" />
             <span>성과 리포트</span>
@@ -694,9 +694,9 @@ const StudentManagement: React.FC = () => {
                               <div className="text-sm text-gray-500">{course.courseName}</div>
                               <div className="mt-1">
                                 <div className="flex items-center space-x-2">
-                                  <div className="w-20 bg-gray-200 rounded-full h-2">
+                                  <div className="w-20 bg-gray-200 rounded-lg h-2">
                                     <div
-                                      className="bg-blue-600 h-2 rounded-full"
+                                      className="bg-blue-600 h-2 rounded-lg"
                                       style={{ width: `${course.progress}%` }}
                                     ></div>
                                   </div>
@@ -774,9 +774,9 @@ const StudentManagement: React.FC = () => {
                         <div key={index} className="text-sm">
                           <div className="font-medium text-gray-900">{course.courseCode}</div>
                           <div className="flex items-center space-x-2 mt-1">
-                            <div className="flex-1 bg-gray-200 rounded-full h-1.5">
+                            <div className="flex-1 bg-gray-200 rounded-lg h-1.5">
                               <div
-                                className="bg-blue-600 h-1.5 rounded-full"
+                                className="bg-blue-600 h-1.5 rounded-lg"
                                 style={{ width: `${course.progress}%` }}
                               ></div>
                             </div>
@@ -821,7 +821,7 @@ const StudentManagement: React.FC = () => {
             </p>
             <button
               onClick={() => {/* 교육생 등록 */}}
-              className="btn-primary px-4 py-2 rounded-lg"
+              className="btn-primary px-4 py-2 rounded-full"
             >
               첫 교육생 등록하기
             </button>

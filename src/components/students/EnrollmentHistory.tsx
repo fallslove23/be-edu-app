@@ -277,15 +277,15 @@ const EnrollmentHistory: React.FC = () => {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'completed':
-        return 'text-green-600 bg-green-100';
+        return 'text-green-600 bg-green-500/10';
       case 'in-progress':
         return 'text-blue-600 bg-blue-100';
       case 'enrolled':
         return 'text-purple-600 bg-purple-100';
       case 'dropped':
-        return 'text-red-600 bg-red-100';
+        return 'text-destructive bg-destructive/10';
       case 'pending':
-        return 'text-yellow-600 bg-yellow-100';
+        return 'text-orange-600 bg-yellow-100';
       default:
         return 'text-gray-600 bg-gray-100';
     }
@@ -342,7 +342,7 @@ const EnrollmentHistory: React.FC = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-lg h-12 w-12 border-b-2 border-blue-600"></div>
       </div>
     );
   }
@@ -369,7 +369,7 @@ const EnrollmentHistory: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
           <div className="bg-white p-6 rounded-lg shadow border">
             <div className="flex items-center">
-              <div className="p-3 rounded-full bg-blue-100">
+              <div className="p-3 rounded-lg bg-blue-100">
                 <UserGroupIcon className="h-6 w-6 text-blue-600" />
               </div>
               <div className="ml-4">
@@ -381,7 +381,7 @@ const EnrollmentHistory: React.FC = () => {
 
           <div className="bg-white p-6 rounded-lg shadow border">
             <div className="flex items-center">
-              <div className="p-3 rounded-full bg-green-100">
+              <div className="p-3 rounded-lg bg-green-500/10">
                 <BookOpenIcon className="h-6 w-6 text-green-600" />
               </div>
               <div className="ml-4">
@@ -393,7 +393,7 @@ const EnrollmentHistory: React.FC = () => {
 
           <div className="bg-white p-6 rounded-lg shadow border">
             <div className="flex items-center">
-              <div className="p-3 rounded-full bg-purple-100">
+              <div className="p-3 rounded-lg bg-purple-100">
                 <CheckCircleIcon className="h-6 w-6 text-purple-600" />
               </div>
               <div className="ml-4">
@@ -405,8 +405,8 @@ const EnrollmentHistory: React.FC = () => {
 
           <div className="bg-white p-6 rounded-lg shadow border">
             <div className="flex items-center">
-              <div className="p-3 rounded-full bg-red-100">
-                <XCircleIcon className="h-6 w-6 text-red-600" />
+              <div className="p-3 rounded-lg bg-destructive/10">
+                <XCircleIcon className="h-6 w-6 text-destructive" />
               </div>
               <div className="ml-4">
                 <p className="text-sm font-medium text-gray-600">중도 포기</p>
@@ -417,8 +417,8 @@ const EnrollmentHistory: React.FC = () => {
 
           <div className="bg-white p-6 rounded-lg shadow border">
             <div className="flex items-center">
-              <div className="p-3 rounded-full bg-yellow-100">
-                <ClockIcon className="h-6 w-6 text-yellow-600" />
+              <div className="p-3 rounded-lg bg-yellow-100">
+                <ClockIcon className="h-6 w-6 text-foreground" />
               </div>
               <div className="ml-4">
                 <p className="text-sm font-medium text-gray-600">평균 진도</p>
@@ -448,7 +448,7 @@ const EnrollmentHistory: React.FC = () => {
           <select
             value={selectedCourse}
             onChange={(e) => setSelectedCourse(e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+            className="px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500"
           >
             <option value="all">전체 과정</option>
             <option value="BS-BASIC">BS 기초 과정</option>
@@ -460,7 +460,7 @@ const EnrollmentHistory: React.FC = () => {
           <select
             value={selectedStatus}
             onChange={(e) => setSelectedStatus(e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+            className="px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500"
           >
             <option value="all">전체 상태</option>
             <option value="enrolled">등록됨</option>
@@ -474,7 +474,7 @@ const EnrollmentHistory: React.FC = () => {
           <select
             value={selectedCategory}
             onChange={(e) => setSelectedCategory(e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+            className="px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500"
           >
             <option value="all">전체 카테고리</option>
             <option value="mandatory">필수 과정</option>
@@ -486,7 +486,7 @@ const EnrollmentHistory: React.FC = () => {
           <select
             value={selectedPeriod}
             onChange={(e) => setSelectedPeriod(e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+            className="px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500"
           >
             <option value="all">전체 기간</option>
             <option value="1month">최근 1개월</option>
@@ -529,7 +529,7 @@ const EnrollmentHistory: React.FC = () => {
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
                       <div className="flex-shrink-0 h-10 w-10">
-                        <div className="h-10 w-10 rounded-full bg-gray-300 flex items-center justify-center">
+                        <div className="h-10 w-10 rounded-lg bg-gray-300 flex items-center justify-center">
                           <span className="text-sm font-medium text-gray-700">
                             {record.studentName.charAt(0)}
                           </span>
@@ -558,9 +558,9 @@ const EnrollmentHistory: React.FC = () => {
                           <span>진도율</span>
                           <span>{record.currentProgress || 0}%</span>
                         </div>
-                        <div className="w-full bg-gray-200 rounded-full h-2 mt-1">
+                        <div className="w-full bg-gray-200 rounded-lg h-2 mt-1">
                           <div
-                            className="bg-blue-600 h-2 rounded-full"
+                            className="bg-blue-600 h-2 rounded-lg"
                             style={{ width: `${record.currentProgress || 0}%` }}
                           ></div>
                         </div>

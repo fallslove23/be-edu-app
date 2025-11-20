@@ -210,7 +210,7 @@ export default function AIQuestionRecommender({
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-xl shadow-2xl w-full max-w-6xl max-h-[90vh] overflow-hidden flex flex-col">
+      <div className="bg-white rounded-lg shadow-2xl w-full max-w-6xl max-h-[90vh] overflow-hidden flex flex-col">
         {/* 헤더 */}
         <div className="bg-gradient-to-r from-purple-600 to-pink-600 text-white p-6">
           <div className="flex items-center justify-between">
@@ -223,7 +223,7 @@ export default function AIQuestionRecommender({
             </div>
             <button
               onClick={onClose}
-              className="p-2 hover:bg-white/20 rounded-lg transition-colors"
+              className="p-2 hover:bg-white/20 rounded-full transition-colors"
             >
               <XMarkIcon className="h-6 w-6" />
             </button>
@@ -268,7 +268,7 @@ export default function AIQuestionRecommender({
               <select
                 value={selectedStrategy}
                 onChange={(e) => setSelectedStrategy(e.target.value as any)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-purple-500"
               >
                 <option value="balanced">균형 잡힌 구성</option>
                 <option value="adaptive">적응형 (수준 맞춤)</option>
@@ -286,7 +286,7 @@ export default function AIQuestionRecommender({
               <select
                 value={targetDifficulty}
                 onChange={(e) => setTargetDifficulty(e.target.value as any)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-purple-500"
               >
                 <option value="auto">자동 선택</option>
                 <option value="easy">쉬움</option>
@@ -307,7 +307,7 @@ export default function AIQuestionRecommender({
                 onChange={(e) => setQuestionCount(Math.max(1, Math.min(50, parseInt(e.target.value) || 20)))}
                 min="1"
                 max="50"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-purple-500"
               />
             </div>
           </div>
@@ -326,11 +326,11 @@ export default function AIQuestionRecommender({
             </div>
             <div className="bg-white rounded-lg p-3 shadow-sm">
               <div className="text-xs text-gray-600">보통</div>
-              <div className="text-xl font-bold text-yellow-600 mt-1">{stats.medium}개</div>
+              <div className="text-xl font-bold text-foreground mt-1">{stats.medium}개</div>
             </div>
             <div className="bg-white rounded-lg p-3 shadow-sm">
               <div className="text-xs text-gray-600">어려움</div>
-              <div className="text-xl font-bold text-red-600 mt-1">{stats.hard}개</div>
+              <div className="text-xl font-bold text-destructive mt-1">{stats.hard}개</div>
             </div>
             <div className="bg-white rounded-lg p-3 shadow-sm">
               <div className="text-xs text-gray-600">평균 시간</div>
@@ -349,7 +349,7 @@ export default function AIQuestionRecommender({
             {recommendations.slice(0, 30).map((rec) => (
               <div
                 key={rec.question.id}
-                className={`relative border-2 rounded-xl p-4 transition-all cursor-pointer ${
+                className={`relative border-2 rounded-lg p-4 transition-all cursor-pointer ${
                   selectedQuestions.has(rec.question.id)
                     ? 'border-purple-500 bg-purple-50 shadow-md'
                     : 'border-gray-200 bg-white hover:border-gray-300 hover:shadow'
@@ -360,16 +360,16 @@ export default function AIQuestionRecommender({
                   <div className="flex-1">
                     <div className="flex items-center space-x-2 mb-2">
                       <span className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${
-                        rec.priority === 'high' ? 'bg-red-100 text-red-800' :
+                        rec.priority === 'high' ? 'bg-destructive/10 text-destructive' :
                         rec.priority === 'medium' ? 'bg-yellow-100 text-yellow-800' :
                         'bg-gray-100 text-gray-800'
                       }`}>
                         {rec.priority === 'high' ? '🔥 높음' : rec.priority === 'medium' ? '⚡ 보통' : '💡 낮음'}
                       </span>
                       <span className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${
-                        rec.question.difficulty === 'easy' ? 'bg-green-100 text-green-800' :
+                        rec.question.difficulty === 'easy' ? 'bg-green-500/10 text-green-700' :
                         rec.question.difficulty === 'medium' ? 'bg-yellow-100 text-yellow-800' :
-                        'bg-red-100 text-red-800'
+                        'bg-destructive/10 text-destructive'
                       }`}>
                         {rec.question.difficulty === 'easy' ? '쉬움' : rec.question.difficulty === 'medium' ? '보통' : '어려움'}
                       </span>
@@ -403,14 +403,14 @@ export default function AIQuestionRecommender({
           <div className="flex space-x-3">
             <button
               onClick={onClose}
-              className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors"
+              className="px-4 py-2 border border-gray-300 text-gray-700 rounded-full hover:bg-gray-100 transition-colors"
             >
               취소
             </button>
             <button
               onClick={handleApply}
               disabled={stats.total === 0}
-              className={`px-6 py-2 rounded-lg font-medium transition-colors ${
+              className={`px-6 py-2 rounded-full font-medium transition-colors ${
                 stats.total === 0
                   ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
                   : 'bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:from-purple-700 hover:to-pink-700 shadow-md'

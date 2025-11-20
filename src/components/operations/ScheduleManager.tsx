@@ -150,7 +150,7 @@ const ScheduleManager: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* 헤더 */}
-      <div className="bg-card rounded-xl shadow-sm border border-border p-6">
+      <div className="bg-card rounded-lg shadow-sm border border-border p-6">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
           <div>
             <h1 className="text-2xl font-bold text-card-foreground mb-2">📅 일정 관리</h1>
@@ -163,7 +163,7 @@ const ScheduleManager: React.FC = () => {
             <button
               onClick={syncWithPlanner}
               disabled={plannerStatus !== 'connected' || syncStatus === 'syncing'}
-              className="px-4 py-2 bg-secondary text-secondary-foreground rounded-lg hover:bg-secondary/80 transition-colors flex items-center space-x-2 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-4 py-2 bg-secondary text-secondary-foreground rounded-full hover:bg-secondary/80 transition-colors flex items-center space-x-2 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <ArrowPathIcon className={`h-4 w-4 ${syncStatus === 'syncing' ? 'animate-spin' : ''}`} />
               <span>
@@ -176,14 +176,14 @@ const ScheduleManager: React.FC = () => {
             {/* 과정 플래너 연결 버튼 */}
             <button
               onClick={() => setIsPlannerModalOpen(true)}
-              className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors flex items-center space-x-2 font-medium"
+              className="px-4 py-2 bg-primary text-primary-foreground rounded-full hover:bg-primary/90 transition-colors flex items-center space-x-2 font-medium"
             >
               <LinkIcon className="h-4 w-4" />
               <span>과정 플래너 연결</span>
             </button>
 
             {/* 일정 추가 버튼 */}
-            <button className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors flex items-center space-x-2 font-medium">
+            <button className="px-4 py-2 bg-primary text-primary-foreground rounded-full hover:bg-primary/90 transition-colors flex items-center space-x-2 font-medium">
               <PlusIcon className="h-4 w-4" />
               <span>일정 추가</span>
             </button>
@@ -219,7 +219,7 @@ const ScheduleManager: React.FC = () => {
       )}
 
       {/* 네비게이션 */}
-      <div className="bg-card rounded-xl shadow-sm border border-border p-4">
+      <div className="bg-card rounded-lg shadow-sm border border-border p-4">
         <div className="flex items-center justify-between">
           <button
             onClick={() => navigateMonth('prev')}
@@ -240,7 +240,7 @@ const ScheduleManager: React.FC = () => {
       </div>
 
       {/* 캘린더 뷰 */}
-      <div className="bg-card rounded-xl shadow-sm border border-border p-6">
+      <div className="bg-card rounded-lg shadow-sm border border-border p-6">
         {loading ? (
           <div className="text-center py-12">
             <ArrowPathIcon className="h-16 w-16 text-muted-foreground mx-auto mb-4 animate-spin" />
@@ -294,7 +294,7 @@ const ScheduleManager: React.FC = () => {
       </div>
 
       {/* 오늘의 일정 */}
-      <div className="bg-card rounded-xl shadow-sm border border-border p-6">
+      <div className="bg-card rounded-lg shadow-sm border border-border p-6">
         <h3 className="text-lg font-semibold text-card-foreground mb-4">📌 오늘의 일정</h3>
         {todaySchedules.length === 0 ? (
           <p className="text-muted-foreground text-center py-8">오늘은 예정된 일정이 없습니다.</p>
@@ -385,7 +385,7 @@ const ScheduleManager: React.FC = () => {
               <div className="flex items-center gap-2">
                 <button
                   onClick={checkPlannerConnection}
-                  className="px-4 py-2 bg-secondary text-secondary-foreground rounded-lg hover:bg-secondary/80 transition-colors"
+                  className="px-4 py-2 bg-secondary text-secondary-foreground rounded-full hover:bg-secondary/80 transition-colors"
                 >
                   연결 테스트
                 </button>
@@ -393,7 +393,7 @@ const ScheduleManager: React.FC = () => {
                   href={process.env.NEXT_PUBLIC_FIREBASE_PLANNER_URL}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
+                  className="px-4 py-2 bg-primary text-primary-foreground rounded-full hover:bg-primary/90 transition-colors"
                 >
                   플래너 앱 열기
                 </a>
@@ -403,7 +403,7 @@ const ScheduleManager: React.FC = () => {
             <div className="flex justify-end mt-6">
               <button
                 onClick={() => setIsPlannerModalOpen(false)}
-                className="px-4 py-2 bg-secondary text-secondary-foreground rounded-lg hover:bg-secondary/80 transition-colors"
+                className="px-4 py-2 bg-secondary text-secondary-foreground rounded-full hover:bg-secondary/80 transition-colors"
               >
                 닫기
               </button>

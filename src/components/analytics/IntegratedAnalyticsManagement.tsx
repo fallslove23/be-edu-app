@@ -114,7 +114,7 @@ const IntegratedAnalyticsManagement: React.FC<IntegratedAnalyticsManagementProps
               <select
                 value={dateRange}
                 onChange={(e) => setDateRange(e.target.value)}
-                className="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               >
                 <option value="7days">최근 7일</option>
                 <option value="30days">최근 30일</option>
@@ -142,7 +142,7 @@ const IntegratedAnalyticsManagement: React.FC<IntegratedAnalyticsManagementProps
                   <button
                     key={index}
                     onClick={action.action}
-                    className={`px-4 py-2 rounded-lg transition-colors flex items-center text-sm font-medium ${
+                    className={`px-4 py-2 rounded-full transition-colors flex items-center text-sm font-medium ${
                       action.primary
                         ? 'btn-primary'
                         : 'bg-gray-100 text-gray-700 hover:bg-gray-200'

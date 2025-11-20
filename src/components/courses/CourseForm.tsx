@@ -189,7 +189,7 @@ const CourseForm: React.FC<CourseFormProps> = ({
           {/* 과정명 */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              과정명 <span className="text-red-500">*</span>
+              과정명 <span className="text-destructive">*</span>
             </label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -206,7 +206,7 @@ const CourseForm: React.FC<CourseFormProps> = ({
               />
             </div>
             {errors.name && (
-              <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>
+              <p className="mt-1 text-sm text-destructive">{errors.name.message}</p>
             )}
           </div>
 
@@ -221,7 +221,7 @@ const CourseForm: React.FC<CourseFormProps> = ({
               {/* 교육 연도 */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  교육 연도 <span className="text-red-500">*</span>
+                  교육 연도 <span className="text-destructive">*</span>
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -241,14 +241,14 @@ const CourseForm: React.FC<CourseFormProps> = ({
                   />
                 </div>
                 {errors.education_year && (
-                  <p className="mt-1 text-sm text-red-600">{errors.education_year.message}</p>
+                  <p className="mt-1 text-sm text-destructive">{errors.education_year.message}</p>
                 )}
               </div>
 
               {/* 차수 */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  차수 <span className="text-red-500">*</span>
+                  차수 <span className="text-destructive">*</span>
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -271,14 +271,14 @@ const CourseForm: React.FC<CourseFormProps> = ({
                   </div>
                 </div>
                 {errors.cohort && (
-                  <p className="mt-1 text-sm text-red-600">{errors.cohort.message}</p>
+                  <p className="mt-1 text-sm text-destructive">{errors.cohort.message}</p>
                 )}
               </div>
 
               {/* 입과생 수 */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  입과생 수 <span className="text-red-500">*</span>
+                  입과생 수 <span className="text-destructive">*</span>
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -301,7 +301,7 @@ const CourseForm: React.FC<CourseFormProps> = ({
                   </div>
                 </div>
                 {errors.enrollment_count && (
-                  <p className="mt-1 text-sm text-red-600">{errors.enrollment_count.message}</p>
+                  <p className="mt-1 text-sm text-destructive">{errors.enrollment_count.message}</p>
                 )}
               </div>
             </div>
@@ -317,11 +317,11 @@ const CourseForm: React.FC<CourseFormProps> = ({
                 maxLength: { value: 500, message: '설명은 500자 이하로 입력해주세요.' }
               })}
               rows={3}
-              className="block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+              className="block w-full px-3 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
               placeholder="과정에 대한 상세 설명을 입력해주세요."
             />
             {errors.description && (
-              <p className="mt-1 text-sm text-red-600">{errors.description.message}</p>
+              <p className="mt-1 text-sm text-destructive">{errors.description.message}</p>
             )}
           </div>
 
@@ -353,7 +353,7 @@ const CourseForm: React.FC<CourseFormProps> = ({
             {/* 시작일 */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                시작일 <span className="text-red-500">*</span>
+                시작일 <span className="text-destructive">*</span>
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -377,14 +377,14 @@ const CourseForm: React.FC<CourseFormProps> = ({
                 />
               </div>
               {errors.start_date && (
-                <p className="mt-1 text-sm text-red-600">{errors.start_date.message}</p>
+                <p className="mt-1 text-sm text-destructive">{errors.start_date.message}</p>
               )}
             </div>
 
             {/* 종료일 */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                종료일 <span className="text-red-500">*</span>
+                종료일 <span className="text-destructive">*</span>
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -406,7 +406,7 @@ const CourseForm: React.FC<CourseFormProps> = ({
                 />
               </div>
               {errors.end_date && (
-                <p className="mt-1 text-sm text-red-600">{errors.end_date.message}</p>
+                <p className="mt-1 text-sm text-destructive">{errors.end_date.message}</p>
               )}
             </div>
           </div>
@@ -414,7 +414,7 @@ const CourseForm: React.FC<CourseFormProps> = ({
           {/* 최대 수강 인원 */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              최대 수강 인원 <span className="text-red-500">*</span>
+              최대 수강 인원 <span className="text-destructive">*</span>
             </label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -437,7 +437,7 @@ const CourseForm: React.FC<CourseFormProps> = ({
               </div>
             </div>
             {errors.max_trainees && (
-              <p className="mt-1 text-sm text-red-600">{errors.max_trainees.message}</p>
+              <p className="mt-1 text-sm text-destructive">{errors.max_trainees.message}</p>
             )}
           </div>
 
@@ -446,7 +446,7 @@ const CourseForm: React.FC<CourseFormProps> = ({
             <button
               type="button"
               onClick={handleClose}
-              className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+              className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-full hover:bg-gray-50 transition-colors"
               disabled={loading}
             >
               취소
@@ -458,7 +458,7 @@ const CourseForm: React.FC<CourseFormProps> = ({
             >
               {loading ? (
                 <div className="flex items-center">
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                  <div className="animate-spin rounded-lg h-4 w-4 border-b-2 border-white mr-2"></div>
                   {isEdit ? '수정 중...' : '생성 중...'}
                 </div>
               ) : (

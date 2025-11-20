@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState, useCallback } from 'react';
 import {
   FunnelIcon,
@@ -265,8 +267,8 @@ const BSActivityManagementDesktop: React.FC = () => {
     switch (status) {
       case 'draft': return 'bg-gray-100 text-gray-700 border-gray-200';
       case 'submitted': return 'bg-blue-100 text-blue-700 border-blue-200';
-      case 'reviewed': return 'bg-yellow-100 text-yellow-700 border-yellow-200';
-      case 'approved': return 'bg-green-100 text-green-700 border-green-200';
+      case 'reviewed': return 'bg-yellow-100 text-orange-700 border-yellow-200';
+      case 'approved': return 'bg-green-500/10 text-green-700 border-green-200';
       default: return 'bg-gray-100 text-gray-700 border-gray-200';
     }
   };
@@ -276,13 +278,13 @@ const BSActivityManagementDesktop: React.FC = () => {
     const config = ACTIVITY_TYPE_CONFIG[type];
     switch (config.color) {
       case 'blue': return 'bg-blue-100 text-blue-600';
-      case 'green': return 'bg-green-100 text-green-600';
+      case 'green': return 'bg-green-500/10 text-green-700';
       case 'purple': return 'bg-purple-100 text-purple-600';
       case 'indigo': return 'bg-indigo-100 text-indigo-600';
       case 'cyan': return 'bg-cyan-100 text-cyan-600';
-      case 'orange': return 'bg-orange-100 text-orange-600';
-      case 'pink': return 'bg-pink-100 text-pink-600';
-      case 'yellow': return 'bg-yellow-100 text-yellow-600';
+      case 'orange': return 'bg-orange-500/10 text-orange-700';
+      case 'pink': return 'bg-destructive/10 text-destructive';
+      case 'yellow': return 'bg-yellow-100 text-orange-600';
       default: return 'bg-gray-100 text-gray-600';
     }
   };
@@ -303,7 +305,7 @@ const BSActivityManagementDesktop: React.FC = () => {
     return (
       <div className="max-w-7xl mx-auto space-y-6">
         {/* 헤더 */}
-        <div className="bg-white rounded-xl shadow-sm border p-6">
+        <div className="bg-white rounded-lg shadow-sm border p-6">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div>
               <h1 className="text-2xl font-bold text-gray-900">BS 활동 관리</h1>
@@ -312,16 +314,16 @@ const BSActivityManagementDesktop: React.FC = () => {
             <div className="flex gap-3">
               <button
                 onClick={() => setViewMode('create')}
-                className="btn-primary"
+                className="flex items-center gap-2 px-6 py-2.5 bg-gray-800 text-white rounded-full hover:bg-gray-900 transition-colors font-medium shadow-sm"
               >
-                <PlusIcon />
+                <PlusIcon className="w-5 h-5" />
                 새 활동 작성
               </button>
               <button
                 onClick={() => setShowPresentationMode(true)}
-                className="btn-purple"
+                className="flex items-center gap-2 px-6 py-2.5 bg-purple-600 text-white rounded-full hover:bg-purple-700 transition-colors font-medium shadow-sm"
               >
-                <PresentationChartLineIcon />
+                <PresentationChartLineIcon className="w-5 h-5" />
                 프레젠테이션 모드
               </button>
             </div>
@@ -342,9 +344,9 @@ const BSActivityManagementDesktop: React.FC = () => {
               </div>
               <button
                 onClick={() => setShowFilters(!showFilters)}
-                className="btn-secondary"
+                className="flex items-center gap-2 px-6 py-2.5 bg-white border border-gray-300 text-gray-700 rounded-full hover:bg-gray-50 transition-colors font-medium shadow-sm"
               >
-                <FunnelIcon />
+                <FunnelIcon className="w-5 h-5" />
                 필터
               </button>
             </div>
@@ -362,7 +364,7 @@ const BSActivityManagementDesktop: React.FC = () => {
                         const values = Array.from(e.target.selectedOptions, option => option.value);
                         setFilters(prev => ({ ...prev, status: values }));
                       }}
-                      className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500"
+                      className="w-full border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500"
                     >
                       <option value="draft">작성 중</option>
                       <option value="submitted">제출 완료</option>
@@ -378,13 +380,13 @@ const BSActivityManagementDesktop: React.FC = () => {
                         type="date"
                         value={filters.date_from || ''}
                         onChange={(e) => setFilters(prev => ({ ...prev, date_from: e.target.value }))}
-                        className="flex-1 border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500"
+                        className="flex-1 border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500"
                       />
                       <input
                         type="date"
                         value={filters.date_to || ''}
                         onChange={(e) => setFilters(prev => ({ ...prev, date_to: e.target.value }))}
-                        className="flex-1 border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500"
+                        className="flex-1 border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500"
                       />
                     </div>
                   </div>
@@ -396,7 +398,7 @@ const BSActivityManagementDesktop: React.FC = () => {
                       value={filters.clinic_name || ''}
                       onChange={(e) => setFilters(prev => ({ ...prev, clinic_name: e.target.value }))}
                       placeholder="병원명 검색"
-                      className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500"
+                      className="w-full border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500"
                     />
                   </div>
                 </div>
@@ -426,7 +428,7 @@ const BSActivityManagementDesktop: React.FC = () => {
 
         {/* 통계 요약 */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          <div className="bg-white rounded-xl shadow-sm border p-6">
+          <div className="bg-white rounded-lg shadow-sm border p-6">
             <div className="flex items-center">
               <DocumentTextIcon className="w-8 h-8 text-blue-600 mr-3" />
               <div>
@@ -436,7 +438,7 @@ const BSActivityManagementDesktop: React.FC = () => {
             </div>
           </div>
 
-          <div className="bg-white rounded-xl shadow-sm border p-6">
+          <div className="bg-white rounded-lg shadow-sm border p-6">
             <div className="flex items-center">
               <CheckCircleIcon className="w-8 h-8 text-orange-600 mr-3" />
               <div>
@@ -448,7 +450,7 @@ const BSActivityManagementDesktop: React.FC = () => {
             </div>
           </div>
 
-          <div className="bg-white rounded-xl shadow-sm border p-6">
+          <div className="bg-white rounded-lg shadow-sm border p-6">
             <div className="flex items-center">
               <StarIcon className="w-8 h-8 text-green-600 mr-3" />
               <div>
@@ -460,7 +462,7 @@ const BSActivityManagementDesktop: React.FC = () => {
             </div>
           </div>
 
-          <div className="bg-white rounded-xl shadow-sm border p-6">
+          <div className="bg-white rounded-lg shadow-sm border p-6">
             <div className="flex items-center">
               <PhotoIcon className="w-8 h-8 text-purple-600 mr-3" />
               <div>
@@ -474,7 +476,7 @@ const BSActivityManagementDesktop: React.FC = () => {
         </div>
 
         {/* 활동 목록 */}
-        <div className="bg-white rounded-xl shadow-sm border">
+        <div className="bg-white rounded-lg shadow-sm border">
           <div className="p-6 border-b border-gray-200">
             <h2 className="text-lg font-bold text-gray-900">
               활동 일지 목록 ({filteredActivities.length})
@@ -578,7 +580,7 @@ const BSActivityManagementDesktop: React.FC = () => {
                   {activity.instructor_feedback && (
                     <div className="mt-3 p-3 bg-blue-50 rounded-lg border border-blue-200">
                       <div className="flex items-center space-x-2">
-                        <StarIcon className="w-4 h-4 text-yellow-500" />
+                        <StarIcon className="w-4 h-4 text-foreground" />
                         <span className="text-sm font-medium text-blue-900">강사 피드백</span>
                         <div className="flex space-x-1">
                           {[1, 2, 3, 4, 5].map(star => (

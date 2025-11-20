@@ -255,7 +255,7 @@ const ExamForm: React.FC<ExamFormProps> = ({
           <div className="flex items-center">
             <button
               onClick={onBack}
-              className="mr-4 p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
+              className="mr-4 p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-full transition-colors"
             >
               <ArrowLeftIcon className="h-5 w-5" />
             </button>
@@ -290,7 +290,7 @@ const ExamForm: React.FC<ExamFormProps> = ({
               </label>
               <select
                 {...register('round_id', { required: '과정 차수를 선택해주세요.' })}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               >
                 <option value="">과정 차수 선택</option>
                 {courseRounds.map(round => (
@@ -302,7 +302,7 @@ const ExamForm: React.FC<ExamFormProps> = ({
                 ))}
               </select>
               {errors.round_id && (
-                <p className="mt-1 text-sm text-red-600">{errors.round_id.message}</p>
+                <p className="mt-1 text-sm text-destructive">{errors.round_id.message}</p>
               )}
             </div>
 
@@ -312,7 +312,7 @@ const ExamForm: React.FC<ExamFormProps> = ({
               </label>
               <select
                 {...register('exam_type', { required: '시험 유형을 선택해주세요.' })}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               >
                 {(Object.keys(examTypeLabels) as ExamType[]).map(type => (
                   <option key={type} value={type}>{examTypeLabels[type]}</option>
@@ -328,11 +328,11 @@ const ExamForm: React.FC<ExamFormProps> = ({
             <input
               type="text"
               {...register('title', { required: '시험 제목을 입력해주세요.' })}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               placeholder="예: 영업 기초 이론 평가"
             />
             {errors.title && (
-              <p className="mt-1 text-sm text-red-600">{errors.title.message}</p>
+              <p className="mt-1 text-sm text-destructive">{errors.title.message}</p>
             )}
           </div>
 
@@ -343,7 +343,7 @@ const ExamForm: React.FC<ExamFormProps> = ({
             <textarea
               {...register('description')}
               rows={3}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               placeholder="시험에 대한 상세 설명을 입력하세요."
             />
           </div>
@@ -364,11 +364,11 @@ const ExamForm: React.FC<ExamFormProps> = ({
                   required: '시험 시간을 입력해주세요.',
                   min: { value: 1, message: '1분 이상이어야 합니다.' }
                 })}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 min="1"
               />
               {errors.duration_minutes && (
-                <p className="mt-1 text-sm text-red-600">{errors.duration_minutes.message}</p>
+                <p className="mt-1 text-sm text-destructive">{errors.duration_minutes.message}</p>
               )}
             </div>
 
@@ -383,12 +383,12 @@ const ExamForm: React.FC<ExamFormProps> = ({
                   min: { value: 1, message: '1문항 이상이어야 합니다.' },
                   max: { value: 100, message: '100문항을 초과할 수 없습니다.' }
                 })}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 min="1"
                 max="100"
               />
               {errors.total_questions && (
-                <p className="mt-1 text-sm text-red-600">{errors.total_questions.message}</p>
+                <p className="mt-1 text-sm text-destructive">{errors.total_questions.message}</p>
               )}
             </div>
 
@@ -403,12 +403,12 @@ const ExamForm: React.FC<ExamFormProps> = ({
                   min: { value: 0, message: '0점 이상이어야 합니다.' },
                   max: { value: 100, message: '100점을 초과할 수 없습니다.' }
                 })}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 min="0"
                 max="100"
               />
               {errors.passing_score && (
-                <p className="mt-1 text-sm text-red-600">{errors.passing_score.message}</p>
+                <p className="mt-1 text-sm text-destructive">{errors.passing_score.message}</p>
               )}
             </div>
 
@@ -422,11 +422,11 @@ const ExamForm: React.FC<ExamFormProps> = ({
                   required: '최대 응시 횟수를 입력해주세요.',
                   min: { value: 1, message: '1회 이상이어야 합니다.' }
                 })}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 min="1"
               />
               {errors.max_attempts && (
-                <p className="mt-1 text-sm text-red-600">{errors.max_attempts.message}</p>
+                <p className="mt-1 text-sm text-destructive">{errors.max_attempts.message}</p>
               )}
             </div>
           </div>
@@ -468,10 +468,10 @@ const ExamForm: React.FC<ExamFormProps> = ({
               <input
                 type="datetime-local"
                 {...register('scheduled_at', { required: '시작 일시를 설정해주세요.' })}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               />
               {errors.scheduled_at && (
-                <p className="mt-1 text-sm text-red-600">{errors.scheduled_at.message}</p>
+                <p className="mt-1 text-sm text-destructive">{errors.scheduled_at.message}</p>
               )}
             </div>
 
@@ -482,10 +482,10 @@ const ExamForm: React.FC<ExamFormProps> = ({
               <input
                 type="datetime-local"
                 {...register('available_until', { required: '마감 일시를 설정해주세요.' })}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               />
               {errors.available_until && (
-                <p className="mt-1 text-sm text-red-600">{errors.available_until.message}</p>
+                <p className="mt-1 text-sm text-destructive">{errors.available_until.message}</p>
               )}
             </div>
 
@@ -495,7 +495,7 @@ const ExamForm: React.FC<ExamFormProps> = ({
               </label>
               <select
                 {...register('status', { required: '상태를 선택해주세요.' })}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               >
                 {(Object.keys(examStatusLabels) as ExamStatus[]).map(status => (
                   <option key={status} value={status}>{examStatusLabels[status]}</option>
@@ -515,7 +515,7 @@ const ExamForm: React.FC<ExamFormProps> = ({
               <button
                 type="button"
                 onClick={() => setShowBankSelector(true)}
-                className="px-3 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors text-sm flex items-center"
+                className="px-3 py-2 bg-gray-600 text-white rounded-full hover:bg-gray-700 transition-colors text-sm flex items-center"
               >
                 <PlusIcon className="h-4 w-4 mr-1" />
                 문제은행에서 가져오기
@@ -566,14 +566,14 @@ const ExamForm: React.FC<ExamFormProps> = ({
             <button
               type="button"
               onClick={onBack}
-              className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+              className="px-6 py-2 border border-gray-300 text-gray-700 rounded-full hover:bg-gray-50 transition-colors"
             >
               취소
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="px-6 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center"
+              className="px-6 py-2 bg-gray-700 text-white rounded-full hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center"
             >
               <CheckIcon className="h-4 w-4 mr-2" />
               {isSubmitting ? '저장 중...' : (exam ? '수정 완료' : '시험 생성')}

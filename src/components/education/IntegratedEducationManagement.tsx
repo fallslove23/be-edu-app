@@ -141,7 +141,7 @@ const IntegratedEducationManagement: React.FC<IntegratedEducationManagementProps
                   <button
                     key={index}
                     onClick={action.action}
-                    className={`px-4 py-2 rounded-lg transition-colors flex items-center text-sm font-medium ${
+                    className={`px-4 py-2 rounded-full transition-colors flex items-center text-sm font-medium ${
                       action.primary
                         ? 'btn-primary'
                         : 'bg-gray-100 text-gray-700 hover:bg-gray-200'

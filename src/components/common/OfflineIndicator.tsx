@@ -79,14 +79,14 @@ const OfflineIndicator: React.FC = () => {
         }`}
       >
         <div
-          className={`rounded-lg shadow-lg border backdrop-blur-sm cursor-pointer transition-all duration-200 ${
+          className={`rounded-full shadow-lg border backdrop-blur-sm cursor-pointer transition-all duration-200 ${
             !isOnline
-              ? 'bg-red-50 border-red-200 text-red-800'
+              ? 'bg-destructive/10 border-destructive/50 text-destructive'
               : hasConflicts
               ? 'bg-purple-50 border-purple-200 text-purple-800'
               : isPending
               ? 'bg-yellow-50 border-yellow-200 text-yellow-800'
-              : 'bg-green-50 border-green-200 text-green-800'
+              : 'bg-green-500/10 border-green-200 text-green-800'
           } ${isExpanded ? 'p-4' : 'p-3'}`}
           onClick={() => setIsExpanded(!isExpanded)}
         >
@@ -115,7 +115,7 @@ const OfflineIndicator: React.FC = () => {
             {(pendingCount > 0 || conflictCount > 0) && (
               <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
                 !isOnline 
-                  ? 'bg-red-200 text-red-800'
+                  ? 'bg-red-200 text-destructive'
                   : hasConflicts
                   ? 'bg-purple-200 text-purple-800'
                   : 'bg-yellow-200 text-yellow-800'
@@ -202,7 +202,7 @@ const OfflineIndicator: React.FC = () => {
                 {/* 현재 상태 */}
                 <div className="flex items-center space-x-3">
                   {!isOnline ? (
-                    <ExclamationTriangleIcon className="h-5 w-5 text-red-500" />
+                    <ExclamationTriangleIcon className="h-5 w-5 text-destructive" />
                   ) : (
                     <WifiIcon className="h-5 w-5 text-green-500" />
                   )}

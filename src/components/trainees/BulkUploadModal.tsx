@@ -289,7 +289,7 @@ const BulkUploadModal: React.FC<BulkUploadModalProps> = ({
                     </p>
                     <button
                       onClick={downloadTemplate}
-                      className="mt-2 inline-flex items-center px-3 py-1.5 border border-blue-300 text-xs font-medium rounded-md text-blue-700 bg-blue-50 hover:bg-blue-100"
+                      className="mt-2 inline-flex items-center px-3 py-1.5 border border-blue-300 text-xs font-medium rounded-full text-blue-700 bg-blue-50 hover:bg-blue-100"
                     >
                       <ArrowDownTrayIcon className="h-4 w-4 mr-1" />
                       템플릿 다운로드
@@ -301,7 +301,7 @@ const BulkUploadModal: React.FC<BulkUploadModalProps> = ({
               {/* 파일 업로드 영역 */}
               <div
                 {...getRootProps()}
-                className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
+                className={`border-2 border-dashed rounded-full p-8 text-center transition-colors ${
                   isDragActive
                     ? 'border-blue-400 bg-blue-50'
                     : 'border-gray-300 hover:border-gray-400'
@@ -311,7 +311,7 @@ const BulkUploadModal: React.FC<BulkUploadModalProps> = ({
                 <DocumentArrowUpIcon className="h-12 w-12 text-gray-400 mx-auto mb-4" />
                 {isProcessing ? (
                   <div className="space-y-2">
-                    <div className="w-8 h-8 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mx-auto"></div>
+                    <div className="w-8 h-8 border-4 border-blue-200 border-t-blue-600 rounded-lg animate-spin mx-auto"></div>
                     <p className="text-sm text-gray-600">파일 처리 중...</p>
                   </div>
                 ) : (
@@ -350,16 +350,16 @@ const BulkUploadModal: React.FC<BulkUploadModalProps> = ({
             <div className="space-y-6">
               {/* 검증 결과 */}
               {validationErrors.length > 0 ? (
-                <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                <div className="bg-destructive/10 border border-destructive/50 rounded-lg p-4">
                   <div className="flex items-start">
                     <ExclamationTriangleIcon className="h-5 w-5 text-red-400 mr-3 mt-0.5 flex-shrink-0" />
                     <div className="flex-1">
-                      <h3 className="text-sm font-medium text-red-900">
+                      <h3 className="text-sm font-medium text-destructive">
                         {validationErrors.length}개의 오류가 발견되었습니다
                       </h3>
                       <div className="mt-2 max-h-40 overflow-y-auto">
                         {validationErrors.map((error, index) => (
-                          <div key={index} className="text-sm text-red-700 py-1">
+                          <div key={index} className="text-sm text-destructive py-1">
                             {error.row}행 - {error.field}: {error.message}
                             {error.value && ` (입력값: "${error.value}")`}
                           </div>
@@ -369,7 +369,7 @@ const BulkUploadModal: React.FC<BulkUploadModalProps> = ({
                   </div>
                 </div>
               ) : (
-                <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                <div className="bg-green-500/10 border border-green-200 rounded-lg p-4">
                   <div className="flex items-center">
                     <CheckCircleIcon className="h-5 w-5 text-green-400 mr-3" />
                     <div>
@@ -426,7 +426,7 @@ const BulkUploadModal: React.FC<BulkUploadModalProps> = ({
 
           {currentStep === 'processing' && (
             <div className="flex flex-col items-center justify-center py-12">
-              <div className="w-12 h-12 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mb-4"></div>
+              <div className="w-12 h-12 border-4 border-blue-200 border-t-blue-600 rounded-lg animate-spin mb-4"></div>
               <p className="text-lg font-medium text-gray-900 mb-2">교육생 등록 중...</p>
               <p className="text-sm text-gray-600">잠시만 기다려주세요.</p>
             </div>
@@ -438,7 +438,7 @@ const BulkUploadModal: React.FC<BulkUploadModalProps> = ({
           <div className="flex justify-between items-center p-6 border-t border-gray-200">
             <button
               onClick={handleClose}
-              className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 border border-gray-300 rounded-md hover:bg-gray-200"
+              className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 border border-gray-300 rounded-full hover:bg-gray-200"
               disabled={isProcessing}
             >
               취소
@@ -448,7 +448,7 @@ const BulkUploadModal: React.FC<BulkUploadModalProps> = ({
               {currentStep === 'review' && (
                 <button
                   onClick={() => setCurrentStep('upload')}
-                  className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
+                  className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-full hover:bg-gray-50"
                   disabled={isProcessing}
                 >
                   다시 선택

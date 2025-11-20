@@ -171,9 +171,9 @@ const AttendanceManager: React.FC = () => {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'present': return 'text-green-600 bg-green-100';
-      case 'absent': return 'text-red-600 bg-red-100';
-      case 'late': return 'text-yellow-600 bg-yellow-100';
+      case 'present': return 'text-green-600 bg-green-500/10';
+      case 'absent': return 'text-destructive bg-destructive/10';
+      case 'late': return 'text-orange-600 bg-yellow-100';
       case 'excused': return 'text-blue-600 bg-blue-100';
       default: return 'text-gray-600 bg-gray-100';
     }
@@ -192,7 +192,7 @@ const AttendanceManager: React.FC = () => {
   const getSessionStatusColor = (status: string) => {
     switch (status) {
       case 'completed': return 'text-gray-600 bg-gray-100';
-      case 'in_progress': return 'text-green-600 bg-green-100';
+      case 'in_progress': return 'text-green-600 bg-green-500/10';
       case 'scheduled': return 'text-blue-600 bg-blue-100';
       default: return 'text-gray-600 bg-gray-100';
     }
@@ -257,7 +257,7 @@ const AttendanceManager: React.FC = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-lg h-8 w-8 border-b-2 border-blue-600"></div>
         <span className="ml-2">출석 정보를 불러오는 중...</span>
       </div>
     );
@@ -266,42 +266,42 @@ const AttendanceManager: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* 헤더 */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+      <div className="bg-card rounded-lg shadow-sm border border-border p-6">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">📋 출석 관리</h1>
-            <p className="text-gray-600 dark:text-gray-300">
+            <h1 className="text-2xl font-bold text-foreground mb-2">📋 출석 관리</h1>
+            <p className="text-muted-foreground">
               교육생 출석을 체크하고 출석률을 관리하세요.
             </p>
           </div>
           <div className="flex items-center space-x-3">
-            <div className="flex items-center bg-gray-100 dark:bg-gray-700 rounded-lg p-1">
+            <div className="flex items-center bg-muted rounded-lg p-1">
               <button
                 onClick={() => setActiveView('sessions')}
-                className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                className={`px-3 py-2 rounded-md text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${
                   activeView === 'sessions'
-                    ? 'bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-sm'
-                    : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
+                    ? 'bg-card text-foreground shadow-sm'
+                    : 'text-muted-foreground hover:text-foreground'
                 }`}
               >
                 세션 목록
               </button>
               <button
                 onClick={() => setActiveView('check')}
-                className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                className={`px-3 py-2 rounded-md text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${
                   activeView === 'check'
-                    ? 'bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-sm'
-                    : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
+                    ? 'bg-card text-foreground shadow-sm'
+                    : 'text-muted-foreground hover:text-foreground'
                 }`}
               >
                 출석 체크
               </button>
               <button
                 onClick={() => setActiveView('report')}
-                className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                className={`px-3 py-2 rounded-md text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${
                   activeView === 'report'
-                    ? 'bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-sm'
-                    : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
+                    ? 'bg-card text-foreground shadow-sm'
+                    : 'text-muted-foreground hover:text-foreground'
                 }`}
               >
                 출석 현황
@@ -312,17 +312,17 @@ const AttendanceManager: React.FC = () => {
       </div>
 
       {/* 필터 및 검색 */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+      <div className="bg-card rounded-lg shadow-sm border border-border p-6">
         <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
           <div className="flex-1">
             <div className="relative">
-              <MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <input
                 type="text"
                 placeholder="과정명, 세션명, 강사명으로 검색..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full pl-10 pr-4 py-2 border border-border rounded-lg bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
               />
             </div>
           </div>
@@ -331,7 +331,7 @@ const AttendanceManager: React.FC = () => {
               type="date"
               value={dateFilter}
               onChange={(e) => setDateFilter(e.target.value)}
-              className="border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500"
+              className="border border-border bg-background text-foreground rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
             />
             <button className="btn-primary px-4 py-2 rounded-lg flex items-center space-x-2">
               <DocumentArrowDownIcon className="h-4 w-4" />
@@ -343,67 +343,67 @@ const AttendanceManager: React.FC = () => {
 
       {/* 세션 목록 */}
       {activeView === 'sessions' && (
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-          <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-            <h3 className="text-lg font-medium text-gray-900 dark:text-white">
+        <div className="bg-card rounded-lg shadow-sm border border-border">
+          <div className="px-6 py-4 border-b border-border">
+            <h3 className="text-lg font-medium text-foreground">
               교육 세션 ({filteredSessions.length})
             </h3>
           </div>
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-              <thead className="bg-gray-50 dark:bg-gray-700">
+            <table className="min-w-full divide-y divide-border">
+              <thead className="bg-muted/50">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                     과정 정보
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                     일시
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                     강사
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                     출석 현황
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                     상태
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                     작업
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+              <tbody className="bg-background divide-y divide-border">
                 {filteredSessions.map((session) => (
-                  <tr key={session.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
+                  <tr key={session.id} className="hover:bg-muted/30 transition-colors">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div>
-                        <div className="text-sm font-medium text-gray-900 dark:text-white">
+                        <div className="text-sm font-medium text-foreground">
                           {session.courseName}
                         </div>
-                        <div className="text-sm text-gray-500 dark:text-gray-400">
+                        <div className="text-sm text-muted-foreground">
                           {session.sessionName}
                         </div>
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900 dark:text-white">
+                      <div className="text-sm text-foreground">
                         {new Date(session.date).toLocaleDateString('ko-KR')}
                       </div>
-                      <div className="text-sm text-gray-500 dark:text-gray-400">
+                      <div className="text-sm text-muted-foreground">
                         {session.startTime} ~ {session.endTime}
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-foreground">
                       {session.instructor}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center space-x-4 text-sm">
-                        <span className="text-green-600">출석: {session.presentCount}</span>
-                        <span className="text-yellow-600">지각: {session.lateCount}</span>
-                        <span className="text-red-600">결석: {session.absentCount}</span>
+                        <span className="text-green-600 dark:text-green-400">출석: {session.presentCount}</span>
+                        <span className="text-amber-600 dark:text-amber-400">지각: {session.lateCount}</span>
+                        <span className="text-destructive">결석: {session.absentCount}</span>
                       </div>
-                      <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                      <div className="text-xs text-muted-foreground mt-1">
                         총 {session.totalStudents}명
                       </div>
                     </td>
@@ -421,11 +421,11 @@ const AttendanceManager: React.FC = () => {
                           setSelectedSession(session);
                           setActiveView('check');
                         }}
-                        className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300 mr-3"
+                        className="text-primary hover:text-primary/80 mr-3 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded"
                       >
                         출석체크
                       </button>
-                      <button className="text-green-600 hover:text-green-900 dark:text-green-400 dark:hover:text-green-300">
+                      <button className="text-green-600 hover:text-green-700 dark:text-green-400 dark:hover:text-green-300 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 rounded">
                         출석부
                       </button>
                     </td>
@@ -439,20 +439,20 @@ const AttendanceManager: React.FC = () => {
 
       {/* 출석 체크 */}
       {activeView === 'check' && selectedSession && (
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-          <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+        <div className="bg-card rounded-lg shadow-sm border border-border">
+          <div className="px-6 py-4 border-b border-border">
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="text-lg font-medium text-gray-900 dark:text-white">
+                <h3 className="text-lg font-medium text-foreground">
                   {selectedSession.courseName}
                 </h3>
-                <p className="text-sm text-gray-500 dark:text-gray-400">
+                <p className="text-sm text-muted-foreground">
                   {selectedSession.sessionName} • {selectedSession.date} {selectedSession.startTime}~{selectedSession.endTime}
                 </p>
               </div>
               <button
                 onClick={() => setSelectedSession(null)}
-                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                className="text-muted-foreground hover:text-foreground focus:outline-none focus:ring-2 focus:ring-primary rounded"
               >
                 <XCircleIcon className="h-6 w-6" />
               </button>
@@ -467,16 +467,16 @@ const AttendanceManager: React.FC = () => {
                   const attendance = attendanceRecords.find(
                     r => r.studentId === student.id && r.date === selectedSession.date
                   );
-                  
+
                   return (
-                    <div key={student.id} className="border border-gray-200 dark:border-gray-600 rounded-lg p-4 hover:shadow-md transition-shadow">
+                    <div key={student.id} className="border border-border rounded-lg p-4 hover:shadow-md transition-shadow bg-card">
                       <div className="flex items-center space-x-3 mb-4">
-                        <div className="w-12 h-12 bg-blue-100 dark:bg-blue-800 rounded-full flex items-center justify-center">
-                          <UserIcon className="h-6 w-6 text-blue-600 dark:text-blue-300" />
+                        <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
+                          <UserIcon className="h-6 w-6 text-primary" />
                         </div>
                         <div>
-                          <h4 className="font-medium text-gray-900 dark:text-white">{student.name}</h4>
-                          <p className="text-sm text-gray-500 dark:text-gray-400">{student.department}</p>
+                          <h4 className="font-medium text-foreground">{student.name}</h4>
+                          <p className="text-sm text-muted-foreground">{student.department}</p>
                         </div>
                       </div>
 
@@ -485,10 +485,10 @@ const AttendanceManager: React.FC = () => {
                           <button
                             key={status}
                             onClick={() => updateAttendance(student.id, status)}
-                            className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${
+                            className={`px-3 py-1 rounded-full text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-primary ${
                               attendance?.status === status
                                 ? getStatusColor(status)
-                                : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                                : 'bg-muted text-foreground hover:bg-muted/80'
                             }`}
                           >
                             <div className="flex items-center space-x-1">
@@ -504,7 +504,7 @@ const AttendanceManager: React.FC = () => {
                       </div>
 
                       {attendance && (
-                        <div className="text-xs text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-700 p-2 rounded">
+                        <div className="text-xs text-muted-foreground bg-muted/50 p-2 rounded">
                           {attendance.checkInTime && (
                             <div>입실: {attendance.checkInTime}</div>
                           )}
@@ -528,81 +528,81 @@ const AttendanceManager: React.FC = () => {
       {activeView === 'report' && (
         <div className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+            <div className="bg-card rounded-lg shadow-sm border border-border p-6">
               <div className="flex items-center">
-                <div className="p-2 bg-green-100 dark:bg-green-800 rounded-lg">
-                  <CheckCircleIcon className="h-6 w-6 text-green-600 dark:text-green-300" />
+                <div className="p-2 bg-green-500/10 rounded-lg">
+                  <CheckCircleIcon className="h-6 w-6 text-green-600 dark:text-green-400" />
                 </div>
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600 dark:text-gray-300">평균 출석률</p>
-                  <p className="text-2xl font-bold text-gray-900 dark:text-white">92.3%</p>
+                  <p className="text-sm font-medium text-muted-foreground">평균 출석률</p>
+                  <p className="text-2xl font-bold text-foreground">92.3%</p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+            <div className="bg-card rounded-lg shadow-sm border border-border p-6">
               <div className="flex items-center">
-                <div className="p-2 bg-yellow-100 dark:bg-yellow-800 rounded-lg">
-                  <ClockIcon className="h-6 w-6 text-yellow-600 dark:text-yellow-300" />
+                <div className="p-2 bg-amber-500/10 rounded-lg">
+                  <ClockIcon className="h-6 w-6 text-amber-600 dark:text-amber-400" />
                 </div>
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600 dark:text-gray-300">평균 지각률</p>
-                  <p className="text-2xl font-bold text-gray-900 dark:text-white">4.1%</p>
+                  <p className="text-sm font-medium text-muted-foreground">평균 지각률</p>
+                  <p className="text-2xl font-bold text-foreground">4.1%</p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+            <div className="bg-card rounded-lg shadow-sm border border-border p-6">
               <div className="flex items-center">
-                <div className="p-2 bg-red-100 dark:bg-red-800 rounded-lg">
-                  <XCircleIcon className="h-6 w-6 text-red-600 dark:text-red-300" />
+                <div className="p-2 bg-destructive/10 rounded-lg">
+                  <XCircleIcon className="h-6 w-6 text-destructive" />
                 </div>
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600 dark:text-gray-300">결석률</p>
-                  <p className="text-2xl font-bold text-gray-900 dark:text-white">3.6%</p>
+                  <p className="text-sm font-medium text-muted-foreground">결석률</p>
+                  <p className="text-2xl font-bold text-foreground">3.6%</p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+            <div className="bg-card rounded-lg shadow-sm border border-border p-6">
               <div className="flex items-center">
-                <div className="p-2 bg-blue-100 dark:bg-blue-800 rounded-lg">
-                  <UserIcon className="h-6 w-6 text-blue-600 dark:text-blue-300" />
+                <div className="p-2 bg-primary/10 rounded-lg">
+                  <UserIcon className="h-6 w-6 text-primary" />
                 </div>
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600 dark:text-gray-300">총 교육생</p>
-                  <p className="text-2xl font-bold text-gray-900 dark:text-white">43명</p>
+                  <p className="text-sm font-medium text-muted-foreground">총 교육생</p>
+                  <p className="text-2xl font-bold text-foreground">43명</p>
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-            <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-              <h3 className="text-lg font-medium text-gray-900 dark:text-white">개별 출석 현황</h3>
+          <div className="bg-card rounded-lg shadow-sm border border-border">
+            <div className="px-6 py-4 border-b border-border">
+              <h3 className="text-lg font-medium text-foreground">개별 출석 현황</h3>
             </div>
             <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                <thead className="bg-gray-50 dark:bg-gray-700">
+              <table className="min-w-full divide-y divide-border">
+                <thead className="bg-muted/50">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                       교육생
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                       과정
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                       출석률
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                       출석/지각/결석
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                       최근 출석
                     </th>
                   </tr>
                 </thead>
-                <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                <tbody className="bg-background divide-y divide-border">
                   {students.map((student) => {
                     const studentRecords = attendanceRecords.filter(r => r.studentId === student.id);
                     const presentCount = studentRecords.filter(r => r.status === 'present').length;
@@ -612,43 +612,43 @@ const AttendanceManager: React.FC = () => {
                     const lastAttendance = studentRecords[studentRecords.length - 1];
 
                     return (
-                      <tr key={student.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
+                      <tr key={student.id} className="hover:bg-muted/30 transition-colors">
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="flex items-center">
-                            <div className="w-8 h-8 bg-blue-100 dark:bg-blue-800 rounded-full flex items-center justify-center mr-3">
-                              <UserIcon className="h-4 w-4 text-blue-600 dark:text-blue-300" />
+                            <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center mr-3">
+                              <UserIcon className="h-4 w-4 text-primary" />
                             </div>
                             <div>
-                              <div className="text-sm font-medium text-gray-900 dark:text-white">{student.name}</div>
-                              <div className="text-sm text-gray-500 dark:text-gray-400">{student.department}</div>
+                              <div className="text-sm font-medium text-foreground">{student.name}</div>
+                              <div className="text-sm text-muted-foreground">{student.department}</div>
                             </div>
                           </div>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-foreground">
                           {student.courseName}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className={`text-sm font-medium ${
-                            attendanceRate >= 90 ? 'text-green-600' :
-                            attendanceRate >= 80 ? 'text-yellow-600' : 'text-red-600'
+                            attendanceRate >= 90 ? 'text-green-600 dark:text-green-400' :
+                            attendanceRate >= 80 ? 'text-amber-600 dark:text-amber-400' : 'text-destructive'
                           }`}>
                             {attendanceRate}%
                           </div>
-                          <div className="w-20 bg-gray-200 dark:bg-gray-600 rounded-full h-2 mt-1">
+                          <div className="w-20 bg-muted rounded-lg h-2 mt-1">
                             <div
                               className={`h-2 rounded-full ${
                                 attendanceRate >= 90 ? 'bg-green-500' :
-                                attendanceRate >= 80 ? 'bg-yellow-500' : 'bg-red-500'
+                                attendanceRate >= 80 ? 'bg-amber-500' : 'bg-red-500'
                               }`}
                               style={{ width: `${attendanceRate}%` }}
                             />
                           </div>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm">
                           <div className="flex space-x-4">
-                            <span className="text-green-600">출석: {presentCount}</span>
-                            <span className="text-yellow-600">지각: {lateCount}</span>
-                            <span className="text-red-600">결석: {absentCount}</span>
+                            <span className="text-green-600 dark:text-green-400">출석: {presentCount}</span>
+                            <span className="text-amber-600 dark:text-amber-400">지각: {lateCount}</span>
+                            <span className="text-destructive">결석: {absentCount}</span>
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">

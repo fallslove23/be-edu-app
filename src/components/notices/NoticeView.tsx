@@ -118,11 +118,11 @@ const NoticeView: React.FC = () => {
   const getPriorityClass = (priority: string) => {
     switch (priority) {
       case 'high':
-        return 'bg-red-100 text-red-800';
+        return 'bg-destructive/10 text-destructive';
       case 'medium':
         return 'bg-yellow-100 text-yellow-800';
       case 'low':
-        return 'bg-green-100 text-green-800';
+        return 'bg-green-500/10 text-green-700';
       default:
         return 'bg-gray-100 text-gray-800';
     }
@@ -144,7 +144,7 @@ const NoticeView: React.FC = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-lg h-8 w-8 border-b-2 border-blue-600"></div>
         <span className="ml-2 text-gray-600">공지사항을 불러오는 중...</span>
       </div>
     );
@@ -193,7 +193,7 @@ const NoticeView: React.FC = () => {
                 <div className="flex-1">
                   <div className="flex items-center space-x-2 mb-2">
                     {selectedNotice.is_pinned && (
-                      <StarSolidIcon className="h-5 w-5 text-yellow-500" />
+                      <StarSolidIcon className="h-5 w-5 text-foreground" />
                     )}
                     <span className={`px-2 py-1 rounded-full text-xs font-medium ${getPriorityClass(selectedNotice.priority)}`}>
                       {getPriorityLabel(selectedNotice.priority)}
@@ -247,7 +247,7 @@ const NoticeView: React.FC = () => {
                       <div className="flex-1">
                         <div className="flex items-center space-x-2 mb-2">
                           {notice.is_pinned && (
-                            <StarSolidIcon className="h-5 w-5 text-yellow-500" />
+                            <StarSolidIcon className="h-5 w-5 text-foreground" />
                           )}
                           <span className={`px-2 py-1 rounded-full text-xs font-medium ${getPriorityClass(notice.priority)}`}>
                             {getPriorityLabel(notice.priority)}

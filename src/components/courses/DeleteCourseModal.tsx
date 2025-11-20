@@ -63,7 +63,7 @@ const DeleteCourseModal: React.FC<DeleteCourseModalProps> = ({
         {/* 헤더 */}
         <div className="flex items-center justify-between p-6 border-b border-gray-200">
           <div className="flex items-center">
-            <ExclamationTriangleIcon className="h-6 w-6 text-red-600 mr-2" />
+            <ExclamationTriangleIcon className="h-6 w-6 text-destructive mr-2" />
             <h2 className="text-lg font-semibold text-gray-900">
               과정 삭제 확인
             </h2>
@@ -96,14 +96,14 @@ const DeleteCourseModal: React.FC<DeleteCourseModalProps> = ({
             </div>
           </div>
 
-          <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+          <div className="bg-destructive/10 border border-destructive/50 rounded-lg p-4">
             <div className="flex">
-              <ExclamationTriangleIcon className="h-5 w-5 text-red-600 mt-0.5 mr-2" />
+              <ExclamationTriangleIcon className="h-5 w-5 text-destructive mt-0.5 mr-2" />
               <div>
-                <h4 className="text-sm font-medium text-red-800 mb-1">
+                <h4 className="text-sm font-medium text-destructive mb-1">
                   주의사항
                 </h4>
-                <ul className="text-sm text-red-700 space-y-1">
+                <ul className="text-sm text-destructive space-y-1">
                   <li>• 삭제된 과정은 복구할 수 없습니다</li>
                   <li>• 관련된 수강 정보, 출석 기록이 모두 삭제됩니다</li>
                   <li>• 진행 중인 과정의 경우 교육생에게 영향을 줄 수 있습니다</li>
@@ -124,7 +124,7 @@ const DeleteCourseModal: React.FC<DeleteCourseModalProps> = ({
               type="text"
               value={confirmText}
               onChange={(e) => setConfirmText(e.target.value)}
-              className="block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-red-500 focus:border-red-500"
+              className="block w-full px-3 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-1 focus:ring-red-500 focus:border-destructive/50"
               placeholder="과정명을 입력하세요"
               disabled={loading}
             />
@@ -134,7 +134,7 @@ const DeleteCourseModal: React.FC<DeleteCourseModalProps> = ({
           {course.status === 'active' && (
             <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
               <div className="flex">
-                <ExclamationTriangleIcon className="h-4 w-4 text-yellow-600 mt-0.5 mr-2" />
+                <ExclamationTriangleIcon className="h-4 w-4 text-foreground mt-0.5 mr-2" />
                 <p className="text-sm text-yellow-800">
                   현재 진행 중인 과정입니다. 삭제 시 교육생들의 학습에 영향을 줄 수 있습니다.
                 </p>
@@ -145,7 +145,7 @@ const DeleteCourseModal: React.FC<DeleteCourseModalProps> = ({
           {course.current_trainees > 0 && (
             <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
               <div className="flex">
-                <ExclamationTriangleIcon className="h-4 w-4 text-yellow-600 mt-0.5 mr-2" />
+                <ExclamationTriangleIcon className="h-4 w-4 text-foreground mt-0.5 mr-2" />
                 <p className="text-sm text-yellow-800">
                   {course.current_trainees}명의 교육생이 등록되어 있습니다. 삭제 시 모든 등록 정보가 함께 삭제됩니다.
                 </p>
@@ -159,7 +159,7 @@ const DeleteCourseModal: React.FC<DeleteCourseModalProps> = ({
           <button
             type="button"
             onClick={handleClose}
-            className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+            className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-full hover:bg-gray-50 transition-colors"
             disabled={loading}
           >
             취소
@@ -172,7 +172,7 @@ const DeleteCourseModal: React.FC<DeleteCourseModalProps> = ({
           >
             {loading ? (
               <div className="flex items-center">
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                <div className="animate-spin rounded-lg h-4 w-4 border-b-2 border-white mr-2"></div>
                 삭제 중...
               </div>
             ) : (

@@ -222,11 +222,11 @@ const CourseEnrollmentDashboard: React.FC<CourseEnrollmentDashboardProps> = ({
   const getStatusBadgeClass = (status: string) => {
     switch (status) {
       case 'active':
-        return 'bg-green-100 text-green-800';
+        return 'bg-green-500/10 text-green-700';
       case 'completed':
         return 'bg-blue-100 text-blue-800';
       case 'dropped':
-        return 'bg-red-100 text-red-800';
+        return 'bg-destructive/10 text-destructive';
       default:
         return 'bg-gray-100 text-gray-800';
     }
@@ -245,7 +245,7 @@ const CourseEnrollmentDashboard: React.FC<CourseEnrollmentDashboardProps> = ({
     return (
       <div className="bg-white rounded-lg shadow p-6">
         <div className="flex items-center justify-center h-64">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+          <div className="animate-spin rounded-lg h-8 w-8 border-b-2 border-blue-600"></div>
           <span className="ml-2 text-gray-600">수강생 현황을 불러오는 중...</span>
         </div>
       </div>
@@ -256,7 +256,7 @@ const CourseEnrollmentDashboard: React.FC<CourseEnrollmentDashboardProps> = ({
     return (
       <div className="bg-white rounded-lg shadow p-6">
         <div className="text-center py-12">
-          <ExclamationTriangleIcon className="h-12 w-12 text-red-500 mx-auto mb-4" />
+          <ExclamationTriangleIcon className="h-12 w-12 text-destructive mx-auto mb-4" />
           <div className="text-gray-600 mb-4">{error || '데이터를 불러올 수 없습니다.'}</div>
           <button
             onClick={() => loadEnrollmentData()}
@@ -289,7 +289,7 @@ const CourseEnrollmentDashboard: React.FC<CourseEnrollmentDashboardProps> = ({
             <button
               onClick={handleRefresh}
               disabled={refreshing}
-              className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
+              className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-full transition-colors"
               title="새로고침"
             >
               <ArrowPathIcon className={`h-5 w-5 ${refreshing ? 'animate-spin' : ''}`} />
@@ -297,7 +297,7 @@ const CourseEnrollmentDashboard: React.FC<CourseEnrollmentDashboardProps> = ({
 
             <button
               onClick={() => setShowHistoryModal(true)}
-              className="flex items-center px-3 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+              className="flex items-center px-3 py-2 text-gray-600 border border-gray-300 rounded-full hover:bg-gray-50 transition-colors"
               title="배정 이력"
             >
               <ClockIcon className="h-4 w-4 mr-1" />
@@ -307,7 +307,7 @@ const CourseEnrollmentDashboard: React.FC<CourseEnrollmentDashboardProps> = ({
             {enrollment_stats.waiting_list_count > 0 && (
               <button
                 onClick={() => setShowWaitingListManager(true)}
-                className="flex items-center px-3 py-2 text-yellow-600 border border-yellow-300 rounded-lg hover:bg-yellow-50 transition-colors"
+                className="flex items-center px-3 py-2 text-foreground border border-yellow-300 rounded-full hover:bg-yellow-50 transition-colors"
                 title="대기자 관리"
               >
                 <ClockIcon className="h-4 w-4 mr-1" />
@@ -344,9 +344,9 @@ const CourseEnrollmentDashboard: React.FC<CourseEnrollmentDashboardProps> = ({
             </div>
           </div>
 
-          <div className="p-4 bg-green-50 rounded-lg">
+          <div className="p-4 bg-green-500/10 rounded-lg">
             <div className="flex items-center">
-              <div className="p-2 bg-green-100 rounded-lg">
+              <div className="p-2 bg-green-500/10 rounded-lg">
                 <CheckCircleIcon className="h-6 w-6 text-green-600" />
               </div>
               <div className="ml-3">
@@ -381,14 +381,14 @@ const CourseEnrollmentDashboard: React.FC<CourseEnrollmentDashboardProps> = ({
           <div className="p-4 bg-yellow-50 rounded-lg">
             <div className="flex items-center">
               <div className="p-2 bg-yellow-100 rounded-lg">
-                <ClockIcon className="h-6 w-6 text-yellow-600" />
+                <ClockIcon className="h-6 w-6 text-foreground" />
               </div>
               <div className="ml-3">
                 <p className="text-sm font-medium text-yellow-900">대기자</p>
                 <p className="text-xl font-semibold text-yellow-900">
                   {enrollment_stats.waiting_list_count}명
                 </p>
-                <p className="text-xs text-yellow-700">
+                <p className="text-xs text-foreground">
                   중도포기 {enrollment_stats.drop_rate}%
                 </p>
               </div>
@@ -402,9 +402,9 @@ const CourseEnrollmentDashboard: React.FC<CourseEnrollmentDashboardProps> = ({
             <span>등록 현황</span>
             <span>{enrollment_stats.enrollment_rate}% 등록됨</span>
           </div>
-          <div className="w-full bg-gray-200 rounded-full h-2">
+          <div className="w-full bg-gray-200 rounded-lg h-2">
             <div
-              className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+              className="bg-blue-600 h-2 rounded-lg transition-all duration-300"
               style={{ width: `${enrollment_stats.enrollment_rate}%` }}
             ></div>
           </div>
@@ -527,7 +527,7 @@ const CourseEnrollmentDashboard: React.FC<CourseEnrollmentDashboardProps> = ({
                       {enrollment.status === 'active' && (
                         <button
                           onClick={() => handleUnenrollTrainee(enrollment.id, enrollment.trainee_name)}
-                          className="text-red-600 hover:text-red-900 transition-colors"
+                          className="text-destructive hover:text-destructive transition-colors"
                           title="배정 해제"
                         >
                           <XMarkIcon className="h-4 w-4" />
@@ -547,7 +547,7 @@ const CourseEnrollmentDashboard: React.FC<CourseEnrollmentDashboardProps> = ({
         <div className="bg-white rounded-lg shadow">
           <div className="px-6 py-4 border-b border-gray-200">
             <h3 className="text-lg font-semibold text-gray-900 flex items-center">
-              <ClockIcon className="h-5 w-5 mr-2 text-yellow-600" />
+              <ClockIcon className="h-5 w-5 mr-2 text-foreground" />
               대기자 목록 ({waiting_list.length})
             </h3>
           </div>
@@ -611,7 +611,7 @@ const CourseEnrollmentDashboard: React.FC<CourseEnrollmentDashboardProps> = ({
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-6 max-w-sm mx-4">
             <div className="flex items-center">
-              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600 mr-3"></div>
+              <div className="animate-spin rounded-lg h-6 w-6 border-b-2 border-blue-600 mr-3"></div>
               <span className="text-gray-700">교육생을 배정하는 중...</span>
             </div>
           </div>

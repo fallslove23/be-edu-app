@@ -148,10 +148,10 @@ const NotificationPermission: React.FC = () => {
                 <button
                   onClick={handleEnableNotifications}
                   disabled={loading}
-                  className="btn-primary mobile-button flex-1 disabled:opacity-50 py-2 px-3 rounded-lg text-sm font-medium flex items-center justify-center"
+                  className="btn-primary mobile-button flex-1 disabled:opacity-50 py-2 px-3 rounded-full text-sm font-medium flex items-center justify-center"
                 >
                   {loading ? (
-                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-lg animate-spin" />
                   ) : (
                     '허용'
                   )}
@@ -159,7 +159,7 @@ const NotificationPermission: React.FC = () => {
                 
                 <button
                   onClick={handleDismiss}
-                  className="mobile-button flex-1 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 py-2 px-3 rounded-lg text-sm font-medium"
+                  className="mobile-button flex-1 bg-gray-100 dark:bg-gray-700 hover:bg-muted text-foreground py-2 px-3 rounded-full text-sm font-medium"
                 >
                   나중에
                 </button>
@@ -168,7 +168,7 @@ const NotificationPermission: React.FC = () => {
             
             <button
               onClick={handleDismiss}
-              className="mobile-button p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded"
+              className="mobile-button p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full"
             >
               <XMarkIcon className="h-4 w-4 text-gray-400" />
             </button>
@@ -184,7 +184,7 @@ const NotificationPermission: React.FC = () => {
               {permissionState.subscribed ? (
                 <CheckCircleIcon className="h-4 w-4 text-green-500" />
               ) : (
-                <ExclamationTriangleIcon className="h-4 w-4 text-yellow-500" />
+                <ExclamationTriangleIcon className="h-4 w-4 text-foreground" />
               )}
               <span className="text-gray-600 dark:text-gray-300">
                 알림 {permissionState.subscribed ? '활성' : '비활성'}
@@ -239,7 +239,7 @@ const NotificationPermission: React.FC = () => {
                       <button
                         onClick={handleDisableNotifications}
                         disabled={loading}
-                        className="btn-danger mobile-button disabled:opacity-50 px-3 py-1 rounded text-sm"
+                        className="btn-danger mobile-button disabled:opacity-50 px-3 py-1 rounded-full text-sm"
                       >
                         비활성화
                       </button>
@@ -247,7 +247,7 @@ const NotificationPermission: React.FC = () => {
                       <button
                         onClick={handleEnableNotifications}
                         disabled={loading}
-                        className="btn-primary mobile-button disabled:opacity-50 px-3 py-1 rounded text-sm"
+                        className="btn-primary mobile-button disabled:opacity-50 px-3 py-1 rounded-full text-sm"
                       >
                         활성화
                       </button>
@@ -261,7 +261,7 @@ const NotificationPermission: React.FC = () => {
                 <div>
                   <button
                     onClick={testNotification}
-                    className="mobile-button w-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 py-2 rounded-lg"
+                    className="mobile-button w-full bg-gray-100 dark:bg-gray-700 hover:bg-muted text-foreground py-2 rounded-full"
                   >
                     테스트 알림 보내기
                   </button>

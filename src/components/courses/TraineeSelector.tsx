@@ -224,7 +224,7 @@ const TraineeSelector: React.FC<TraineeSelectorProps> = ({
               <div className="text-sm text-gray-600">
                 {selectedCount}명 선택됨
                 {willExceedCapacity && (
-                  <span className="ml-2 text-red-600 font-medium">
+                  <span className="ml-2 text-destructive font-medium">
                     (정원 {availableSpots - selectedCount}명 초과)
                   </span>
                 )}
@@ -239,7 +239,7 @@ const TraineeSelector: React.FC<TraineeSelectorProps> = ({
                   <select
                     value={searchFilter.department}
                     onChange={(e) => setSearchFilter(prev => ({ ...prev, department: e.target.value }))}
-                    className="block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    className="block w-full px-3 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-1 focus:ring-blue-500"
                   >
                     <option value="">전체 부서</option>
                     {departments.map(dept => (
@@ -253,7 +253,7 @@ const TraineeSelector: React.FC<TraineeSelectorProps> = ({
                   <select
                     value={searchFilter.sort_by}
                     onChange={(e) => setSearchFilter(prev => ({ ...prev, sort_by: e.target.value as any }))}
-                    className="block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    className="block w-full px-3 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-1 focus:ring-blue-500"
                   >
                     <option value="name">이름</option>
                     <option value="department">부서</option>
@@ -266,7 +266,7 @@ const TraineeSelector: React.FC<TraineeSelectorProps> = ({
                   <select
                     value={searchFilter.sort_order}
                     onChange={(e) => setSearchFilter(prev => ({ ...prev, sort_order: e.target.value as 'asc' | 'desc' }))}
-                    className="block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    className="block w-full px-3 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-1 focus:ring-blue-500"
                   >
                     <option value="asc">오름차순</option>
                     <option value="desc">내림차순</option>
@@ -281,7 +281,7 @@ const TraineeSelector: React.FC<TraineeSelectorProps> = ({
         <div className="flex-1 overflow-y-auto" style={{ maxHeight: '400px' }}>
           {loading ? (
             <div className="flex items-center justify-center py-12">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+              <div className="animate-spin rounded-lg h-8 w-8 border-b-2 border-blue-600"></div>
               <span className="ml-2 text-gray-600">교육생을 검색하는 중...</span>
             </div>
           ) : !searchResult || searchResult.trainees.length === 0 ? (
@@ -352,7 +352,7 @@ const TraineeSelector: React.FC<TraineeSelectorProps> = ({
                           
                           <div className="text-right">
                             {!trainee.is_eligible && trainee.eligibility_reason && (
-                              <div className="flex items-center text-sm text-red-600">
+                              <div className="flex items-center text-sm text-destructive">
                                 <ExclamationTriangleIcon className="h-4 w-4 mr-1" />
                                 {trainee.eligibility_reason}
                               </div>
@@ -372,7 +372,7 @@ const TraineeSelector: React.FC<TraineeSelectorProps> = ({
                     <button
                       onClick={() => goToPage((searchFilter.page || 1) - 1)}
                       disabled={!searchResult.has_previous}
-                      className="px-3 py-1 text-sm border border-gray-300 rounded-md hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="px-3 py-1 text-sm border border-gray-300 rounded-full hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       이전
                     </button>
@@ -384,7 +384,7 @@ const TraineeSelector: React.FC<TraineeSelectorProps> = ({
                     <button
                       onClick={() => goToPage((searchFilter.page || 1) + 1)}
                       disabled={!searchResult.has_next}
-                      className="px-3 py-1 text-sm border border-gray-300 rounded-md hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="px-3 py-1 text-sm border border-gray-300 rounded-full hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       다음
                     </button>
@@ -400,7 +400,7 @@ const TraineeSelector: React.FC<TraineeSelectorProps> = ({
           {willExceedCapacity && (
             <div className="mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
               <div className="flex items-center">
-                <InformationCircleIcon className="h-5 w-5 text-yellow-600 mr-2" />
+                <InformationCircleIcon className="h-5 w-5 text-foreground mr-2" />
                 <div className="text-sm text-yellow-800">
                   선택한 인원이 정원을 {selectedCount - availableSpots}명 초과합니다. 
                   초과 인원은 대기자 목록에 추가됩니다.
@@ -412,7 +412,7 @@ const TraineeSelector: React.FC<TraineeSelectorProps> = ({
           <div className="flex justify-end space-x-3">
             <button
               onClick={handleClose}
-              className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+              className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-full hover:bg-gray-50 transition-colors"
             >
               취소
             </button>

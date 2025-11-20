@@ -195,9 +195,9 @@ function NotificationToast({ notification, onClose }: NotificationToastProps) {
       case 'success':
         return <CheckCircleIcon className="h-6 w-6 text-green-500" />;
       case 'error':
-        return <XCircleIcon className="h-6 w-6 text-red-500" />;
+        return <XCircleIcon className="h-6 w-6 text-destructive" />;
       case 'warning':
-        return <ExclamationCircleIcon className="h-6 w-6 text-yellow-500" />;
+        return <ExclamationCircleIcon className="h-6 w-6 text-foreground" />;
       case 'info':
         return <InformationCircleIcon className="h-6 w-6 text-blue-500" />;
     }
@@ -206,9 +206,9 @@ function NotificationToast({ notification, onClose }: NotificationToastProps) {
   const getBgColor = () => {
     switch (notification.type) {
       case 'success':
-        return 'bg-green-50 border-green-200';
+        return 'bg-green-500/10 border-green-200';
       case 'error':
-        return 'bg-red-50 border-red-200';
+        return 'bg-destructive/10 border-destructive/50';
       case 'warning':
         return 'bg-yellow-50 border-yellow-200';
       case 'info':
@@ -218,7 +218,7 @@ function NotificationToast({ notification, onClose }: NotificationToastProps) {
 
   return (
     <div
-      className={`pointer-events-auto bg-white rounded-lg shadow-2xl border-2 p-4 min-w-[320px] max-w-md transition-all duration-300 ${
+      className={`pointer-events-auto bg-white rounded-full shadow-2xl border-2 p-4 min-w-[320px] max-w-md transition-all duration-300 ${
         isExiting
           ? 'opacity-0 translate-x-full'
           : 'opacity-100 translate-x-0 animate-slide-in'

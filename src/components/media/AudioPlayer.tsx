@@ -228,7 +228,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
   const progressPercent = duration > 0 ? (currentTime / duration) * 100 : 0;
 
   return (
-    <div className={`bg-white rounded-lg shadow-sm border border-gray-200 p-6 ${className}`}>
+    <div className={`bg-white rounded-full shadow-sm border border-gray-200 p-6 ${className}`}>
       <audio
         ref={audioRef}
         src={src}
@@ -254,21 +254,21 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
       <div className="mb-6">
         <div 
           ref={progressRef}
-          className="w-full h-2 bg-gray-200 rounded-full cursor-pointer relative"
+          className="w-full h-2 bg-gray-200 rounded-lg cursor-pointer relative"
           onClick={handleProgressClick}
         >
           {/* 버퍼링 진행률 */}
           <div
-            className="h-full bg-gray-300 rounded-full absolute"
+            className="h-full bg-gray-300 rounded-lg absolute"
             style={{ width: `${buffered}%` }}
           />
           
           {/* 재생 진행률 */}
           <div
-            className="h-full bg-blue-500 rounded-full relative"
+            className="h-full bg-blue-500 rounded-lg relative"
             style={{ width: `${progressPercent}%` }}
           >
-            <div className="absolute right-0 top-1/2 w-4 h-4 bg-blue-500 rounded-full transform -translate-y-1/2 translate-x-2 shadow-lg" />
+            <div className="absolute right-0 top-1/2 w-4 h-4 bg-blue-500 rounded-lg transform -translate-y-1/2 translate-x-2 shadow-lg" />
           </div>
         </div>
         
@@ -283,7 +283,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
       <div className="flex items-center justify-center space-x-4 mb-6">
         <button
           onClick={() => skip(-10)}
-          className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-full transition-colors"
+          className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
           title="10초 뒤로"
         >
           <BackwardIcon className="h-6 w-6" />
@@ -296,7 +296,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
           title={isPlaying ? '일시정지' : '재생'}
         >
           {loading ? (
-            <div className="animate-spin h-6 w-6 border-2 border-white border-t-transparent rounded-full" />
+            <div className="animate-spin h-6 w-6 border-2 border-white border-t-transparent rounded-lg" />
           ) : isPlaying ? (
             <PauseIcon className="h-6 w-6" />
           ) : (
@@ -306,7 +306,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
 
         <button
           onClick={() => skip(10)}
-          className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-full transition-colors"
+          className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
           title="10초 앞으로"
         >
           <ForwardIcon className="h-6 w-6" />

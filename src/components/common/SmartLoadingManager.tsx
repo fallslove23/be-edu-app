@@ -73,7 +73,7 @@ const LazyImage: React.FC<{
       
       {error && (
         <div className="absolute inset-0 bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
-          <ExclamationTriangleIcon className="h-8 w-8 text-red-500" />
+          <ExclamationTriangleIcon className="h-8 w-8 text-destructive" />
         </div>
       )}
     </div>
@@ -287,7 +287,7 @@ const SmartLoadingManager: React.FC<SmartLoadingManagerProps> = ({
       {(isAnyLoading || isLoading) && (
         <div className="fixed inset-0 bg-white bg-opacity-75 dark:bg-gray-900 dark:bg-opacity-75 z-40 flex items-center justify-center">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto mb-4"></div>
+            <div className="animate-spin rounded-lg h-8 w-8 border-b-2 border-blue-500 mx-auto mb-4"></div>
             <p className="text-gray-600 dark:text-gray-400">
               {effectiveType === 'slow-2g' || effectiveType === '2g' 
                 ? '느린 연결 감지됨. 최적화된 로딩 중...' 

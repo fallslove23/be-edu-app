@@ -312,8 +312,8 @@ const BSActivityJournal: React.FC<BSActivityJournalProps> = ({
     switch (status) {
       case 'draft': return 'bg-gray-100 text-gray-700';
       case 'submitted': return 'bg-blue-100 text-blue-700';
-      case 'reviewed': return 'bg-yellow-100 text-yellow-700';
-      case 'approved': return 'bg-green-100 text-green-700';
+      case 'reviewed': return 'bg-yellow-100 text-orange-700';
+      case 'approved': return 'bg-green-500/10 text-green-700';
       default: return 'bg-gray-100 text-gray-700';
     }
   };
@@ -321,7 +321,7 @@ const BSActivityJournal: React.FC<BSActivityJournalProps> = ({
   return (
     <div className="max-w-4xl mx-auto space-y-6">
       {/* 헤더 */}
-      <div className="bg-white rounded-xl shadow-sm border p-6">
+      <div className="bg-white rounded-lg shadow-sm border p-6">
         <div className="flex justify-between items-start mb-4">
           <div>
             <h1 className="text-2xl font-bold text-gray-900">BS 활동 일지</h1>
@@ -347,7 +347,7 @@ const BSActivityJournal: React.FC<BSActivityJournalProps> = ({
             value={courseId}
             onChange={(e) => setCourseId(e.target.value)}
             disabled={readonly}
-            className="w-full border border-border rounded-lg px-3 py-2.5 bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent disabled:bg-muted disabled:text-muted-foreground"
+            className="w-full border border-border rounded-full px-3 py-2.5 bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent disabled:bg-muted disabled:text-muted-foreground"
           >
             <option value="">교육 과정을 선택하세요</option>
             <option value="course-1">BS 기본 과정</option>
@@ -367,7 +367,7 @@ const BSActivityJournal: React.FC<BSActivityJournalProps> = ({
               <div className="flex space-x-2">
                 <button
                   onClick={handleCameraCapture}
-                  className="flex-1 bg-primary text-primary-foreground px-4 py-3 rounded-lg hover:bg-primary/90 transition-colors flex items-center justify-center font-medium shadow-sm"
+                  className="flex-1 bg-primary text-primary-foreground px-4 py-3 rounded-full hover:bg-primary/90 transition-colors flex items-center justify-center font-medium shadow-sm"
                 >
                   <CameraIcon className="w-5 h-5 mr-2" />
                   사진 촬영/업로드
@@ -421,7 +421,7 @@ const BSActivityJournal: React.FC<BSActivityJournalProps> = ({
                 onChange={(e) => setEmployeeId(e.target.value)}
                 disabled={readonly}
                 placeholder="사번을 입력하세요"
-                className="w-full border border-border rounded-lg px-3 py-2 bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent disabled:bg-muted disabled:text-muted-foreground"
+                className="w-full border border-border rounded-full px-3 py-2 bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent disabled:bg-muted disabled:text-muted-foreground"
               />
             </div>
 
@@ -433,7 +433,7 @@ const BSActivityJournal: React.FC<BSActivityJournalProps> = ({
                 onChange={(e) => setDepartment(e.target.value)}
                 disabled={readonly}
                 placeholder="소속을 입력하세요"
-                className="w-full border border-border rounded-lg px-3 py-2 bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent disabled:bg-muted disabled:text-muted-foreground"
+                className="w-full border border-border rounded-full px-3 py-2 bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent disabled:bg-muted disabled:text-muted-foreground"
               />
             </div>
 
@@ -445,7 +445,7 @@ const BSActivityJournal: React.FC<BSActivityJournalProps> = ({
                 onChange={(e) => setStudentName(e.target.value)}
                 disabled={readonly}
                 placeholder="이름을 입력하세요"
-                className="w-full border border-border rounded-lg px-3 py-2 bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent disabled:bg-muted disabled:text-muted-foreground"
+                className="w-full border border-border rounded-full px-3 py-2 bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent disabled:bg-muted disabled:text-muted-foreground"
               />
             </div>
           </div>
@@ -465,7 +465,7 @@ const BSActivityJournal: React.FC<BSActivityJournalProps> = ({
                 value={presentationDate}
                 onChange={(e) => setPresentationDate(e.target.value)}
                 disabled={readonly}
-                className="w-full border border-border rounded-lg px-3 py-2 bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent disabled:bg-muted disabled:text-muted-foreground"
+                className="w-full border border-border rounded-full px-3 py-2 bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent disabled:bg-muted disabled:text-muted-foreground"
               />
             </div>
 
@@ -479,7 +479,7 @@ const BSActivityJournal: React.FC<BSActivityJournalProps> = ({
                 value={formData.visit_date || ''}
                 onChange={(e) => updateBasicInfo('visit_date', e.target.value)}
                 disabled={readonly}
-                className="w-full border border-border rounded-lg px-3 py-2 bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent disabled:bg-muted disabled:text-muted-foreground"
+                className="w-full border border-border rounded-full px-3 py-2 bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent disabled:bg-muted disabled:text-muted-foreground"
               />
             </div>
 
@@ -493,7 +493,7 @@ const BSActivityJournal: React.FC<BSActivityJournalProps> = ({
                 value={completionDate}
                 onChange={(e) => setCompletionDate(e.target.value)}
                 disabled={readonly}
-                className="w-full border border-border rounded-lg px-3 py-2 bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent disabled:bg-muted disabled:text-muted-foreground"
+                className="w-full border border-border rounded-full px-3 py-2 bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent disabled:bg-muted disabled:text-muted-foreground"
               />
             </div>
           </div>
@@ -510,7 +510,7 @@ const BSActivityJournal: React.FC<BSActivityJournalProps> = ({
                 onChange={(e) => updateBasicInfo('clinic_name', e.target.value)}
                 disabled={readonly}
                 placeholder="방문한 치과/병원명을 입력하세요"
-                className="w-full border border-border rounded-lg px-3 py-2 bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent disabled:bg-muted disabled:text-muted-foreground"
+                className="w-full border border-border rounded-full px-3 py-2 bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent disabled:bg-muted disabled:text-muted-foreground"
               />
             </div>
 
@@ -522,7 +522,7 @@ const BSActivityJournal: React.FC<BSActivityJournalProps> = ({
                 onChange={(e) => updateBasicInfo('clinic_address', e.target.value)}
                 disabled={readonly}
                 placeholder="치과/병원 주소"
-                className="w-full border border-border rounded-lg px-3 py-2 bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent disabled:bg-muted disabled:text-muted-foreground"
+                className="w-full border border-border rounded-full px-3 py-2 bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent disabled:bg-muted disabled:text-muted-foreground"
               />
             </div>
           </div>
@@ -536,7 +536,7 @@ const BSActivityJournal: React.FC<BSActivityJournalProps> = ({
                 onChange={(e) => setInspectionProduct(e.target.value)}
                 disabled={readonly}
                 placeholder="점검한 제품/상품을 입력하세요"
-                className="w-full border border-border rounded-lg px-3 py-2 bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent disabled:bg-muted disabled:text-muted-foreground"
+                className="w-full border border-border rounded-full px-3 py-2 bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent disabled:bg-muted disabled:text-muted-foreground"
               />
             </div>
 
@@ -548,7 +548,7 @@ const BSActivityJournal: React.FC<BSActivityJournalProps> = ({
                 onChange={(e) => setInspectionCount(e.target.value)}
                 disabled={readonly}
                 placeholder="점검 대수를 입력하세요"
-                className="w-full border border-border rounded-lg px-3 py-2 bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent disabled:bg-muted disabled:text-muted-foreground"
+                className="w-full border border-border rounded-full px-3 py-2 bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent disabled:bg-muted disabled:text-muted-foreground"
               />
             </div>
           </div>
@@ -562,7 +562,7 @@ const BSActivityJournal: React.FC<BSActivityJournalProps> = ({
                 disabled={readonly}
                 placeholder="활동 내용을 간단히 요약해주세요"
                 rows={3}
-                className="w-full border border-border rounded-lg px-3 py-2 bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent disabled:bg-muted disabled:text-muted-foreground resize-none"
+                className="w-full border border-border rounded-full px-3 py-2 bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent disabled:bg-muted disabled:text-muted-foreground resize-none"
               />
             </div>
 
@@ -574,7 +574,7 @@ const BSActivityJournal: React.FC<BSActivityJournalProps> = ({
                 disabled={readonly}
                 placeholder="활동 내용을 자세히 설명해주세요"
                 rows={5}
-                className="w-full border border-border rounded-lg px-3 py-2 bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent disabled:bg-muted disabled:text-muted-foreground resize-none"
+                className="w-full border border-border rounded-full px-3 py-2 bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent disabled:bg-muted disabled:text-muted-foreground resize-none"
               />
             </div>
 
@@ -586,7 +586,7 @@ const BSActivityJournal: React.FC<BSActivityJournalProps> = ({
                 disabled={readonly}
                 placeholder="이 활동을 통해 배우고 느낀 점을 써주세요"
                 rows={4}
-                className="w-full border border-border rounded-lg px-3 py-2 bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent disabled:bg-muted disabled:text-muted-foreground resize-none"
+                className="w-full border border-border rounded-full px-3 py-2 bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent disabled:bg-muted disabled:text-muted-foreground resize-none"
               />
             </div>
 
@@ -598,7 +598,7 @@ const BSActivityJournal: React.FC<BSActivityJournalProps> = ({
                 disabled={readonly}
                 placeholder="특이사항이 있다면 기록해주세요"
                 rows={3}
-                className="w-full border border-border rounded-lg px-3 py-2 bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent disabled:bg-muted disabled:text-muted-foreground resize-none"
+                className="w-full border border-border rounded-full px-3 py-2 bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent disabled:bg-muted disabled:text-muted-foreground resize-none"
               />
             </div>
           </div>
@@ -606,7 +606,7 @@ const BSActivityJournal: React.FC<BSActivityJournalProps> = ({
       </div>
 
       {/* 활동 목록 */}
-      <div className="bg-white rounded-xl shadow-sm border p-6">
+      <div className="bg-white rounded-lg shadow-sm border p-6">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-xl font-bold text-gray-900">활동 내역</h2>
           {!readonly && (
@@ -627,7 +627,7 @@ const BSActivityJournal: React.FC<BSActivityJournalProps> = ({
               <div key={activity.id} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
                 <div className="flex justify-between items-start mb-3">
                   <div className="flex items-center space-x-3">
-                    <div className={`p-2 rounded-lg text-white text-sm font-medium`} 
+                    <div className={`p-2 rounded-full text-white text-sm font-medium`} 
                          style={{ backgroundColor: ACTIVITY_TYPE_CONFIG[activity.type].color === 'blue' ? '#3B82F6' : 
                                                    ACTIVITY_TYPE_CONFIG[activity.type].color === 'green' ? '#10B981' : 
                                                    ACTIVITY_TYPE_CONFIG[activity.type].color === 'purple' ? '#8B5CF6' : '#6B7280' }}>
@@ -648,7 +648,7 @@ const BSActivityJournal: React.FC<BSActivityJournalProps> = ({
                       </button>
                       <button
                         onClick={() => handleActivityDelete(index)}
-                        className="text-red-600 hover:text-red-800 text-sm font-medium"
+                        className="text-destructive hover:text-destructive text-sm font-medium"
                       >
                         삭제
                       </button>
@@ -692,7 +692,7 @@ const BSActivityJournal: React.FC<BSActivityJournalProps> = ({
       {/* 활동 추가/편집 폼 */}
       {showActivityForm && !readonly && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+          <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
             <div className="p-6 border-b border-gray-200">
               <h3 className="text-lg font-bold text-gray-900">
                 {editingActivityIndex !== null ? '활동 편집' : '새 활동 추가'}
@@ -707,7 +707,7 @@ const BSActivityJournal: React.FC<BSActivityJournalProps> = ({
                   <select
                     value={currentActivity.type}
                     onChange={(e) => setCurrentActivity(prev => ({ ...prev, type: e.target.value as ActivityType }))}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500"
+                    className="w-full border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500"
                   >
                     {Object.entries(ACTIVITY_TYPE_CONFIG).map(([key, config]) => (
                       <option key={key} value={key}>{config.label}</option>
@@ -722,7 +722,7 @@ const BSActivityJournal: React.FC<BSActivityJournalProps> = ({
                     value={currentActivity.title || ''}
                     onChange={(e) => setCurrentActivity(prev => ({ ...prev, title: e.target.value }))}
                     placeholder="활동 제목을 입력하세요"
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500"
+                    className="w-full border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
 
@@ -732,7 +732,7 @@ const BSActivityJournal: React.FC<BSActivityJournalProps> = ({
                     type="time"
                     value={currentActivity.start_time || ''}
                     onChange={(e) => setCurrentActivity(prev => ({ ...prev, start_time: e.target.value }))}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500"
+                    className="w-full border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
 
@@ -742,7 +742,7 @@ const BSActivityJournal: React.FC<BSActivityJournalProps> = ({
                     type="time"
                     value={currentActivity.end_time || ''}
                     onChange={(e) => setCurrentActivity(prev => ({ ...prev, end_time: e.target.value }))}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500"
+                    className="w-full border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
               </div>
@@ -754,7 +754,7 @@ const BSActivityJournal: React.FC<BSActivityJournalProps> = ({
                   onChange={(e) => setCurrentActivity(prev => ({ ...prev, description: e.target.value }))}
                   placeholder="어떤 활동을 했는지 자세히 설명해주세요"
                   rows={3}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500"
+                  className="w-full border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500"
                 />
               </div>
 
@@ -767,7 +767,7 @@ const BSActivityJournal: React.FC<BSActivityJournalProps> = ({
                     onChange={(e) => setCurrentActivity(prev => ({ ...prev, what_learned: e.target.value }))}
                     placeholder="이 활동을 통해 무엇을 배웠나요?"
                     rows={3}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500"
+                    className="w-full border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
 
@@ -778,7 +778,7 @@ const BSActivityJournal: React.FC<BSActivityJournalProps> = ({
                     onChange={(e) => setCurrentActivity(prev => ({ ...prev, challenges_faced: e.target.value }))}
                     placeholder="어떤 어려움이 있었나요?"
                     rows={2}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500"
+                    className="w-full border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
 
@@ -789,7 +789,7 @@ const BSActivityJournal: React.FC<BSActivityJournalProps> = ({
                     onChange={(e) => setCurrentActivity(prev => ({ ...prev, how_handled: e.target.value }))}
                     placeholder="어려움을 어떻게 해결했나요?"
                     rows={2}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500"
+                    className="w-full border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
 
@@ -800,7 +800,7 @@ const BSActivityJournal: React.FC<BSActivityJournalProps> = ({
                     onChange={(e) => setCurrentActivity(prev => ({ ...prev, reflection: e.target.value }))}
                     placeholder="이 경험을 통해 느낀 점이나 깨달은 점을 써주세요"
                     rows={3}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500"
+                    className="w-full border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
 
@@ -811,7 +811,7 @@ const BSActivityJournal: React.FC<BSActivityJournalProps> = ({
                     onChange={(e) => setCurrentActivity(prev => ({ ...prev, improvement_areas: e.target.value }))}
                     placeholder="앞으로 개선하고 싶은 부분이 있다면 써주세요"
                     rows={2}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500"
+                    className="w-full border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
               </div>
@@ -856,17 +856,17 @@ const BSActivityJournal: React.FC<BSActivityJournalProps> = ({
 
       {/* 하단 버튼 */}
       {!readonly && (
-        <div className="bg-white rounded-xl shadow-sm border border-border p-6">
+        <div className="bg-white rounded-lg shadow-sm border border-border p-6">
           <div className="flex justify-end space-x-3">
             <button
               onClick={handleSave}
-              className="px-6 py-2.5 border border-border text-foreground rounded-lg hover:bg-muted transition-colors font-medium"
+              className="px-6 py-2.5 border border-border text-foreground rounded-full hover:bg-muted transition-colors font-medium"
             >
               임시 저장
             </button>
             <button
               onClick={handleSubmit}
-              className="px-6 py-2.5 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors flex items-center font-medium shadow-sm"
+              className="px-6 py-2.5 bg-primary text-primary-foreground rounded-full hover:bg-primary/90 transition-colors flex items-center font-medium shadow-sm"
             >
               <CheckCircleIcon className="w-4 h-4 mr-2" />
               제출하기
@@ -877,7 +877,7 @@ const BSActivityJournal: React.FC<BSActivityJournalProps> = ({
 
       {/* 피드백 섹션 (검토된 일지의 경우) */}
       {activity?.instructor_feedback && (
-        <div className="bg-white rounded-xl shadow-sm border p-6">
+        <div className="bg-white rounded-lg shadow-sm border p-6">
           <h2 className="text-xl font-bold text-gray-900 mb-4">강사 피드백</h2>
           <div className="space-y-4">
             <div className="flex items-center space-x-2">

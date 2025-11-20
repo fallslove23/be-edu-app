@@ -64,7 +64,7 @@ const FileList: React.FC<FileListProps> = ({
       return <FilmIcon className={`${sizeClasses[size]} text-purple-600`} />;
     }
     if (FILE_CONFIGS.ALLOWED_TYPES.audio.includes(extension)) {
-      return <MusicalNoteIcon className={`${sizeClasses[size]} text-yellow-600`} />;
+      return <MusicalNoteIcon className={`${sizeClasses[size]} text-foreground`} />;
     }
     if (FILE_CONFIGS.ALLOWED_TYPES.archives.includes(extension)) {
       return <ArchiveBoxIcon className={`${sizeClasses[size]} text-gray-600`} />;
@@ -229,7 +229,7 @@ const FileList: React.FC<FileListProps> = ({
             <select
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
-              className="px-3 py-2 border border-gray-300 rounded-lg text-sm"
+              className="px-3 py-2 border border-gray-300 rounded-full text-sm"
             >
               <option value="all">모든 파일</option>
               <option value="course_material">강의 자료</option>
@@ -246,7 +246,7 @@ const FileList: React.FC<FileListProps> = ({
                 setSortBy(sort as any);
                 setSortOrder(order as any);
               }}
-              className="px-3 py-2 border border-gray-300 rounded-lg text-sm"
+              className="px-3 py-2 border border-gray-300 rounded-full text-sm"
             >
               <option value="date-desc">최신순</option>
               <option value="date-asc">오래된순</option>
@@ -368,7 +368,7 @@ const FileList: React.FC<FileListProps> = ({
                       
                       <button
                         onClick={() => handleDownload(file)}
-                        className="p-2 text-gray-600 hover:text-green-600 hover:bg-green-50 rounded-lg"
+                        className="p-2 text-gray-600 hover:text-green-600 hover:bg-green-500/10 rounded-lg"
                         title="다운로드"
                       >
                         <ArrowDownTrayIcon className="h-4 w-4" />
@@ -377,7 +377,7 @@ const FileList: React.FC<FileListProps> = ({
                       {(user?.id === file.uploadedBy || user?.role === 'admin') && (
                         <button
                           onClick={() => handleDelete(file)}
-                          className="p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg"
+                          className="p-2 text-gray-600 hover:text-destructive hover:bg-destructive/10 rounded-lg"
                           title="삭제"
                         >
                           <TrashIcon className="h-4 w-4" />
@@ -411,7 +411,7 @@ const FileList: React.FC<FileListProps> = ({
                     {(user?.id === file.uploadedBy || user?.role === 'admin') && (
                       <button
                         onClick={() => handleDelete(file)}
-                        className="p-1 text-gray-600 hover:text-red-600"
+                        className="p-1 text-gray-600 hover:text-destructive"
                         title="삭제"
                       >
                         <TrashIcon className="h-4 w-4" />

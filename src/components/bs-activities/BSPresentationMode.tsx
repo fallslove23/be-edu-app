@@ -164,13 +164,13 @@ const BSPresentationMode: React.FC<BSPresentationModeProps> = ({
         <div className="flex items-center space-x-2">
           <button
             onClick={toggleFullscreen}
-            className="px-4 py-2 bg-gray-700 rounded-lg hover:bg-gray-600"
+            className="px-4 py-2 bg-gray-700 rounded-full hover:bg-gray-600"
           >
             {isFullscreen ? '전체화면 종료' : '전체화면'}
           </button>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-gray-700 rounded-lg"
+            className="p-2 hover:bg-gray-700 rounded-full"
           >
             <XMarkIcon className="h-6 w-6" />
           </button>
@@ -182,7 +182,7 @@ const BSPresentationMode: React.FC<BSPresentationModeProps> = ({
         <button
           onClick={handlePreviousPresenter}
           disabled={currentPresenterIndex === 0}
-          className="px-3 py-1 bg-gray-700 rounded hover:bg-gray-600 disabled:opacity-30 disabled:cursor-not-allowed"
+          className="px-3 py-1 bg-gray-700 rounded-full hover:bg-gray-600 disabled:opacity-30 disabled:cursor-not-allowed"
         >
           <ChevronLeftIcon className="h-5 w-5 inline" /> 이전 발표자
         </button>
@@ -204,7 +204,7 @@ const BSPresentationMode: React.FC<BSPresentationModeProps> = ({
         <button
           onClick={handleNextPresenter}
           disabled={currentPresenterIndex === presentationOrders.length - 1}
-          className="px-3 py-1 bg-gray-700 rounded hover:bg-gray-600 disabled:opacity-30 disabled:cursor-not-allowed"
+          className="px-3 py-1 bg-gray-700 rounded-full hover:bg-gray-600 disabled:opacity-30 disabled:cursor-not-allowed"
         >
           다음 발표자 <ChevronRightIcon className="h-5 w-5 inline" />
         </button>
@@ -315,7 +315,7 @@ const BSPresentationMode: React.FC<BSPresentationModeProps> = ({
                 <button
                   onClick={handlePreviousActivity}
                   disabled={currentActivityIndex === 0}
-                  className="px-4 py-2 bg-gray-700 rounded hover:bg-gray-600 disabled:opacity-30"
+                  className="px-4 py-2 bg-gray-700 rounded-full hover:bg-gray-600 disabled:opacity-30"
                 >
                   <ChevronLeftIcon className="h-5 w-5 inline" /> 이전 활동
                 </button>
@@ -325,7 +325,7 @@ const BSPresentationMode: React.FC<BSPresentationModeProps> = ({
                 <button
                   onClick={handleNextActivity}
                   disabled={currentActivityIndex === currentActivities.length - 1}
-                  className="px-4 py-2 bg-gray-700 rounded hover:bg-gray-600 disabled:opacity-30"
+                  className="px-4 py-2 bg-gray-700 rounded-full hover:bg-gray-600 disabled:opacity-30"
                 >
                   다음 활동 <ChevronRightIcon className="h-5 w-5 inline" />
                 </button>

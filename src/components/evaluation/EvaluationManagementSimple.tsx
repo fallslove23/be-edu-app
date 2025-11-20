@@ -30,7 +30,7 @@ export default function EvaluationManagementSimple() {
             </ul>
           </div>
 
-          <div className="border-l-4 border-green-500 bg-green-50 dark:bg-green-900/20 p-4">
+          <div className="border-l-4 border-green-500 bg-green-500/10 dark:bg-green-900/20 p-4">
             <h3 className="font-semibold text-green-900 dark:text-green-100 mb-2">
               🎯 구현된 기능
             </h3>

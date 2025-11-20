@@ -7,9 +7,11 @@ import {
   ArrowDownTrayIcon,
   MagnifyingGlassIcon,
   FunnelIcon,
-  XMarkIcon
+  XMarkIcon,
+  DocumentChartBarIcon
 } from '@heroicons/react/24/outline';
 import { ReportService } from '../../services/report.services';
+import IntegratedAnalyticsDashboard from './IntegratedAnalyticsDashboard';
 import type {
   StudentReport,
   ReportStatistics,
@@ -21,6 +23,7 @@ import type {
  * 교육생 리포트 메인 컴포넌트
  */
 const StudentReports: React.FC = () => {
+  const [mainView, setMainView] = useState<'reports' | 'analytics'>('reports');
   const [view, setView] = useState<'list' | 'detail'>('list');
   const [statistics, setStatistics] = useState<ReportStatistics | null>(null);
   const [reports, setReports] = useState<StudentReport[]>([]);
@@ -70,7 +73,7 @@ const StudentReports: React.FC = () => {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+          <div className="animate-spin rounded-lg h-12 w-12 border-b-2 border-primary mx-auto"></div>
           <p className="mt-4 text-muted-foreground">리포트 로드 중...</p>
         </div>
       </div>
@@ -88,15 +91,46 @@ const StudentReports: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* 헤더 */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl font-bold">교육생 리포트</h2>
-          <p className="text-muted-foreground mt-1">
-            교육생별 종합 성과 및 이수 현황 조회
-          </p>
+      {/* 헤더 및 탭 네비게이션 */}
+      <div>
+        <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-6">분석 및 보고서</h2>
+
+        <div className="border-b border-gray-200 dark:border-gray-700">
+          <div className="flex space-x-4">
+            <button
+              onClick={() => setMainView('analytics')}
+              className={`flex items-center px-4 py-3 border-b-2 transition-colors ${
+                mainView === 'analytics'
+                  ? 'border-primary text-primary font-medium'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
+              }`}
+            >
+              <DocumentChartBarIcon className="h-5 w-5 mr-2" />
+              통합 분석 대시보드
+            </button>
+            <button
+              onClick={() => setMainView('reports')}
+              className={`flex items-center px-4 py-3 border-b-2 transition-colors ${
+                mainView === 'reports'
+                  ? 'border-primary text-primary font-medium'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
+              }`}
+            >
+              <UserGroupIcon className="h-5 w-5 mr-2" />
+              교육생 개별 리포트
+            </button>
+          </div>
         </div>
       </div>
+
+      {/* 통합 분석 대시보드 */}
+      {mainView === 'analytics' && (
+        <IntegratedAnalyticsDashboard />
+      )}
+
+      {/* 기존 교육생 리포트 */}
+      {mainView === 'reports' && (
+        <div className="space-y-6">
 
       {/* 통계 요약 (간단하게) */}
       {view === 'list' && statistics && (
@@ -176,6 +210,8 @@ const StudentReports: React.FC = () => {
       {view === 'detail' && selectedReport && (
         <StudentDetailView report={selectedReport} onBack={handleBackToList} />
       )}
+        </div>
+      )}
     </div>
   );
 };
@@ -234,8 +270,8 @@ const StudentListView: React.FC<StudentListViewProps> = ({
   const getGradeColor = (score: number) => {
     if (score >= 90) return 'text-green-600';
     if (score >= 80) return 'text-blue-600';
-    if (score >= 70) return 'text-yellow-600';
-    return 'text-red-600';
+    if (score >= 70) return 'text-foreground';
+    return 'text-destructive';
   };
 
   return (
@@ -259,7 +295,7 @@ const StudentListView: React.FC<StudentListViewProps> = ({
         <select
           value={filter.course_name || ''}
           onChange={(e) => onFilterChange({ ...filter, course_name: e.target.value || undefined })}
-          className="px-4 py-2 border rounded-lg bg-background focus:ring-2 focus:ring-primary focus:border-transparent"
+          className="px-4 py-2 border rounded-full bg-background focus:ring-2 focus:ring-primary focus:border-transparent"
         >
           <option value="">전체 과정</option>
           {uniqueCourses.map((course) => (
@@ -273,7 +309,7 @@ const StudentListView: React.FC<StudentListViewProps> = ({
         <select
           value={filter.session_code || ''}
           onChange={(e) => onFilterChange({ ...filter, session_code: e.target.value || undefined })}
-          className="px-4 py-2 border rounded-lg bg-background focus:ring-2 focus:ring-primary focus:border-transparent"
+          className="px-4 py-2 border rounded-full bg-background focus:ring-2 focus:ring-primary focus:border-transparent"
         >
           <option value="">전체 차수</option>
           {uniqueSessions.map((session) => (
@@ -285,7 +321,7 @@ const StudentListView: React.FC<StudentListViewProps> = ({
 
         <button
           onClick={onRefresh}
-          className="px-4 py-2 bg-secondary text-secondary-foreground rounded-lg hover:bg-secondary/80 transition-colors whitespace-nowrap"
+          className="px-4 py-2 bg-secondary text-secondary-foreground rounded-full hover:bg-secondary/80 transition-colors whitespace-nowrap"
         >
           새로고침
         </button>
@@ -300,18 +336,18 @@ const StudentListView: React.FC<StudentListViewProps> = ({
               과정: {filter.course_name}
               <button
                 onClick={() => onFilterChange({ ...filter, course_name: undefined })}
-                className="hover:bg-blue-200 rounded-full p-0.5"
+                className="hover:bg-blue-200 rounded-lg p-0.5"
               >
                 <XMarkIcon className="h-3 w-3" />
               </button>
             </span>
           )}
           {filter.session_code && (
-            <span className="inline-flex items-center gap-1 px-3 py-1 bg-green-100 text-green-800 text-sm rounded-full">
+            <span className="inline-flex items-center gap-1 px-3 py-1 bg-green-500/10 text-green-700 text-sm rounded-full">
               차수: {filter.session_code}
               <button
                 onClick={() => onFilterChange({ ...filter, session_code: undefined })}
-                className="hover:bg-green-200 rounded-full p-0.5"
+                className="hover:bg-green-200 rounded-lg p-0.5"
               >
                 <XMarkIcon className="h-3 w-3" />
               </button>
@@ -369,10 +405,10 @@ const StudentListView: React.FC<StudentListViewProps> = ({
                   <img
                     src={report.trainee.profile_image_url}
                     alt={report.trainee.name}
-                    className="w-12 h-12 rounded-full object-cover"
+                    className="w-12 h-12 rounded-lg object-cover"
                   />
                 ) : (
-                  <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                  <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
                     <span className="text-lg font-bold text-primary">
                       {report.trainee.name.charAt(0)}
                     </span>
@@ -413,7 +449,7 @@ const StudentListView: React.FC<StudentListViewProps> = ({
             </div>
 
             <div className="mt-4 pt-4 border-t">
-              <button className="w-full text-sm text-primary font-medium hover:underline">
+              <button className="w-full text-sm text-primary font-medium hover:underline rounded-full">
                 상세 보기 →
               </button>
             </div>
@@ -459,7 +495,7 @@ const StudentDetailView: React.FC<StudentDetailViewProps> = ({ report, onBack })
         </button>
         <button
           onClick={handleExportPDF}
-          className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
+          className="px-4 py-2 bg-primary text-primary-foreground rounded-full hover:bg-primary/90 transition-colors"
         >
           <ArrowDownTrayIcon className="h-5 w-5 inline mr-2" />
           PDF 내보내기
@@ -473,10 +509,10 @@ const StudentDetailView: React.FC<StudentDetailViewProps> = ({ report, onBack })
             <img
               src={report.trainee.profile_image_url}
               alt={report.trainee.name}
-              className="w-24 h-24 rounded-full object-cover"
+              className="w-24 h-24 rounded-lg object-cover"
             />
           ) : (
-            <div className="w-24 h-24 rounded-full bg-primary/10 flex items-center justify-center">
+            <div className="w-24 h-24 rounded-lg bg-primary/10 flex items-center justify-center">
               <span className="text-3xl font-bold text-primary">
                 {report.trainee.name.charAt(0)}
               </span>
@@ -581,9 +617,9 @@ const OverviewTab: React.FC<{ report: StudentReport }> = ({ report }) => {
 const CoursesTab: React.FC<{ report: StudentReport }> = ({ report }) => {
   const getStatusBadge = (status: string) => {
     const badges = {
-      completed: { label: '완료', className: 'bg-green-100 text-green-800' },
+      completed: { label: '완료', className: 'bg-green-500/10 text-green-700' },
       in_progress: { label: '수강중', className: 'bg-blue-100 text-blue-800' },
-      dropped: { label: '중도포기', className: 'bg-red-100 text-red-800' },
+      dropped: { label: '중도포기', className: 'bg-destructive/10 text-destructive' },
       pending: { label: '대기', className: 'bg-gray-100 text-gray-800' }
     };
     const badge = badges[status as keyof typeof badges] || badges.pending;
@@ -702,11 +738,11 @@ const AttendanceTab: React.FC<{ report: StudentReport }> = ({ report }) => {
         </div>
         <div className="bg-card border rounded-lg p-4 text-center">
           <p className="text-sm text-muted-foreground mb-1">지각</p>
-          <p className="text-2xl font-bold text-yellow-600">{attendance_summary.late_days}</p>
+          <p className="text-2xl font-bold text-foreground">{attendance_summary.late_days}</p>
         </div>
         <div className="bg-card border rounded-lg p-4 text-center">
           <p className="text-sm text-muted-foreground mb-1">결석</p>
-          <p className="text-2xl font-bold text-red-600">{attendance_summary.absent_days}</p>
+          <p className="text-2xl font-bold text-destructive">{attendance_summary.absent_days}</p>
         </div>
         <div className="bg-card border rounded-lg p-4 text-center">
           <p className="text-sm text-muted-foreground mb-1">출석률</p>
@@ -717,9 +753,9 @@ const AttendanceTab: React.FC<{ report: StudentReport }> = ({ report }) => {
       {/* 출석률 프로그레스 바 */}
       <div className="bg-card border rounded-lg p-6">
         <p className="text-sm text-muted-foreground mb-2">전체 출석률</p>
-        <div className="w-full bg-gray-200 rounded-full h-4">
+        <div className="w-full bg-gray-200 rounded-lg h-4">
           <div
-            className="bg-blue-600 h-4 rounded-full transition-all"
+            className="bg-blue-600 h-4 rounded-lg transition-all"
             style={{ width: `${attendance_summary.attendance_rate}%` }}
           />
         </div>
@@ -751,7 +787,7 @@ const CertificatesTab: React.FC<{ report: StudentReport }> = ({ report }) => {
                 href={cert.certificate_url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
+                className="px-4 py-2 bg-primary text-primary-foreground rounded-full hover:bg-primary/90 transition-colors"
               >
                 <ArrowDownTrayIcon className="h-5 w-5 inline mr-2" />
                 다운로드

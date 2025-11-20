@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { ArrowLeftIcon, CheckIcon } from '@heroicons/react/24/outline';
 import type { User, UserRole, UserStatus } from '../../types/auth.types';
 import { roleLabels, userStatusLabels } from '../../types/auth.types';
+import { CommonCodeService, CommonCode } from '@/services/common-code.service';
 
 interface UserFormProps {
   user: User | null;
@@ -26,6 +27,12 @@ interface UserFormData {
 }
 
 const UserForm: React.FC<UserFormProps> = ({ user, onBack, onSave }) => {
+  // 공통 코드 상태
+  const [departments, setDepartments] = useState<CommonCode[]>([]);
+  const [positions, setPositions] = useState<CommonCode[]>([]);
+  const [relationships, setRelationships] = useState<CommonCode[]>([]);
+  const [loading, setLoading] = useState(true);
+
   const {
     register,
     handleSubmit,
@@ -63,6 +70,29 @@ const UserForm: React.FC<UserFormProps> = ({ user, onBack, onSave }) => {
 
   const selectedRole = watch('role');
 
+  // 공통 코드 로드
+  useEffect(() => {
+    const loadCommonCodes = async () => {
+      try {
+        setLoading(true);
+        const [deptCodes, posCodes, relCodes] = await Promise.all([
+          CommonCodeService.getDepartments(),
+          CommonCodeService.getPositions(),
+          CommonCodeService.getRelationships()
+        ]);
+        setDepartments(deptCodes);
+        setPositions(posCodes);
+        setRelationships(relCodes);
+      } catch (error) {
+        console.error('공통 코드 로드 실패:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadCommonCodes();
+  }, []);
+
   const onSubmit = async (data: UserFormData) => {
     const userData: Partial<User> = {
       name: data.name,
@@ -88,19 +118,6 @@ const UserForm: React.FC<UserFormProps> = ({ user, onBack, onSave }) => {
     onSave(userData);
   };
 
-  const departments = [
-    'IT팀', '영업본부', '영업1팀', '영업2팀', '마케팅팀', 
-    '고객서비스팀', '교육팀', '교육운영팀', '인사팀', '재무팀', '기획팀'
-  ];
-
-  const positions = [
-    '사원', '주임', '대리', '과장', '차장', '부장', '팀장', '본부장', '이사'
-  ];
-
-  const relationships = [
-    '부모', '배우자', '형제/자매', '자녀', '친구', '동료', '기타'
-  ];
-
   return (
     <div className="max-w-4xl mx-auto space-y-6">
       {/* 헤더 */}
@@ -108,7 +125,7 @@ const UserForm: React.FC<UserFormProps> = ({ user, onBack, onSave }) => {
         <div className="flex items-center">
           <button
             onClick={onBack}
-            className="mr-4 p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
+            className="mr-4 p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-full transition-colors"
           >
             <ArrowLeftIcon className="h-5 w-5" />
           </button>
@@ -136,11 +153,11 @@ const UserForm: React.FC<UserFormProps> = ({ user, onBack, onSave }) => {
               <input
                 type="text"
                 {...register('name', { required: '이름을 입력해주세요.' })}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 placeholder="홍길동"
               />
               {errors.name && (
-                <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>
+                <p className="mt-1 text-sm text-destructive">{errors.name.message}</p>
               )}
             </div>
 
@@ -157,11 +174,11 @@ const UserForm: React.FC<UserFormProps> = ({ user, onBack, onSave }) => {
                     message: '올바른 이메일 형식을 입력해주세요.'
                   }
                 })}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 placeholder="example@company.com"
               />
               {errors.email && (
-                <p className="mt-1 text-sm text-red-600">{errors.email.message}</p>
+                <p className="mt-1 text-sm text-destructive">{errors.email.message}</p>
               )}
             </div>
 
@@ -178,11 +195,11 @@ const UserForm: React.FC<UserFormProps> = ({ user, onBack, onSave }) => {
                     message: '올바른 전화번호 형식을 입력해주세요. (010-0000-0000)'
                   }
                 })}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 placeholder="010-1234-5678"
               />
               {errors.phone && (
-                <p className="mt-1 text-sm text-red-600">{errors.phone.message}</p>
+                <p className="mt-1 text-sm text-destructive">{errors.phone.message}</p>
               )}
             </div>
 
@@ -193,11 +210,11 @@ const UserForm: React.FC<UserFormProps> = ({ user, onBack, onSave }) => {
               <input
                 type="text"
                 {...register('employee_id', { required: '사번을 입력해주세요.' })}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 placeholder="EMP001"
               />
               {errors.employee_id && (
-                <p className="mt-1 text-sm text-red-600">{errors.employee_id.message}</p>
+                <p className="mt-1 text-sm text-destructive">{errors.employee_id.message}</p>
               )}
             </div>
           </div>
@@ -214,14 +231,14 @@ const UserForm: React.FC<UserFormProps> = ({ user, onBack, onSave }) => {
               </label>
               <select
                 {...register('role', { required: '역할을 선택해주세요.' })}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               >
                 {(Object.keys(roleLabels) as UserRole[]).map(role => (
                   <option key={role} value={role}>{roleLabels[role]}</option>
                 ))}
               </select>
               {errors.role && (
-                <p className="mt-1 text-sm text-red-600">{errors.role.message}</p>
+                <p className="mt-1 text-sm text-destructive">{errors.role.message}</p>
               )}
             </div>
 
@@ -231,7 +248,7 @@ const UserForm: React.FC<UserFormProps> = ({ user, onBack, onSave }) => {
               </label>
               <select
                 {...register('status', { required: '상태를 선택해주세요.' })}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               >
                 {(Object.keys(userStatusLabels) as UserStatus[]).map(status => (
                   <option key={status} value={status}>{userStatusLabels[status]}</option>
@@ -245,15 +262,16 @@ const UserForm: React.FC<UserFormProps> = ({ user, onBack, onSave }) => {
               </label>
               <select
                 {...register('department', { required: '부서를 선택해주세요.' })}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                disabled={loading}
               >
                 <option value="">부서 선택</option>
                 {departments.map(dept => (
-                  <option key={dept} value={dept}>{dept}</option>
+                  <option key={dept.id} value={dept.name}>{dept.name}</option>
                 ))}
               </select>
               {errors.department && (
-                <p className="mt-1 text-sm text-red-600">{errors.department.message}</p>
+                <p className="mt-1 text-sm text-destructive">{errors.department.message}</p>
               )}
             </div>
 
@@ -263,15 +281,16 @@ const UserForm: React.FC<UserFormProps> = ({ user, onBack, onSave }) => {
               </label>
               <select
                 {...register('position', { required: '직급을 선택해주세요.' })}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                disabled={loading}
               >
                 <option value="">직급 선택</option>
                 {positions.map(pos => (
-                  <option key={pos} value={pos}>{pos}</option>
+                  <option key={pos.id} value={pos.name}>{pos.name}</option>
                 ))}
               </select>
               {errors.position && (
-                <p className="mt-1 text-sm text-red-600">{errors.position.message}</p>
+                <p className="mt-1 text-sm text-destructive">{errors.position.message}</p>
               )}
             </div>
 
@@ -282,10 +301,10 @@ const UserForm: React.FC<UserFormProps> = ({ user, onBack, onSave }) => {
               <input
                 type="date"
                 {...register('hire_date', { required: '입사일을 선택해주세요.' })}
-                className="w-full md:w-1/2 border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full md:w-1/2 border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               />
               {errors.hire_date && (
-                <p className="mt-1 text-sm text-red-600">{errors.hire_date.message}</p>
+                <p className="mt-1 text-sm text-destructive">{errors.hire_date.message}</p>
               )}
             </div>
           </div>
@@ -304,7 +323,7 @@ const UserForm: React.FC<UserFormProps> = ({ user, onBack, onSave }) => {
                 <input
                   type="text"
                   {...register('emergency_contact_name')}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   placeholder="김가족"
                 />
               </div>
@@ -315,11 +334,12 @@ const UserForm: React.FC<UserFormProps> = ({ user, onBack, onSave }) => {
                 </label>
                 <select
                   {...register('emergency_contact_relationship')}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  disabled={loading}
                 >
                   <option value="">관계 선택</option>
                   {relationships.map(rel => (
-                    <option key={rel} value={rel}>{rel}</option>
+                    <option key={rel.id} value={rel.name}>{rel.name}</option>
                   ))}
                 </select>
               </div>
@@ -331,7 +351,7 @@ const UserForm: React.FC<UserFormProps> = ({ user, onBack, onSave }) => {
                 <input
                   type="tel"
                   {...register('emergency_contact_phone')}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   placeholder="010-9876-5432"
                 />
               </div>
@@ -345,7 +365,7 @@ const UserForm: React.FC<UserFormProps> = ({ user, onBack, onSave }) => {
             <button
               type="button"
               onClick={onBack}
-              className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+              className="px-6 py-2 border border-gray-300 text-gray-700 rounded-full hover:bg-gray-50 transition-colors"
             >
               취소
             </button>

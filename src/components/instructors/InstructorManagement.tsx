@@ -291,9 +291,9 @@ const InstructorManagement: React.FC = () => {
       case 'active':
         return <CheckCircleIcon className="h-5 w-5 text-gray-600" />;
       case 'inactive':
-        return <XCircleIcon className="h-5 w-5 text-red-500" />;
+        return <XCircleIcon className="h-5 w-5 text-destructive" />;
       case 'on_leave':
-        return <ClockIcon className="h-5 w-5 text-yellow-500" />;
+        return <ClockIcon className="h-5 w-5 text-foreground" />;
       default:
         return null;
     }
@@ -317,9 +317,9 @@ const InstructorManagement: React.FC = () => {
       case 'active':
         return 'bg-gray-100 text-gray-700';
       case 'inactive':
-        return 'bg-red-100 text-red-700';
+        return 'bg-destructive/10 text-destructive';
       case 'on_leave':
-        return 'bg-yellow-100 text-yellow-700';
+        return 'bg-yellow-100 text-orange-700';
       default:
         return 'bg-gray-100 text-gray-700';
     }
@@ -358,11 +358,11 @@ const InstructorManagement: React.FC = () => {
       case 'in_progress':
         return 'bg-gray-100 text-gray-700';
       case 'assigned':
-        return 'bg-yellow-100 text-yellow-700';
+        return 'bg-yellow-100 text-orange-700';
       case 'completed':
         return 'bg-gray-100 text-gray-600';
       case 'cancelled':
-        return 'bg-red-100 text-red-700';
+        return 'bg-destructive/10 text-destructive';
       default:
         return 'bg-gray-100 text-gray-700';
     }
@@ -399,8 +399,8 @@ const InstructorManagement: React.FC = () => {
               강사 프로필, 과정 배정, 역할 권한을 관리합니다.
             </p>
           </div>
-          <button className="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors flex items-center">
-            <PlusIcon className="h-4 w-4 mr-2" />
+          <button className="btn-base btn-lg btn-dark">
+            <PlusIcon className="h-5 w-5" />
             강사 등록
           </button>
         </div>
@@ -554,7 +554,7 @@ const InstructorManagement: React.FC = () => {
                 <select
                   value={selectedStatus}
                   onChange={(e) => setSelectedStatus(e.target.value)}
-                  className="flex-1 sm:w-64 border-2 border-gray-200 rounded-xl px-6 py-3.5 text-base bg-white text-gray-700 font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all shadow-sm hover:border-gray-300 appearance-none cursor-pointer"
+                  className="flex-1 sm:w-64 border-2 border-gray-200 rounded-lg px-6 py-3.5 text-base bg-white text-gray-700 font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all shadow-sm hover:border-gray-300 appearance-none cursor-pointer"
                   style={{
                     backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`,
                     backgroundPosition: 'right 0.75rem center',
@@ -570,7 +570,7 @@ const InstructorManagement: React.FC = () => {
                 </select>
 
                 {/* 결과 카운트 */}
-                <div className="flex items-center px-4 py-2.5 bg-secondary/30 rounded-lg border border-border">
+                <div className="flex items-center px-4 py-2.5 bg-secondary/30 rounded-full border border-border">
                   <FunnelIcon className="h-4 w-4 mr-2 text-muted-foreground" />
                   <span className="text-sm font-medium text-foreground whitespace-nowrap">
                     총 <span className="text-primary font-semibold">{filteredInstructors.length}</span>명
@@ -584,7 +584,7 @@ const InstructorManagement: React.FC = () => {
                   <div key={instructor.id} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex items-center space-x-3">
-                        <div className="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center">
+                        <div className="w-12 h-12 bg-gray-200 rounded-lg flex items-center justify-center">
                           <UserIcon className="h-6 w-6 text-gray-600" />
                         </div>
                         <div>
@@ -613,10 +613,10 @@ const InstructorManagement: React.FC = () => {
                     </div>
 
                     <div className="flex items-center space-x-2">
-                      <button className="flex-1 bg-gray-600 text-white px-3 py-2 rounded text-sm hover:bg-gray-700 transition-colors">
+                      <button className="flex-1 btn-base btn-sm btn-primary">
                         프로필 보기
                       </button>
-                      <button className="px-3 py-2 border border-gray-300 text-gray-700 rounded text-sm hover:bg-gray-50 transition-colors">
+                      <button className="btn-base btn-sm btn-secondary">
                         편집
                       </button>
                     </div>
@@ -631,7 +631,8 @@ const InstructorManagement: React.FC = () => {
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <h3 className="text-lg font-medium text-gray-900">과정 배정 현황</h3>
-                <button className="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors">
+                <button className="btn-base btn-dark">
+                  <PlusIcon className="h-4 w-4" />
                   새 배정 생성
                 </button>
               </div>
@@ -672,10 +673,10 @@ const InstructorManagement: React.FC = () => {
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                           <div className="flex items-center space-x-2">
-                            <button className="text-gray-600 hover:text-gray-700">
+                            <button className="btn-base btn-sm btn-primary">
                               보기
                             </button>
-                            <button className="text-gray-600 hover:text-gray-700">
+                            <button className="btn-base btn-sm btn-secondary">
                               편집
                             </button>
                           </div>
@@ -693,7 +694,7 @@ const InstructorManagement: React.FC = () => {
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <h3 className="text-lg font-medium text-gray-900">강사 역할 및 권한</h3>
-                <button className="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors">
+                <button className="bg-gray-600 text-white px-4 py-2 rounded-full hover:bg-gray-700 transition-colors">
                   새 역할 생성
                 </button>
               </div>
@@ -722,10 +723,10 @@ const InstructorManagement: React.FC = () => {
                     </div>
 
                     <div className="flex items-center space-x-2">
-                      <button className="flex-1 bg-gray-500 text-white px-3 py-2 rounded text-sm hover:bg-gray-600 transition-colors">
+                      <button className="flex-1 bg-gray-500 text-white px-3 py-2 rounded-full text-sm hover:bg-gray-600 transition-colors">
                         권한 보기
                       </button>
-                      <button className="px-3 py-2 border border-gray-300 text-gray-700 rounded text-sm hover:bg-gray-50 transition-colors">
+                      <button className="px-3 py-2 border border-gray-300 text-gray-700 rounded-full text-sm hover:bg-gray-50 transition-colors">
                         편집
                       </button>
                     </div>
@@ -755,9 +756,9 @@ const InstructorManagement: React.FC = () => {
                             <span className="text-gray-700">{instructor.name}</span>
                             <span className="text-gray-600">{utilization}%</span>
                           </div>
-                          <div className="w-full bg-gray-200 rounded-full h-2">
+                          <div className="w-full bg-gray-200 rounded-lg h-2">
                             <div 
-                              className="bg-gray-600 h-2 rounded-full"
+                              className="bg-gray-600 h-2 rounded-lg"
                               style={{ width: `${utilization}%` }}
                             />
                           </div>

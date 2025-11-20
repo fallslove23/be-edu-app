@@ -127,7 +127,7 @@ const IntegratedAssessmentManagement: React.FC<IntegratedAssessmentManagementPro
                   <button
                     key={index}
                     onClick={action.action}
-                    className={`px-4 py-2 rounded-lg transition-colors flex items-center text-sm font-medium ${
+                    className={`px-4 py-2 rounded-full transition-colors flex items-center text-sm font-medium ${
                       action.primary
                         ? 'btn-primary'
                         : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -210,7 +210,7 @@ const IntegratedAssessmentManagement: React.FC<IntegratedAssessmentManagementPro
           
           <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
             <div className="flex items-center">
-              <ChartBarIcon className="h-8 w-8 text-yellow-500" />
+              <ChartBarIcon className="h-8 w-8 text-foreground" />
               <div className="ml-4">
                 <p className="text-sm font-medium text-gray-600">평균 점수</p>
                 <p className="text-2xl font-semibold text-gray-900">87.4점</p>

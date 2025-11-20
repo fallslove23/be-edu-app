@@ -36,7 +36,7 @@ const RoleSwitcher: React.FC = () => {
     <div className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center space-x-2 px-3 py-2 text-sm bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors mobile-button-enhanced touch-target-improved"
+        className="flex items-center space-x-2 px-3 py-2 text-sm bg-gray-100 hover:bg-gray-200 rounded-full transition-colors mobile-button-enhanced touch-target-improved"
       >
         <ShieldCheckIcon className="h-4 w-4 icon-neutral" />
         <span>{roleLabels[user.role]}</span>

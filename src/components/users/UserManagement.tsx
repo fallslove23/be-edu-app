@@ -9,13 +9,15 @@ import {
   UserIcon,
   PhoneIcon,
   EnvelopeIcon,
-  BuildingOfficeIcon
+  BuildingOfficeIcon,
+  TrashIcon
 } from '@heroicons/react/24/outline';
 import type { User, UserRole, UserStatus } from '../../types/auth.types';
 import { roleLabels, userStatusLabels } from '../../types/auth.types';
 import UserForm from './UserForm';
 import UserDetail from './UserDetail';
 import BulkImportModal from './BulkImportModal';
+import { UserService, CreateUserData, UpdateUserData } from '../../services/user.services';
 
 type ViewType = 'list' | 'form' | 'detail';
 
@@ -28,8 +30,31 @@ const UserManagement: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<UserStatus | 'all'>('all');
   const [showImportModal, setShowImportModal] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // Mock data
+  // Supabase에서 사용자 로드
+  useEffect(() => {
+    loadUsers();
+  }, []);
+
+  const loadUsers = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      const data = await UserService.getUsers();
+      setUsers(data || []);
+    } catch (err: any) {
+      console.error('Failed to load users:', err);
+      setError('사용자 목록을 불러오는데 실패했습니다.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 기존 Mock data 제거
+  /*
   useEffect(() => {
     const mockUsers: User[] = [
       // 관리자
@@ -151,6 +176,7 @@ const UserManagement: React.FC = () => {
     setUsers(mockUsers);
     setFilteredUsers(mockUsers);
   }, []);
+  */
 
   // 필터링 로직
   useEffect(() => {
@@ -194,24 +220,68 @@ const UserManagement: React.FC = () => {
     setCurrentView('detail');
   };
 
-  const handleSaveUser = (userData: Partial<User>) => {
-    if (selectedUser) {
-      // 수정
-      const updatedUsers = users.map(u =>
-        u.id === selectedUser.id ? { ...u, ...userData, updated_at: new Date().toISOString() } : u
-      );
-      setUsers(updatedUsers);
-    } else {
-      // 새 사용자 생성
-      const newUser: User = {
-        ...userData as User,
-        id: Date.now().toString(),
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
-      };
-      setUsers([...users, newUser]);
+  const handleSaveUser = async (userData: Partial<User>) => {
+    try {
+      setError(null);
+
+      if (selectedUser) {
+        // 수정
+        const updateData: UpdateUserData = {
+          name: userData.name,
+          phone: userData.phone,
+          department: userData.department,
+          employee_id: userData.employee_id,
+          position: userData.position,
+          hire_date: userData.hire_date,
+          status: userData.status
+        };
+
+        await UserService.updateUser(selectedUser.id, updateData);
+        alert('사용자 정보가 수정되었습니다.');
+      } else {
+        // 새 사용자 생성
+        if (!userData.email || !userData.name || !userData.role) {
+          throw new Error('이메일, 이름, 역할은 필수입니다.');
+        }
+
+        const createData: CreateUserData = {
+          email: userData.email,
+          name: userData.name,
+          phone: userData.phone,
+          role: userData.role,
+          department: userData.department,
+          employee_id: userData.employee_id,
+          position: userData.position,
+          hire_date: userData.hire_date,
+          status: userData.status || 'active'
+        };
+
+        await UserService.createUser(createData);
+        alert('사용자가 생성되었습니다.');
+      }
+
+      setCurrentView('list');
+      await loadUsers();
+    } catch (err: any) {
+      console.error('Failed to save user:', err);
+      setError(err.message || '사용자 저장에 실패했습니다.');
     }
-    setCurrentView('list');
+  };
+
+  const handleDeleteUser = async (user: User) => {
+    if (!confirm(`${user.name} 사용자를 삭제하시겠습니까?\\n\\n이 작업은 되돌릴 수 없습니다.`)) {
+      return;
+    }
+
+    try {
+      setError(null);
+      await UserService.deleteUser(user.id);
+      alert('사용자가 삭제되었습니다.');
+      await loadUsers();
+    } catch (err: any) {
+      console.error('Failed to delete user:', err);
+      setError(err.message || '사용자 삭제에 실패했습니다.');
+    }
   };
 
   const handleBack = () => {
@@ -219,9 +289,32 @@ const UserManagement: React.FC = () => {
     setSelectedUser(null);
   };
 
-  const handleBulkImport = (importedUsers: User[]) => {
-    setUsers([...users, ...importedUsers]);
-    setShowImportModal(false);
+  const handleBulkImport = async (importedUsers: User[]) => {
+    try {
+      setError(null);
+
+      // UserService를 사용한 일괄 생성
+      const createDataList: CreateUserData[] = importedUsers.map(user => ({
+        email: user.email,
+        name: user.name,
+        phone: user.phone,
+        role: user.role,
+        department: user.department,
+        employee_id: user.employee_id,
+        position: user.position,
+        hire_date: user.hire_date,
+        status: user.status || 'active'
+      }));
+
+      const results = await UserService.bulkCreateUsers(createDataList);
+
+      alert(`${results.success.length}명의 사용자가 추가되었습니다.${results.failed.length > 0 ? `\\n실패: ${results.failed.length}명` : ''}`);
+      setShowImportModal(false);
+      await loadUsers();
+    } catch (err: any) {
+      console.error('Failed to import users:', err);
+      setError(err.message || '일괄 불러오기에 실패했습니다.');
+    }
   };
 
   // 역할별 사용자 수 계산
@@ -237,6 +330,14 @@ const UserManagement: React.FC = () => {
     { key: 'instructor' as const, label: '강사', count: getRoleCount('instructor') },
     { key: 'trainee' as const, label: '교육생', count: getRoleCount('trainee') }
   ];
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="text-gray-500">로딩 중...</div>
+      </div>
+    );
+  }
 
   if (currentView === 'form') {
     return (
@@ -259,39 +360,46 @@ const UserManagement: React.FC = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="p-6 space-y-6">
+      {/* 에러 메시지 */}
+      {error && (
+        <div className="bg-destructive/10 border border-destructive/50 text-destructive px-4 py-3 rounded-lg">
+          {error}
+        </div>
+      )}
+
       {/* 헤더 */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <div className="bg-card rounded-lg shadow-sm border border-border p-6">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900 flex items-center">
-              <UsersIcon className="h-6 w-6 mr-2" />
+            <h1 className="text-2xl font-bold text-foreground flex items-center">
+              <UsersIcon className="h-6 w-6 mr-2 text-primary" />
               사용자 관리
             </h1>
-            <p className="text-gray-600">시스템 사용자를 역할별로 관리합니다.</p>
+            <p className="text-muted-foreground mt-1">시스템 사용자를 역할별로 관리합니다.</p>
           </div>
           <div className="flex items-center space-x-3">
             <button
               onClick={() => setShowImportModal(true)}
-              className="btn-success"
+              className="flex items-center space-x-2 px-4 py-2.5 border border-border text-foreground rounded-lg hover:bg-muted transition-colors font-medium shadow-sm"
             >
-              <ArrowUpTrayIcon className="h-4 w-4 mr-2" />
-              일괄 불러오기
+              <ArrowUpTrayIcon className="h-4 w-4" />
+              <span>일괄 불러오기</span>
             </button>
             <button
               onClick={handleCreateUser}
-              className="btn-primary"
+              className="flex items-center space-x-2 bg-primary text-primary-foreground px-4 py-2.5 rounded-lg hover:bg-primary/90 transition-colors font-medium shadow-sm"
             >
-              <PlusIcon className="h-5 w-5 mr-2" />
-              사용자 추가
+              <PlusIcon className="h-5 w-5" />
+              <span>사용자 추가</span>
             </button>
           </div>
         </div>
       </div>
 
       {/* 역할별 탭 메뉴 */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-        <div className="border-b border-gray-200">
+      <div className="bg-card rounded-lg shadow-sm border border-border">
+        <div className="border-b border-border">
           <nav className="-mb-px flex overflow-x-auto">
             {tabs.map((tab) => (
               <button
@@ -299,15 +407,15 @@ const UserManagement: React.FC = () => {
                 onClick={() => setActiveTab(tab.key)}
                 className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors whitespace-nowrap flex-shrink-0 ${
                   activeTab === tab.key
-                    ? 'border-blue-500 text-blue-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                    ? 'border-primary text-primary'
+                    : 'border-transparent text-muted-foreground hover:text-foreground hover:border-muted'
                 }`}
               >
                 {tab.label}
                 <span className={`ml-2 px-2 py-0.5 text-xs rounded-full ${
                   activeTab === tab.key
-                    ? 'bg-blue-100 text-blue-600'
-                    : 'bg-gray-100 text-gray-600'
+                    ? 'bg-primary/10 text-primary'
+                    : 'bg-muted text-muted-foreground'
                 }`}>
                   {tab.count}
                 </span>
@@ -318,7 +426,7 @@ const UserManagement: React.FC = () => {
       </div>
 
       {/* 검색 및 필터 */}
-      <div className="bg-white rounded-2xl shadow-md border border-gray-100 p-6">
+      <div className="bg-card rounded-lg shadow-sm border border-border p-6">
         <div className="flex flex-col md:flex-row gap-3">
           {/* 검색 입력 */}
           <div className="flex-1 relative">
@@ -326,7 +434,7 @@ const UserManagement: React.FC = () => {
             <input
               type="text"
               placeholder="이름, 이메일, 사번, 부서 검색..."
-              className="pl-10 pr-4 py-2.5 w-full border border-border rounded-lg bg-card text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all shadow-sm"
+              className="pl-10 pr-4 py-2.5 w-full border border-border rounded-lg bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
@@ -336,14 +444,7 @@ const UserManagement: React.FC = () => {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value as UserStatus | 'all')}
-            className="flex-1 sm:w-64 border-2 border-gray-200 rounded-xl px-6 py-3.5 text-base bg-white text-gray-700 font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all shadow-sm hover:border-gray-300 appearance-none cursor-pointer"
-            style={{
-              backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`,
-              backgroundPosition: 'right 0.75rem center',
-              backgroundRepeat: 'no-repeat',
-              backgroundSize: '1.5em 1.5em',
-              paddingRight: '2.5rem'
-            }}
+            className="w-full md:w-48 border border-border rounded-lg px-3 py-2.5 bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
           >
             <option value="all">모든 상태</option>
             {(Object.keys(userStatusLabels) as UserStatus[]).map(status => (
@@ -352,15 +453,15 @@ const UserManagement: React.FC = () => {
           </select>
 
           {/* 엑셀 내보내기 버튼 */}
-          <button className="btn-secondary flex items-center justify-center px-4 py-2.5 whitespace-nowrap">
-            <DocumentArrowDownIcon className="h-4 w-4 mr-2" />
-            엑셀 내보내기
+          <button className="flex items-center space-x-2 px-4 py-2.5 border border-border text-foreground rounded-lg hover:bg-muted transition-colors font-medium">
+            <DocumentArrowDownIcon className="h-4 w-4" />
+            <span>엑셀 내보내기</span>
           </button>
 
           {/* 결과 카운트 */}
-          <div className="flex items-center px-4 py-2.5 bg-secondary/30 rounded-lg border border-border">
+          <div className="flex items-center px-4 py-2 bg-muted/50 border border-border rounded-lg">
             <FunnelIcon className="h-4 w-4 mr-2 text-muted-foreground" />
-            <span className="text-sm font-medium text-foreground whitespace-nowrap">
+            <span className="text-sm font-medium text-foreground">
               총 <span className="text-primary font-semibold">{filteredUsers.length}</span>명
             </span>
           </div>
@@ -368,45 +469,45 @@ const UserManagement: React.FC = () => {
       </div>
 
       {/* 사용자 목록 */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200">
+      <div className="bg-card rounded-lg shadow-sm border border-border">
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-gray-50 border-b border-gray-200">
+            <thead className="bg-muted/50 border-b border-border">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   사용자 정보
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   역할/부서
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   상태
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   최근 접속
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   액션
                 </th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody className="bg-background divide-y divide-border">
               {filteredUsers.map((user) => (
-                <tr key={user.id} className="hover:bg-gray-50">
+                <tr key={user.id} className="hover:bg-muted/30 transition-colors">
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
                       <div className="flex-shrink-0 h-10 w-10">
-                        <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
-                          <UserIcon className="h-6 w-6 text-blue-600" />
+                        <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                          <UserIcon className="h-6 w-6 text-primary" />
                         </div>
                       </div>
                       <div className="ml-4">
-                        <div className="text-sm font-medium text-gray-900">{user.name}</div>
-                        <div className="text-sm text-gray-500 flex items-center">
+                        <div className="text-sm font-medium text-foreground">{user.name}</div>
+                        <div className="text-sm text-muted-foreground flex items-center">
                           <EnvelopeIcon className="h-3 w-3 mr-1" />
                           {user.email}
                         </div>
-                        <div className="text-sm text-gray-500 flex items-center">
+                        <div className="text-sm text-muted-foreground flex items-center">
                           <PhoneIcon className="h-3 w-3 mr-1" />
                           {user.phone}
                         </div>
@@ -414,49 +515,58 @@ const UserManagement: React.FC = () => {
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900">
+                    <div className="text-sm text-foreground">
                       <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                        user.role === 'admin' ? 'bg-red-100 text-red-800' :
-                        user.role === 'manager' ? 'bg-purple-100 text-purple-800' :
-                        user.role === 'operator' ? 'bg-yellow-100 text-yellow-800' :
-                        user.role === 'instructor' ? 'bg-green-100 text-green-800' :
-                        'bg-blue-100 text-blue-800'
+                        user.role === 'admin' ? 'bg-destructive/10 text-destructive' :
+                        user.role === 'manager' ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-400' :
+                        user.role === 'operator' ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-400' :
+                        user.role === 'instructor' ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400' :
+                        'bg-primary/10 text-primary'
                       }`}>
                         {roleLabels[user.role]}
                       </span>
                     </div>
-                    <div className="text-sm text-gray-500 flex items-center mt-1">
+                    <div className="text-sm text-muted-foreground flex items-center mt-1">
                       <BuildingOfficeIcon className="h-3 w-3 mr-1" />
                       {user.department} / {user.position}
                     </div>
-                    <div className="text-xs text-gray-400">사번: {user.employee_id}</div>
+                    <div className="text-xs text-muted-foreground">사번: {user.employee_id}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                      user.status === 'active' ? 'bg-green-100 text-green-800' :
-                      user.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                      user.status === 'suspended' ? 'bg-red-100 text-red-800' :
-                      'bg-gray-100 text-gray-800'
+                      user.status === 'active' ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400' :
+                      user.status === 'pending' ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-400' :
+                      user.status === 'suspended' ? 'bg-destructive/10 text-destructive' :
+                      'bg-muted text-muted-foreground'
                     }`}>
                       {userStatusLabels[user.status]}
                     </span>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
                     {user.last_login ? new Date(user.last_login).toLocaleDateString('ko-KR') : '미접속'}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
-                    <button
-                      onClick={() => handleViewUser(user)}
-                      className="text-blue-600 hover:text-blue-900"
-                    >
-                      상세보기
-                    </button>
-                    <button
-                      onClick={() => handleEditUser(user)}
-                      className="text-indigo-600 hover:text-indigo-900"
-                    >
-                      수정
-                    </button>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                    <div className="flex items-center space-x-2">
+                      <button
+                        onClick={() => handleViewUser(user)}
+                        className="px-3 py-1.5 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors text-xs font-medium"
+                      >
+                        상세보기
+                      </button>
+                      <button
+                        onClick={() => handleEditUser(user)}
+                        className="px-3 py-1.5 border border-border text-foreground rounded-lg hover:bg-muted transition-colors text-xs font-medium"
+                      >
+                        수정
+                      </button>
+                      <button
+                        onClick={() => handleDeleteUser(user)}
+                        className="p-1.5 text-destructive hover:bg-destructive/10 rounded-lg transition-colors"
+                        title="사용자 삭제"
+                      >
+                        <TrashIcon className="h-4 w-4" />
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -464,11 +574,18 @@ const UserManagement: React.FC = () => {
           </table>
         </div>
 
-        {filteredUsers.length === 0 && (
+        {filteredUsers.length === 0 && !loading && (
           <div className="text-center py-12">
-            <UsersIcon className="mx-auto h-12 w-12 text-gray-400" />
-            <h3 className="mt-2 text-sm font-medium text-gray-900">사용자가 없습니다</h3>
-            <p className="mt-1 text-sm text-gray-500">새 사용자를 추가해보세요.</p>
+            <UsersIcon className="mx-auto h-12 w-12 text-muted-foreground" />
+            <h3 className="mt-2 text-sm font-medium text-foreground">사용자가 없습니다</h3>
+            <p className="mt-1 text-sm text-muted-foreground">새 사용자를 추가해보세요.</p>
+          </div>
+        )}
+
+        {loading && (
+          <div className="text-center py-12">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+            <p className="text-muted-foreground">로딩 중...</p>
           </div>
         )}
       </div>

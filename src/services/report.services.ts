@@ -136,44 +136,46 @@ export class ReportService {
    * 과정 이수 정보 조회
    */
   private static async getCourseCompletions(traineeId: string): Promise<CourseCompletionInfo[]> {
-    const { data, error } = await supabase
-      .from('course_enrollments')
-      .select(`
-        id,
-        enrolled_at,
-        status,
-        completed_at,
-        session:course_sessions(
+    try {
+      const { data, error } = await supabase
+        .from('course_enrollments')
+        .select(`
           id,
-          session_name,
-          session_code,
-          start_date,
-          end_date
-        ),
-        division:class_divisions(
-          division_name
-        )
-      `)
-      .eq('trainee_id', traineeId)
-      .order('enrolled_at', { ascending: false });
+          enrolled_at,
+          status,
+          completed_at,
+          course_id,
+          courses (
+            id,
+            name,
+            start_date,
+            end_date
+          )
+        `)
+        .eq('trainee_id', traineeId)
+        .order('enrolled_at', { ascending: false });
 
-    if (error) {
-      console.error('과정 이수 정보 조회 실패:', error);
+      if (error) {
+        console.error('과정 이수 정보 조회 실패:', error);
+        return [];
+      }
+
+      return (data || []).map((enrollment: any) => ({
+        id: enrollment.id,
+        course_name: enrollment.courses?.name || '과정명 없음',
+        session_code: enrollment.course_id || '',
+        division_name: undefined,
+        start_date: enrollment.courses?.start_date || '',
+        end_date: enrollment.courses?.end_date || '',
+        completion_status: enrollment.status as CompletionStatus,
+        completion_date: enrollment.completed_at,
+        certificate_issued: false,
+        certificate_number: undefined
+      }));
+    } catch (error) {
+      console.error('과정 이수 정보 조회 중 예외 발생:', error);
       return [];
     }
-
-    return (data || []).map((enrollment: any) => ({
-      id: enrollment.id,
-      course_name: enrollment.session?.session_name || '과정명 없음',
-      session_code: enrollment.session?.session_code || '',
-      division_name: enrollment.division?.division_name,
-      start_date: enrollment.session?.start_date || '',
-      end_date: enrollment.session?.end_date || '',
-      completion_status: enrollment.status as CompletionStatus,
-      completion_date: enrollment.completed_at,
-      certificate_issued: false, // TODO: 인증서 발급 여부 확인
-      certificate_number: undefined
-    }));
   }
 
   /**

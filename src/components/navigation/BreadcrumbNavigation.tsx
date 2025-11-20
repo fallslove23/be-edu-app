@@ -50,7 +50,7 @@ const BreadcrumbNavigation: React.FC<BreadcrumbNavigationProps> = ({
   }
 
   return (
-    <nav className="flex items-center space-x-1.5 text-sm text-gray-600 dark:text-gray-400 py-2 bg-gray-50 dark:bg-gray-800 rounded-lg px-3">
+    <nav className="flex items-center space-x-1.5 text-sm text-gray-600 dark:text-gray-400 py-2 bg-gray-50 dark:bg-gray-800 rounded-full px-3">
       {breadcrumbs.map((item, index) => (
         <div key={item.id} className="contents">
           {index > 0 && (

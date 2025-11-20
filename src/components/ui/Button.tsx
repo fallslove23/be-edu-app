@@ -7,20 +7,26 @@ import { cva, type VariantProps } from 'class-variance-authority';
  */
 
 const buttonVariants = cva(
-  // Base styles - 모든 버튼에 공통 적용 (둥근 사각형)
-  'inline-flex items-center justify-center gap-2 rounded-md font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none',
+  // Base styles - UI 디자인 시스템 기준 (완전히 둥근 pill 스타일)
+  'inline-flex items-center justify-center gap-2 rounded-full font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed',
   {
     variants: {
-      // 버튼 스타일 변형
+      // 버튼 스타일 변형 (디자인 토큰 사용)
       variant: {
-        primary: 'bg-indigo-600 text-white hover:bg-indigo-700 focus:ring-indigo-500 shadow-sm',
-        secondary: 'bg-gray-100 text-gray-900 hover:bg-gray-200 focus:ring-gray-500',
-        success: 'bg-green-600 text-white hover:bg-green-700 focus:ring-green-500 shadow-sm',
-        danger: 'bg-red-600 text-white hover:bg-red-700 focus:ring-red-500 shadow-sm',
-        warning: 'bg-yellow-500 text-white hover:bg-yellow-600 focus:ring-yellow-400 shadow-sm',
-        outline: 'border-2 border-indigo-600 text-indigo-600 hover:bg-indigo-50 focus:ring-indigo-500',
-        ghost: 'text-gray-700 hover:bg-gray-100 focus:ring-gray-500',
-        link: 'text-indigo-600 hover:text-indigo-700 underline-offset-4 hover:underline focus:ring-indigo-500',
+        // Primary 버튼 (메인 액션)
+        primary: 'bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm',
+        // Secondary 버튼 (보조 액션) - 스크린샷 스타일
+        secondary: 'border border-border text-foreground hover:bg-muted bg-background',
+        // Success 버튼
+        success: 'bg-green-600 text-white hover:bg-green-700 shadow-sm',
+        // Danger 버튼 (삭제 등)
+        danger: 'bg-destructive text-destructive-foreground hover:bg-destructive/90 shadow-sm',
+        // Outline 버튼 (스크린샷 스타일 - 기본)
+        outline: 'border border-border text-foreground hover:bg-muted bg-background',
+        // Ghost 버튼
+        ghost: 'text-foreground hover:bg-muted',
+        // Link 버튼
+        link: 'text-primary hover:text-primary/90 underline-offset-4 hover:underline',
       },
       // 버튼 크기
       size: {
@@ -37,7 +43,7 @@ const buttonVariants = cva(
       },
     },
     defaultVariants: {
-      variant: 'primary',
+      variant: 'outline', // 기본값을 outline으로 변경 (스크린샷 스타일)
       size: 'md',
       fullWidth: false,
     },

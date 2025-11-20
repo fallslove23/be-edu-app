@@ -190,7 +190,7 @@ const MobileCamera: React.FC<MobileCameraProps> = ({
         </div>
         <button
           onClick={onClose}
-          className="p-2 hover:bg-white hover:bg-opacity-20 rounded-lg"
+          className="p-2 hover:bg-white hover:bg-opacity-20 rounded-full"
         >
           <XMarkIcon className="h-6 w-6" />
         </button>
@@ -227,7 +227,7 @@ const MobileCamera: React.FC<MobileCameraProps> = ({
                 <div className="flex space-x-3">
                   <button
                     onClick={retakePhoto}
-                    className="flex-1 bg-gray-200 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-300"
+                    className="flex-1 bg-gray-200 text-gray-800 px-4 py-2 rounded-full hover:bg-gray-300"
                   >
                     다시 촬영
                   </button>
@@ -266,7 +266,7 @@ const MobileCamera: React.FC<MobileCameraProps> = ({
               </div>
               
               {/* 촬영 안내 텍스트 */}
-              <div className="absolute top-8 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-50 text-white px-4 py-2 rounded-lg">
+              <div className="absolute top-8 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-50 text-white px-4 py-2 rounded-full">
                 <p className="text-sm text-center">
                   현장 활동 사진을 촬영해주세요
                   {isRequired && <span className="text-red-400"> (필수)</span>}
@@ -304,16 +304,16 @@ const MobileCamera: React.FC<MobileCameraProps> = ({
               } transition-all`}
             >
               {isCapturing ? (
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-600"></div>
+                <div className="animate-spin rounded-lg h-8 w-8 border-b-2 border-gray-600"></div>
               ) : (
-                <div className="w-16 h-16 bg-red-500 rounded-full"></div>
+                <div className="w-16 h-16 bg-red-500 rounded-lg"></div>
               )}
             </button>
 
             {/* 카메라 전환 버튼 */}
             <button
               onClick={switchCamera}
-              className="p-3 bg-white bg-opacity-20 rounded-lg hover:bg-opacity-30"
+              className="p-3 bg-white bg-opacity-20 rounded-full hover:bg-opacity-30"
             >
               <ArrowPathIcon className="h-6 w-6 text-white" />
             </button>

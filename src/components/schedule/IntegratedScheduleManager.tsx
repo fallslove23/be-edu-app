@@ -111,13 +111,27 @@ export default function IntegratedScheduleManager() {
       // 과정 회차 목록 로드
       let courseRoundsData: any[] = [];
       try {
-        const { data } = await import('../../services/supabase').then(m => m.supabase
+        const { data, error } = await import('../../services/supabase').then(m => m.supabase
           .from('course_rounds')
-          .select('id, round_code, course_templates(title)')
-          .order('round_code', { ascending: false }));
+          .select('*')
+          .order('created_at', { ascending: false }));
+
+        if (error) {
+          console.error('❌ Course rounds query error:', error);
+          console.error('Error code:', error.code);
+          console.error('Error message:', error.message);
+        } else {
+          console.log('✅ Loaded course rounds successfully!');
+          console.log('Number of course rounds:', data?.length || 0);
+          if (data && data.length > 0) {
+            console.log('First course round:', data[0]);
+            console.log('Available fields:', Object.keys(data[0]));
+          }
+        }
+
         courseRoundsData = data || [];
       } catch (err) {
-        console.warn('Failed to load course rounds:', err);
+        console.error('Failed to load course rounds - exception:', err);
       }
 
       // 과목 목록 로드
@@ -239,6 +253,7 @@ export default function IntegratedScheduleManager() {
 
   const handleCreateSchedule = async () => {
     try {
+      // 필수 항목 검증 (과정은 선택사항으로 변경)
       if (!scheduleForm.title.trim()) {
         alert('일정 제목을 입력해주세요');
         return;
@@ -246,6 +261,16 @@ export default function IntegratedScheduleManager() {
       if (!scheduleForm.start_time || !scheduleForm.end_time) {
         alert('시작 시간과 종료 시간을 입력해주세요');
         return;
+      }
+
+      // 독립 세션 생성 시 안내 메시지
+      if (!scheduleForm.course_round_id) {
+        const confirmed = window.confirm(
+          '독립 세션으로 생성됩니다.\n' +
+          '나중에 과정으로 그룹화할 수 있습니다.\n\n' +
+          '계속하시겠습니까?'
+        );
+        if (!confirmed) return;
       }
 
       // 충돌 검사
@@ -656,6 +681,36 @@ export default function IntegratedScheduleManager() {
     });
   };
 
+  // 날짜/셀 클릭으로 일정 추가 핸들러
+  const handleDateCellClick = (date: Date, hour?: number) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const dateStr = `${year}-${month}-${day}`;
+
+    // 시간 설정 (hour가 주어지면 해당 시간, 아니면 09:00 기본값)
+    const startHour = hour !== undefined ? String(hour).padStart(2, '0') : '09';
+    const endHour = hour !== undefined ? String(hour + 1).padStart(2, '0') : '10';
+
+    const startTimeStr = `${dateStr}T${startHour}:00`;
+    const endTimeStr = `${dateStr}T${endHour}:00`;
+
+    // 폼 초기화 및 날짜/시간 설정
+    setScheduleForm({
+      course_round_id: '',
+      title: '',
+      subject: '',
+      description: '',
+      start_time: startTimeStr,
+      end_time: endTimeStr,
+      classroom_id: '',
+      instructor_id: '',
+    });
+
+    // 모달 열기
+    setShowCreateModal(true);
+  };
+
   const renderMonthView = () => {
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth();
@@ -694,7 +749,7 @@ export default function IntegratedScheduleManager() {
               key={day}
               className={`p-3 text-center font-medium text-sm ${
                 index === 0
-                  ? 'text-red-600 dark:text-red-400'
+                  ? 'text-destructive dark:text-red-400'
                   : index === 6
                   ? 'text-blue-600 dark:text-blue-400'
                   : 'text-gray-700 dark:text-gray-300'
@@ -718,19 +773,25 @@ export default function IntegratedScheduleManager() {
               return (
                 <div
                   key={dayIndex}
-                  className={`min-h-[120px] p-2 border-r border-gray-200 dark:border-gray-700 last:border-r-0 transition-colors ${
+                  className={`min-h-[120px] p-2 border-r border-gray-200 dark:border-gray-700 last:border-r-0 transition-colors cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-900/50 ${
                     !isCurrentMonth ? 'bg-gray-50 dark:bg-gray-900' : ''
                   } ${isDragOver ? 'bg-teal-50 dark:bg-teal-900/20 ring-2 ring-teal-500' : ''}`}
+                  onClick={(e) => {
+                    // 이벤트 버튼 클릭이 아닌 경우에만 날짜 클릭으로 처리
+                    if (e.target === e.currentTarget || (e.target as HTMLElement).closest('.day-number')) {
+                      handleDateCellClick(day);
+                    }
+                  }}
                   onDragOver={(e) => handleDragOver(e, day)}
                   onDragLeave={handleDragLeave}
                   onDrop={(e) => handleDrop(e, day)}
                 >
                   <div
-                    className={`text-sm font-medium mb-1 ${
+                    className={`text-sm font-medium mb-1 day-number ${
                       isToday
                         ? 'inline-flex items-center justify-center w-7 h-7 bg-teal-600 text-white rounded-full'
                         : dayIndex === 0
-                        ? 'text-red-600 dark:text-red-400'
+                        ? 'text-destructive dark:text-red-400'
                         : dayIndex === 6
                         ? 'text-blue-600 dark:text-blue-400'
                         : isCurrentMonth
@@ -806,7 +867,7 @@ export default function IntegratedScheduleManager() {
             return (
               <div key={index} className="p-4 text-center border-r border-gray-200 dark:border-gray-700 last:border-r-0">
                 <div className={`text-xs font-medium mb-1 ${
-                  index === 0 ? 'text-red-600 dark:text-red-400' :
+                  index === 0 ? 'text-destructive dark:text-red-400' :
                   index === 6 ? 'text-blue-600 dark:text-blue-400' :
                   'text-gray-600 dark:text-gray-400'
                 }`}>
@@ -852,9 +913,15 @@ export default function IntegratedScheduleManager() {
                   return (
                     <div
                       key={dayIndex}
-                      className={`p-2 border-r border-gray-200 dark:border-gray-700 last:border-r-0 min-h-[70px] relative transition-colors ${
+                      className={`p-2 border-r border-gray-200 dark:border-gray-700 last:border-r-0 min-h-[70px] relative transition-colors cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-900/50 ${
                         isDragOver ? 'bg-teal-50 dark:bg-teal-900/20 ring-2 ring-inset ring-teal-500' : ''
                       }`}
+                      onClick={(e) => {
+                        // 이벤트 버튼 클릭이 아닌 경우에만 시간 셀 클릭으로 처리
+                        if (e.target === e.currentTarget || !(e.target as HTMLElement).closest('button')) {
+                          handleDateCellClick(day, hour);
+                        }
+                      }}
                       onDragOver={(e) => handleDragOver(e, day, hour)}
                       onDragLeave={handleDragLeave}
                       onDrop={(e) => handleDrop(e, day, hour)}
@@ -929,9 +996,15 @@ export default function IntegratedScheduleManager() {
                   {hour.toString().padStart(2, '0')}:00
                 </div>
                 <div
-                  className={`flex-1 p-4 min-h-[80px] transition-colors ${
+                  className={`flex-1 p-4 min-h-[80px] transition-colors cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-900/50 ${
                     isDragOver ? 'bg-teal-50 dark:bg-teal-900/20 ring-2 ring-inset ring-teal-500' : ''
                   }`}
+                  onClick={(e) => {
+                    // 이벤트 버튼 클릭이 아닌 경우에만 시간 셀 클릭으로 처리
+                    if (e.target === e.currentTarget || !(e.target as HTMLElement).closest('button')) {
+                      handleDateCellClick(currentDate, hour);
+                    }
+                  }}
                   onDragOver={(e) => handleDragOver(e, currentDate, hour)}
                   onDragLeave={handleDragLeave}
                   onDrop={(e) => handleDrop(e, currentDate, hour)}
@@ -948,7 +1021,7 @@ export default function IntegratedScheduleManager() {
                             setSelectedEvent(event);
                             setShowEventModal(true);
                           }}
-                          className={`w-full text-left p-3 rounded-lg transition-all shadow-sm ${
+                          className={`w-full text-left p-3 rounded-full transition-all shadow-sm ${
                             event.type === 'schedule' ? 'cursor-move hover:opacity-90 hover:shadow-md' : 'hover:opacity-90'
                           } ${draggedEvent?.id === event.id ? 'opacity-50' : ''}`}
                           style={{ backgroundColor: event.color || '#6366F1', color: 'white' }}
@@ -1004,17 +1077,17 @@ export default function IntegratedScheduleManager() {
         <div className="flex gap-2">
           <button
             onClick={handleCheckAllConflicts}
-            className="px-4 py-2 bg-yellow-600 dark:bg-yellow-500 text-white text-sm font-medium rounded-lg hover:bg-yellow-700 dark:hover:bg-yellow-600 flex items-center gap-2"
+            className="px-4 py-2 bg-yellow-600 dark:bg-yellow-500 text-white text-sm font-medium rounded-full hover:bg-yellow-700 dark:hover:bg-yellow-600 flex items-center gap-2"
             disabled={loading}
           >
             <ExclamationTriangleIcon className="w-5 h-5" />
             충돌 점검
           </button>
-          <button onClick={() => setShowCreateModal(true)} className="px-4 py-2 bg-teal-600 dark:bg-teal-500 text-white text-sm font-medium rounded-lg hover:bg-teal-700 dark:hover:bg-teal-600 flex items-center gap-2">
+          <button onClick={() => setShowCreateModal(true)} className="px-4 py-2 bg-primary text-primary-foreground text-sm font-medium rounded-full hover:bg-primary/90 flex items-center gap-2">
             <PlusIcon className="w-5 h-5" />
             과정 일정 추가
           </button>
-          <button onClick={() => setShowPersonalEventModal(true)} className="px-4 py-2 bg-gray-600 dark:bg-gray-500 text-white text-sm font-medium rounded-lg hover:bg-gray-700 dark:hover:bg-gray-600 flex items-center gap-2">
+          <button onClick={() => setShowPersonalEventModal(true)} className="px-4 py-2 bg-gray-600 dark:bg-gray-500 text-white text-sm font-medium rounded-full hover:bg-gray-700 dark:hover:bg-gray-600 flex items-center gap-2">
             <PlusIcon className="w-5 h-5" />
             개인 일정 추가
           </button>
@@ -1025,13 +1098,13 @@ export default function IntegratedScheduleManager() {
       <div className="flex justify-between items-center bg-white dark:bg-gray-800 rounded-lg shadow p-4">
         {/* 날짜 네비게이션 */}
         <div className="flex items-center gap-3">
-          <button onClick={navigateToday} className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg">
+          <button onClick={navigateToday} className="px-4 py-2 text-sm font-medium text-foreground hover:bg-muted rounded-full">
             오늘
           </button>
-          <button onClick={navigatePrevious} className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg">
+          <button onClick={navigatePrevious} className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full">
             <ChevronLeftIcon className="w-5 h-5" />
           </button>
-          <button onClick={navigateNext} className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg">
+          <button onClick={navigateNext} className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full">
             <ChevronRightIcon className="w-5 h-5" />
           </button>
           <span className="text-lg font-semibold text-gray-900 dark:text-gray-100 min-w-[200px] text-center">
@@ -1045,10 +1118,10 @@ export default function IntegratedScheduleManager() {
             <button
               key={mode}
               onClick={() => setViewMode(mode)}
-              className={`px-4 py-2 text-sm font-medium rounded-lg ${
+              className={`px-4 py-2 text-sm font-medium rounded-full ${
                 viewMode === mode
                   ? 'bg-teal-600 text-white'
-                  : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                  : 'text-foreground hover:bg-muted'
               }`}
             >
               {mode === 'month' ? '월간' : mode === 'week' ? '주간' : '일간'}
@@ -1066,10 +1139,10 @@ export default function IntegratedScheduleManager() {
               <h3 className="font-semibold text-yellow-800 dark:text-yellow-200 mb-2">
                 데이터 로드 실패
               </h3>
-              <p className="text-yellow-700 dark:text-yellow-300 mb-3">
+              <p className="text-foreground dark:text-yellow-300 mb-3">
                 {error}
               </p>
-              <div className="text-sm text-yellow-600 dark:text-yellow-400">
+              <div className="text-sm text-foreground dark:text-yellow-400">
                 <p className="font-medium mb-2">해결 방법:</p>
                 <ol className="list-decimal list-inside space-y-1">
                   <li>Supabase SQL Editor에서 마이그레이션 파일 실행</li>
@@ -1113,7 +1186,7 @@ export default function IntegratedScheduleManager() {
                   type="text"
                   value={personalEventForm.title}
                   onChange={(e) => setPersonalEventForm({ ...personalEventForm, title: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                   placeholder="예: 휴가, 회의"
                 />
               </div>
@@ -1125,7 +1198,7 @@ export default function IntegratedScheduleManager() {
                 <select
                   value={personalEventForm.event_type}
                   onChange={(e) => setPersonalEventForm({ ...personalEventForm, event_type: e.target.value as any })}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                 >
                   <option value="personal">개인 일정</option>
                   <option value="vacation">휴가</option>
@@ -1157,7 +1230,7 @@ export default function IntegratedScheduleManager() {
                     type={personalEventForm.all_day ? 'date' : 'datetime-local'}
                     value={personalEventForm.start_time}
                     onChange={(e) => setPersonalEventForm({ ...personalEventForm, start_time: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                   />
                 </div>
 
@@ -1170,7 +1243,7 @@ export default function IntegratedScheduleManager() {
                       type="datetime-local"
                       value={personalEventForm.end_time}
                       onChange={(e) => setPersonalEventForm({ ...personalEventForm, end_time: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                     />
                   </div>
                 )}
@@ -1184,7 +1257,7 @@ export default function IntegratedScheduleManager() {
                   type="text"
                   value={personalEventForm.location}
                   onChange={(e) => setPersonalEventForm({ ...personalEventForm, location: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                   placeholder="예: 본사 회의실"
                 />
               </div>
@@ -1214,7 +1287,7 @@ export default function IntegratedScheduleManager() {
                 <textarea
                   value={personalEventForm.description}
                   onChange={(e) => setPersonalEventForm({ ...personalEventForm, description: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                   rows={3}
                   placeholder="일정 상세 내용"
                 />
@@ -1222,10 +1295,10 @@ export default function IntegratedScheduleManager() {
             </div>
 
             <div className="mt-6 flex justify-end gap-3">
-              <button onClick={() => setShowPersonalEventModal(false)} className="btn-secondary">
+              <button onClick={() => setShowPersonalEventModal(false)} className="btn-secondary rounded-full">
                 취소
               </button>
-              <button onClick={handleCreatePersonalEvent} className="px-4 py-2 bg-gray-600 dark:bg-gray-500 text-white rounded-lg hover:bg-gray-700 dark:hover:bg-gray-600">
+              <button onClick={handleCreatePersonalEvent} className="px-4 py-2 bg-gray-600 dark:bg-gray-500 text-white rounded-full hover:bg-gray-700 dark:hover:bg-gray-600">
                 생성
               </button>
             </div>
@@ -1237,25 +1310,76 @@ export default function IntegratedScheduleManager() {
       {showCreateModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onClick={() => setShowCreateModal(false)}>
           <div className="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-6">과정 일정 추가</h3>
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">일정 추가</h3>
+
+            {/* 워크플로우 선택 안내 */}
+            <div className="mb-6 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+              <p className="text-sm text-blue-800 dark:text-blue-300 mb-3">
+                💡 <strong>일정 입력 방법을 선택하세요:</strong>
+              </p>
+              <div className="grid grid-cols-2 gap-3">
+                <button
+                  onClick={() => setScheduleForm({ ...scheduleForm, course_round_id: '' })}
+                  className={`p-3 rounded-lg border-2 transition-all text-left ${
+                    scheduleForm.course_round_id === ''
+                      ? 'border-blue-600 bg-blue-100 dark:bg-blue-900/30'
+                      : 'border-gray-300 dark:border-gray-600 hover:border-blue-400'
+                  }`}
+                >
+                  <div className="font-medium text-sm text-gray-900 dark:text-white mb-1">
+                    📝 빠른 세션 입력
+                  </div>
+                  <div className="text-xs text-gray-600 dark:text-gray-400">
+                    개별 세션만 먼저 입력<br/>
+                    (나중에 과정으로 그룹화)
+                  </div>
+                </button>
+                <button
+                  onClick={() => {
+                    if (courseRounds.length > 0) {
+                      setScheduleForm({ ...scheduleForm, course_round_id: courseRounds[0].id });
+                    }
+                  }}
+                  className={`p-3 rounded-lg border-2 transition-all text-left ${
+                    scheduleForm.course_round_id !== ''
+                      ? 'border-blue-600 bg-blue-100 dark:bg-blue-900/30'
+                      : 'border-gray-300 dark:border-gray-600 hover:border-blue-400'
+                  }`}
+                >
+                  <div className="font-medium text-sm text-gray-900 dark:text-white mb-1">
+                    🎯 과정 기반 입력
+                  </div>
+                  <div className="text-xs text-gray-600 dark:text-gray-400">
+                    기존 과정에 세션 추가<br/>
+                    (체계적인 관리)
+                  </div>
+                </button>
+              </div>
+            </div>
 
             <div className="space-y-4">
+              {/* 과정 선택 (선택적) */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  과정 회차 *
+                  과정 회차 {scheduleForm.course_round_id === '' && <span className="text-xs text-gray-500">(선택사항)</span>}
                 </label>
                 <select
                   value={scheduleForm.course_round_id}
                   onChange={(e) => setScheduleForm({ ...scheduleForm, course_round_id: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                 >
-                  <option value="">선택해주세요</option>
+                  <option value="">선택 안함 (독립 세션으로 생성)</option>
                   {courseRounds.map((round: any) => (
                     <option key={round.id} value={round.id}>
-                      {round.round_code} - {round.course_templates?.title || '제목 없음'}
+                      {round.round_code} - {round.course_name || '제목 없음'}
                     </option>
                   ))}
                 </select>
+                {scheduleForm.course_round_id === '' && (
+                  <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
+                    ℹ️ 독립 세션으로 생성됩니다. 나중에 과정으로 그룹화할 수 있습니다.
+                  </p>
+                )}
               </div>
 
               <div>
@@ -1266,32 +1390,54 @@ export default function IntegratedScheduleManager() {
                   type="text"
                   value={scheduleForm.title}
                   onChange={(e) => setScheduleForm({ ...scheduleForm, title: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                   placeholder="예: BS 기본과정 1일차"
                 />
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  과목 *
+                  과목
                 </label>
                 {scheduleForm.instructor_id && instructorSubjects.length > 0 ? (
-                  <select
-                    value={scheduleForm.subject}
-                    onChange={(e) => setScheduleForm({ ...scheduleForm, subject: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
-                    required
-                  >
-                    <option value="">과목 선택</option>
-                    {instructorSubjects.map((is) => (
-                      <option key={is.subject_id} value={is.subject.name}>
-                        {is.subject.name} ({is.subject.category || '기타'})
-                      </option>
-                    ))}
-                  </select>
+                  <>
+                    <select
+                      value={scheduleForm.subject}
+                      onChange={(e) => setScheduleForm({ ...scheduleForm, subject: e.target.value })}
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                    >
+                      <option value="">과목 선택</option>
+                      {instructorSubjects.map((is) => (
+                        <option key={is.subject_id} value={is.subject.name}>
+                          {is.subject.name} ({is.subject.category || '기타'})
+                        </option>
+                      ))}
+                    </select>
+                    <p className="mt-2 text-xs text-green-600 dark:text-green-400">
+                      ✓ 선택한 강사가 담당 가능한 과목 목록
+                    </p>
+                  </>
+                ) : subjects.length > 0 ? (
+                  <>
+                    <select
+                      value={scheduleForm.subject}
+                      onChange={(e) => setScheduleForm({ ...scheduleForm, subject: e.target.value })}
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                    >
+                      <option value="">과목 선택 (선택사항)</option>
+                      {subjects.map((subject) => (
+                        <option key={subject.id} value={subject.name}>
+                          {subject.name} ({subject.category || '기타'})
+                        </option>
+                      ))}
+                    </select>
+                    <p className="mt-2 text-xs text-blue-600 dark:text-blue-400">
+                      💡 강사를 선택하면 해당 강사의 담당 과목만 표시됩니다
+                    </p>
+                  </>
                 ) : (
-                  <div className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400">
-                    {scheduleForm.instructor_id ? '해당 강사의 담당 과목이 없습니다' : '먼저 강사를 선택해주세요'}
+                  <div className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400">
+                    과목 정보가 없습니다
                   </div>
                 )}
               </div>
@@ -1305,7 +1451,7 @@ export default function IntegratedScheduleManager() {
                     type="datetime-local"
                     value={scheduleForm.start_time}
                     onChange={(e) => setScheduleForm({ ...scheduleForm, start_time: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                   />
                 </div>
 
@@ -1317,7 +1463,7 @@ export default function IntegratedScheduleManager() {
                     type="datetime-local"
                     value={scheduleForm.end_time}
                     onChange={(e) => setScheduleForm({ ...scheduleForm, end_time: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                   />
                 </div>
               </div>
@@ -1329,7 +1475,7 @@ export default function IntegratedScheduleManager() {
                 <select
                   value={scheduleForm.instructor_id}
                   onChange={(e) => handleInstructorChange(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                 >
                   <option value="">선택 안함</option>
                   {instructors.map((instructor) => (
@@ -1349,7 +1495,7 @@ export default function IntegratedScheduleManager() {
                       </div>
                       {selectedInstructorProfile.rating > 0 && (
                         <div className="flex items-center gap-1">
-                          <span className="text-yellow-500">⭐</span>
+                          <span className="text-foreground">⭐</span>
                           <span className="text-sm font-medium text-teal-900 dark:text-teal-100">
                             {selectedInstructorProfile.rating.toFixed(1)}
                           </span>
@@ -1379,7 +1525,7 @@ export default function IntegratedScheduleManager() {
                 <select
                   value={scheduleForm.classroom_id}
                   onChange={(e) => handleClassroomChange(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                 >
                   <option value="">선택 안함</option>
                   {classrooms.map((classroom) => (
@@ -1395,13 +1541,13 @@ export default function IntegratedScheduleManager() {
 
                 {/* 선택된 교실 상세 정보 표시 */}
                 {selectedClassroom && (
-                  <div className="mt-3 p-3 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
+                  <div className="mt-3 p-3 bg-green-500/10 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center gap-2">
                         <MapPinIcon className="w-4 h-4 text-green-600 dark:text-green-400" />
                         <span className="text-sm font-medium text-green-900 dark:text-green-100">교실 정보</span>
                       </div>
-                      <span className="text-xs px-2 py-0.5 bg-green-100 dark:bg-green-800 text-green-800 dark:text-green-200 rounded">
+                      <span className="text-xs px-2 py-0.5 bg-green-500/10 dark:bg-green-800 text-green-800 dark:text-green-200 rounded">
                         수용인원 {selectedClassroom.capacity}명
                       </span>
                     </div>
@@ -1422,7 +1568,7 @@ export default function IntegratedScheduleManager() {
                         <div className="text-xs text-gray-600 dark:text-gray-400 mb-1">시설</div>
                         <div className="flex flex-wrap gap-1">
                           {selectedClassroom.facilities.map((facility, idx) => (
-                            <span key={idx} className="px-2 py-0.5 bg-green-100 dark:bg-green-800 text-green-800 dark:text-green-200 text-xs rounded">
+                            <span key={idx} className="px-2 py-0.5 bg-green-500/10 dark:bg-green-800 text-green-800 dark:text-green-200 text-xs rounded">
                               {facility}
                             </span>
                           ))}
@@ -1435,7 +1581,7 @@ export default function IntegratedScheduleManager() {
                         <div className="text-xs text-gray-600 dark:text-gray-400 mb-1">장비</div>
                         <div className="flex flex-wrap gap-1">
                           {selectedClassroom.equipment.map((item, idx) => (
-                            <span key={idx} className="px-2 py-0.5 bg-blue-100 dark:bg-blue-800 text-blue-800 dark:text-blue-200 text-xs rounded">
+                            <span key={idx} className="px-2 py-0.5 bg-primary/10 text-primary text-xs rounded">
                               {item}
                             </span>
                           ))}
@@ -1453,7 +1599,7 @@ export default function IntegratedScheduleManager() {
                 <textarea
                   value={scheduleForm.description}
                   onChange={(e) => setScheduleForm({ ...scheduleForm, description: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                   rows={3}
                   placeholder="일정 상세 내용"
                 />
@@ -1461,10 +1607,10 @@ export default function IntegratedScheduleManager() {
             </div>
 
             <div className="mt-6 flex justify-end gap-3">
-              <button onClick={() => setShowCreateModal(false)} className="btn-secondary">
+              <button onClick={() => setShowCreateModal(false)} className="btn-secondary rounded-full">
                 취소
               </button>
-              <button onClick={handleCreateSchedule} className="btn-primary">
+              <button onClick={handleCreateSchedule} className="btn-primary rounded-full">
                 생성
               </button>
             </div>
@@ -1487,7 +1633,7 @@ export default function IntegratedScheduleManager() {
                   type="text"
                   value={scheduleForm.title}
                   onChange={(e) => setScheduleForm({ ...scheduleForm, title: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                 />
               </div>
 
@@ -1499,7 +1645,7 @@ export default function IntegratedScheduleManager() {
                   <select
                     value={scheduleForm.subject}
                     onChange={(e) => setScheduleForm({ ...scheduleForm, subject: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                     required
                   >
                     <option value="">과목 선택</option>
@@ -1510,7 +1656,7 @@ export default function IntegratedScheduleManager() {
                     ))}
                   </select>
                 ) : (
-                  <div className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400">
+                  <div className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400">
                     {scheduleForm.instructor_id ? '해당 강사의 담당 과목이 없습니다' : '먼저 강사를 선택해주세요'}
                   </div>
                 )}
@@ -1525,7 +1671,7 @@ export default function IntegratedScheduleManager() {
                     type="datetime-local"
                     value={scheduleForm.start_time}
                     onChange={(e) => setScheduleForm({ ...scheduleForm, start_time: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                   />
                 </div>
 
@@ -1537,7 +1683,7 @@ export default function IntegratedScheduleManager() {
                     type="datetime-local"
                     value={scheduleForm.end_time}
                     onChange={(e) => setScheduleForm({ ...scheduleForm, end_time: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                   />
                 </div>
               </div>
@@ -1549,7 +1695,7 @@ export default function IntegratedScheduleManager() {
                 <select
                   value={scheduleForm.instructor_id}
                   onChange={(e) => handleInstructorChange(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                 >
                   <option value="">선택 안함</option>
                   {instructors.map((instructor) => (
@@ -1569,7 +1715,7 @@ export default function IntegratedScheduleManager() {
                       </div>
                       {selectedInstructorProfile.rating > 0 && (
                         <div className="flex items-center gap-1">
-                          <span className="text-yellow-500">⭐</span>
+                          <span className="text-foreground">⭐</span>
                           <span className="text-sm font-medium text-teal-900 dark:text-teal-100">
                             {selectedInstructorProfile.rating.toFixed(1)}
                           </span>
@@ -1599,7 +1745,7 @@ export default function IntegratedScheduleManager() {
                 <select
                   value={scheduleForm.classroom_id}
                   onChange={(e) => handleClassroomChange(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                 >
                   <option value="">선택 안함</option>
                   {classrooms.map((classroom) => (
@@ -1615,13 +1761,13 @@ export default function IntegratedScheduleManager() {
 
                 {/* 선택된 교실 상세 정보 표시 */}
                 {selectedClassroom && (
-                  <div className="mt-3 p-3 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
+                  <div className="mt-3 p-3 bg-green-500/10 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center gap-2">
                         <MapPinIcon className="w-4 h-4 text-green-600 dark:text-green-400" />
                         <span className="text-sm font-medium text-green-900 dark:text-green-100">교실 정보</span>
                       </div>
-                      <span className="text-xs px-2 py-0.5 bg-green-100 dark:bg-green-800 text-green-800 dark:text-green-200 rounded">
+                      <span className="text-xs px-2 py-0.5 bg-green-500/10 dark:bg-green-800 text-green-800 dark:text-green-200 rounded">
                         수용인원 {selectedClassroom.capacity}명
                       </span>
                     </div>
@@ -1642,7 +1788,7 @@ export default function IntegratedScheduleManager() {
                         <div className="text-xs text-gray-600 dark:text-gray-400 mb-1">시설</div>
                         <div className="flex flex-wrap gap-1">
                           {selectedClassroom.facilities.map((facility, idx) => (
-                            <span key={idx} className="px-2 py-0.5 bg-green-100 dark:bg-green-800 text-green-800 dark:text-green-200 text-xs rounded">
+                            <span key={idx} className="px-2 py-0.5 bg-green-500/10 dark:bg-green-800 text-green-800 dark:text-green-200 text-xs rounded">
                               {facility}
                             </span>
                           ))}
@@ -1655,7 +1801,7 @@ export default function IntegratedScheduleManager() {
                         <div className="text-xs text-gray-600 dark:text-gray-400 mb-1">장비</div>
                         <div className="flex flex-wrap gap-1">
                           {selectedClassroom.equipment.map((item, idx) => (
-                            <span key={idx} className="px-2 py-0.5 bg-blue-100 dark:bg-blue-800 text-blue-800 dark:text-blue-200 text-xs rounded">
+                            <span key={idx} className="px-2 py-0.5 bg-primary/10 text-primary text-xs rounded">
                               {item}
                             </span>
                           ))}
@@ -1673,17 +1819,17 @@ export default function IntegratedScheduleManager() {
                 <textarea
                   value={scheduleForm.description}
                   onChange={(e) => setScheduleForm({ ...scheduleForm, description: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                   rows={3}
                 />
               </div>
             </div>
 
             <div className="mt-6 flex justify-end gap-3">
-              <button onClick={() => setShowEditModal(false)} className="btn-secondary">
+              <button onClick={() => setShowEditModal(false)} className="btn-secondary rounded-full">
                 취소
               </button>
-              <button onClick={handleEditSchedule} className="btn-primary">
+              <button onClick={handleEditSchedule} className="btn-primary rounded-full">
                 수정
               </button>
             </div>
@@ -1720,19 +1866,19 @@ export default function IntegratedScheduleManager() {
                 <div className="flex gap-2">
                   <button
                     onClick={() => openEditModal(selectedEvent)}
-                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                    className="px-4 py-2 bg-primary text-primary-foreground rounded-full hover:bg-primary/90"
                   >
                     수정
                   </button>
                   <button
                     onClick={() => handleDeleteSchedule(selectedEvent.id.replace('schedule-', ''))}
-                    className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
+                    className="px-4 py-2 bg-destructive text-destructive-foreground rounded-full hover:bg-destructive/90"
                   >
                     삭제
                   </button>
                 </div>
               )}
-              <button onClick={() => setShowEventModal(false)} className="btn-secondary ml-auto">
+              <button onClick={() => setShowEventModal(false)} className="btn-secondary ml-auto rounded-full">
                 닫기
               </button>
             </div>
@@ -1745,7 +1891,7 @@ export default function IntegratedScheduleManager() {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onClick={handleConflictCancel}>
           <div className="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center gap-3 mb-6">
-              <div className="flex-shrink-0 w-12 h-12 rounded-full bg-yellow-100 dark:bg-yellow-900/30 flex items-center justify-center">
+              <div className="flex-shrink-0 w-12 h-12 rounded-lg bg-yellow-100 dark:bg-yellow-900/30 flex items-center justify-center">
                 <span className="text-2xl">⚠️</span>
               </div>
               <div>
@@ -1758,18 +1904,18 @@ export default function IntegratedScheduleManager() {
               {conflicts.map((conflict, idx) => (
                 <div
                   key={idx}
-                  className={`p-4 rounded-lg border-2 ${
+                  className={`p-4 rounded-full border-2 ${
                     conflict.severity === 'high'
-                      ? 'bg-red-50 dark:bg-red-900/20 border-red-300 dark:border-red-800'
+                      ? 'bg-destructive/10 dark:bg-red-900/20 border-destructive/50 dark:border-red-800'
                       : 'bg-yellow-50 dark:bg-yellow-900/20 border-yellow-300 dark:border-yellow-800'
                   }`}
                 >
                   <div className="flex items-start justify-between mb-2">
                     <div className="flex items-center gap-2">
                       {conflict.conflict_type === 'instructor' ? (
-                        <UserIcon className={`w-5 h-5 ${conflict.severity === 'high' ? 'text-red-600 dark:text-red-400' : 'text-yellow-600 dark:text-yellow-400'}`} />
+                        <UserIcon className={`w-5 h-5 ${conflict.severity === 'high' ? 'text-destructive dark:text-red-400' : 'text-foreground dark:text-yellow-400'}`} />
                       ) : (
-                        <MapPinIcon className={`w-5 h-5 ${conflict.severity === 'high' ? 'text-red-600 dark:text-red-400' : 'text-yellow-600 dark:text-yellow-400'}`} />
+                        <MapPinIcon className={`w-5 h-5 ${conflict.severity === 'high' ? 'text-destructive dark:text-red-400' : 'text-foreground dark:text-yellow-400'}`} />
                       )}
                       <span className="font-medium text-gray-900 dark:text-gray-100">
                         {conflict.conflict_type === 'instructor' ? '강사' : '교실'}: {conflict.resource_name}
@@ -1777,7 +1923,7 @@ export default function IntegratedScheduleManager() {
                     </div>
                     <span className={`px-2 py-1 text-xs font-medium rounded ${
                       conflict.severity === 'high'
-                        ? 'bg-red-100 dark:bg-red-800 text-red-800 dark:text-red-200'
+                        ? 'bg-destructive/10 dark:bg-red-800 text-destructive dark:text-red-200'
                         : 'bg-yellow-100 dark:bg-yellow-800 text-yellow-800 dark:text-yellow-200'
                     }`}>
                       {conflict.severity === 'high' ? '높음' : '보통'}
@@ -1826,13 +1972,13 @@ export default function IntegratedScheduleManager() {
             <div className="flex justify-end gap-3">
               <button
                 onClick={handleConflictCancel}
-                className="px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700"
+                className="px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-full hover:bg-gray-50 dark:hover:bg-gray-700"
               >
                 취소
               </button>
               <button
                 onClick={handleConflictProceed}
-                className="px-4 py-2 bg-yellow-600 dark:bg-yellow-500 text-white rounded-lg hover:bg-yellow-700 dark:hover:bg-yellow-600"
+                className="px-4 py-2 bg-yellow-600 dark:bg-yellow-500 text-white rounded-full hover:bg-yellow-700 dark:hover:bg-yellow-600"
               >
                 충돌 무시하고 진행
               </button>

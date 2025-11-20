@@ -216,7 +216,7 @@ const SupabasePWA: React.FC = () => {
                 </button>
                 <button
                   onClick={dismissInstallPrompt}
-                  className="bg-gray-100 text-gray-700 px-3 py-1 rounded text-sm hover:bg-gray-200"
+                  className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm hover:bg-gray-200"
                 >
                   나중에
                 </button>
@@ -228,9 +228,9 @@ const SupabasePWA: React.FC = () => {
 
       {/* 업데이트 알림 */}
       {updateAvailable && (
-        <div className="fixed top-4 right-4 bg-green-50 border border-green-200 rounded-lg shadow-lg p-4 z-50 max-w-sm">
+        <div className="fixed top-4 right-4 bg-green-500/10 border border-green-200 rounded-lg shadow-lg p-4 z-50 max-w-sm">
           <div className="flex items-start space-x-3">
-            <div className="p-2 bg-green-100 rounded-lg">
+            <div className="p-2 bg-green-500/10 rounded-lg">
               <ArrowDownTrayIcon className="h-5 w-5 text-green-600" />
             </div>
             <div className="flex-1">
@@ -253,8 +253,8 @@ const SupabasePWA: React.FC = () => {
       <div className="fixed top-4 left-4 z-40">
         <div className={`flex items-center space-x-2 px-3 py-1 rounded-full text-sm ${
           isOnline 
-            ? 'bg-green-100 text-green-800' 
-            : 'bg-red-100 text-red-800'
+            ? 'bg-green-500/10 text-green-700' 
+            : 'bg-destructive/10 text-destructive'
         }`}>
           {isOnline ? (
             <SignalIcon className="h-4 w-4" />

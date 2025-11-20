@@ -173,8 +173,8 @@ export default function GoogleCalendarSync({ onSync }: GoogleCalendarSyncProps) 
       </div>
 
       {error && (
-        <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
-          <p className="text-sm text-red-700 dark:text-red-300">{error}</p>
+        <div className="mb-4 p-3 bg-destructive/10 dark:bg-red-900/20 border border-destructive/50 dark:border-red-800 rounded-lg">
+          <p className="text-sm text-destructive dark:text-red-300">{error}</p>
         </div>
       )}
 
@@ -215,7 +215,7 @@ export default function GoogleCalendarSync({ onSync }: GoogleCalendarSyncProps) 
               <button
                 onClick={handleDisconnect}
                 disabled={isLoading}
-                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50"
+                className="px-4 py-2 bg-destructive text-destructive-foreground rounded-full hover:bg-destructive/90 disabled:opacity-50"
               >
                 연동 해제
               </button>

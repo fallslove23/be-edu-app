@@ -17,7 +17,7 @@ const PracticeSessionView: React.FC<PracticeSessionViewProps> = ({
         <div className="flex items-center">
           <button
             onClick={onBack}
-            className="mr-4 p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
+            className="mr-4 p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-full transition-colors"
           >
             <ArrowLeftIcon className="h-5 w-5" />
           </button>

@@ -212,7 +212,7 @@ const ImageViewer: React.FC<ImageViewerProps> = ({
   return (
     <div
       ref={containerRef}
-      className={`relative bg-gray-900 rounded-lg overflow-hidden ${
+      className={`relative bg-gray-900 rounded-full overflow-hidden ${
         isFullscreen ? 'fixed inset-0 z-50' : ''
       } ${className}`}
       style={{ width, height }}
@@ -229,7 +229,7 @@ const ImageViewer: React.FC<ImageViewerProps> = ({
         {/* 로딩 인디케이터 */}
         {!imageLoaded && !imageError && (
           <div className="absolute inset-0 flex items-center justify-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
+            <div className="animate-spin rounded-lg h-12 w-12 border-b-2 border-white"></div>
             <span className="text-white ml-3">이미지 로딩 중...</span>
           </div>
         )}
@@ -267,7 +267,7 @@ const ImageViewer: React.FC<ImageViewerProps> = ({
           {/* 줌 아웃 */}
           <button
             onClick={zoomOut}
-            className="p-2 bg-black/50 hover:bg-black/70 text-white rounded-lg transition-colors"
+            className="p-2 bg-black/50 hover:bg-black/70 text-white rounded-full transition-colors"
             title="축소"
           >
             <MagnifyingGlassMinusIcon className="h-5 w-5" />
@@ -276,7 +276,7 @@ const ImageViewer: React.FC<ImageViewerProps> = ({
           {/* 줌 리셋 */}
           <button
             onClick={resetZoom}
-            className="px-3 py-2 bg-black/50 hover:bg-black/70 text-white rounded-lg text-sm transition-colors"
+            className="px-3 py-2 bg-black/50 hover:bg-black/70 text-white rounded-full text-sm transition-colors"
             title="원본 크기"
           >
             {Math.round(zoom * 100)}%
@@ -285,7 +285,7 @@ const ImageViewer: React.FC<ImageViewerProps> = ({
           {/* 줌 인 */}
           <button
             onClick={zoomIn}
-            className="p-2 bg-black/50 hover:bg-black/70 text-white rounded-lg transition-colors"
+            className="p-2 bg-black/50 hover:bg-black/70 text-white rounded-full transition-colors"
             title="확대"
           >
             <MagnifyingGlassPlusIcon className="h-5 w-5" />
@@ -295,7 +295,7 @@ const ImageViewer: React.FC<ImageViewerProps> = ({
           {allowDownload && (
             <button
               onClick={downloadImage}
-              className="p-2 bg-black/50 hover:bg-black/70 text-white rounded-lg transition-colors"
+              className="p-2 bg-black/50 hover:bg-black/70 text-white rounded-full transition-colors"
               title="다운로드"
             >
               <ArrowDownTrayIcon className="h-5 w-5" />
@@ -306,7 +306,7 @@ const ImageViewer: React.FC<ImageViewerProps> = ({
           {allowFullscreen && (
             <button
               onClick={toggleFullscreen}
-              className="p-2 bg-black/50 hover:bg-black/70 text-white rounded-lg transition-colors"
+              className="p-2 bg-black/50 hover:bg-black/70 text-white rounded-full transition-colors"
               title={isFullscreen ? '전체화면 해제' : '전체화면'}
             >
               {isFullscreen ? (
@@ -321,7 +321,7 @@ const ImageViewer: React.FC<ImageViewerProps> = ({
           {onClose && (
             <button
               onClick={onClose}
-              className="p-2 bg-black/50 hover:bg-black/70 text-white rounded-lg transition-colors"
+              className="p-2 bg-black/50 hover:bg-black/70 text-white rounded-full transition-colors"
               title="닫기"
             >
               <XMarkIcon className="h-5 w-5" />
@@ -365,7 +365,7 @@ const ImageViewer: React.FC<ImageViewerProps> = ({
 
       {/* 이미지 인덱스 표시 (여러 이미지인 경우) */}
       {isMultiple && (
-        <div className="absolute top-4 left-4 bg-black/50 text-white px-3 py-1 rounded-lg text-sm">
+        <div className="absolute top-4 left-4 bg-black/50 text-white px-3 py-1 rounded-full text-sm">
           {currentIndex + 1} / {images.length}
         </div>
       )}

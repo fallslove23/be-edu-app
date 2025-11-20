@@ -196,9 +196,9 @@ const EnrollmentManagementComponent: React.FC = () => {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'enrolled': return 'bg-blue-100 text-blue-700';
-      case 'completed': return 'bg-green-100 text-green-700';
-      case 'dropped': return 'bg-red-100 text-red-700';
-      case 'pending': return 'bg-yellow-100 text-yellow-700';
+      case 'completed': return 'bg-green-500/10 text-green-700';
+      case 'dropped': return 'bg-destructive/10 text-destructive';
+      case 'pending': return 'bg-yellow-100 text-orange-700';
       case 'waitlisted': return 'bg-gray-100 text-gray-700';
       default: return 'bg-gray-100 text-gray-700';
     }
@@ -263,7 +263,7 @@ const EnrollmentManagementComponent: React.FC = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-lg h-8 w-8 border-b-2 border-blue-600"></div>
         <span className="ml-2">등록 정보를 불러오는 중...</span>
       </div>
     );
@@ -287,7 +287,7 @@ const EnrollmentManagementComponent: React.FC = () => {
         <p className="text-gray-600">일괄 등록 기능을 개발 중입니다.</p>
         <button
           onClick={() => setCurrentView('list')}
-          className="mt-4 bg-gray-600 text-white px-4 py-2 rounded-lg"
+          className="mt-4 bg-gray-600 text-white px-4 py-2 rounded-full"
         >
           목록으로 돌아가기
         </button>
@@ -303,7 +303,7 @@ const EnrollmentManagementComponent: React.FC = () => {
         <p className="text-gray-600">승인 요청 관리 기능을 개발 중입니다.</p>
         <button
           onClick={() => setCurrentView('list')}
-          className="mt-4 bg-gray-600 text-white px-4 py-2 rounded-lg"
+          className="mt-4 bg-gray-600 text-white px-4 py-2 rounded-full"
         >
           목록으로 돌아가기
         </button>
@@ -358,14 +358,14 @@ const EnrollmentManagementComponent: React.FC = () => {
               <div className="flex items-center space-x-2">
                 <button
                   onClick={() => setCurrentView('bulk')}
-                  className="btn-success px-4 py-2 rounded-lg flex items-center space-x-2"
+                  className="btn-success px-4 py-2 rounded-full flex items-center space-x-2"
                 >
                   <UsersIcon className="h-4 w-4" />
                   <span>일괄 등록</span>
                 </button>
                 <button
                   onClick={() => setCurrentView('create')}
-                  className="btn-primary px-4 py-2 rounded-lg flex items-center space-x-2"
+                  className="btn-primary px-4 py-2 rounded-full flex items-center space-x-2"
                 >
                   <UserPlusIcon className="h-4 w-4" />
                   <span>개별 등록</span>
@@ -393,7 +393,7 @@ const EnrollmentManagementComponent: React.FC = () => {
 
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
             <div className="flex items-center">
-              <div className="p-2 bg-green-100 rounded-lg">
+              <div className="p-2 bg-green-500/10 rounded-lg">
                 <CheckCircleIcon className="h-6 w-6 text-green-600" />
               </div>
               <div className="ml-4">
@@ -418,7 +418,7 @@ const EnrollmentManagementComponent: React.FC = () => {
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
             <div className="flex items-center">
               <div className="p-2 bg-yellow-100 rounded-lg">
-                <ClockIcon className="h-6 w-6 text-yellow-600" />
+                <ClockIcon className="h-6 w-6 text-foreground" />
               </div>
               <div className="ml-4">
                 <p className="text-sm font-medium text-gray-600">승인대기</p>
@@ -461,7 +461,7 @@ const EnrollmentManagementComponent: React.FC = () => {
               ...prev, 
               status: e.target.value ? [e.target.value] : undefined 
             }))}
-            className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           >
             <option value="">모든 상태</option>
             <option value="enrolled">수강중</option>
@@ -476,7 +476,7 @@ const EnrollmentManagementComponent: React.FC = () => {
               ...prev, 
               department: e.target.value ? [e.target.value] : undefined 
             }))}
-            className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           >
             <option value="">모든 부서</option>
             <option value="영업부">영업부</option>
@@ -488,7 +488,7 @@ const EnrollmentManagementComponent: React.FC = () => {
           {isManager && (
             <button
               onClick={() => setCurrentView('requests')}
-              className="px-4 py-2 bg-orange-100 text-orange-700 rounded-lg hover:bg-orange-200 flex items-center space-x-2"
+              className="px-4 py-2 bg-orange-500/10 text-orange-700 rounded-full hover:bg-orange-200 flex items-center space-x-2"
             >
               <BellIcon className="h-4 w-4" />
               <span>승인 요청</span>
@@ -514,10 +514,10 @@ const EnrollmentManagementComponent: React.FC = () => {
               <span className="text-sm text-gray-600">
                 {selectedEnrollments.length}개 선택됨
               </span>
-              <button className="btn-danger">
+              <button className="btn-danger rounded-full">
                 선택 삭제
               </button>
-              <button className="btn-success">
+              <button className="btn-success rounded-full">
                 일괄 승인
               </button>
             </div>
@@ -537,7 +537,7 @@ const EnrollmentManagementComponent: React.FC = () => {
             {isManager && (
               <button
                 onClick={() => setCurrentView('create')}
-                className="btn-primary px-4 py-2 rounded-lg"
+                className="btn-primary px-4 py-2 rounded-full"
               >
                 첫 수강생 등록하기
               </button>
@@ -626,15 +626,15 @@ const EnrollmentManagementComponent: React.FC = () => {
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex items-center space-x-2">
-                        <button className="p-1 text-blue-600 hover:bg-blue-100 rounded" title="상세보기">
+                        <button className="p-1 text-blue-600 hover:bg-blue-100 rounded-full" title="상세보기">
                           <EyeIcon className="h-4 w-4" />
                         </button>
                         {isManager && (
                           <>
-                            <button className="p-1 text-green-600 hover:bg-green-100 rounded" title="편집">
+                            <button className="p-1 text-green-600 hover:bg-green-500/10 rounded-full" title="편집">
                               <PencilIcon className="h-4 w-4" />
                             </button>
-                            <button className="p-1 text-red-600 hover:bg-red-100 rounded" title="삭제">
+                            <button className="p-1 text-destructive hover:bg-destructive/10 rounded-full" title="삭제">
                               <TrashIcon className="h-4 w-4" />
                             </button>
                           </>
@@ -685,15 +685,15 @@ const EnrollmentManagementComponent: React.FC = () => {
 
                   <div className="flex justify-between items-center pt-3 border-t border-gray-100">
                     <div className="flex items-center space-x-2">
-                      <button className="p-1 text-blue-600 hover:bg-blue-100 rounded" title="상세보기">
+                      <button className="p-1 text-blue-600 hover:bg-blue-100 rounded-full" title="상세보기">
                         <EyeIcon className="h-4 w-4" />
                       </button>
                       {isManager && (
                         <>
-                          <button className="p-1 text-green-600 hover:bg-green-100 rounded" title="편집">
+                          <button className="p-1 text-green-600 hover:bg-green-500/10 rounded-full" title="편집">
                             <PencilIcon className="h-4 w-4" />
                           </button>
-                          <button className="p-1 text-red-600 hover:bg-red-100 rounded" title="삭제">
+                          <button className="p-1 text-destructive hover:bg-destructive/10 rounded-full" title="삭제">
                             <TrashIcon className="h-4 w-4" />
                           </button>
                         </>

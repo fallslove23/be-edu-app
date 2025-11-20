@@ -202,7 +202,7 @@ const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
           </div>
           <button
             onClick={onCancel}
-            className="p-2 hover:bg-gray-100 rounded-lg"
+            className="p-2 hover:bg-gray-100 rounded-full"
           >
             <XMarkIcon className="h-6 w-6 text-gray-500" />
           </button>
@@ -218,7 +218,7 @@ const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
 
             <div className="relative">
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                수강생 검색 <span className="text-red-500">*</span>
+                수강생 검색 <span className="text-destructive">*</span>
               </label>
               <div className="relative">
                 <MagnifyingGlassIcon className="h-5 w-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
@@ -231,8 +231,8 @@ const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
                   }}
                   onFocus={() => setShowStudentDropdown(true)}
                   placeholder="이름, 이메일, 부서, 사번으로 검색..."
-                  className={`w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                    errors.student ? 'border-red-500' : 'border-gray-300'
+                  className={`w-full pl-10 pr-4 py-2 border rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                    errors.student ? 'border-destructive/50' : 'border-gray-300'
                   }`}
                 />
               </div>
@@ -270,7 +270,7 @@ const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
                 </div>
               )}
               
-              {errors.student && <p className="text-red-500 text-xs mt-1">{errors.student}</p>}
+              {errors.student && <p className="text-destructive text-xs mt-1">{errors.student}</p>}
             </div>
 
             {/* 선택된 학생 정보 */}
@@ -298,7 +298,7 @@ const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
 
             <div className="relative">
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                과정 검색 <span className="text-red-500">*</span>
+                과정 검색 <span className="text-destructive">*</span>
               </label>
               <div className="relative">
                 <MagnifyingGlassIcon className="h-5 w-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
@@ -311,8 +311,8 @@ const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
                   }}
                   onFocus={() => setShowCourseDropdown(true)}
                   placeholder="과정명, 과정코드로 검색..."
-                  className={`w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                    errors.course ? 'border-red-500' : 'border-gray-300'
+                  className={`w-full pl-10 pr-4 py-2 border rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                    errors.course ? 'border-destructive/50' : 'border-gray-300'
                   }`}
                 />
               </div>
@@ -351,12 +351,12 @@ const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
                 </div>
               )}
               
-              {errors.course && <p className="text-red-500 text-xs mt-1">{errors.course}</p>}
+              {errors.course && <p className="text-destructive text-xs mt-1">{errors.course}</p>}
             </div>
 
             {/* 선택된 과정 정보 */}
             {selectedCourse && (
-              <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+              <div className="bg-green-500/10 border border-green-200 rounded-lg p-4">
                 <div className="flex items-center space-x-2 mb-2">
                   <CheckCircleIcon className="h-5 w-5 text-green-600" />
                   <span className="font-medium text-green-900">선택된 과정</span>
@@ -374,9 +374,9 @@ const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
                     </div>
                   </div>
                   <div className="mt-2">
-                    <div className="w-full bg-green-200 rounded-full h-2">
+                    <div className="w-full bg-green-200 rounded-lg h-2">
                       <div
-                        className="bg-green-600 h-2 rounded-full"
+                        className="bg-green-600 h-2 rounded-lg"
                         style={{ width: `${(selectedCourse.current_trainees / selectedCourse.max_trainees) * 100}%` }}
                       ></div>
                     </div>
@@ -405,16 +405,16 @@ const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
                 onChange={(e) => setNotes(e.target.value)}
                 placeholder="등록 관련 특이사항이나 메모를 입력하세요"
                 rows={3}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
               />
             </div>
           </div>
 
           {/* 에러 메시지 */}
           {errors.submit && (
-            <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-center space-x-2">
-              <ExclamationTriangleIcon className="h-5 w-5 text-red-600" />
-              <p className="text-red-700">{errors.submit}</p>
+            <div className="bg-destructive/10 border border-destructive/50 rounded-lg p-4 flex items-center space-x-2">
+              <ExclamationTriangleIcon className="h-5 w-5 text-destructive" />
+              <p className="text-destructive">{errors.submit}</p>
             </div>
           )}
 
@@ -423,7 +423,7 @@ const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
             <button
               type="button"
               onClick={onCancel}
-              className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
+              className="px-6 py-3 border border-gray-300 text-gray-700 rounded-full hover:bg-gray-50"
             >
               취소
             </button>
@@ -433,7 +433,7 @@ const EnrollmentForm: React.FC<EnrollmentFormProps> = ({
               className="btn-primary"
             >
               {isSubmitting && (
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                <div className="animate-spin rounded-lg h-4 w-4 border-b-2 border-white"></div>
               )}
               <span>{isSubmitting ? '등록 중...' : '등록 완료'}</span>
             </button>

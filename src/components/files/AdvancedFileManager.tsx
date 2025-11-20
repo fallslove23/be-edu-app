@@ -268,7 +268,7 @@ const FileDropZone: React.FC<{
 
   return (
     <div
-      className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
+      className={`border-2 border-dashed rounded-full p-8 text-center transition-colors ${
         isDragOver 
           ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20' 
           : 'border-gray-300 dark:border-gray-600 hover:border-gray-400'
@@ -288,7 +288,7 @@ const FileDropZone: React.FC<{
       
       {uploading ? (
         <div className="space-y-4">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
+          <div className="animate-spin rounded-lg h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
           <p className="text-gray-600 dark:text-gray-400">업로드 중...</p>
         </div>
       ) : (
@@ -415,21 +415,21 @@ const FileList: React.FC<{
           <div className="flex space-x-2">
             <button
               onClick={() => onFileView(file)}
-              className="p-2 text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded"
+              className="p-2 text-blue-500 hover:bg-primary/20/20 rounded"
               title="미리보기"
             >
               <EyeIcon className="h-4 w-4" />
             </button>
             <button
               onClick={() => localFileManager.downloadFile(file)}
-              className="p-2 text-green-500 hover:bg-green-50 dark:hover:bg-green-900/20 rounded"
+              className="p-2 text-green-500 hover:bg-green-500/10 dark:hover:bg-green-900/20 rounded"
               title="다운로드"
             >
               <CloudArrowDownIcon className="h-4 w-4" />
             </button>
             <button
               onClick={() => onFileDelete(file.id)}
-              className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded"
+              className="p-2 text-destructive hover:bg-destructive/10 dark:hover:bg-red-900/20 rounded"
               title="삭제"
             >
               <TrashIcon className="h-4 w-4" />
@@ -536,7 +536,7 @@ const FilePreviewModal: React.FC<{
             </button>
             <button
               onClick={onClose}
-              className="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400"
+              className="px-4 py-2 bg-gray-300 text-gray-700 rounded-full hover:bg-gray-400"
             >
               닫기
             </button>
@@ -650,7 +650,7 @@ const AdvancedFileManager: React.FC = () => {
         <select
           value={categoryFilter}
           onChange={(e) => setCategoryFilter(e.target.value)}
-          className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-800"
+          className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-800"
         >
           <option value="all">모든 파일</option>
           <option value="document">문서</option>

@@ -296,7 +296,7 @@ const PracticeEvaluation: React.FC = () => {
           </div>
           <button
             onClick={handleCreatePractice}
-            className="bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-lg transition-colors flex items-center font-medium"
+            className="bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-full transition-colors flex items-center font-medium"
           >
             <PlusIcon className="h-5 w-5 mr-2" />
             새 실습 평가 생성
@@ -409,18 +409,18 @@ const PracticeEvaluation: React.FC = () => {
                   <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
                     practice.evaluation_type === 'role_play' ? 'bg-purple-100 text-purple-800' :
                     practice.evaluation_type === 'simulation' ? 'bg-blue-100 text-blue-800' :
-                    practice.evaluation_type === 'presentation' ? 'bg-green-100 text-green-800' :
+                    practice.evaluation_type === 'presentation' ? 'bg-green-500/10 text-green-700' :
                     practice.evaluation_type === 'case_study' ? 'bg-yellow-100 text-yellow-800' :
                     'bg-gray-100 text-gray-800'
                   }`}>
                     {practiceTypeLabels[practice.evaluation_type]}
                   </span>
                   <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                    practice.status === 'published' ? 'bg-green-100 text-green-800' :
+                    practice.status === 'published' ? 'bg-green-500/10 text-green-700' :
                     practice.status === 'in_progress' ? 'bg-blue-100 text-blue-800' :
                     practice.status === 'completed' ? 'bg-gray-100 text-gray-800' :
                     practice.status === 'draft' ? 'bg-yellow-100 text-yellow-800' :
-                    'bg-red-100 text-red-800'
+                    'bg-destructive/10 text-destructive'
                   }`}>
                     {practiceStatusLabels[practice.status]}
                   </span>
@@ -449,14 +449,14 @@ const PracticeEvaluation: React.FC = () => {
               <button
                 onClick={() => handleStartSession(practice)}
                 disabled={practice.status !== 'published'}
-                className="px-3 py-1.5 text-sm bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed flex items-center font-medium transition-colors"
+                className="px-3 py-1.5 text-sm bg-primary text-primary-foreground rounded-full hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed flex items-center font-medium transition-colors"
               >
                 <PlayIcon className="h-4 w-4 mr-1" />
                 세션 시작
               </button>
               <button
                 onClick={() => handleViewResults(practice)}
-                className="px-3 py-1.5 text-sm bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 flex items-center font-medium transition-colors"
+                className="px-3 py-1.5 text-sm bg-emerald-600 text-white rounded-full hover:bg-emerald-700 flex items-center font-medium transition-colors"
               >
                 <ChartBarIcon className="h-4 w-4 mr-1" />
                 결과 보기

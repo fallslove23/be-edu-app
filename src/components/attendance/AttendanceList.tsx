@@ -149,11 +149,11 @@ const AttendanceList: React.FC<AttendanceListProps> = ({
       case 'planned':
         return `${baseClasses} bg-gray-100 text-gray-800`;
       case 'active':
-        return `${baseClasses} bg-green-100 text-green-800`;
+        return `${baseClasses} bg-green-500/10 text-green-700`;
       case 'completed':
         return `${baseClasses} bg-blue-100 text-blue-800`;
       case 'cancelled':
-        return `${baseClasses} bg-red-100 text-red-800`;
+        return `${baseClasses} bg-destructive/10 text-destructive`;
       default:
         return `${baseClasses} bg-gray-100 text-gray-800`;
     }
@@ -184,9 +184,9 @@ const AttendanceList: React.FC<AttendanceListProps> = ({
       case 'in_progress':
         return `${baseClasses} bg-yellow-100 text-yellow-800`;
       case 'completed':
-        return `${baseClasses} bg-green-100 text-green-800`;
+        return `${baseClasses} bg-green-500/10 text-green-700`;
       case 'cancelled':
-        return `${baseClasses} bg-red-100 text-red-800`;
+        return `${baseClasses} bg-destructive/10 text-destructive`;
       default:
         return `${baseClasses} bg-gray-100 text-gray-800`;
     }
@@ -225,7 +225,7 @@ const AttendanceList: React.FC<AttendanceListProps> = ({
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-lg h-8 w-8 border-b-2 border-blue-600"></div>
         <span className="ml-2 text-gray-600">로딩 중...</span>
       </div>
     );
@@ -269,7 +269,7 @@ const AttendanceList: React.FC<AttendanceListProps> = ({
                 <button
                   key={course.id}
                   onClick={() => onCourseSelect(course)}
-                  className={`p-4 text-left rounded-lg border-2 transition-colors ${
+                  className={`p-4 text-left rounded-full border-2 transition-colors ${
                     selectedCourse?.id === course.id
                       ? 'border-blue-500 bg-blue-50'
                       : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
@@ -391,7 +391,7 @@ const AttendanceList: React.FC<AttendanceListProps> = ({
 
       {/* 에러 메시지 */}
       {error && (
-        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md">
+        <div className="bg-destructive/10 border border-destructive/50 text-destructive px-4 py-3 rounded-full">
           <div className="flex items-center justify-between">
             <span>{error}</span>
             <button 

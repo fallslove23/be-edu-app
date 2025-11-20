@@ -24,6 +24,7 @@ import {
 import { supabase } from '../../services/supabase';
 import { useAuth } from '../../contexts/AuthContext';
 import * as XLSX from 'xlsx';
+import { ResourceSelector } from './ResourceSelector';
 
 // 한국 공휴일 (2025년 기준)
 const KOREAN_HOLIDAYS_2025 = [
@@ -216,9 +217,11 @@ export default function CurriculumManager() {
     title: '',
     session_date: '',
     start_time: '09:00',
-    end_time: '18:00',
+    end_time: '17:00',
     classroom: '',
+    classroom_id: '',
     actual_instructor_id: '',
+    subject_id: '',
   });
 
   // 드래그 앤 드롭 상태
@@ -438,7 +441,15 @@ export default function CurriculumManager() {
         .from('course_sessions')
         .insert([{
           round_id: selectedRound.id,
-          ...sessionForm,
+          day_number: sessionForm.day_number,
+          title: sessionForm.title,
+          subject_id: sessionForm.subject_id || null,
+          session_date: sessionForm.session_date,
+          start_time: sessionForm.start_time,
+          end_time: sessionForm.end_time,
+          classroom: sessionForm.classroom,
+          classroom_id: sessionForm.classroom_id || null,
+          actual_instructor_id: sessionForm.actual_instructor_id || null,
           status: 'scheduled',
         }]);
 
@@ -451,9 +462,11 @@ export default function CurriculumManager() {
         title: '',
         session_date: '',
         start_time: '09:00',
-        end_time: '18:00',
+        end_time: '17:00',
         classroom: '',
+        classroom_id: '',
         actual_instructor_id: '',
+        subject_id: '',
       });
       await loadSessions(selectedRound.id);
     } catch (error: any) {
@@ -507,7 +520,17 @@ export default function CurriculumManager() {
 
       const { error } = await supabase
         .from('course_sessions')
-        .update(sessionForm)
+        .update({
+          day_number: sessionForm.day_number,
+          title: sessionForm.title,
+          subject_id: sessionForm.subject_id || null,
+          session_date: sessionForm.session_date,
+          start_time: sessionForm.start_time,
+          end_time: sessionForm.end_time,
+          classroom: sessionForm.classroom,
+          classroom_id: sessionForm.classroom_id || null,
+          actual_instructor_id: sessionForm.actual_instructor_id || null,
+        })
         .eq('id', selectedSession.id);
 
       if (error) throw error;
@@ -549,6 +572,10 @@ export default function CurriculumManager() {
 
   const openEditSessionModal = (session: CourseSession) => {
     setSelectedSession(session);
+
+    // classroom_id 찾기
+    const classroom = classrooms.find(c => c.name === session.classroom);
+
     setSessionForm({
       day_number: session.day_number,
       title: session.title || '',
@@ -556,7 +583,9 @@ export default function CurriculumManager() {
       start_time: session.start_time,
       end_time: session.end_time,
       classroom: session.classroom,
+      classroom_id: classroom?.id || '',
       actual_instructor_id: session.actual_instructor_id || '',
+      subject_id: session.subject_id || '',
     });
     setShowEditModal(true);
   };
@@ -1316,7 +1345,7 @@ export default function CurriculumManager() {
             });
             setShowCreateModal(true);
           }}
-          className="flex items-center gap-2 px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700"
+          className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-full hover:bg-primary/90"
         >
           <PlusIcon className="w-5 h-5" />
           새 과정 만들기
@@ -1324,8 +1353,8 @@ export default function CurriculumManager() {
       </div>
 
       {error && (
-        <div className="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
-          <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
+        <div className="p-4 bg-destructive/10 dark:bg-red-900/20 border border-destructive/50 dark:border-red-800 rounded-lg">
+          <p className="text-sm text-destructive dark:text-red-400">{error}</p>
         </div>
       )}
 
@@ -1337,9 +1366,9 @@ export default function CurriculumManager() {
             {courseRounds.map((round) => (
               <div
                 key={round.id}
-                className={`relative w-full text-left px-4 py-3 rounded-lg transition-colors ${
+                className={`relative w-full text-left px-4 py-3 rounded-full transition-colors ${
                   selectedRound?.id === round.id
-                    ? 'bg-teal-100 dark:bg-teal-900 text-teal-900 dark:text-teal-100'
+                    ? 'bg-primary/10 text-primary'
                     : 'hover:bg-gray-100 dark:hover:bg-gray-700'
                 }`}
               >
@@ -1356,7 +1385,7 @@ export default function CurriculumManager() {
                     <span
                       className={`text-xs px-2 py-0.5 rounded ${
                         round.status === 'completed'
-                          ? 'bg-green-100 text-green-700'
+                          ? 'bg-green-500/10 text-green-700'
                           : round.status === 'in_progress'
                           ? 'bg-blue-100 text-blue-700'
                           : 'bg-gray-100 text-gray-700'
@@ -1397,7 +1426,7 @@ export default function CurriculumManager() {
                     title="삭제"
                     disabled={round.is_locked}
                   >
-                    <TrashIcon className={`w-4 h-4 ${round.is_locked ? 'text-gray-300 dark:text-gray-600' : 'text-red-600 dark:text-red-400'}`} />
+                    <TrashIcon className={`w-4 h-4 ${round.is_locked ? 'text-gray-300 dark:text-gray-600' : 'text-destructive dark:text-red-400'}`} />
                   </button>
                 </div>
               </div>
@@ -1437,14 +1466,14 @@ export default function CurriculumManager() {
                       <>
                         <button
                           onClick={() => setShowSessionModal(true)}
-                          className="flex items-center gap-2 px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700"
+                          className="flex items-center gap-2 px-4 py-2.5 bg-primary text-primary-foreground rounded-full hover:bg-primary/90 transition-colors font-medium shadow-sm"
                         >
                           <PlusIcon className="w-5 h-5" />
                           일정 추가
                         </button>
                         <button
                           onClick={() => handleToggleLock(selectedRound.id, true)}
-                          className="flex items-center gap-2 px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700"
+                          className="flex items-center gap-2 px-4 py-2.5 border border-border text-foreground rounded-full hover:bg-muted transition-colors font-medium bg-background"
                           title="과정 확정 및 잠금"
                         >
                           <LockClosedIcon className="w-5 h-5" />
@@ -1455,7 +1484,7 @@ export default function CurriculumManager() {
                     {selectedRound.is_locked && (
                       <button
                         onClick={() => handleToggleLock(selectedRound.id, false)}
-                        className="flex items-center gap-2 px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700"
+                        className="flex items-center gap-2 px-4 py-2.5 border border-border text-foreground rounded-full hover:bg-muted transition-colors font-medium bg-background"
                         title="잠금 해제"
                       >
                         <LockOpenIcon className="w-5 h-5" />
@@ -1464,7 +1493,7 @@ export default function CurriculumManager() {
                     )}
                     <button
                       onClick={() => handleDuplicateRound(selectedRound.id)}
-                      className="flex items-center gap-2 px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700"
+                      className="flex items-center gap-2 px-4 py-2.5 border border-border text-foreground rounded-full hover:bg-muted transition-colors font-medium bg-background"
                       title="과정 복제"
                     >
                       <DocumentArrowDownIcon className="w-5 h-5" />
@@ -1473,7 +1502,7 @@ export default function CurriculumManager() {
                     {!selectedRound.is_locked && sessions.length > 0 && (
                       <button
                         onClick={() => handleRecalculateDates(selectedRound.id)}
-                        className="flex items-center gap-2 px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700"
+                        className="flex items-center gap-2 px-4 py-2.5 border border-border text-foreground rounded-full hover:bg-muted transition-colors font-medium bg-background"
                         title="날짜 자동 재계산 (주말/공휴일 건너뛰기)"
                       >
                         <CalendarIcon className="w-5 h-5" />
@@ -1483,7 +1512,7 @@ export default function CurriculumManager() {
                     {sessions.length > 0 && (
                       <button
                         onClick={handleExportToExcel}
-                        className="flex items-center gap-2 px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700"
+                        className="flex items-center gap-2 px-4 py-2.5 border border-border text-foreground rounded-full hover:bg-muted transition-colors font-medium bg-background"
                         title="엑셀로 내보내기"
                       >
                         <DocumentArrowDownIcon className="w-5 h-5" />
@@ -1492,7 +1521,7 @@ export default function CurriculumManager() {
                     )}
                     {!selectedRound.is_locked && (
                       <>
-                        <label className="flex items-center gap-2 px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 cursor-pointer" title="엑셀에서 가져오기">
+                        <label className="flex items-center gap-2 px-4 py-2.5 border border-border text-foreground rounded-full hover:bg-muted transition-colors font-medium bg-background cursor-pointer" title="엑셀에서 가져오기">
                           <DocumentArrowUpIcon className="w-5 h-5" />
                           엑셀 가져오기
                           <input
@@ -1504,7 +1533,7 @@ export default function CurriculumManager() {
                         </label>
                         <button
                           onClick={() => setShowTemplateModal(true)}
-                          className="flex items-center gap-2 px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700"
+                          className="flex items-center gap-2 px-4 py-2.5 border border-border text-foreground rounded-full hover:bg-muted transition-colors font-medium bg-background"
                           title="템플릿에서 불러오기"
                         >
                           <DocumentArrowDownIcon className="w-5 h-5" />
@@ -1515,7 +1544,7 @@ export default function CurriculumManager() {
                     {sessions.length > 0 && !selectedRound.is_locked && (
                       <button
                         onClick={() => setShowSaveTemplateModal(true)}
-                        className="flex items-center gap-2 px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700"
+                        className="flex items-center gap-2 px-4 py-2.5 border border-border text-foreground rounded-full hover:bg-muted transition-colors font-medium bg-background"
                         title="현재 시간표를 템플릿으로 저장"
                       >
                         <DocumentArrowUpIcon className="w-5 h-5" />
@@ -1543,7 +1572,7 @@ export default function CurriculumManager() {
                         onDragLeave={handleDragLeave}
                         onDrop={(e) => handleDrop(e, session, index)}
                         onDragEnd={handleDragEnd}
-                        className={`flex items-center justify-between p-4 border border-gray-200 dark:border-gray-700 rounded-lg transition-all ${
+                        className={`flex items-center justify-between p-4 border border-gray-200 dark:border-gray-700 rounded-full transition-all ${
                           !selectedRound.is_locked ? 'cursor-move hover:bg-gray-50 dark:hover:bg-gray-700' : ''
                         } ${
                           draggedSession?.id === session.id ? 'opacity-50' : ''
@@ -1553,7 +1582,7 @@ export default function CurriculumManager() {
                       >
                         <div className="flex-1">
                           <div className="flex items-center gap-3">
-                            <div className="flex items-center justify-center w-10 h-10 bg-teal-100 dark:bg-teal-900 text-teal-600 dark:text-teal-400 rounded font-semibold">
+                            <div className="flex items-center justify-center w-10 h-10 bg-primary/10 text-primary rounded font-semibold">
                               {session.day_number}
                             </div>
                             <div>
@@ -1580,7 +1609,7 @@ export default function CurriculumManager() {
                               </button>
                               <button
                                 onClick={() => handleDeleteSession(session.id)}
-                                className="p-2 text-gray-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400"
+                                className="p-2 text-gray-600 dark:text-gray-400 hover:text-destructive dark:hover:text-red-400"
                                 title="삭제"
                               >
                                 <TrashIcon className="w-5 h-5" />
@@ -1643,7 +1672,7 @@ export default function CurriculumManager() {
                   type="text"
                   value={roundForm.title}
                   onChange={(e) => setRoundForm({ ...roundForm, title: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                   placeholder="예: 2025년 1기 BS 영업 과정"
                 />
               </div>
@@ -1657,7 +1686,7 @@ export default function CurriculumManager() {
                     type="date"
                     value={roundForm.start_date}
                     onChange={(e) => setRoundForm({ ...roundForm, start_date: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                   />
                 </div>
                 <div>
@@ -1668,7 +1697,7 @@ export default function CurriculumManager() {
                     type="date"
                     value={roundForm.end_date}
                     onChange={(e) => setRoundForm({ ...roundForm, end_date: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                   />
                 </div>
               </div>
@@ -1687,7 +1716,7 @@ export default function CurriculumManager() {
                       manager_name: manager?.name || '',
                     });
                   }}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                 >
                   <option value="">선택</option>
                   {managers.map((manager) => (
@@ -1706,7 +1735,7 @@ export default function CurriculumManager() {
                   <select
                     value={roundForm.location}
                     onChange={(e) => setRoundForm({ ...roundForm, location: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                   >
                     <option value="">강의실을 선택하세요</option>
                     {classrooms.map((classroom) => (
@@ -1726,7 +1755,7 @@ export default function CurriculumManager() {
                     onChange={(e) =>
                       setRoundForm({ ...roundForm, max_trainees: parseInt(e.target.value) })
                     }
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                     min="1"
                   />
                 </div>
@@ -1740,7 +1769,7 @@ export default function CurriculumManager() {
                   value={roundForm.description}
                   onChange={(e) => setRoundForm({ ...roundForm, description: e.target.value })}
                   rows={3}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                   placeholder="과정에 대한 설명을 입력하세요"
                 />
               </div>
@@ -1753,14 +1782,14 @@ export default function CurriculumManager() {
                   setIsEditMode(false);
                   setEditingRoundId(null);
                 }}
-                className="px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"
+                className="px-4 py-2 text-foreground hover:bg-muted rounded-full"
               >
                 취소
               </button>
               <button
                 onClick={handleCreateRound}
                 disabled={!roundForm.title || !roundForm.start_date || !roundForm.end_date}
-                className="px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-4 py-2 bg-primary text-primary-foreground rounded-full hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isEditMode ? '수정' : '생성'}
               </button>
@@ -1795,7 +1824,7 @@ export default function CurriculumManager() {
                     onChange={(e) =>
                       setSessionForm({ ...sessionForm, day_number: parseInt(e.target.value) })
                     }
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                     min="1"
                   />
                 </div>
@@ -1807,7 +1836,7 @@ export default function CurriculumManager() {
                     type="date"
                     value={sessionForm.session_date}
                     onChange={(e) => setSessionForm({ ...sessionForm, session_date: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                   />
                 </div>
               </div>
@@ -1820,7 +1849,7 @@ export default function CurriculumManager() {
                   type="text"
                   value={sessionForm.title}
                   onChange={(e) => setSessionForm({ ...sessionForm, title: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                   placeholder="예: BS 영업 기초"
                 />
               </div>
@@ -1830,78 +1859,119 @@ export default function CurriculumManager() {
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                     시작 시간 *
                   </label>
-                  <input
-                    type="time"
+                  <select
                     value={sessionForm.start_time}
                     onChange={(e) => setSessionForm({ ...sessionForm, start_time: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                  />
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                  >
+                    <option value="09:00">오전 09:00</option>
+                    <option value="09:30">오전 09:30</option>
+                    <option value="10:00">오전 10:00</option>
+                    <option value="10:30">오전 10:30</option>
+                    <option value="11:00">오전 11:00</option>
+                    <option value="11:30">오전 11:30</option>
+                    <option value="12:00">오후 12:00</option>
+                    <option value="12:30">오후 12:30</option>
+                    <option value="13:00">오후 01:00</option>
+                    <option value="13:30">오후 01:30</option>
+                    <option value="14:00">오후 02:00</option>
+                    <option value="14:30">오후 02:30</option>
+                    <option value="15:00">오후 03:00</option>
+                    <option value="15:30">오후 03:30</option>
+                    <option value="16:00">오후 04:00</option>
+                    <option value="16:30">오후 04:30</option>
+                    <option value="17:00">오후 05:00</option>
+                    <option value="17:30">오후 05:30</option>
+                    <option value="18:00">오후 06:00</option>
+                  </select>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                     종료 시간 *
                   </label>
-                  <input
-                    type="time"
+                  <select
                     value={sessionForm.end_time}
                     onChange={(e) => setSessionForm({ ...sessionForm, end_time: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                  />
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                  >
+                    <option value="09:00">오전 09:00</option>
+                    <option value="09:30">오전 09:30</option>
+                    <option value="10:00">오전 10:00</option>
+                    <option value="10:30">오전 10:30</option>
+                    <option value="11:00">오전 11:00</option>
+                    <option value="11:30">오전 11:30</option>
+                    <option value="12:00">오후 12:00</option>
+                    <option value="12:30">오후 12:30</option>
+                    <option value="13:00">오후 01:00</option>
+                    <option value="13:30">오후 01:30</option>
+                    <option value="14:00">오후 02:00</option>
+                    <option value="14:30">오후 02:30</option>
+                    <option value="15:00">오후 03:00</option>
+                    <option value="15:30">오후 03:30</option>
+                    <option value="16:00">오후 04:00</option>
+                    <option value="16:30">오후 04:30</option>
+                    <option value="17:00">오후 05:00</option>
+                    <option value="17:30">오후 05:30</option>
+                    <option value="18:00">오후 06:00</option>
+                  </select>
                 </div>
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  강의실 *
+                  과목 (선택)
                 </label>
                 <select
-                  value={sessionForm.classroom}
-                  onChange={(e) => setSessionForm({ ...sessionForm, classroom: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                  value={sessionForm.subject_id}
+                  onChange={(e) => setSessionForm({ ...sessionForm, subject_id: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                 >
                   <option value="">선택</option>
-                  {classrooms.map((classroom) => (
-                    <option key={classroom.id} value={classroom.name}>
-                      {classroom.name} ({classroom.code}) - 수용인원: {classroom.capacity}명
+                  {subjects.map((subject) => (
+                    <option key={subject.id} value={subject.id}>
+                      {subject.name}
                     </option>
                   ))}
                 </select>
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  강사
-                </label>
-                <select
-                  value={sessionForm.actual_instructor_id}
-                  onChange={(e) =>
-                    setSessionForm({ ...sessionForm, actual_instructor_id: e.target.value })
-                  }
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                >
-                  <option value="">선택 (기본 강사 사용)</option>
-                  {instructors.map((instructor) => (
-                    <option key={instructor.id} value={instructor.id}>
-                      {instructor.name} ({instructor.email})
-                    </option>
-                  ))}
-                </select>
-              </div>
+              {/* ResourceSelector 통합 */}
+              <ResourceSelector
+                sessionDate={sessionForm.session_date}
+                startTime={sessionForm.start_time}
+                endTime={sessionForm.end_time}
+                subjectId={sessionForm.subject_id}
+                selectedInstructorId={sessionForm.actual_instructor_id}
+                selectedClassroomId={sessionForm.classroom_id}
+                onInstructorChange={(instructorId) =>
+                  setSessionForm({ ...sessionForm, actual_instructor_id: instructorId })
+                }
+                onClassroomChange={(classroomId) => {
+                  const classroom = classrooms.find(c => c.id === classroomId);
+                  setSessionForm({
+                    ...sessionForm,
+                    classroom_id: classroomId,
+                    classroom: classroom?.name || ''
+                  });
+                }}
+                excludeSessionId={undefined}
+                showRecommendations={true}
+              />
             </div>
 
             <div className="mt-6 flex justify-end gap-3">
               <button
                 onClick={() => setShowSessionModal(false)}
-                className="px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"
+                className="px-4 py-2 text-foreground hover:bg-muted rounded-full"
               >
                 취소
               </button>
               <button
                 onClick={handleAddSession}
                 disabled={
-                  !sessionForm.session_date || !sessionForm.start_time || !sessionForm.end_time || !sessionForm.classroom
+                  !sessionForm.session_date || !sessionForm.start_time || !sessionForm.end_time || !sessionForm.classroom_id
                 }
-                className="px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-4 py-2 bg-primary text-primary-foreground rounded-full hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 추가
               </button>
@@ -1939,7 +2009,7 @@ export default function CurriculumManager() {
                     onChange={(e) =>
                       setSessionForm({ ...sessionForm, day_number: parseInt(e.target.value) })
                     }
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                     min="1"
                   />
                 </div>
@@ -1951,7 +2021,7 @@ export default function CurriculumManager() {
                     type="date"
                     value={sessionForm.session_date}
                     onChange={(e) => setSessionForm({ ...sessionForm, session_date: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                   />
                 </div>
               </div>
@@ -1964,7 +2034,7 @@ export default function CurriculumManager() {
                   type="text"
                   value={sessionForm.title}
                   onChange={(e) => setSessionForm({ ...sessionForm, title: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                   placeholder="예: BS 영업 기초"
                 />
               </div>
@@ -1974,63 +2044,104 @@ export default function CurriculumManager() {
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                     시작 시간 *
                   </label>
-                  <input
-                    type="time"
+                  <select
                     value={sessionForm.start_time}
                     onChange={(e) => setSessionForm({ ...sessionForm, start_time: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                  />
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                  >
+                    <option value="09:00">오전 09:00</option>
+                    <option value="09:30">오전 09:30</option>
+                    <option value="10:00">오전 10:00</option>
+                    <option value="10:30">오전 10:30</option>
+                    <option value="11:00">오전 11:00</option>
+                    <option value="11:30">오전 11:30</option>
+                    <option value="12:00">오후 12:00</option>
+                    <option value="12:30">오후 12:30</option>
+                    <option value="13:00">오후 01:00</option>
+                    <option value="13:30">오후 01:30</option>
+                    <option value="14:00">오후 02:00</option>
+                    <option value="14:30">오후 02:30</option>
+                    <option value="15:00">오후 03:00</option>
+                    <option value="15:30">오후 03:30</option>
+                    <option value="16:00">오후 04:00</option>
+                    <option value="16:30">오후 04:30</option>
+                    <option value="17:00">오후 05:00</option>
+                    <option value="17:30">오후 05:30</option>
+                    <option value="18:00">오후 06:00</option>
+                  </select>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                     종료 시간 *
                   </label>
-                  <input
-                    type="time"
+                  <select
                     value={sessionForm.end_time}
                     onChange={(e) => setSessionForm({ ...sessionForm, end_time: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                  />
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                  >
+                    <option value="09:00">오전 09:00</option>
+                    <option value="09:30">오전 09:30</option>
+                    <option value="10:00">오전 10:00</option>
+                    <option value="10:30">오전 10:30</option>
+                    <option value="11:00">오전 11:00</option>
+                    <option value="11:30">오전 11:30</option>
+                    <option value="12:00">오후 12:00</option>
+                    <option value="12:30">오후 12:30</option>
+                    <option value="13:00">오후 01:00</option>
+                    <option value="13:30">오후 01:30</option>
+                    <option value="14:00">오후 02:00</option>
+                    <option value="14:30">오후 02:30</option>
+                    <option value="15:00">오후 03:00</option>
+                    <option value="15:30">오후 03:30</option>
+                    <option value="16:00">오후 04:00</option>
+                    <option value="16:30">오후 04:30</option>
+                    <option value="17:00">오후 05:00</option>
+                    <option value="17:30">오후 05:30</option>
+                    <option value="18:00">오후 06:00</option>
+                  </select>
                 </div>
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  강의실 *
+                  과목 (선택)
                 </label>
                 <select
-                  value={sessionForm.classroom}
-                  onChange={(e) => setSessionForm({ ...sessionForm, classroom: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                  value={sessionForm.subject_id}
+                  onChange={(e) => setSessionForm({ ...sessionForm, subject_id: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                 >
                   <option value="">선택</option>
-                  {classrooms.map((classroom) => (
-                    <option key={classroom.id} value={classroom.name}>
-                      {classroom.name} ({classroom.code}) - 수용인원: {classroom.capacity}명
+                  {subjects.map((subject) => (
+                    <option key={subject.id} value={subject.id}>
+                      {subject.name}
                     </option>
                   ))}
                 </select>
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  강사
-                </label>
-                <select
-                  value={sessionForm.actual_instructor_id}
-                  onChange={(e) =>
-                    setSessionForm({ ...sessionForm, actual_instructor_id: e.target.value })
-                  }
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                >
-                  <option value="">선택 (기본 강사 사용)</option>
-                  {instructors.map((instructor) => (
-                    <option key={instructor.id} value={instructor.id}>
-                      {instructor.name} ({instructor.email})
-                    </option>
-                  ))}
-                </select>
-              </div>
+              {/* ResourceSelector 통합 */}
+              <ResourceSelector
+                sessionDate={sessionForm.session_date}
+                startTime={sessionForm.start_time}
+                endTime={sessionForm.end_time}
+                subjectId={sessionForm.subject_id}
+                selectedInstructorId={sessionForm.actual_instructor_id}
+                selectedClassroomId={sessionForm.classroom_id}
+                onInstructorChange={(instructorId) =>
+                  setSessionForm({ ...sessionForm, actual_instructor_id: instructorId })
+                }
+                onClassroomChange={(classroomId) => {
+                  const classroom = classrooms.find(c => c.id === classroomId);
+                  setSessionForm({
+                    ...sessionForm,
+                    classroom_id: classroomId,
+                    classroom: classroom?.name || ''
+                  });
+                }}
+                excludeSessionId={selectedSession?.id}
+                showRecommendations={true}
+              />
             </div>
 
             <div className="mt-6 flex justify-end gap-3">
@@ -2039,7 +2150,7 @@ export default function CurriculumManager() {
                   setShowEditModal(false);
                   setSelectedSession(null);
                 }}
-                className="px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"
+                className="px-4 py-2 text-foreground hover:bg-muted rounded-full"
               >
                 취소
               </button>
@@ -2048,7 +2159,7 @@ export default function CurriculumManager() {
                 disabled={
                   !sessionForm.session_date || !sessionForm.start_time || !sessionForm.end_time || !sessionForm.classroom
                 }
-                className="px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-4 py-2 bg-primary text-primary-foreground rounded-full hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 수정
               </button>
@@ -2072,7 +2183,7 @@ export default function CurriculumManager() {
                   type="text"
                   value={templateForm.name}
                   onChange={(e) => setTemplateForm({ ...templateForm, name: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                   placeholder="예: 기본 BS 영업 과정"
                   required
                 />
@@ -2086,7 +2197,7 @@ export default function CurriculumManager() {
                   type="text"
                   value={templateForm.category}
                   onChange={(e) => setTemplateForm({ ...templateForm, category: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                   placeholder="예: BS 영업"
                 />
               </div>
@@ -2099,7 +2210,7 @@ export default function CurriculumManager() {
                   value={templateForm.description}
                   onChange={(e) => setTemplateForm({ ...templateForm, description: e.target.value })}
                   rows={3}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                   placeholder="템플릿에 대한 설명을 입력하세요"
                 />
               </div>
@@ -2117,14 +2228,14 @@ export default function CurriculumManager() {
                   setShowSaveTemplateModal(false);
                   setTemplateForm({ name: '', description: '', category: '' });
                 }}
-                className="px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"
+                className="px-4 py-2 text-foreground hover:bg-muted rounded-full"
               >
                 취소
               </button>
               <button
                 onClick={handleSaveAsTemplate}
                 disabled={!templateForm.name}
-                className="px-4 py-2 bg-pink-600 text-white rounded-lg hover:bg-pink-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-4 py-2 bg-pink-600 text-white rounded-full hover:bg-pink-700 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 저장
               </button>
@@ -2194,7 +2305,7 @@ export default function CurriculumManager() {
                           e.stopPropagation();
                           handleLoadFromTemplate(template.id);
                         }}
-                        className="ml-4 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 text-sm"
+                        className="ml-4 px-4 py-2 bg-primary text-primary-foreground rounded-full hover:bg-primary/90 text-sm"
                       >
                         불러오기
                       </button>
@@ -2207,7 +2318,7 @@ export default function CurriculumManager() {
             <div className="mt-6 flex justify-end">
               <button
                 onClick={() => setShowTemplateModal(false)}
-                className="px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"
+                className="px-4 py-2 text-foreground hover:bg-muted rounded-full"
               >
                 닫기
               </button>

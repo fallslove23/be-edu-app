@@ -2,46 +2,70 @@
 @tailwind components;
 @tailwind utilities;
 
-/* 공통 버튼 스타일 */
+/* 🎨 통일된 버튼 디자인 시스템 - 캡슐형 */
 @layer components {
-  /* Primary 버튼 - 주요 액션 */
+  /* 기본 버튼 스타일 */
+  .btn-base {
+    @apply px-4 py-2 font-medium shadow-sm transition-colors duration-200 flex items-center gap-2 cursor-pointer;
+    border-radius: 9999px !important; /* rounded-full 강제 적용 */
+  }
+
+  /* 크기 변형 */
+  .btn-lg {
+    @apply px-5 py-2.5;
+  }
+
+  .btn-sm {
+    @apply px-3 py-1.5 text-sm;
+  }
+
+  /* Primary 버튼 - 주요 액션 (파란색) */
   .btn-primary {
-    @apply px-4 py-2 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 active:bg-indigo-800 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors duration-200 shadow-sm flex items-center justify-center;
+    @apply btn-base bg-blue-600 text-white hover:bg-blue-700 active:bg-blue-800 disabled:bg-gray-300 disabled:cursor-not-allowed;
   }
 
-  /* Secondary 버튼 - 보조 액션 */
+  /* Secondary 버튼 - 보조 액션 (회색) */
   .btn-secondary {
-    @apply px-4 py-2 bg-white text-gray-700 border border-gray-300 rounded-lg font-medium hover:bg-gray-50 active:bg-gray-100 disabled:bg-gray-100 disabled:cursor-not-allowed transition-colors duration-200 flex items-center justify-center;
+    @apply btn-base bg-gray-600 text-white hover:bg-gray-700 active:bg-gray-800 disabled:bg-gray-300 disabled:cursor-not-allowed;
   }
 
-  /* Success 버튼 - 완료/성공 */
+  /* Success 버튼 - 완료/성공 (초록색) */
   .btn-success {
-    @apply px-4 py-2 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 active:bg-green-800 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors duration-200 shadow-sm flex items-center justify-center;
+    @apply btn-base bg-emerald-600 text-white hover:bg-emerald-700 active:bg-emerald-800 disabled:bg-gray-300 disabled:cursor-not-allowed;
   }
 
-  /* Danger 버튼 - 삭제/위험 */
+  /* Danger 버튼 - 삭제/위험 (빨간색) */
   .btn-danger {
-    @apply px-4 py-2 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 active:bg-red-800 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors duration-200 shadow-sm flex items-center justify-center;
+    @apply btn-base bg-red-600 text-white hover:bg-red-700 active:bg-red-800 disabled:bg-gray-300 disabled:cursor-not-allowed;
   }
 
-  /* Warning 버튼 - 경고 */
+  /* Warning 버튼 - 경고 (노란색) */
   .btn-warning {
-    @apply px-4 py-2 bg-yellow-500 text-white rounded-lg font-medium hover:bg-yellow-600 active:bg-yellow-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors duration-200 shadow-sm flex items-center justify-center;
+    @apply btn-base bg-yellow-500 text-white hover:bg-yellow-600 active:bg-yellow-700 disabled:bg-gray-300 disabled:cursor-not-allowed;
   }
 
-  /* Info 버튼 - 정보 */
-  .btn-info {
-    @apply px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 active:bg-blue-800 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors duration-200 shadow-sm flex items-center justify-center;
+  /* Dark 버튼 - 중요 액션 (다크 슬레이트) */
+  .btn-dark {
+    @apply btn-base bg-slate-800 text-white hover:bg-slate-900 active:bg-slate-950 disabled:bg-gray-300 disabled:cursor-not-allowed;
   }
 
-  /* Purple 버튼 - 특별 기능 (프레젠테이션 등) */
-  .btn-purple {
-    @apply px-4 py-2 bg-purple-600 text-white rounded-lg font-medium hover:bg-purple-700 active:bg-purple-800 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors duration-200 shadow-sm flex items-center justify-center;
+  /* Outline 버튼 - 보조 액션 (흰색 테두리) */
+  .btn-outline {
+    @apply btn-base bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 active:bg-gray-100 disabled:bg-gray-100 disabled:cursor-not-allowed;
   }
 
   /* Ghost 버튼 - 텍스트만 */
   .btn-ghost {
-    @apply px-4 py-2 text-gray-600 rounded-lg font-medium hover:bg-gray-100 active:bg-gray-200 disabled:text-gray-300 disabled:cursor-not-allowed transition-colors duration-200 flex items-center justify-center;
+    @apply btn-base bg-transparent text-gray-600 hover:bg-gray-100 active:bg-gray-200 disabled:text-gray-300 disabled:cursor-not-allowed shadow-none;
+  }
+
+  /* 레거시 호환성 (기존 코드에서 사용 중) */
+  .btn-info {
+    @apply btn-primary;
+  }
+
+  .btn-purple {
+    @apply btn-base bg-purple-600 text-white hover:bg-purple-700 active:bg-purple-800 disabled:bg-gray-300 disabled:cursor-not-allowed;
   }
 
   /* 아이콘 간격 */

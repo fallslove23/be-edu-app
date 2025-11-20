@@ -227,9 +227,9 @@ const BackupRestoreSystem: React.FC = () => {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'completed': return 'text-green-600 bg-green-100';
+      case 'completed': return 'text-green-600 bg-green-500/10';
       case 'processing': return 'text-blue-600 bg-blue-100';
-      case 'failed': return 'text-red-600 bg-red-100';
+      case 'failed': return 'text-destructive bg-destructive/10';
       default: return 'text-gray-600 bg-gray-100';
     }
   };
@@ -265,7 +265,7 @@ const BackupRestoreSystem: React.FC = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-lg h-8 w-8 border-b-2 border-blue-600"></div>
         <span className="ml-2">백업 정보를 불러오는 중...</span>
       </div>
     );
@@ -285,7 +285,7 @@ const BackupRestoreSystem: React.FC = () => {
           <div className="flex items-center space-x-3">
             <button
               onClick={() => setShowConfig(true)}
-              className="border border-gray-300 rounded-lg px-4 py-2 hover:bg-gray-50 flex items-center space-x-2"
+              className="border border-gray-300 rounded-full px-4 py-2 hover:bg-gray-50 flex items-center space-x-2"
             >
               <Cog6ToothIcon className="h-4 w-4" />
               <span>설정</span>
@@ -293,7 +293,7 @@ const BackupRestoreSystem: React.FC = () => {
             <button
               onClick={() => createBackup('manual')}
               disabled={processing !== null}
-              className={`px-4 py-2 rounded-lg text-white flex items-center space-x-2 ${
+              className={`px-4 py-2 rounded-full text-white flex items-center space-x-2 ${
                 processing !== null
                   ? 'bg-gray-400 cursor-not-allowed'
                   : 'btn-primary'
@@ -342,7 +342,7 @@ const BackupRestoreSystem: React.FC = () => {
                 <button
                   onClick={() => createBackup('full')}
                   disabled={processing !== null}
-                  className={`px-3 py-1 rounded text-sm ${
+                  className={`px-3 py-1 rounded-full text-sm ${
                     processing !== null
                       ? 'bg-gray-400 text-white cursor-not-allowed'
                       : 'btn-success'
@@ -355,7 +355,7 @@ const BackupRestoreSystem: React.FC = () => {
                   disabled={processing !== null}
                   className={`${
                     processing !== null
-                      ? 'bg-gray-400 text-white cursor-not-allowed px-3 py-1 rounded text-sm'
+                      ? 'bg-gray-400 text-white cursor-not-allowed px-3 py-1 rounded-full text-sm'
                       : 'btn-primary btn-sm'
                   }`}
                 >
@@ -438,7 +438,7 @@ const BackupRestoreSystem: React.FC = () => {
                           <button
                             onClick={() => restoreBackup(backup)}
                             disabled={processing !== null}
-                            className={`p-1 rounded ${
+                            className={`p-1 rounded-full ${
                               processing !== null
                                 ? 'text-gray-400 cursor-not-allowed'
                                 : 'text-green-600 hover:text-green-900'
@@ -451,10 +451,10 @@ const BackupRestoreSystem: React.FC = () => {
                         <button
                           onClick={() => deleteBackup(backup.id)}
                           disabled={processing === backup.id}
-                          className={`p-1 rounded ${
+                          className={`p-1 rounded-full ${
                             processing === backup.id
                               ? 'text-gray-400 cursor-not-allowed'
-                              : 'text-red-600 hover:text-red-900'
+                              : 'text-destructive hover:text-destructive'
                           }`}
                           title="삭제"
                         >
@@ -477,7 +477,7 @@ const BackupRestoreSystem: React.FC = () => {
               </p>
               <button
                 onClick={() => createBackup('full')}
-                className="btn-primary px-4 py-2 rounded-lg"
+                className="btn-primary px-4 py-2 rounded-full"
               >
                 첫 백업 생성하기
               </button>
@@ -497,7 +497,7 @@ const BackupRestoreSystem: React.FC = () => {
                 <ExclamationTriangleIcon className="h-5 w-5 text-yellow-400" />
                 <div className="ml-3">
                   <h4 className="text-sm font-medium text-yellow-800">주의사항</h4>
-                  <div className="mt-2 text-sm text-yellow-700">
+                  <div className="mt-2 text-sm text-foreground">
                     <ul className="list-disc pl-5 space-y-1">
                       <li>복구 작업은 현재 데이터를 완전히 덮어씁니다.</li>
                       <li>복구 전에 현재 상태의 백업을 생성하는 것을 권장합니다.</li>
@@ -579,7 +579,7 @@ const BackupRestoreSystem: React.FC = () => {
                   onChange={(e) => setConfig(prev => ({ ...prev, autoBackup: e.target.checked }))}
                   className="sr-only peer"
                 />
-                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-lg after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
               </label>
             </div>
 
@@ -591,7 +591,7 @@ const BackupRestoreSystem: React.FC = () => {
                     <select
                       value={config.backupSchedule}
                       onChange={(e) => setConfig(prev => ({ ...prev, backupSchedule: e.target.value as any }))}
-                      className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                      className="w-full border border-gray-300 rounded-full px-3 py-2"
                     >
                       <option value="daily">매일</option>
                       <option value="weekly">매주</option>
@@ -607,7 +607,7 @@ const BackupRestoreSystem: React.FC = () => {
                       max="365"
                       value={config.retentionDays}
                       onChange={(e) => setConfig(prev => ({ ...prev, retentionDays: parseInt(e.target.value) }))}
-                      className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                      className="w-full border border-gray-300 rounded-full px-3 py-2"
                     />
                   </div>
                 </div>
@@ -640,7 +640,7 @@ const BackupRestoreSystem: React.FC = () => {
                     <select
                       value={config.compressionLevel}
                       onChange={(e) => setConfig(prev => ({ ...prev, compressionLevel: e.target.value as any }))}
-                      className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                      className="w-full border border-gray-300 rounded-full px-3 py-2"
                     >
                       <option value="none">압축 안함 (빠름, 큰 용량)</option>
                       <option value="standard">표준 압축 (균형)</option>
@@ -660,7 +660,7 @@ const BackupRestoreSystem: React.FC = () => {
                         onChange={(e) => setConfig(prev => ({ ...prev, encryptBackups: e.target.checked }))}
                         className="sr-only peer"
                       />
-                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-lg after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
                     </label>
                   </div>
                 </div>
@@ -673,7 +673,7 @@ const BackupRestoreSystem: React.FC = () => {
                   // 설정 저장 로직
                   alert('백업 설정이 저장되었습니다.');
                 }}
-                className="btn-primary px-6 py-2 rounded-lg"
+                className="btn-primary px-6 py-2 rounded-full"
               >
                 설정 저장
               </button>

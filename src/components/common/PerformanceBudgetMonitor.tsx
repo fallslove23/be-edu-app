@@ -98,7 +98,7 @@ const PerformanceBudgetMonitor: React.FC<PerformanceBudgetMonitorProps> = ({
 
       {/* 알림 배지 */}
       {alerts.length > 0 && (
-        <div className="absolute -top-2 -right-2 bg-red-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold">
+        <div className="absolute -top-2 -right-2 bg-red-600 text-white rounded-lg w-5 h-5 flex items-center justify-center text-xs font-bold">
           {alerts.length}
         </div>
       )}
@@ -135,9 +135,9 @@ const PerformanceBudgetMonitor: React.FC<PerformanceBudgetMonitorProps> = ({
           {/* 현재 상태 */}
           <div className="mb-3">
             <div className={`px-2 py-1 rounded text-xs font-medium ${
-              budgetStatus === 'passed' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' :
+              budgetStatus === 'passed' ? 'bg-green-500/10 text-green-700 dark:bg-green-900 dark:text-green-200' :
               budgetStatus === 'warning' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200' :
-              'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
+              'bg-destructive/10 text-destructive dark:bg-red-900 dark:text-red-200'
             }`}>
               예산 상태: {budgetStatus.toUpperCase()}
             </div>
@@ -150,25 +150,25 @@ const PerformanceBudgetMonitor: React.FC<PerformanceBudgetMonitorProps> = ({
               <div className="grid grid-cols-2 gap-2 text-xs">
                 <div className="bg-gray-50 dark:bg-gray-700 p-2 rounded">
                   <div className="font-medium">로드 시간</div>
-                  <div className={currentMetrics.loadTime > 2000 ? 'text-red-600' : 'text-green-600'}>
+                  <div className={currentMetrics.loadTime > 2000 ? 'text-destructive' : 'text-green-600'}>
                     {currentMetrics.loadTime.toFixed(0)}ms
                   </div>
                 </div>
                 <div className="bg-gray-50 dark:bg-gray-700 p-2 rounded">
                   <div className="font-medium">메모리</div>
-                  <div className={currentMetrics.memoryUsage > 100 ? 'text-red-600' : 'text-green-600'}>
+                  <div className={currentMetrics.memoryUsage > 100 ? 'text-destructive' : 'text-green-600'}>
                     {currentMetrics.memoryUsage.toFixed(1)}MB
                   </div>
                 </div>
                 <div className="bg-gray-50 dark:bg-gray-700 p-2 rounded">
                   <div className="font-medium">FPS</div>
-                  <div className={(currentMetrics.fps || 0) < 50 ? 'text-red-600' : 'text-green-600'}>
+                  <div className={(currentMetrics.fps || 0) < 50 ? 'text-destructive' : 'text-green-600'}>
                     {currentMetrics.fps?.toFixed(0) || 'N/A'}
                   </div>
                 </div>
                 <div className="bg-gray-50 dark:bg-gray-700 p-2 rounded">
                   <div className="font-medium">렌더 시간</div>
-                  <div className={currentMetrics.renderTime > 100 ? 'text-red-600' : 'text-green-600'}>
+                  <div className={currentMetrics.renderTime > 100 ? 'text-destructive' : 'text-green-600'}>
                     {currentMetrics.renderTime.toFixed(0)}ms
                   </div>
                 </div>
@@ -184,7 +184,7 @@ const PerformanceBudgetMonitor: React.FC<PerformanceBudgetMonitorProps> = ({
                 {webVitals.lcp && (
                   <div className="bg-gray-50 dark:bg-gray-700 p-2 rounded">
                     <div className="font-medium">LCP</div>
-                    <div className={webVitals.lcp > 2500 ? 'text-red-600' : 'text-green-600'}>
+                    <div className={webVitals.lcp > 2500 ? 'text-destructive' : 'text-green-600'}>
                       {webVitals.lcp.toFixed(0)}ms
                     </div>
                   </div>
@@ -192,7 +192,7 @@ const PerformanceBudgetMonitor: React.FC<PerformanceBudgetMonitorProps> = ({
                 {webVitals.fid !== undefined && (
                   <div className="bg-gray-50 dark:bg-gray-700 p-2 rounded">
                     <div className="font-medium">FID</div>
-                    <div className={webVitals.fid > 100 ? 'text-red-600' : 'text-green-600'}>
+                    <div className={webVitals.fid > 100 ? 'text-destructive' : 'text-green-600'}>
                       {webVitals.fid.toFixed(0)}ms
                     </div>
                   </div>
@@ -200,7 +200,7 @@ const PerformanceBudgetMonitor: React.FC<PerformanceBudgetMonitorProps> = ({
                 {webVitals.cls !== undefined && (
                   <div className="bg-gray-50 dark:bg-gray-700 p-2 rounded">
                     <div className="font-medium">CLS</div>
-                    <div className={webVitals.cls > 0.1 ? 'text-red-600' : 'text-green-600'}>
+                    <div className={webVitals.cls > 0.1 ? 'text-destructive' : 'text-green-600'}>
                       {webVitals.cls.toFixed(4)}
                     </div>
                   </div>
@@ -208,7 +208,7 @@ const PerformanceBudgetMonitor: React.FC<PerformanceBudgetMonitorProps> = ({
                 {webVitals.fcp && (
                   <div className="bg-gray-50 dark:bg-gray-700 p-2 rounded">
                     <div className="font-medium">FCP</div>
-                    <div className={webVitals.fcp > 1800 ? 'text-red-600' : 'text-green-600'}>
+                    <div className={webVitals.fcp > 1800 ? 'text-destructive' : 'text-green-600'}>
                       {webVitals.fcp.toFixed(0)}ms
                     </div>
                   </div>
@@ -220,10 +220,10 @@ const PerformanceBudgetMonitor: React.FC<PerformanceBudgetMonitorProps> = ({
           {/* 위반 사항 */}
           {violations.length > 0 && (
             <div className="mb-3">
-              <h4 className="font-semibold text-red-600 mb-2">위반 사항</h4>
+              <h4 className="font-semibold text-destructive mb-2">위반 사항</h4>
               <div className="space-y-1">
                 {violations.map((violation, index) => (
-                  <div key={index} className="text-xs text-red-600 bg-red-50 dark:bg-red-900/20 p-2 rounded">
+                  <div key={index} className="text-xs text-destructive bg-destructive/10 dark:bg-red-900/20 p-2 rounded">
                     {violation}
                   </div>
                 ))}
@@ -237,7 +237,7 @@ const PerformanceBudgetMonitor: React.FC<PerformanceBudgetMonitorProps> = ({
               <h4 className="font-semibold text-orange-600 mb-2">실시간 알림</h4>
               <div className="space-y-1 max-h-20 overflow-y-auto">
                 {alerts.map((alert, index) => (
-                  <div key={index} className="text-xs text-orange-600 bg-orange-50 dark:bg-orange-900/20 p-2 rounded">
+                  <div key={index} className="text-xs text-orange-600 bg-orange-500/10 dark:bg-orange-900/20 p-2 rounded">
                     {alert}
                   </div>
                 ))}

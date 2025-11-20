@@ -260,12 +260,12 @@ const SessionCreationWizard: React.FC<SessionCreationWizardProps> = ({
       {/* 과정 시리즈 선택 */}
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-3">
-          교육 시리즈 <span className="text-red-500">*</span>
+          교육 시리즈 <span className="text-destructive">*</span>
         </label>
         <select
           value={sessionInfo.seriesId}
           onChange={(e) => handleCourseSelection('seriesId', e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
         >
           <option value="">시리즈를 선택하세요</option>
           {availableSeries.filter(s => s.isActive).map(series => (
@@ -279,12 +279,12 @@ const SessionCreationWizard: React.FC<SessionCreationWizardProps> = ({
       {/* 과정 레벨 선택 */}
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-3">
-          과정 레벨 <span className="text-red-500">*</span>
+          과정 레벨 <span className="text-destructive">*</span>
         </label>
         <select
           value={sessionInfo.levelId}
           onChange={(e) => handleCourseSelection('levelId', e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           disabled={!sessionInfo.seriesId}
         >
           <option value="">레벨을 선택하세요</option>
@@ -303,12 +303,12 @@ const SessionCreationWizard: React.FC<SessionCreationWizardProps> = ({
       <div className="grid grid-cols-3 gap-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            연도 <span className="text-red-500">*</span>
+            연도 <span className="text-destructive">*</span>
           </label>
           <select
             value={sessionInfo.year}
             onChange={(e) => handleCourseSelection('year', e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           >
             <option value={new Date().getFullYear() - 1}>{new Date().getFullYear() - 1}</option>
             <option value={new Date().getFullYear()}>{new Date().getFullYear()}</option>
@@ -319,7 +319,7 @@ const SessionCreationWizard: React.FC<SessionCreationWizardProps> = ({
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            차수 <span className="text-red-500">*</span>
+            차수 <span className="text-destructive">*</span>
           </label>
           <div className="relative">
             <input
@@ -328,8 +328,8 @@ const SessionCreationWizard: React.FC<SessionCreationWizardProps> = ({
               onChange={(e) => setSessionInfo(prev => ({ ...prev, sessionNumber: parseInt(e.target.value) || 1 }))}
               min="1"
               max="99"
-              className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                isDuplicateCode() ? 'border-red-300 bg-red-50' : 'border-gray-300'
+              className={`w-full px-3 py-2 border rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                isDuplicateCode() ? 'border-destructive/50 bg-destructive/10' : 'border-gray-300'
               }`}
             />
             {(() => {
@@ -358,29 +358,29 @@ const SessionCreationWizard: React.FC<SessionCreationWizardProps> = ({
             onChange={(e) => setSessionInfo(prev => ({ ...prev, maxStudents: parseInt(e.target.value) || 30 }))}
             min="1"
             max="100"
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           />
         </div>
       </div>
 
       {/* 과정 코드 미리보기 */}
-      <div className={`border rounded-lg p-4 ${
+      <div className={`border rounded-full p-4 ${
         isDuplicateCode() 
-          ? 'bg-red-50 border-red-200' 
+          ? 'bg-destructive/10 border-destructive/50' 
           : 'bg-blue-50 border-blue-200'
       }`}>
         <div className={`text-sm font-medium ${
-          isDuplicateCode() ? 'text-red-900' : 'text-blue-900'
+          isDuplicateCode() ? 'text-destructive' : 'text-blue-900'
         }`}>
           {isDuplicateCode() ? '⚠️ 중복된 과정 코드' : '생성될 과정 코드'}
         </div>
         <div className={`text-lg font-bold mt-1 font-mono ${
-          isDuplicateCode() ? 'text-red-800' : 'text-blue-800'
+          isDuplicateCode() ? 'text-destructive' : 'text-blue-800'
         }`}>
           {generateCourseCode() || '과정을 선택해주세요'}
         </div>
         <div className={`text-xs mt-1 ${
-          isDuplicateCode() ? 'text-red-700' : 'text-blue-700'
+          isDuplicateCode() ? 'text-destructive' : 'text-blue-700'
         }`}>
           {isDuplicateCode() 
             ? '이미 존재하는 과정입니다. 차수를 변경해주세요.'
@@ -399,7 +399,7 @@ const SessionCreationWizard: React.FC<SessionCreationWizardProps> = ({
           value={sessionInfo.sessionName}
           onChange={(e) => setSessionInfo(prev => ({ ...prev, sessionName: e.target.value }))}
           placeholder="자동 생성됩니다"
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
         />
       </div>
     </div>
@@ -415,7 +415,7 @@ const SessionCreationWizard: React.FC<SessionCreationWizardProps> = ({
       {/* 강사 배정 */}
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
-          담당 강사 <span className="text-red-500">*</span>
+          담당 강사 <span className="text-destructive">*</span>
         </label>
         <select
           value={sessionInfo.instructor.id}
@@ -429,7 +429,7 @@ const SessionCreationWizard: React.FC<SessionCreationWizardProps> = ({
               }
             }));
           }}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
         >
           <option value="">강사를 선택하세요</option>
           <option value="instructor-1">김강사 - 영업 전문</option>
@@ -442,7 +442,7 @@ const SessionCreationWizard: React.FC<SessionCreationWizardProps> = ({
       {/* 운영 담당자 배정 */}
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
-          운영 담당자 <span className="text-red-500">*</span>
+          운영 담당자 <span className="text-destructive">*</span>
         </label>
         <select
           value={sessionInfo.manager.id}
@@ -456,7 +456,7 @@ const SessionCreationWizard: React.FC<SessionCreationWizardProps> = ({
               }
             }));
           }}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
         >
           <option value="">담당자를 선택하세요</option>
           <option value="manager-1">박매니저 - 교육운영팀</option>
@@ -497,25 +497,25 @@ const SessionCreationWizard: React.FC<SessionCreationWizardProps> = ({
       <div className="grid grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            교육 시작일 <span className="text-red-500">*</span>
+            교육 시작일 <span className="text-destructive">*</span>
           </label>
           <input
             type="date"
             value={sessionInfo.startDate}
             onChange={(e) => setSessionInfo(prev => ({ ...prev, startDate: e.target.value }))}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           />
         </div>
         
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            교육 종료일 <span className="text-red-500">*</span>
+            교육 종료일 <span className="text-destructive">*</span>
           </label>
           <input
             type="date"
             value={sessionInfo.endDate}
             onChange={(e) => setSessionInfo(prev => ({ ...prev, endDate: e.target.value }))}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           />
         </div>
       </div>
@@ -533,7 +533,7 @@ const SessionCreationWizard: React.FC<SessionCreationWizardProps> = ({
               ...prev,
               schedule: { ...prev.schedule, startTime: e.target.value }
             }))}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           />
         </div>
         
@@ -548,7 +548,7 @@ const SessionCreationWizard: React.FC<SessionCreationWizardProps> = ({
               ...prev,
               schedule: { ...prev.schedule, endTime: e.target.value }
             }))}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           />
         </div>
       </div>
@@ -600,7 +600,7 @@ const SessionCreationWizard: React.FC<SessionCreationWizardProps> = ({
             schedule: { ...prev.schedule, location: e.target.value }
           }))}
           placeholder="예: 본사 교육실 A, 온라인"
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
         />
       </div>
 
@@ -616,7 +616,7 @@ const SessionCreationWizard: React.FC<SessionCreationWizardProps> = ({
               type="date"
               value={sessionInfo.registrationStartDate}
               onChange={(e) => setSessionInfo(prev => ({ ...prev, registrationStartDate: e.target.value }))}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
           </div>
           
@@ -628,7 +628,7 @@ const SessionCreationWizard: React.FC<SessionCreationWizardProps> = ({
               type="date"
               value={sessionInfo.registrationEndDate}
               onChange={(e) => setSessionInfo(prev => ({ ...prev, registrationEndDate: e.target.value }))}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
           </div>
         </div>
@@ -713,12 +713,12 @@ const SessionCreationWizard: React.FC<SessionCreationWizardProps> = ({
           onChange={(e) => setSessionInfo(prev => ({ ...prev, notes: e.target.value }))}
           rows={3}
           placeholder="차수 운영에 대한 특이사항을 입력하세요"
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+          className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
         />
       </div>
 
       {/* 주의사항 */}
-      <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
+      <div className="bg-orange-500/10 border border-orange-200 rounded-lg p-4">
         <div className="flex items-start space-x-3">
           <ExclamationTriangleIcon className="h-5 w-5 text-orange-600 mt-0.5" />
           <div>
@@ -772,7 +772,7 @@ const SessionCreationWizard: React.FC<SessionCreationWizardProps> = ({
             type="button"
             onClick={prevStep}
             disabled={currentStep === 1}
-            className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
+            className="px-6 py-3 border border-gray-300 text-gray-700 rounded-full hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
           >
             <ChevronLeftIcon className="h-4 w-4" />
             <span>이전</span>
@@ -782,7 +782,7 @@ const SessionCreationWizard: React.FC<SessionCreationWizardProps> = ({
             <button
               type="button"
               onClick={onCancel}
-              className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
+              className="px-6 py-3 border border-gray-300 text-gray-700 rounded-full hover:bg-gray-50"
             >
               취소
             </button>

@@ -45,7 +45,7 @@ const SimpleExamManagement: React.FC = () => {
                   <div className="text-2xl font-bold text-gray-900">8</div>
                   <div className="text-sm text-gray-600">전체 시험</div>
                 </div>
-                <div className="bg-green-50 rounded-lg p-4">
+                <div className="bg-green-500/10 rounded-lg p-4">
                   <div className="text-2xl font-bold text-green-600">3</div>
                   <div className="text-sm text-gray-600">진행중</div>
                 </div>
@@ -76,7 +76,7 @@ const SimpleExamManagement: React.FC = () => {
                       <div className="flex items-center space-x-4">
                         <span className="text-sm text-gray-500">{exam.students}명 참여</span>
                         <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                          exam.status === 'active' ? 'bg-green-100 text-green-800' :
+                          exam.status === 'active' ? 'bg-green-500/10 text-green-700' :
                           exam.status === 'scheduled' ? 'bg-blue-100 text-blue-800' :
                           'bg-gray-100 text-gray-800'
                         }`}>
@@ -159,10 +159,10 @@ const SimpleExamManagement: React.FC = () => {
                   </div>
                   
                   <div className="flex items-center space-x-3 pt-4">
-                    <button className="btn-primary">
+                    <button className="btn-primary rounded-full">
                       시험 생성
                     </button>
-                    <button className="border border-gray-300 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-50 transition-colors">
+                    <button className="border border-gray-300 text-gray-700 px-6 py-2 rounded-full hover:bg-gray-50 transition-colors">
                       취소
                     </button>
                   </div>
@@ -194,7 +194,7 @@ const SimpleExamManagement: React.FC = () => {
                           <span className="text-sm text-gray-700">{item.count}명</span>
                           <span className="text-sm text-gray-500">{item.percentage}%</span>
                         </div>
-                        <div className="w-full bg-gray-200 rounded-full h-3">
+                        <div className="w-full bg-gray-200 rounded-lg h-3">
                           <div 
                             className={`h-3 rounded-full ${item.color}`}
                             style={{ width: `${item.percentage}%` }}

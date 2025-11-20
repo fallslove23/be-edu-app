@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState, useEffect } from 'react';
 import {
   AcademicCapIcon,
@@ -16,13 +18,20 @@ import {
   UsersIcon
 } from '@heroicons/react/24/outline';
 import { CourseTemplateService } from '../../services/course-template.service';
+import { UnifiedCourseService } from '../../services/unified-course.service';
+import { TemplateCurriculumService } from '../../services/template-curriculum.service';
 import { UserService, type User } from '../../services/user.services';
+import { useAuth } from '../../contexts/AuthContext';
 import type {
   CourseTemplate,
   CourseRound,
   BSCourseSummary,
   RoundStats
 } from '../../types/course-template.types';
+import type {
+  CreateCourseTemplateRequest,
+  CreateTemplateCurriculumRequest
+} from '../../types/unified-course.types';
 import toast from 'react-hot-toast';
 
 interface BSCourseManagementProps {
@@ -38,6 +47,8 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
 }) => {
   console.log('🎯 BSCourseManagement 컴포넌트가 렌더링되었습니다.');
 
+  const { user } = useAuth();
+  const isAdmin = user?.role === 'admin';
   const [templates, setTemplates] = useState<CourseTemplate[]>([]);
   const [rounds, setRounds] = useState<CourseRound[]>([]);
   const [summary, setSummary] = useState<BSCourseSummary[]>([]);
@@ -91,7 +102,7 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
   const loadClassrooms = async () => {
     try {
       const { data, error } = await import('../../services/supabase').then(m =>
-        m.supabase.from('classrooms').select('*').eq('is_active', true).order('name')
+        m.supabase.from('classrooms').select('*').eq('is_available', true).order('name')
       );
       if (error) throw error;
       setClassrooms(data || []);
@@ -123,7 +134,15 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
         summary: summaryData.length
       });
 
-      setTemplates(templatesData);
+      // objectives가 없는 템플릿들을 안전하게 처리
+      const safeTemplates = templatesData.map(template => ({
+        ...template,
+        objectives: template.objectives || [],
+        curriculum: template.curriculum || [],
+        requirements: template.requirements || []
+      }));
+
+      setTemplates(safeTemplates);
       setRounds(roundsData);
       setSummary(summaryData);
     } catch (error) {
@@ -142,11 +161,11 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
       case 'recruiting':
         return 'bg-blue-100 text-blue-700 border-blue-200';
       case 'in_progress':
-        return 'bg-green-100 text-green-700 border-green-200';
+        return 'bg-green-500/10 text-green-700 border-green-200';
       case 'completed':
         return 'bg-purple-100 text-purple-700 border-purple-200';
       case 'cancelled':
-        return 'bg-red-100 text-red-700 border-red-200';
+        return 'bg-destructive/10 text-destructive border-destructive/50';
       default:
         return 'bg-gray-100 text-gray-700 border-gray-200';
     }
@@ -171,11 +190,30 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
 
   const handleSaveTemplate = async (updatedTemplate: CourseTemplate) => {
     try {
-      await CourseTemplateService.updateTemplate(updatedTemplate.id, updatedTemplate);
+      console.log('[BSCourseManagement] Updating template basic info:', updatedTemplate);
+
+      // 기본 정보만 업데이트 (커리큘럼은 별도 관리)
+      await UnifiedCourseService.updateTemplate(updatedTemplate.id, {
+        name: updatedTemplate.name,
+        description: updatedTemplate.description,
+        code: `BS-${updatedTemplate.category.toUpperCase()}`,
+        category: updatedTemplate.category as 'basic' | 'advanced',
+        difficulty_level: 'beginner',
+        duration_days: updatedTemplate.duration_days,
+        total_hours: updatedTemplate.total_hours,
+        requirements: Array.isArray(updatedTemplate.requirements)
+          ? updatedTemplate.requirements
+          : (updatedTemplate.requirements ? [updatedTemplate.requirements] : []),
+        objectives: Array.isArray(updatedTemplate.objectives)
+          ? updatedTemplate.objectives
+          : (updatedTemplate.objectives ? [updatedTemplate.objectives] : [])
+        // curriculum 제거 - 기본 정보만 수정
+      });
+
       await loadData();
       setTemplateEditModal({ isOpen: false, template: null });
       setEditingTemplate(null);
-      toast.success('템플릿이 성공적으로 수정되었습니다.');
+      toast.success('템플릿 기본 정보가 성공적으로 수정되었습니다.');
     } catch (error) {
       console.error('템플릿 수정 실패:', error);
       toast.error('템플릿 수정 중 오류가 발생했습니다.');
@@ -185,7 +223,40 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
   // 새 템플릿 생성 함수
   const handleNewTemplate = async (templateData: Omit<CourseTemplate, 'id' | 'created_at' | 'updated_at'>) => {
     try {
-      await CourseTemplateService.createTemplate(templateData);
+      console.log('[BSCourseManagement] Creating new template with UnifiedCourseService:', templateData);
+
+      // 커리큘럼 데이터를 template_curriculum 형식으로 변환
+      const curriculum: CreateTemplateCurriculumRequest[] = (templateData.curriculum || []).map((curr, index) => ({
+        day: curr.day || index + 1,
+        order_index: 1, // 같은 날 여러 과목이 있으면 나중에 확장
+        subject: curr.title || '제목 없음',
+        subject_type: 'lecture' as const,
+        description: curr.description,
+        duration_hours: curr.duration_hours || 7,
+        learning_objectives: Array.isArray(curr.learning_objectives)
+          ? curr.learning_objectives
+          : (curr.learning_objectives ? [curr.learning_objectives] : []),
+        topics: Array.isArray(curr.activities) ? curr.activities : []
+      }));
+
+      const request: CreateCourseTemplateRequest = {
+        code: `BS-${templateData.category.toUpperCase()}-${Date.now()}`,
+        name: templateData.name,
+        description: templateData.description,
+        category: templateData.category as 'basic' | 'advanced',
+        difficulty_level: 'beginner', // 기본값
+        duration_days: templateData.duration_days || curriculum.length,
+        total_hours: templateData.total_hours || curriculum.reduce((sum, c) => sum + c.duration_hours, 0),
+        requirements: Array.isArray(templateData.requirements)
+          ? templateData.requirements
+          : (templateData.requirements ? [templateData.requirements] : []),
+        objectives: Array.isArray(templateData.objectives)
+          ? templateData.objectives
+          : (templateData.objectives ? [templateData.objectives] : []),
+        curriculum
+      };
+
+      await UnifiedCourseService.createTemplate(request);
       await loadData();
       setIsNewTemplateModalOpen(false);
       toast.success('새로운 템플릿이 성공적으로 생성되었습니다.');
@@ -274,6 +345,49 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
     } catch (error) {
       console.error('차수 삭제 실패:', error);
       toast.error('차수 삭제 중 오류가 발생했습니다.');
+    }
+  };
+
+  // 템플릿 삭제 (관리자만)
+  const handleDeleteTemplate = async (template: CourseTemplate) => {
+    if (!isAdmin) {
+      toast.error('관리자만 템플릿을 삭제할 수 있습니다.');
+      return;
+    }
+
+    // 확인 메시지
+    const confirmMessage = `"${template.name}" 템플릿을 삭제하시겠습니까?\n\n⚠️ 주의: 이 템플릿을 사용하는 차수가 있는지 확인해주세요.`;
+    if (!confirm(confirmMessage)) {
+      return;
+    }
+
+    try {
+      // 이 템플릿을 사용하는 차수가 있는지 확인
+      const relatedRounds = await CourseTemplateService.getRounds({ template_id: template.id });
+
+      if (relatedRounds.length > 0) {
+        const activeRounds = relatedRounds.filter(r => r.status === 'in_progress' || r.status === 'recruiting');
+        if (activeRounds.length > 0) {
+          toast.error(`활성 상태의 차수 ${activeRounds.length}개가 있어 삭제할 수 없습니다.`);
+          return;
+        }
+
+        // 완료된 차수만 있는 경우
+        const doubleConfirm = confirm(
+          `완료된 차수 ${relatedRounds.length}개가 이 템플릿을 사용하고 있습니다.\n정말로 삭제하시겠습니까?`
+        );
+        if (!doubleConfirm) {
+          return;
+        }
+      }
+
+      // 템플릿 삭제 (소프트 삭제: is_active = false)
+      await CourseTemplateService.updateTemplate(template.id, { is_active: false });
+      await loadData();
+      toast.success('템플릿이 삭제되었습니다.');
+    } catch (error) {
+      console.error('템플릿 삭제 실패:', error);
+      toast.error('템플릿 삭제 중 오류가 발생했습니다.');
     }
   };
 
@@ -388,7 +502,7 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
 
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-        <div className="bg-white rounded-xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
+        <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-hidden">
           <div className="flex justify-between items-center p-6 border-b border-gray-200">
             <h2 className="text-xl font-bold text-gray-900">템플릿 편집: {editingTemplate.name}</h2>
             <button
@@ -452,106 +566,23 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
                 />
               </div>
 
-              {/* 커리큘럼 */}
-              <div>
-                <div className="flex justify-between items-center mb-4">
-                  <h3 className="text-lg font-medium text-gray-900">커리큘럼</h3>
-                  <button
-                    type="button"
-                    onClick={addCurriculumDay}
-                    className="flex items-center px-3 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100"
-                  >
-                    <PlusIcon className="w-4 h-4 mr-1" />
-                    일차 추가
-                  </button>
-                </div>
-
-                <div className="space-y-4">
-                  {formData.curriculum.map((curriculum, index) => (
-                    <div key={curriculum.id} className="border border-gray-200 rounded-lg p-4">
-                      <div className="flex justify-between items-center mb-3">
-                        <h4 className="font-medium text-gray-900">{curriculum.day}일차</h4>
-                        <button
-                          type="button"
-                          onClick={() => removeCurriculumDay(index)}
-                          className="text-red-600 hover:text-red-800"
-                        >
-                          <TrashIcon className="w-4 h-4" />
-                        </button>
-                      </div>
-
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">제목</label>
-                          <input
-                            type="text"
-                            value={curriculum.title}
-                            onChange={(e) => updateCurriculumDay(index, { title: e.target.value })}
-                            className="w-full border border-gray-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500"
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">시간</label>
-                          <input
-                            type="number"
-                            value={curriculum.duration_hours}
-                            onChange={(e) => updateCurriculumDay(index, { duration_hours: parseInt(e.target.value) || 0 })}
-                            className="w-full border border-gray-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500"
-                            min="1"
-                            max="12"
-                          />
-                        </div>
-                      </div>
-
-                      <div className="mt-3">
-                        <label className="block text-sm font-medium text-gray-700 mb-1">설명</label>
-                        <textarea
-                          value={curriculum.description}
-                          onChange={(e) => updateCurriculumDay(index, { description: e.target.value })}
-                          className="w-full border border-gray-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500"
-                          rows={2}
-                        />
-                      </div>
-
-                      <div className="mt-3">
-                        <label className="block text-sm font-medium text-gray-700 mb-1">학습 목표</label>
-                        <textarea
-                          value={curriculum.learning_objectives.join('\n')}
-                          onChange={(e) => updateCurriculumDay(index, { 
-                            learning_objectives: e.target.value.split('\n').filter(o => o.trim()) 
-                          })}
-                          className="w-full border border-gray-300 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-blue-500"
-                          rows={2}
-                          placeholder="학습 목표를 한 줄씩 입력"
-                        />
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="flex justify-between items-center pt-4 border-t">
-                <div className="text-sm text-gray-500">
-                  총 {formData.duration_days}일, {formData.total_hours}시간
-                </div>
-                <div className="flex justify-end space-x-3">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setTemplateEditModal({ isOpen: false, template: null });
-                      setEditingTemplate(null);
-                    }}
-                    className="btn-secondary"
-                  >
-                    취소
-                  </button>
-                  <button
-                    type="submit"
-                    className="btn-primary"
-                  >
-                    저장
-                  </button>
-                </div>
+              <div className="flex justify-end space-x-3 pt-4 border-t">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setTemplateEditModal({ isOpen: false, template: null });
+                    setEditingTemplate(null);
+                  }}
+                  className="btn-secondary"
+                >
+                  취소
+                </button>
+                <button
+                  type="submit"
+                  className="btn-primary"
+                >
+                  저장
+                </button>
               </div>
             </form>
           </div>
@@ -599,7 +630,7 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
 
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-        <div className="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-hidden">
+        <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-hidden">
           <div className="flex justify-between items-center p-6 border-b border-gray-200">
             <h2 className="text-xl font-bold text-gray-900">새 과정 템플릿 생성</h2>
             <button
@@ -711,7 +742,7 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
                 <button
                   type="button"
                   onClick={() => setIsNewTemplateModalOpen(false)}
-                  className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200"
+                  className="px-4 py-2 text-sm font-medium text-foreground bg-muted rounded-full hover:bg-muted/80"
                 >
                   취소
                 </button>
@@ -734,7 +765,7 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
     return (
       <div className="flex items-center justify-center min-h-64 p-8">
         <div className="flex flex-col items-center space-y-4">
-          <div className="w-8 h-8 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
+          <div className="w-8 h-8 border-4 border-blue-200 border-t-blue-600 rounded-lg animate-spin"></div>
           <p className="text-gray-600 text-sm">BS 과정 데이터 로딩 중...</p>
         </div>
       </div>
@@ -752,13 +783,13 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
     <div className="space-y-6 max-w-7xl mx-auto">
       {/* 필터 - 과정 관리 뷰에서만 표시 */}
       {viewMode === 'rounds' && (
-        <div className="bg-white rounded-2xl shadow-md border border-gray-100 p-6 mb-6">
+        <div className="bg-white rounded-lg shadow-md border border-gray-100 p-6 mb-6">
           <div className="flex items-center gap-4">
             <select
               id="template-filter"
               value={selectedTemplate}
               onChange={(e) => setSelectedTemplate(e.target.value)}
-              className="flex-1 sm:w-64 border-2 border-gray-200 rounded-xl px-6 py-3.5 text-base bg-white text-gray-700 font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all shadow-sm hover:border-gray-300 appearance-none cursor-pointer"
+              className="flex-1 sm:w-64 border-2 border-gray-200 rounded-lg px-6 py-3.5 text-base bg-white text-gray-700 font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all shadow-sm hover:border-gray-300 appearance-none cursor-pointer"
               style={{
                 backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`,
                 backgroundPosition: 'right 0.75rem center',
@@ -782,10 +813,10 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
           {/* 요약 통계 */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {summary.map((item, index) => (
-              <div key={index} className="bg-card rounded-xl shadow-sm border border-border p-6">
+              <div key={index} className="bg-card rounded-lg shadow-sm border border-border p-6">
                 <div className="flex items-start justify-between">
                   <div className="flex items-center space-x-3">
-                    <div className={`p-3 rounded-lg ${
+                    <div className={`p-3 rounded-full ${
                       item.template_name === 'BS Basic' 
                         ? 'bg-blue-100 text-blue-600' 
                         : 'bg-purple-100 text-purple-600'
@@ -825,7 +856,7 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
           </div>
 
           {/* 최근 차수 목록 */}
-          <div className="bg-card rounded-xl shadow-sm border border-border">
+          <div className="bg-card rounded-lg shadow-sm border border-border">
             <div className="p-6 border-b border-border">
               <h2 className="text-lg font-bold text-card-foreground">최근 차수</h2>
             </div>
@@ -874,7 +905,7 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
         <div className="space-y-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
             {rounds.map(round => (
-              <div key={round.id} className="bg-card rounded-xl shadow-sm border border-border overflow-hidden">
+              <div key={round.id} className="bg-card rounded-lg shadow-sm border border-border overflow-hidden">
                 {/* 헤더 */}
                 <div className="p-6 border-b border-border">
                   <div className="flex justify-between items-start mb-2">
@@ -949,13 +980,13 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
 
           {/* 과정이 없을 때 */}
           {rounds.length === 0 && (
-            <div className="text-center py-12 bg-card rounded-xl shadow-sm border border-border">
+            <div className="text-center py-12 bg-card rounded-lg shadow-sm border border-border">
               <AcademicCapIcon className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
               <h3 className="text-lg font-medium text-card-foreground mb-2">등록된 과정이 없습니다</h3>
               <p className="text-muted-foreground mb-6">첫 번째 과정을 생성해보세요.</p>
               <button
                 onClick={() => setIsRoundModalOpen(true)}
-                className="bg-primary text-primary-foreground hover:bg-primary/90 inline-flex items-center px-4 py-2 rounded-lg font-medium transition-colors"
+                className="bg-primary text-primary-foreground hover:bg-primary/90 inline-flex items-center px-4 py-2 rounded-full font-medium transition-colors"
               >
                 <PlusIcon className="w-4 h-4 mr-2" />
                 새 과정 생성
@@ -968,13 +999,18 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
       {/* 템플릿 편집 */}
       {viewMode === 'templates' && (
         <div className="space-y-6">
-          <div className="bg-card rounded-xl shadow-sm border border-border p-6">
+          <div className="bg-card rounded-lg shadow-sm border border-border p-6">
             <div className="flex justify-between items-center mb-6">
               <div>
                 <h2 className="text-xl font-bold text-card-foreground">과정 템플릿 관리</h2>
                 <p className="text-sm text-muted-foreground mt-1">
                   BS Basic과 BS Advanced 템플릿의 커리큘럼과 내용을 수정할 수 있습니다.
                 </p>
+                {isAdmin && (
+                  <p className="text-xs text-amber-600 dark:text-amber-400 mt-1">
+                    🔐 관리자 권한으로 템플릿 삭제가 가능합니다
+                  </p>
+                )}
               </div>
               <button
                 onClick={() => setIsNewTemplateModalOpen(true)}
@@ -1023,22 +1059,24 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
                   </div>
 
                   {/* 학습 목표 */}
-                  <div className="mb-6">
-                    <h4 className="text-sm font-medium text-card-foreground mb-2">학습 목표</h4>
-                    <ul className="text-sm text-muted-foreground space-y-1">
-                      {template.objectives.slice(0, 3).map((objective, idx) => (
-                        <li key={idx} className="flex items-start">
-                          <span className="inline-block w-1 h-1 bg-muted-foreground rounded-full mt-2 mr-2 flex-shrink-0"></span>
-                          {objective}
-                        </li>
-                      ))}
-                      {template.objectives.length > 3 && (
-                        <li className="text-muted-foreground">
-                          +{template.objectives.length - 3}개 더보기
-                        </li>
-                      )}
-                    </ul>
-                  </div>
+                  {template.objectives && template.objectives.length > 0 && (
+                    <div className="mb-6">
+                      <h4 className="text-sm font-medium text-card-foreground mb-2">학습 목표</h4>
+                      <ul className="text-sm text-muted-foreground space-y-1">
+                        {template.objectives.slice(0, 3).map((objective, idx) => (
+                          <li key={idx} className="flex items-start">
+                            <span className="inline-block w-1 h-1 bg-muted-foreground rounded-lg mt-2 mr-2 flex-shrink-0"></span>
+                            {objective}
+                          </li>
+                        ))}
+                        {template.objectives.length > 3 && (
+                          <li className="text-muted-foreground">
+                            +{template.objectives.length - 3}개 더보기
+                          </li>
+                        )}
+                      </ul>
+                    </div>
+                  )}
 
                   {/* 커리큘럼 미리보기 */}
                   {template.curriculum && template.curriculum.length > 0 && (
@@ -1064,16 +1102,25 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
 
                   {/* 액션 버튼 */}
                   <div className="flex space-x-2">
-                    <button 
+                    <button
                       onClick={() => handleEditTemplate(template)}
-                      className="bg-primary text-primary-foreground hover:bg-primary/90 flex-1 flex items-center justify-center px-4 py-2 text-sm font-medium rounded-lg transition-colors"
+                      className="bg-primary text-primary-foreground hover:bg-primary/90 flex-1 flex items-center justify-center px-4 py-2 text-sm font-medium rounded-full transition-colors"
                     >
                       <PencilIcon className="w-4 h-4 mr-2" />
                       편집
                     </button>
-                    <button className="btn-neutral px-4 py-2 text-sm font-medium rounded-lg">
+                    <button className="btn-neutral px-4 py-2 text-sm font-medium rounded-full">
                       <EyeIcon className="w-4 h-4" />
                     </button>
+                    {isAdmin && (
+                      <button
+                        onClick={() => handleDeleteTemplate(template)}
+                        className="btn-outline border-destructive text-destructive hover:bg-destructive hover:text-destructive-foreground px-4 py-2 text-sm font-medium rounded-full transition-colors"
+                        title="템플릿 삭제 (관리자)"
+                      >
+                        <TrashIcon className="w-4 h-4" />
+                      </button>
+                    )}
                   </div>
                 </div>
               ))}
@@ -1099,7 +1146,7 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
 
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-        <div className="bg-card rounded-xl max-w-3xl w-full max-h-[90vh] overflow-hidden border border-border">
+        <div className="bg-card rounded-lg max-w-3xl w-full max-h-[90vh] overflow-hidden border border-border">
           <div className="flex justify-between items-center p-6 border-b border-border">
             <div>
               <h2 className="text-xl font-bold text-card-foreground">{round.title}</h2>
@@ -1195,7 +1242,7 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
                           </div>
                           <span className={`text-xs px-2 py-1 rounded-full ${
                             session.status === 'completed'
-                              ? 'bg-green-100 text-green-700'
+                              ? 'bg-green-500/10 text-green-700'
                               : session.status === 'in_progress'
                               ? 'bg-blue-100 text-blue-700'
                               : 'bg-gray-100 text-gray-700'
@@ -1214,7 +1261,7 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
           <div className="flex justify-end space-x-3 p-6 border-t border-border">
             <button
               onClick={() => setRoundDetailModal({ isOpen: false, round: null })}
-              className="btn-neutral px-4 py-2 text-sm font-medium rounded-lg"
+              className="btn-neutral px-4 py-2 text-sm font-medium rounded-full"
             >
               닫기
             </button>
@@ -1223,7 +1270,7 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
                 setRoundDetailModal({ isOpen: false, round: null });
                 handleEditRound(round);
               }}
-              className="btn-primary px-4 py-2 text-sm font-medium rounded-lg"
+              className="btn-primary px-4 py-2 text-sm font-medium rounded-full"
             >
               편집
             </button>
@@ -1254,7 +1301,7 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
 
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-        <div className="bg-card rounded-xl max-w-2xl w-full max-h-[90vh] overflow-hidden border border-border">
+        <div className="bg-card rounded-lg max-w-2xl w-full max-h-[90vh] overflow-hidden border border-border">
           <div className="flex justify-between items-center p-6 border-b border-border">
             <h2 className="text-xl font-bold text-card-foreground">차수 편집</h2>
             <button
@@ -1409,7 +1456,7 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
               <button
                 type="button"
                 onClick={() => handleDeleteRound(formData)}
-                className="btn-outline border-destructive text-destructive hover:bg-destructive hover:text-destructive-foreground px-4 py-2 text-sm font-medium rounded-lg"
+                className="btn-outline border-destructive text-destructive hover:bg-destructive hover:text-destructive-foreground px-4 py-2 text-sm font-medium rounded-full"
               >
                 삭제
               </button>
@@ -1417,13 +1464,13 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
                 <button
                   type="button"
                   onClick={() => setRoundEditModal({ isOpen: false, round: null })}
-                  className="btn-neutral px-4 py-2 text-sm font-medium rounded-lg"
+                  className="btn-neutral px-4 py-2 text-sm font-medium rounded-full"
                 >
                   취소
                 </button>
                 <button
                   type="submit"
-                  className="btn-primary px-4 py-2 text-sm font-medium rounded-lg"
+                  className="btn-primary px-4 py-2 text-sm font-medium rounded-full"
                 >
                   저장
                 </button>
@@ -1524,7 +1571,7 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
 
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-        <div className="bg-card rounded-xl max-w-2xl w-full border border-border max-h-[90vh] overflow-hidden">
+        <div className="bg-card rounded-lg max-w-2xl w-full border border-border max-h-[90vh] overflow-hidden">
           <div className="flex justify-between items-center p-6 border-b border-border">
             <h2 className="text-xl font-bold text-card-foreground">새 과정 생성</h2>
             <button
@@ -1560,7 +1607,7 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
                     {templates.map(template => (
                       <div
                         key={template.id}
-                        className={`border rounded-lg p-3 cursor-pointer transition-colors bg-card ${
+                        className={`border rounded-full p-3 cursor-pointer transition-colors bg-card ${
                           formData.template_id === template.id
                             ? 'border-primary bg-primary/5 ring-2 ring-primary/20'
                             : 'border-border hover:border-primary/50 hover:bg-accent/50'
@@ -1593,24 +1640,29 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
                           <div className="flex items-center space-x-1 ml-2">
                             <button
                               type="button"
-                              className="p-1.5 text-muted-foreground hover:text-primary rounded hover:bg-accent"
+                              className="p-1.5 text-muted-foreground hover:text-primary rounded-full hover:bg-accent"
                               onClick={(e) => {
                                 e.stopPropagation();
-                                // TODO: 편집 기능
+                                setIsRoundModalOpen(false);
+                                handleEditTemplate(template);
                               }}
+                              title="템플릿 편집"
                             >
                               <PencilIcon className="w-4 h-4" />
                             </button>
-                            <button
-                              type="button"
-                              className="p-1.5 text-muted-foreground hover:text-destructive rounded hover:bg-accent"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                // TODO: 삭제 기능
-                              }}
-                            >
-                              <TrashIcon className="w-4 h-4" />
-                            </button>
+                            {isAdmin && (
+                              <button
+                                type="button"
+                                className="p-1.5 text-muted-foreground hover:text-destructive rounded-full hover:bg-accent"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleDeleteTemplate(template);
+                                }}
+                                title="템플릿 삭제 (관리자)"
+                              >
+                                <TrashIcon className="w-4 h-4" />
+                              </button>
+                            )}
                           </div>
                         </div>
                       </div>
@@ -1769,13 +1821,13 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
               <button
                 type="button"
                 onClick={() => setIsRoundModalOpen(false)}
-                className="btn-neutral px-4 py-2 text-sm font-medium rounded-lg"
+                className="btn-neutral px-4 py-2 text-sm font-medium rounded-full"
               >
                 취소
               </button>
               <button
                 type="submit"
-                className="bg-primary text-primary-foreground hover:bg-primary/90 px-6 py-2 text-sm font-medium rounded-lg transition-colors"
+                className="btn-base btn-primary"
               >
                 저장
               </button>

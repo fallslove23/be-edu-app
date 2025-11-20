@@ -460,12 +460,12 @@ const OfflineCourseWizard: React.FC<OfflineCourseWizardProps> = ({
       {/* 과정 시리즈 선택 */}
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-3">
-          교육 시리즈 <span className="text-red-500">*</span>
+          교육 시리즈 <span className="text-destructive">*</span>
         </label>
         <select
           value={courseInfo.seriesId}
           onChange={(e) => handleCourseSelection('seriesId', e.target.value)}
-          className="w-full border-2 border-gray-200 rounded-xl px-6 py-3.5 text-base bg-white text-gray-700 font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all shadow-sm hover:border-gray-300 appearance-none cursor-pointer"
+          className="w-full border-2 border-gray-200 rounded-lg px-6 py-3.5 text-base bg-white text-gray-700 font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all shadow-sm hover:border-gray-300 appearance-none cursor-pointer"
           style={{
             backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`,
             backgroundPosition: 'right 0.75rem center',
@@ -486,12 +486,12 @@ const OfflineCourseWizard: React.FC<OfflineCourseWizardProps> = ({
       {/* 과정 레벨 선택 */}
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-3">
-          과정 레벨 <span className="text-red-500">*</span>
+          과정 레벨 <span className="text-destructive">*</span>
         </label>
         <select
           value={courseInfo.levelId}
           onChange={(e) => handleCourseSelection('levelId', e.target.value)}
-          className="w-full border-2 border-gray-200 rounded-xl px-6 py-3.5 text-base bg-white text-gray-700 font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all shadow-sm hover:border-gray-300 appearance-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full border-2 border-gray-200 rounded-lg px-6 py-3.5 text-base bg-white text-gray-700 font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all shadow-sm hover:border-gray-300 appearance-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
           disabled={!courseInfo.seriesId}
           style={{
             backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`,
@@ -517,12 +517,12 @@ const OfflineCourseWizard: React.FC<OfflineCourseWizardProps> = ({
       <div className="grid grid-cols-3 gap-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            연도 <span className="text-red-500">*</span>
+            연도 <span className="text-destructive">*</span>
           </label>
           <select
             value={courseInfo.year}
             onChange={(e) => handleCourseSelection('year', e.target.value)}
-            className="w-full border-2 border-gray-200 rounded-xl px-6 py-3.5 text-base bg-white text-gray-700 font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all shadow-sm hover:border-gray-300 appearance-none cursor-pointer"
+            className="w-full border-2 border-gray-200 rounded-lg px-6 py-3.5 text-base bg-white text-gray-700 font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all shadow-sm hover:border-gray-300 appearance-none cursor-pointer"
             style={{
               backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`,
               backgroundPosition: 'right 0.75rem center',
@@ -539,7 +539,7 @@ const OfflineCourseWizard: React.FC<OfflineCourseWizardProps> = ({
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            차수 <span className="text-red-500">*</span>
+            차수 <span className="text-destructive">*</span>
           </label>
           <input
             type="number"
@@ -547,13 +547,13 @@ const OfflineCourseWizard: React.FC<OfflineCourseWizardProps> = ({
             onChange={(e) => setCourseInfo(prev => ({ ...prev, sessionNumber: parseInt(e.target.value) || 1 }))}
             min="1"
             max="99"
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           />
         </div>
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            총 교육일수 <span className="text-red-500">*</span>
+            총 교육일수 <span className="text-destructive">*</span>
           </label>
           <input
             type="number"
@@ -561,7 +561,7 @@ const OfflineCourseWizard: React.FC<OfflineCourseWizardProps> = ({
             onChange={(e) => setCourseInfo(prev => ({ ...prev, totalDays: parseInt(e.target.value) || 10 }))}
             min="1"
             max="30"
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           />
         </div>
       </div>
@@ -576,7 +576,7 @@ const OfflineCourseWizard: React.FC<OfflineCourseWizardProps> = ({
           value={courseInfo.courseName}
           onChange={(e) => setCourseInfo(prev => ({ ...prev, courseName: e.target.value }))}
           placeholder="자동 생성됩니다"
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
         />
       </div>
 
@@ -605,13 +605,13 @@ const OfflineCourseWizard: React.FC<OfflineCourseWizardProps> = ({
       <div className="grid grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            교육 시작일 <span className="text-red-500">*</span>
+            교육 시작일 <span className="text-destructive">*</span>
           </label>
           <input
             type="date"
             value={courseInfo.startDate}
             onChange={(e) => setCourseInfo(prev => ({ ...prev, startDate: e.target.value }))}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           />
         </div>
         
@@ -630,7 +630,7 @@ const OfflineCourseWizard: React.FC<OfflineCourseWizardProps> = ({
                 setCourseInfo(prev => ({ ...prev, endDate: e.target.value }));
                 setAutoCalculateEndDate(false); // 수동 수정 시 자동 계산 비활성화
               }}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
             {!autoCalculateEndDate && (
               <button
@@ -649,14 +649,14 @@ const OfflineCourseWizard: React.FC<OfflineCourseWizardProps> = ({
       {/* 교육 장소 */}
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
-          교육 장소 <span className="text-red-500">*</span>
+          교육 장소 <span className="text-destructive">*</span>
         </label>
         <input
           type="text"
           value={courseInfo.location}
           onChange={(e) => setCourseInfo(prev => ({ ...prev, location: e.target.value }))}
           placeholder="예: 본사 교육원, 대회의실 A"
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
         />
       </div>
 
@@ -671,14 +671,14 @@ const OfflineCourseWizard: React.FC<OfflineCourseWizardProps> = ({
           onChange={(e) => setCourseInfo(prev => ({ ...prev, maxStudents: parseInt(e.target.value) || 30 }))}
           min="1"
           max="100"
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
         />
       </div>
 
       {/* 운영 담당자 */}
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
-          운영 담당자 <span className="text-red-500">*</span>
+          운영 담당자 <span className="text-destructive">*</span>
         </label>
         <select
           value={courseInfo.manager.id}
@@ -692,7 +692,7 @@ const OfflineCourseWizard: React.FC<OfflineCourseWizardProps> = ({
               }
             }));
           }}
-          className="w-full border-2 border-gray-200 rounded-xl px-6 py-3.5 text-base bg-white text-gray-700 font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all shadow-sm hover:border-gray-300 appearance-none cursor-pointer"
+          className="w-full border-2 border-gray-200 rounded-lg px-6 py-3.5 text-base bg-white text-gray-700 font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all shadow-sm hover:border-gray-300 appearance-none cursor-pointer"
           style={{
             backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`,
             backgroundPosition: 'right 0.75rem center',
@@ -744,7 +744,7 @@ const OfflineCourseWizard: React.FC<OfflineCourseWizardProps> = ({
         <button
           type="button"
           onClick={addInstructor}
-          className="btn-primary px-4 py-2 rounded-lg flex items-center space-x-2"
+          className="btn-primary px-4 py-2 rounded-full flex items-center space-x-2"
         >
           <PlusIcon className="h-4 w-4" />
           <span>강사 추가</span>
@@ -760,7 +760,7 @@ const OfflineCourseWizard: React.FC<OfflineCourseWizardProps> = ({
               <button
                 type="button"
                 onClick={() => removeInstructor(instructor.id)}
-                className="text-red-600 hover:text-red-800"
+                className="text-destructive hover:text-destructive"
                 title="강사 삭제"
               >
                 <TrashIcon className="h-4 w-4" />
@@ -770,14 +770,14 @@ const OfflineCourseWizard: React.FC<OfflineCourseWizardProps> = ({
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  강사명 <span className="text-red-500">*</span>
+                  강사명 <span className="text-destructive">*</span>
                 </label>
                 <input
                   type="text"
                   value={instructor.name}
                   onChange={(e) => updateInstructor(instructor.id, 'name', e.target.value)}
                   placeholder="강사 이름"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
               
@@ -790,7 +790,7 @@ const OfflineCourseWizard: React.FC<OfflineCourseWizardProps> = ({
                   value={instructor.specialization}
                   onChange={(e) => updateInstructor(instructor.id, 'specialization', e.target.value)}
                   placeholder="예: 영업 스킬, 리더십, 협상 기법"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
               
@@ -803,7 +803,7 @@ const OfflineCourseWizard: React.FC<OfflineCourseWizardProps> = ({
                   value={instructor.phone}
                   onChange={(e) => updateInstructor(instructor.id, 'phone', e.target.value)}
                   placeholder="010-1234-5678"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
               
@@ -816,7 +816,7 @@ const OfflineCourseWizard: React.FC<OfflineCourseWizardProps> = ({
                   value={instructor.email}
                   onChange={(e) => updateInstructor(instructor.id, 'email', e.target.value)}
                   placeholder="instructor@company.com"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
             </div>
@@ -843,7 +843,7 @@ const OfflineCourseWizard: React.FC<OfflineCourseWizardProps> = ({
       </div>
 
       {/* 엑셀 가져오기 옵션 */}
-      <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+      <div className="bg-green-500/10 border border-green-200 rounded-lg p-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <DocumentArrowUpIcon className="h-5 w-5 text-green-600" />
@@ -855,7 +855,7 @@ const OfflineCourseWizard: React.FC<OfflineCourseWizardProps> = ({
           <button
             type="button"
             onClick={() => setShowExcelImporter(true)}
-            className="btn-success px-4 py-2 rounded-lg flex items-center space-x-2"
+            className="btn-success px-4 py-2 rounded-full flex items-center space-x-2"
           >
             <DocumentArrowUpIcon className="h-4 w-4" />
             <span>엑셀 가져오기</span>
@@ -907,7 +907,7 @@ const OfflineCourseWizard: React.FC<OfflineCourseWizardProps> = ({
                       <select
                         value={session.instructorId}
                         onChange={(e) => assignInstructorToSession(day.id, session.id, e.target.value)}
-                        className="w-full border-2 border-gray-200 rounded-lg px-3 py-2 text-sm bg-white text-gray-700 font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all shadow-sm hover:border-gray-300 appearance-none cursor-pointer"
+                        className="w-full border-2 border-gray-200 rounded-full px-3 py-2 text-sm bg-white text-gray-700 font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all shadow-sm hover:border-gray-300 appearance-none cursor-pointer"
                         style={{
                           backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`,
                           backgroundPosition: 'right 0.5rem center',
@@ -1077,12 +1077,12 @@ const OfflineCourseWizard: React.FC<OfflineCourseWizardProps> = ({
           onChange={(e) => setCourseInfo(prev => ({ ...prev, notes: e.target.value }))}
           rows={3}
           placeholder="과정 운영에 대한 특이사항을 입력하세요"
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+          className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
         />
       </div>
 
       {/* 주의사항 */}
-      <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
+      <div className="bg-orange-500/10 border border-orange-200 rounded-lg p-4">
         <div className="flex items-start space-x-3">
           <ExclamationTriangleIcon className="h-5 w-5 text-orange-600 mt-0.5" />
           <div>
@@ -1137,7 +1137,7 @@ const OfflineCourseWizard: React.FC<OfflineCourseWizardProps> = ({
             type="button"
             onClick={prevStep}
             disabled={currentStep === 1}
-            className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
+            className="px-6 py-3 border border-gray-300 text-gray-700 rounded-full hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
           >
             <ChevronLeftIcon className="h-4 w-4" />
             <span>이전</span>
@@ -1147,7 +1147,7 @@ const OfflineCourseWizard: React.FC<OfflineCourseWizardProps> = ({
             <button
               type="button"
               onClick={onCancel}
-              className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
+              className="px-6 py-3 border border-gray-300 text-gray-700 rounded-full hover:bg-gray-50"
             >
               취소
             </button>

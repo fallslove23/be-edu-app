@@ -89,7 +89,7 @@ const MyExams: React.FC = () => {
       case 'available':
         return { 
           label: isOverdue ? '기한 만료' : '응시 가능', 
-          color: isOverdue ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800', 
+          color: isOverdue ? 'bg-destructive/10 text-destructive' : 'bg-green-500/10 text-green-700', 
           icon: isOverdue ? ExclamationTriangleIcon : PencilSquareIcon 
         };
       case 'in_progress':
@@ -97,11 +97,11 @@ const MyExams: React.FC = () => {
       case 'completed':
         return { 
           label: exam.passed ? '합격' : '불합격', 
-          color: exam.passed ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800', 
+          color: exam.passed ? 'bg-green-500/10 text-green-700' : 'bg-yellow-100 text-yellow-800', 
           icon: exam.passed ? CheckCircleIcon : ExclamationTriangleIcon 
         };
       case 'missed':
-        return { label: '미응시', color: 'bg-red-100 text-red-800', icon: ExclamationTriangleIcon };
+        return { label: '미응시', color: 'bg-destructive/10 text-destructive', icon: ExclamationTriangleIcon };
     }
   };
 
@@ -153,7 +153,7 @@ const MyExams: React.FC = () => {
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <TrophyIcon className="h-8 w-8 text-yellow-600" />
+              <TrophyIcon className="h-8 w-8 text-foreground" />
             </div>
             <div className="ml-4">
               <p className="text-sm font-medium text-gray-500">합격률</p>
@@ -240,22 +240,22 @@ const MyExams: React.FC = () => {
 
                   <div className="ml-6 flex flex-col space-y-2">
                     {exam.status === 'available' && !isOverdue && exam.attempts < exam.max_attempts && (
-                      <button className="btn-primary">
+                      <button className="btn-primary rounded-full">
                         시험 응시
                       </button>
                     )}
                     {exam.status === 'in_progress' && (
-                      <button className="btn-success">
+                      <button className="btn-success rounded-full">
                         계속 응시
                       </button>
                     )}
                     {exam.status === 'completed' && exam.attempts < exam.max_attempts && !exam.passed && (
-                      <button className="btn-warning">
+                      <button className="btn-warning rounded-full">
                         재응시
                       </button>
                     )}
                     {exam.status === 'completed' && (
-                      <button className="border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors">
+                      <button className="border border-gray-300 text-gray-700 px-4 py-2 rounded-full hover:bg-gray-50 transition-colors">
                         결과 보기
                       </button>
                     )}

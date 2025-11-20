@@ -1,21 +1,9 @@
 import { supabase } from './supabase'
 import { queryCache, withCache } from '../utils/queryCache'
+import { User, UserRole, UserStatus } from '../types/auth.types'
 
-export type UserRole = 'app_admin' | 'course_manager' | 'instructor' | 'trainee'
-
-export interface User {
-  id: string
-  email: string
-  name: string
-  phone?: string
-  role: UserRole
-  first_login: boolean
-  department?: string
-  employee_id?: string
-  is_active: boolean
-  created_at: string
-  updated_at: string
-}
+// Re-export types for convenience
+export type { User, UserRole, UserStatus } from '../types/auth.types'
 
 export interface CreateUserData {
   email: string
@@ -24,7 +12,9 @@ export interface CreateUserData {
   role: UserRole
   department?: string
   employee_id?: string
-  initial_password: string
+  position?: string
+  hire_date?: string
+  status?: UserStatus
 }
 
 export interface UpdateUserData {
@@ -32,6 +22,9 @@ export interface UpdateUserData {
   phone?: string
   department?: string
   employee_id?: string
+  position?: string
+  hire_date?: string
+  status?: UserStatus
 }
 
 export class UserService {
@@ -102,45 +95,53 @@ export class UserService {
         name: '김영업 강사',
         role: 'instructor' as UserRole,
         department: '교육팀',
+        position: '선임강사',
         phone: '010-1234-5678',
-        is_active: true,
-        first_login: false,
+        employee_id: 'INST001',
+        hire_date: '2024-01-01',
+        status: 'active',
         created_at: '2024-01-01T09:00:00Z',
         updated_at: '2024-01-01T09:00:00Z'
       },
       {
-        id: 'instructor2', 
+        id: 'instructor2',
         email: 'instructor2@company.com',
         name: '이전략 강사',
         role: 'instructor' as UserRole,
         department: '교육팀',
+        position: '강사',
         phone: '010-2345-6789',
-        is_active: true,
-        first_login: false,
+        employee_id: 'INST002',
+        hire_date: '2024-01-02',
+        status: 'active',
         created_at: '2024-01-02T09:00:00Z',
         updated_at: '2024-01-02T09:00:00Z'
       },
       {
         id: 'manager1',
-        email: 'manager1@company.com', 
+        email: 'manager1@company.com',
         name: '박관리 매니저',
         role: 'manager' as UserRole,
         department: '인사팀',
+        position: '팀장',
         phone: '010-3456-7890',
-        is_active: true,
-        first_login: false,
+        employee_id: 'MGR001',
+        hire_date: '2024-01-03',
+        status: 'active',
         created_at: '2024-01-03T09:00:00Z',
         updated_at: '2024-01-03T09:00:00Z'
       },
       {
         id: 'manager2',
         email: 'manager2@company.com',
-        name: '정시스템 매니저', 
+        name: '정시스템 매니저',
         role: 'manager' as UserRole,
         department: 'IT팀',
+        position: '팀장',
         phone: '010-4567-8901',
-        is_active: true,
-        first_login: false,
+        employee_id: 'MGR002',
+        hire_date: '2024-01-04',
+        status: 'active',
         created_at: '2024-01-04T09:00:00Z',
         updated_at: '2024-01-04T09:00:00Z'
       }
@@ -149,47 +150,37 @@ export class UserService {
 
   // 특정 사용자 조회
   static async getUserById(userId: string) {
-    try {
-      const { data, error } = await supabase
-        .from('users')
-        .select('*')
-        .eq('id', userId)
+    const { data, error } = await supabase
+      .from('users')
+      .select('*')
+      .eq('id', userId)
 
-      if (error) {
-        console.warn('🔧 개발 모드: getUserById 오류, 기본 사용자 반환:', error);
-        // 개발 모드에서는 기본 사용자 반환
-        return {
-          id: userId,
-          email: 'dev@example.com',
-          name: '개발자',
-          role: 'admin' as UserRole,
-          first_login: false,
-          is_active: true,
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
-        } as User;
-      }
-    } catch (error) {
-      console.warn('🔧 개발 모드: getUserById 네트워크 오류, 기본 사용자 반환:', error);
+    if (error) {
+      console.warn('🔧 개발 모드: getUserById 오류, 기본 사용자 반환:', error);
+      // 개발 모드에서는 기본 사용자 반환
       return {
         id: userId,
         email: 'dev@example.com',
         name: '개발자',
         role: 'admin' as UserRole,
-        first_login: false,
-        is_active: true,
+        department: 'IT팀',
+        position: '개발자',
+        phone: '010-0000-0000',
+        employee_id: 'DEV001',
+        hire_date: new Date().toISOString().split('T')[0],
+        status: 'active',
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString()
       } as User;
     }
-    
+
     // 데이터가 없는 경우 사용자 생성 시도
     if (!data || data.length === 0) {
       console.warn(`사용자 ID ${userId}를 찾을 수 없음. Auth 정보 확인 중...`);
-      
+
       // Auth에서 사용자 정보 가져오기
       const { data: authUser } = await supabase.auth.getUser();
-      
+
       if (authUser.user && authUser.user.id === userId) {
         // users 테이블에 사용자 생성
         const newUserData = {
@@ -197,34 +188,32 @@ export class UserService {
           email: authUser.user.email || '',
           name: authUser.user.user_metadata?.name || authUser.user.email?.split('@')[0] || 'Unknown',
           role: 'trainee' as UserRole,
-          first_login: true,
-          is_active: true,
+          status: 'active' as UserStatus,
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString()
         };
-        
-        
+
         const { data: createdUser, error: createError } = await supabase
           .from('users')
           .insert(newUserData)
           .select()
           .single();
-          
+
         if (createError) {
           console.error('사용자 생성 오류:', createError);
           throw new Error('사용자 정보를 생성할 수 없습니다: ' + createError.message);
         }
-        
+
         return createdUser as User;
       }
-      
+
       throw new Error('사용자를 찾을 수 없습니다');
     }
-    
+
     if (data.length > 1) {
       console.warn(`사용자 ID ${userId}에 대해 여러 행이 발견됨:`, data.length);
     }
-    
+
     return data[0] as User;
   }
 
@@ -237,8 +226,9 @@ export class UserService {
     if (error) throw error
 
     const stats = {
-      app_admin: 0,
-      course_manager: 0,
+      admin: 0,
+      manager: 0,
+      operator: 0,
       instructor: 0,
       trainee: 0,
       total: 0
@@ -295,7 +285,7 @@ export class UserService {
 
         // 강사 정보가 없는 경우에만 생성
         if (!existingInstructor) {
-          
+
           const { data: insertedInstructor, error: instructorError } = await supabase
             .from('instructors')
             .insert({
@@ -304,7 +294,6 @@ export class UserService {
               specializations: [],
               years_of_experience: 0,
               education_background: '학력 정보를 입력해주세요.',
-              is_active: true,
               created_at: new Date().toISOString(),
               updated_at: new Date().toISOString()
             })
@@ -340,72 +329,75 @@ export class UserService {
     return data as User
   }
 
-  // 사용자 정보 업데이트 (이름, 전화번호, 부서, 사번)
+  // 사용자 정보 업데이트 (이름, 전화번호, 부서, 사번, 직책, 입사일, 상태)
   static async updateUser(userId: string, updateData: UpdateUserData) {
-    
-    // 필수 필드만 포함하여 업데이트 (phone, department, employee_id는 조건부)
-    const updatePayload: any = {
-      name: updateData.name,
-      updated_at: new Date().toISOString()
-    };
-    
-    // phone 컬럼이 있는 경우에만 추가
-    if (updateData.phone !== undefined) {
-      updatePayload.phone = updateData.phone;
-    }
-    
-    // department 컬럼이 있는 경우에만 추가  
-    if (updateData.department !== undefined) {
-      updatePayload.department = updateData.department;
-    }
-    
-    // employee_id 컬럼이 있는 경우에만 추가
-    if (updateData.employee_id !== undefined) {
-      updatePayload.employee_id = updateData.employee_id;
-    }
-    
-    
-    const { data, error } = await supabase
-      .from('users')
-      .update(updatePayload)
-      .eq('id', userId)
-      .select()
-      .single()
+    try {
+      // 허용된 필드 목록
+      const allowedFields = [
+        'name',
+        'phone',
+        'department',
+        'employee_id',
+        'position',
+        'hire_date',
+        'status'
+      ];
 
-    if (error) {
-      console.error('사용자 정보 업데이트 실패:', error);
-      
-      // phone 컬럼 관련 오류인 경우 phone 없이 재시도
-      if (error.message && error.message.includes('phone')) {
-        const { phone, ...updatePayloadWithoutPhone } = updatePayload;
-        
-        const { data: retryData, error: retryError } = await supabase
-          .from('users')
-          .update(updatePayloadWithoutPhone)
-          .eq('id', userId)
-          .select()
-          .single();
-          
-        if (retryError) {
-          console.error('phone 없이 재시도도 실패:', retryError);
-          throw retryError;
+      // 필드 화이트리스트 검증
+      const validUpdates: Record<string, any> = {};
+
+      Object.keys(updateData).forEach(key => {
+        if (allowedFields.includes(key) && updateData[key as keyof UpdateUserData] !== undefined) {
+          validUpdates[key] = updateData[key as keyof UpdateUserData];
         }
-        
-        return retryData as User;
+      });
+
+      // updated_at 자동 추가
+      validUpdates.updated_at = new Date().toISOString();
+
+      console.log('[UserService] 사용자 업데이트 요청:', {
+        userId,
+        updateFields: Object.keys(validUpdates)
+      });
+
+      const { data, error } = await supabase
+        .from('users')
+        .update(validUpdates)
+        .eq('id', userId)
+        .select()
+        .single();
+
+      if (error) {
+        console.error('[UserService] Supabase 사용자 업데이트 오류:', {
+          message: error.message,
+          details: error.details,
+          hint: error.hint,
+          code: error.code
+        });
+        throw error;
       }
-      
+
+      console.log('[UserService] 사용자 업데이트 성공:', data);
+
+      // 캐시 무효화
+      queryCache.clear();
+
+      return data as User;
+    } catch (error: any) {
+      console.error('[UserService] 사용자 업데이트 실패:', {
+        message: error?.message || 'Unknown error',
+        error: error
+      });
       throw error;
     }
-    
-    return data as User
   }
 
   // 사용자 상태 업데이트 (활성/비활성)
-  static async updateUserStatus(userId: string, isActive: boolean) {
+  static async updateUserStatus(userId: string, status: UserStatus) {
     const { data, error } = await supabase
       .from('users')
-      .update({ 
-        is_active: isActive,
+      .update({
+        status: status,
         updated_at: new Date().toISOString()
       })
       .eq('id', userId)
@@ -448,11 +440,13 @@ export class UserService {
           id: crypto.randomUUID(),
           email: userData.email,
           name: userData.name,
+          phone: userData.phone,
           role: userData.role,
           department: userData.department,
           employee_id: userData.employee_id,
-          first_login: true,
-          is_active: true,
+          position: userData.position,
+          hire_date: userData.hire_date,
+          status: userData.status || 'active',
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString()
         })
@@ -476,7 +470,6 @@ export class UserService {
             specializations: [],
             years_of_experience: 0,
             education_background: '학력 정보를 입력해주세요.',
-            is_active: true,
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString()
           })
@@ -541,16 +534,161 @@ export class UserService {
 
     if (error) throw error
 
-    // first_login을 true로 설정
-    await supabase
-      .from('users')
-      .update({ 
-        first_login: true,
-        updated_at: new Date().toISOString()
-      })
-      .eq('id', userId)
-
+    // 패스워드 리셋 성공
     return true
+  }
+
+  // 사용자 삭제
+  static async deleteUser(userId: string) {
+    console.log('[UserService] 사용자 삭제 시작:', userId);
+
+    try {
+      // 삭제할 테이블들과 컬럼 매핑
+      const tablesToDelete = [
+        // 직접 삭제할 테이블들
+        { table: 'assessment_attempts', columns: ['user_id', 'graded_by'] },
+        { table: 'attendance_records', columns: ['trainee_id'] },
+        { table: 'bs_activities', columns: ['trainee_id', 'instructor_id'] },
+        { table: 'comprehensive_grades', columns: ['trainee_id'] },
+        { table: 'course_attendance', columns: ['trainee_id', 'recorded_by'] },
+        { table: 'course_enrollments', columns: ['trainee_id'] },
+        { table: 'evaluation_history', columns: ['changed_by'] },
+        { table: 'exam_attempts', columns: ['trainee_id', 'graded_by'] },
+        { table: 'exam_submissions', columns: ['trainee_id', 'graded_by'] },
+        { table: 'instructor_availability', columns: ['instructor_id'] },
+        { table: 'instructor_evaluations', columns: ['instructor_id', 'trainee_id'] },
+        { table: 'instructor_payment_history', columns: ['instructor_id', 'created_by'] },
+        { table: 'instructor_profiles', columns: ['user_id'] },
+        { table: 'instructor_subjects', columns: ['instructor_id'] },
+        { table: 'instructor_teaching_summary', columns: ['instructor_id', 'finalized_by'] },
+        { table: 'instructors', columns: ['user_id'] },
+        { table: 'learning_progress', columns: ['user_id'] },
+        { table: 'learning_stats', columns: ['user_id'] },
+        { table: 'notices', columns: ['author_id'] },
+        { table: 'notification_preferences', columns: ['user_id'] },
+        { table: 'notifications', columns: ['user_id'] },
+        { table: 'password_change_logs', columns: ['user_id', 'changed_by'] },
+        { table: 'personal_events', columns: ['user_id'] },
+        { table: 'round_enrollments', columns: ['trainee_id'] },
+        { table: 'trainees', columns: ['user_id'] },
+        { table: 'user_import_logs', columns: ['imported_by'] },
+        { table: 'video_reviews', columns: ['user_id'] },
+      ];
+
+      // NULL로 업데이트할 테이블들 (삭제하면 안 되는 데이터)
+      const tablesToUpdate = [
+        { table: 'categories', columns: ['created_by'] },
+        { table: 'class_divisions', columns: ['instructor_id', 'teaching_assistant_id'] },
+        { table: 'classrooms', columns: ['created_by'] },
+        { table: 'course_rounds', columns: ['instructor_id', 'manager_id'] },
+        { table: 'course_schedules', columns: ['instructor_id'] },
+        { table: 'course_sessions', columns: ['actual_instructor_id', 'assistant_instructor_id', 'payment_confirmed_by', 'primary_instructor_id'] },
+        { table: 'courses', columns: ['instructor_id', 'manager_id', 'trainer_id'] },
+        { table: 'curriculum_templates', columns: ['created_by'] },
+        { table: 'evaluation_templates', columns: ['created_by'] },
+        { table: 'exams', columns: ['created_by'] },
+        { table: 'question_banks', columns: ['created_by'] },
+        { table: 'questions', columns: ['created_by'] },
+        { table: 'schedule_conflicts', columns: ['resolved_by'] },
+        { table: 'schedules', columns: ['instructor_id'] },
+      ];
+
+      // 1. NULL 업데이트 먼저 (외래 키 제약 조건 해제) - 병렬 처리
+      console.log('[UserService] NULL 업데이트 시작');
+
+      const updatePromises = [];
+
+      // courses 테이블의 모든 외래 키를 NULL로 설정
+      updatePromises.push(
+        supabase
+          .from('courses')
+          .update({
+            instructor_id: null,
+            manager_id: null,
+            trainer_id: null
+          })
+          .or(`instructor_id.eq.${userId},manager_id.eq.${userId},trainer_id.eq.${userId}`)
+          .then(({ error }) => {
+            if (error && error.code !== 'PGRST116') {
+              console.warn('[UserService] courses NULL 업데이트 중 오류:', error);
+            }
+          })
+      );
+
+      // 나머지 테이블들도 병렬로 처리
+      for (const { table, columns } of tablesToUpdate) {
+        if (table === 'courses') continue; // 이미 처리했음
+
+        for (const column of columns) {
+          const updateData: Record<string, null> = {};
+          updateData[column] = null;
+
+          updatePromises.push(
+            supabase
+              .from(table)
+              .update(updateData)
+              .eq(column, userId)
+              .then(({ error }) => {
+                if (error && error.code !== 'PGRST116') {
+                  console.warn(`[UserService] ${table}.${column} NULL 업데이트 중 오류:`, error);
+                }
+              })
+          );
+        }
+      }
+
+      await Promise.all(updatePromises);
+      console.log('[UserService] NULL 업데이트 완료');
+
+      // 2. 관련 데이터 삭제 - 병렬 처리
+      console.log('[UserService] 관련 데이터 삭제 시작');
+
+      const deletePromises = [];
+
+      for (const { table, columns } of tablesToDelete) {
+        for (const column of columns) {
+          deletePromises.push(
+            supabase
+              .from(table)
+              .delete()
+              .eq(column, userId)
+              .then(({ error }) => {
+                if (error && error.code !== 'PGRST116') {
+                  console.warn(`[UserService] ${table}.${column} 삭제 중 오류:`, error);
+                }
+              })
+          );
+        }
+      }
+
+      await Promise.all(deletePromises);
+      console.log('[UserService] 관련 데이터 삭제 완료');
+
+      // 3. 최종: 사용자 삭제
+      const { error } = await supabase
+        .from('users')
+        .delete()
+        .eq('id', userId);
+
+      if (error) {
+        console.error('[UserService] 사용자 삭제 실패:', error);
+        throw error;
+      }
+
+      console.log('[UserService] 사용자 삭제 성공');
+
+      // 캐시 무효화 (브라우저 환경에서만)
+      try {
+        queryCache.clear();
+      } catch (e) {
+        // Node.js 환경에서는 localStorage가 없으므로 무시
+      }
+
+      return true;
+    } catch (error: any) {
+      console.error('[UserService] 사용자 삭제 중 오류 발생:', error);
+      throw error;
+    }
   }
 
   // 사용자 검색
@@ -616,7 +754,6 @@ export class UserService {
                 specializations: [],
                 years_of_experience: 0,
                 education_background: '학력 정보를 입력해주세요.',
-                is_active: true,
                 created_at: new Date().toISOString(),
                 updated_at: new Date().toISOString()
               })

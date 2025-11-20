@@ -410,7 +410,55 @@ export const integratedCalendarService = {
     const events: CalendarEvent[] = [];
 
     try {
-      // 1. 일정(schedules) 조회
+      // 1. course_sessions 테이블에서 세션 조회
+      try {
+        console.log('📅 Loading course sessions for date range:', date_range);
+
+        const { data: sessions, error } = await supabase
+          .from('course_sessions')
+          .select(`
+            *,
+            course_rounds(id, course_name, status),
+            subjects(id, name),
+            users!course_sessions_actual_instructor_id_fkey(id, name),
+            classrooms(id, name)
+          `)
+          .gte('session_date', date_range.start)
+          .lte('session_date', date_range.end)
+          .order('session_date')
+          .order('start_time');
+
+        if (error) {
+          console.error('Failed to load course sessions:', error);
+        } else {
+          console.log(`✅ Loaded ${sessions?.length || 0} course sessions`);
+
+          sessions?.forEach((session: any) => {
+            const startDateTime = `${session.session_date}T${session.start_time}`;
+            const endDateTime = `${session.session_date}T${session.end_time}`;
+
+            events.push({
+              id: `session-${session.id}`,
+              title: session.title || session.subjects?.name || '세션',
+              start: startDateTime,
+              end: endDateTime,
+              type: 'course',
+              course_id: session.course_round_id,
+              instructor_id: session.actual_instructor_id,
+              classroom: session.classrooms?.name || session.classroom || '',
+              status: session.status,
+              color: session.status === 'completed' ? '#10B981' :
+                     session.status === 'in_progress' ? '#F59E0B' :
+                     session.status === 'cancelled' ? '#EF4444' : '#6366F1',
+              editable: true,
+            });
+          });
+        }
+      } catch (sessionError) {
+        console.warn('Failed to load course sessions:', sessionError);
+      }
+
+      // 2. 일정(schedules) 조회 - 레거시 지원
       try {
         const schedules = await scheduleService.getAll({ date_range });
         schedules.forEach((schedule) => {
@@ -430,10 +478,9 @@ export const integratedCalendarService = {
         });
       } catch (scheduleError) {
         console.warn('Failed to load schedules:', scheduleError);
-        // 테이블이 없거나 에러가 있어도 계속 진행
       }
 
-      // 2. 개인 이벤트 조회
+      // 3. 개인 이벤트 조회
       try {
         const personalEvents = await personalEventService.getByUserId(userId, date_range);
         personalEvents.forEach((event) => {
@@ -450,7 +497,6 @@ export const integratedCalendarService = {
         });
       } catch (eventError) {
         console.warn('Failed to load personal events:', eventError);
-        // 테이블이 없거나 에러가 있어도 계속 진행
       }
     } catch (error) {
       console.error('Unexpected error in getAllEvents:', error);

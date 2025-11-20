@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   ArrowLeftIcon,
   PencilIcon,
@@ -13,6 +13,7 @@ import {
 } from '@heroicons/react/24/outline';
 import type { Trainee } from '../../types/trainee.types';
 import { traineeStatusLabels } from '../../types/trainee.types';
+import { LearningHistoryDashboard } from '../students/LearningHistoryDashboard';
 
 interface TraineeDetailProps {
   trainee: Trainee;
@@ -25,6 +26,8 @@ const TraineeDetail: React.FC<TraineeDetailProps> = ({
   onBack,
   onEdit
 }) => {
+  const [activeTab, setActiveTab] = useState<'info' | 'history'>('info');
+
   // Mock progress data - 실제로는 API에서 가져옴
   const mockProgress = {
     totalCourses: 3,
@@ -43,7 +46,7 @@ const TraineeDetail: React.FC<TraineeDetailProps> = ({
           <div className="flex items-center">
             <button
               onClick={onBack}
-              className="mr-4 p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
+              className="mr-4 p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-full transition-colors"
             >
               <ArrowLeftIcon className="h-5 w-5" />
             </button>
@@ -62,15 +65,45 @@ const TraineeDetail: React.FC<TraineeDetailProps> = ({
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* 왼쪽: 기본 정보 */}
-        <div className="lg:col-span-2 space-y-6">
-          {/* 개인 정보 */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <h2 className="text-lg font-medium text-gray-900 mb-4 flex items-center">
-              <UserIcon className="h-5 w-5 mr-2" />
-              개인 정보
-            </h2>
+      {/* 탭 */}
+      <div className="border-b border-gray-200">
+        <div className="flex space-x-4">
+          <button
+            onClick={() => setActiveTab('info')}
+            className={`px-4 py-2 border-b-2 transition-colors ${
+              activeTab === 'info'
+                ? 'border-primary text-primary font-medium'
+                : 'border-transparent text-gray-500 hover:text-gray-700'
+            }`}
+          >
+            <UserIcon className="w-4 h-4 inline mr-2" />
+            기본 정보
+          </button>
+          <button
+            onClick={() => setActiveTab('history')}
+            className={`px-4 py-2 border-b-2 transition-colors ${
+              activeTab === 'history'
+                ? 'border-primary text-primary font-medium'
+                : 'border-transparent text-gray-500 hover:text-gray-700'
+            }`}
+          >
+            <ChartBarIcon className="w-4 h-4 inline mr-2" />
+            학습 이력
+          </button>
+        </div>
+      </div>
+
+      {/* 탭 내용 */}
+      {activeTab === 'info' && (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* 왼쪽: 기본 정보 */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* 개인 정보 */}
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+              <h2 className="text-lg font-medium text-gray-900 mb-4 flex items-center">
+                <UserIcon className="h-5 w-5 mr-2" />
+                개인 정보
+              </h2>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
@@ -125,10 +158,10 @@ const TraineeDetail: React.FC<TraineeDetailProps> = ({
                 <dt className="text-sm font-medium text-gray-500">상태</dt>
                 <dd className="mt-1">
                   <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                    trainee.status === 'active' ? 'bg-green-100 text-green-800' :
+                    trainee.status === 'active' ? 'bg-green-500/10 text-green-700' :
                     trainee.status === 'graduated' ? 'bg-blue-100 text-blue-800' :
                     trainee.status === 'inactive' ? 'bg-gray-100 text-gray-800' :
-                    'bg-red-100 text-red-800'
+                    'bg-destructive/10 text-destructive'
                   }`}>
                     {traineeStatusLabels[trainee.status]}
                   </span>
@@ -180,9 +213,9 @@ const TraineeDetail: React.FC<TraineeDetailProps> = ({
                   {mockProgress.completedCourses} / {mockProgress.totalCourses}
                 </span>
               </div>
-              <div className="w-full bg-gray-200 rounded-full h-2">
+              <div className="w-full bg-gray-200 rounded-lg h-2">
                 <div 
-                  className="bg-blue-600 h-2 rounded-full" 
+                  className="bg-blue-600 h-2 rounded-lg" 
                   style={{ width: `${(mockProgress.completedCourses / mockProgress.totalCourses) * 100}%` }}
                 ></div>
               </div>
@@ -191,9 +224,9 @@ const TraineeDetail: React.FC<TraineeDetailProps> = ({
                 <span className="text-sm text-gray-600">평균 점수</span>
                 <span className="text-sm font-medium text-gray-900">{mockProgress.averageScore}점</span>
               </div>
-              <div className="w-full bg-gray-200 rounded-full h-2">
+              <div className="w-full bg-gray-200 rounded-lg h-2">
                 <div 
-                  className="bg-green-600 h-2 rounded-full" 
+                  className="bg-green-600 h-2 rounded-lg" 
                   style={{ width: `${mockProgress.averageScore}%` }}
                 ></div>
               </div>
@@ -204,9 +237,9 @@ const TraineeDetail: React.FC<TraineeDetailProps> = ({
                   {mockProgress.passedExams} / {mockProgress.totalExams}
                 </span>
               </div>
-              <div className="w-full bg-gray-200 rounded-full h-2">
+              <div className="w-full bg-gray-200 rounded-lg h-2">
                 <div 
-                  className="bg-purple-600 h-2 rounded-full" 
+                  className="bg-purple-600 h-2 rounded-lg" 
                   style={{ width: `${(mockProgress.passedExams / mockProgress.totalExams) * 100}%` }}
                 ></div>
               </div>
@@ -228,7 +261,7 @@ const TraineeDetail: React.FC<TraineeDetailProps> = ({
             </h2>
             
             <div className="space-y-3">
-              {trainee.enrolled_courses.length > 0 ? (
+              {trainee.enrolled_courses && trainee.enrolled_courses.length > 0 ? (
                 trainee.enrolled_courses.map((courseId, index) => (
                   <div key={courseId} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                     <div>
@@ -238,9 +271,9 @@ const TraineeDetail: React.FC<TraineeDetailProps> = ({
                       <div className="text-xs text-gray-500">진행률: {Math.floor(Math.random() * 40) + 60}%</div>
                     </div>
                     <span className={`text-xs px-2 py-1 rounded-full ${
-                      index === 0 ? 'bg-green-100 text-green-700' : 
+                      index === 0 ? 'bg-green-500/10 text-green-700' : 
                       index === 1 ? 'bg-blue-100 text-blue-700' : 
-                      'bg-yellow-100 text-yellow-700'
+                      'bg-yellow-100 text-orange-700'
                     }`}>
                       {index === 0 ? '완료' : index === 1 ? '진행중' : '대기'}
                     </span>
@@ -272,6 +305,15 @@ const TraineeDetail: React.FC<TraineeDetailProps> = ({
           </div>
         </div>
       </div>
+      )}
+
+      {/* 학습 이력 탭 */}
+      {activeTab === 'history' && (
+        <LearningHistoryDashboard
+          traineeId={trainee.id}
+          traineeName={trainee.name}
+        />
+      )}
     </div>
   );
 };

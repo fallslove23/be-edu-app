@@ -22,17 +22,8 @@ const ImprovedNavigation: React.FC<ImprovedNavigationProps> = ({
 }) => {
   const { user } = useAuth();
   const [searchTerm, setSearchTerm] = useState('');
-  // Initialize with all categories expanded
-  const [expandedCategories, setExpandedCategories] = useState<Set<string>>(() => {
-    if (user) {
-      const menuItems = getMenuItemsForRole(user.role);
-      const categoryIds = menuItems
-        .filter(item => item.isCategory && item.subItems)
-        .map(item => item.id);
-      return new Set(categoryIds);
-    }
-    return new Set();
-  });
+  // Initialize with all categories collapsed (empty set)
+  const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set());
   const [recentViews, setRecentViews] = useState<string[]>([]);
 
   useEffect(() => {
@@ -44,15 +35,6 @@ const ImprovedNavigation: React.FC<ImprovedNavigationProps> = ({
       } catch {
         setRecentViews([]);
       }
-    }
-
-    // Update expanded categories when user changes
-    if (user) {
-      const menuItems = getMenuItemsForRole(user.role);
-      const categoryIds = menuItems
-        .filter(item => item.isCategory && item.subItems)
-        .map(item => item.id);
-      setExpandedCategories(new Set(categoryIds));
     }
   }, [user]);
 
@@ -102,8 +84,13 @@ const ImprovedNavigation: React.FC<ImprovedNavigationProps> = ({
     setExpandedCategories(newExpanded);
   };
 
-  const handleItemClick = (itemId: string) => {
-    onViewChange(itemId);
+  const handleItemClick = (itemId: string, route?: string, isExternal?: boolean) => {
+    if (isExternal && route) {
+      // 외부 링크는 새 탭에서 열기
+      window.open(route, '_blank', 'noopener,noreferrer');
+    } else {
+      onViewChange(itemId);
+    }
   };
 
   const clearSearch = () => {
@@ -119,9 +106,9 @@ const ImprovedNavigation: React.FC<ImprovedNavigationProps> = ({
   return (
     <div className="h-full flex flex-col bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700">
       {/* Header */}
-      <div className="p-4 border-b border-gray-200 dark:border-gray-700">
-        <div className="flex items-center space-x-3 mb-4">
-          <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+      <div className={`p-4 border-b border-gray-200 dark:border-gray-700 ${isCollapsed ? 'flex flex-col items-center' : ''}`}>
+        <div className={`flex items-center ${isCollapsed ? 'justify-center mb-0' : 'space-x-3 mb-4'}`}>
+          <div className={`${isCollapsed ? 'w-10 h-10' : 'w-8 h-8'} bg-blue-600 rounded-lg flex items-center justify-center`}>
             <span className="text-white font-bold text-sm">BS</span>
           </div>
           {!isCollapsed && (
@@ -156,7 +143,7 @@ const ImprovedNavigation: React.FC<ImprovedNavigationProps> = ({
       </div>
 
       {/* Navigation Content */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-2">
+      <div className={`flex-1 overflow-y-auto space-y-2 ${isCollapsed ? 'px-2 py-4' : 'p-4'}`}>
         {/* Recent Views - only show if no search and there are recent items */}
         {!searchTerm && !isCollapsed && getRecentItems().length > 0 && (
           <div className="mb-4">
@@ -168,10 +155,10 @@ const ImprovedNavigation: React.FC<ImprovedNavigationProps> = ({
                 <button
                   key={`recent-${item.id}`}
                   onClick={() => handleItemClick(item.id)}
-                  className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors flex items-center space-x-3 ${
+                  className={`w-full text-left px-3 py-2 rounded-full text-sm transition-colors flex items-center space-x-3 ${
                     activeView === item.id
                       ? 'bg-blue-600 text-white'
-                      : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                      : 'text-foreground hover:bg-muted'
                   }`}
                   title={item.description}
                 >
@@ -197,10 +184,10 @@ const ImprovedNavigation: React.FC<ImprovedNavigationProps> = ({
                 <button
                   key={`search-${item.id}`}
                   onClick={() => handleItemClick(item.id)}
-                  className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors flex items-center space-x-3 ${
+                  className={`w-full text-left px-3 py-2 rounded-full text-sm transition-colors flex items-center space-x-3 ${
                     activeView === item.id
                       ? 'bg-blue-600 text-white'
-                      : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                      : 'text-foreground hover:bg-muted'
                   }`}
                   title={item.description}
                 >
@@ -224,18 +211,31 @@ const ImprovedNavigation: React.FC<ImprovedNavigationProps> = ({
                   // Category with sub-items
                   <div>
                     <button
-                      onClick={() => toggleCategory(item.id)}
-                      className="w-full text-left px-3 py-2 rounded-lg text-sm font-medium transition-colors flex items-center justify-between text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                      onClick={() => !isCollapsed && toggleCategory(item.id)}
+                      className={`w-full ${isCollapsed ? 'px-0 py-3' : 'px-3 py-2'} rounded-lg text-sm font-medium transition-colors flex items-center ${isCollapsed ? 'justify-center' : 'justify-between'} text-foreground hover:bg-muted relative group`}
                       title={item.description}
                     >
-                      <div className="flex items-center space-x-3">
-                        <NavigationIcon iconName={item.icon} className="h-4 w-4 text-gray-500" />
+                      <div className={`flex items-center ${isCollapsed ? '' : 'space-x-3'}`}>
+                        <NavigationIcon iconName={item.icon} className="h-5 w-5 text-gray-500" />
                         {!isCollapsed && <span>{item.label}</span>}
                       </div>
                       {!isCollapsed && (
-                        expandedCategories.has(item.id) 
+                        expandedCategories.has(item.id)
                           ? <ChevronDownIcon className="h-4 w-4" />
                           : <ChevronRightIcon className="h-4 w-4" />
+                      )}
+                      {/* Tooltip for collapsed state */}
+                      {isCollapsed && (
+                        <div className="absolute left-full ml-2 px-3 py-2 bg-gray-900 dark:bg-gray-700 text-white text-xs rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 min-w-max">
+                          <div className="font-semibold mb-2 border-b border-gray-600 pb-1">{item.label}</div>
+                          <div className="space-y-1">
+                            {item.subItems.map((subItem) => (
+                              <div key={subItem.id} className="text-gray-300 hover:text-white whitespace-nowrap">
+                                {subItem.label}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
                       )}
                     </button>
                     
@@ -244,19 +244,24 @@ const ImprovedNavigation: React.FC<ImprovedNavigationProps> = ({
                         {item.subItems.map((subItem) => (
                           <button
                             key={subItem.id}
-                            onClick={() => handleItemClick(subItem.id)}
-                            className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors flex items-center space-x-3 ${
+                            onClick={() => handleItemClick(subItem.id, subItem.route, subItem.isExternal)}
+                            className={`w-full text-left px-3 py-2 rounded-full text-sm transition-colors flex items-center space-x-3 ${
                               activeView === subItem.id
                                 ? 'bg-blue-600 text-white'
-                                : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                                : 'text-foreground hover:bg-muted'
                             }`}
                             title={subItem.description}
                           >
-                            <NavigationIcon 
-                              iconName={subItem.icon} 
-                              className={`h-4 w-4 ${activeView === subItem.id ? 'text-white' : 'text-gray-400'}`} 
+                            <NavigationIcon
+                              iconName={subItem.icon}
+                              className={`h-4 w-4 ${activeView === subItem.id ? 'text-white' : 'text-gray-400'}`}
                             />
                             <span className="truncate">{subItem.label}</span>
+                            {subItem.isExternal && (
+                              <svg className="h-3 w-3 ml-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                              </svg>
+                            )}
                           </button>
                         ))}
                       </div>
@@ -266,18 +271,24 @@ const ImprovedNavigation: React.FC<ImprovedNavigationProps> = ({
                   // Regular menu item
                   <button
                     onClick={() => handleItemClick(item.id)}
-                    className={`w-full text-left px-3 py-2 rounded-lg text-sm font-medium transition-colors flex items-center space-x-3 ${
+                    className={`w-full ${isCollapsed ? 'px-0 py-3' : 'px-3 py-2'} rounded-lg text-sm font-medium transition-colors flex items-center ${isCollapsed ? 'justify-center' : 'space-x-3'} ${
                       activeView === item.id
                         ? 'bg-blue-600 text-white'
-                        : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
-                    }`}
+                        : 'text-foreground hover:bg-muted'
+                    } relative group`}
                     title={item.description}
                   >
-                    <NavigationIcon 
-                      iconName={item.icon} 
-                      className={`h-5 w-5 ${activeView === item.id ? 'text-white' : 'text-gray-500'}`} 
+                    <NavigationIcon
+                      iconName={item.icon}
+                      className={`h-5 w-5 ${activeView === item.id ? 'text-white' : 'text-gray-500'}`}
                     />
                     {!isCollapsed && <span>{item.label}</span>}
+                    {/* Tooltip for collapsed state */}
+                    {isCollapsed && (
+                      <div className="absolute left-full ml-2 px-2 py-1 bg-gray-900 dark:bg-gray-700 text-white text-xs rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 shadow-lg">
+                        {item.label}
+                      </div>
+                    )}
                   </button>
                 )}
               </div>

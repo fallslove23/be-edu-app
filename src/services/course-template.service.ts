@@ -68,10 +68,25 @@ export class CourseTemplateService {
    */
   static async updateTemplate(templateId: string, updates: Partial<CourseTemplate>): Promise<CourseTemplate> {
     try {
+      // Filter only database-valid fields
+      const validUpdates: Record<string, any> = {};
+      const allowedFields = [
+        'code', 'name', 'description', 'duration_weeks', 'category',
+        'difficulty_level', 'tags', 'prerequisites', 'is_active', 'category_id'
+      ];
+
+      Object.keys(updates).forEach(key => {
+        if (allowedFields.includes(key)) {
+          validUpdates[key] = (updates as any)[key];
+        }
+      });
+
+      console.log('[CourseTemplateService] Updating template with valid fields:', validUpdates);
+
       const { data, error } = await supabase
         .from('course_templates')
         .update({
-          ...updates,
+          ...validUpdates,
           updated_at: new Date().toISOString()
         })
         .eq('id', templateId)
@@ -79,7 +94,12 @@ export class CourseTemplateService {
         .single();
 
       if (error) {
-        console.log('[CourseTemplateService] Template update failed, using default');
+        console.error('[CourseTemplateService] Template update failed:', {
+          message: error.message,
+          details: error.details,
+          hint: error.hint,
+          code: error.code
+        });
         // 기본 템플릿에서 찾아서 업데이트된 내용으로 반환
         const defaultTemplate = DEFAULT_COURSE_TEMPLATES.find(t => t.id === templateId);
         if (defaultTemplate) {
@@ -88,9 +108,13 @@ export class CourseTemplateService {
         throw new Error('Template not found');
       }
 
+      console.log('[CourseTemplateService] Template updated successfully:', data);
       return data;
-    } catch (error) {
-      console.error('[CourseTemplateService] Error updating template:', error);
+    } catch (error: any) {
+      console.error('[CourseTemplateService] Error updating template:', {
+        message: error?.message || 'Unknown error',
+        error: error
+      });
       throw error;
     }
   }
@@ -321,13 +345,32 @@ export class CourseTemplateService {
    */
   static async updateRound(
     roundId: string,
-    updates: Partial<Pick<CourseRound, 'instructor_id' | 'start_date' | 'end_date' | 'max_trainees' | 'location' | 'status'>>
+    updates: Partial<Omit<CourseRound, 'id' | 'created_at' | 'updated_at' | 'sessions' | 'template'>>
   ): Promise<CourseRound> {
     try {
+      // updated_at 추가하기 전에 유효하지 않은 필드 제거
+      const validUpdates: Record<string, any> = {};
+
+      // 허용된 필드만 복사
+      const allowedFields = [
+        'template_id', 'round_number', 'title', 'course_name',
+        'instructor_id', 'instructor_name', 'manager_id', 'manager_name',
+        'start_date', 'end_date', 'max_trainees', 'current_trainees',
+        'location', 'status', 'description'
+      ];
+
+      Object.keys(updates).forEach(key => {
+        if (allowedFields.includes(key)) {
+          validUpdates[key] = (updates as any)[key];
+        }
+      });
+
+      console.log('[CourseTemplateService] Updating round with:', validUpdates);
+
       const { data, error } = await supabase
         .from('course_rounds')
         .update({
-          ...updates,
+          ...validUpdates,
           updated_at: new Date().toISOString()
         })
         .eq('id', roundId)
@@ -343,6 +386,8 @@ export class CourseTemplateService {
         });
         throw error;
       }
+
+      console.log('[CourseTemplateService] Round updated successfully:', data);
       return data;
     } catch (error: any) {
       console.error('[CourseTemplateService] Error updating round:', {
@@ -491,23 +536,72 @@ export class CourseTemplateService {
       const templates = await this.getTemplates();
       const summaries = await Promise.all(
         templates.map(async (template) => {
-          const rounds = await this.getRounds({ 
-            template_id: template.id, 
-            status: 'in_progress' 
+          // 진행 중인 차수
+          const activeRounds = await this.getRounds({
+            template_id: template.id,
+            status: 'in_progress'
           });
-          
-          const totalTrainees = rounds.reduce((sum, round) => sum + round.current_trainees, 0);
-          
+
+          // 완료된 차수
+          const completedRounds = await this.getRounds({
+            template_id: template.id,
+            status: 'completed'
+          });
+
+          // 전체 차수 (완료, 진행 중)
+          const allRounds = await this.getRounds({
+            template_id: template.id
+          });
+
+          // 진행 중인 차수의 총 교육생 수
+          const totalTrainees = activeRounds.reduce((sum, round) => sum + round.current_trainees, 0);
+
+          // 이번 달 세션 계산
+          const now = new Date();
+          const thisMonthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+          const thisMonthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+
+          let thisMonthSessions = 0;
+          for (const round of allRounds.filter(r => r.status === 'in_progress' || r.status === 'completed')) {
+            const { data: sessions } = await supabase
+              .from('course_sessions')
+              .select('id')
+              .eq('round_id', round.id)
+              .gte('session_date', thisMonthStart.toISOString().split('T')[0])
+              .lte('session_date', thisMonthEnd.toISOString().split('T')[0]);
+
+            thisMonthSessions += sessions?.length || 0;
+          }
+
+          // 총 수료생 계산 (완료된 차수의 교육생 수 합계)
+          const totalGraduates = completedRounds.reduce((sum, round) => sum + (round.current_trainees || 0), 0);
+
+          // 평균 만족도 계산 (평가 데이터가 있다면)
+          let avgSatisfaction = 0;
+          const { data: evaluations } = await supabase
+            .from('evaluation_results')
+            .select('instructor_evaluation_score')
+            .in('round_id', completedRounds.map(r => r.id))
+            .not('instructor_evaluation_score', 'is', null);
+
+          if (evaluations && evaluations.length > 0) {
+            const sum = evaluations.reduce((acc, e) => acc + (e.instructor_evaluation_score || 0), 0);
+            avgSatisfaction = Number((sum / evaluations.length).toFixed(1));
+          } else {
+            // 평가 데이터가 없으면 기본값
+            avgSatisfaction = 0;
+          }
+
           return {
             template_name: template.name,
-            active_rounds: rounds.length,
+            active_rounds: activeRounds.length,
             total_trainees: totalTrainees,
-            this_month_sessions: 5, // TODO: 실제 계산
+            this_month_sessions: thisMonthSessions,
             upcoming_sessions: [], // TODO: 실제 데이터
             completion_stats: {
-              completed_rounds: 8, // TODO: 실제 계산
-              total_graduates: 156, // TODO: 실제 계산
-              average_satisfaction: 4.8
+              completed_rounds: completedRounds.length,
+              total_graduates: totalGraduates,
+              average_satisfaction: avgSatisfaction
             }
           };
         })

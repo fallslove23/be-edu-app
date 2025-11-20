@@ -58,7 +58,7 @@ const MyCourses: React.FC = () => {
   const getStatusInfo = (status: MyCourse['status']) => {
     switch (status) {
       case 'completed':
-        return { label: '완료', color: 'bg-green-100 text-green-800', icon: CheckCircleIcon };
+        return { label: '완료', color: 'bg-green-500/10 text-green-700', icon: CheckCircleIcon };
       case 'in_progress':
         return { label: '수강중', color: 'bg-blue-100 text-blue-800', icon: PlayIcon };
       case 'not_started':
@@ -164,7 +164,7 @@ const MyCourses: React.FC = () => {
 
                     {/* 진도 바 */}
                     <div className="flex items-center space-x-3">
-                      <div className="flex-1 bg-gray-200 rounded-full h-2">
+                      <div className="flex-1 bg-gray-200 rounded-lg h-2">
                         <div 
                           className={`h-2 rounded-full ${
                             course.progress === 100 ? 'bg-green-500' : 
@@ -181,18 +181,18 @@ const MyCourses: React.FC = () => {
 
                   <div className="ml-6 flex flex-col space-y-2">
                     {course.status === 'in_progress' && (
-                      <button className="btn-primary flex items-center">
+                      <button className="btn-primary flex items-center rounded-full">
                         <PlayIcon className="h-4 w-4 mr-2" />
                         계속 학습
                       </button>
                     )}
                     {course.status === 'not_started' && (
-                      <button className="btn-success">
+                      <button className="btn-success rounded-full">
                         학습 시작
                       </button>
                     )}
                     {course.status === 'completed' && (
-                      <button className="border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors">
+                      <button className="border border-gray-300 text-gray-700 px-4 py-2 rounded-full hover:bg-gray-50 transition-colors">
                         복습하기
                       </button>
                     )}

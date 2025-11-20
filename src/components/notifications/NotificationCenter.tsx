@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Bell, Check, Trash2, Settings, X } from 'lucide-react';
-import { notificationDBService, Notification } from '../../services/notification-db.service';
+import { notificationDBService } from '../../services/notification-db.service';
+import type { Notification } from '../../services/notification-db.service';
 import { useAuth } from '../../contexts/AuthContext';
 import { formatDistanceToNow } from 'date-fns';
 import { ko } from 'date-fns/locale';
@@ -16,6 +17,7 @@ const NotificationCenter: React.FC<NotificationCenterProps> = ({ onNavigate }) =
   const [unreadCount, setUnreadCount] = useState(0);
   const [loading, setLoading] = useState(false);
   const [lastCheckTime, setLastCheckTime] = useState<string>(new Date().toISOString());
+  const [hasError, setHasError] = useState(false);
 
   // 알림 목록 로드
   const loadNotifications = async () => {
@@ -24,12 +26,27 @@ const NotificationCenter: React.FC<NotificationCenterProps> = ({ onNavigate }) =
     setLoading(true);
     try {
       const data = await notificationDBService.getNotifications(user.id);
-      setNotifications(data);
+      setNotifications(data || []);
 
       const count = await notificationDBService.getUnreadCount(user.id);
-      setUnreadCount(count);
-    } catch (error) {
-      console.error('알림 로드 실패:', error);
+      setUnreadCount(count || 0);
+    } catch (error: any) {
+      // 테이블이 없는 경우 등의 에러를 조용히 처리
+      if (error?.code === '42P01' || error?.message?.includes('does not exist')) {
+        console.warn('알림 테이블이 아직 생성되지 않았습니다. database/README-NOTIFICATIONS-FIX.md를 참고하세요.');
+        setHasError(true);
+      } else {
+        console.error('알림 로드 실패:', {
+          message: error?.message,
+          code: error?.code,
+          details: error?.details,
+          hint: error?.hint,
+          error
+        });
+      }
+      // 에러가 발생해도 빈 배열로 설정하여 UI가 정상 작동하도록 함
+      setNotifications([]);
+      setUnreadCount(0);
     } finally {
       setLoading(false);
     }
@@ -133,9 +150,9 @@ const NotificationCenter: React.FC<NotificationCenterProps> = ({ onNavigate }) =
   const getPriorityColor = (priority: string) => {
     switch (priority) {
       case 'urgent':
-        return 'bg-red-100 border-red-300 text-red-800';
+        return 'bg-destructive/10 border-destructive/50 text-destructive';
       case 'high':
-        return 'bg-orange-100 border-orange-300 text-orange-800';
+        return 'bg-orange-500/10 border-orange-300 text-orange-800';
       case 'normal':
         return 'bg-blue-100 border-blue-300 text-blue-800';
       case 'low':
@@ -168,12 +185,12 @@ const NotificationCenter: React.FC<NotificationCenterProps> = ({ onNavigate }) =
       {/* 알림 벨 아이콘 */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="relative p-2 hover:bg-gray-100 rounded-full transition-colors"
+        className="relative p-2 hover:bg-gray-100 rounded-lg transition-colors"
         aria-label="알림"
       >
         <Bell className="w-6 h-6 text-gray-700" />
         {unreadCount > 0 && (
-          <span className="absolute top-0 right-0 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+          <span className="absolute top-0 right-0 bg-red-500 text-white text-xs font-bold rounded-lg w-5 h-5 flex items-center justify-center">
             {unreadCount > 9 ? '9+' : unreadCount}
           </span>
         )}
@@ -222,6 +239,22 @@ const NotificationCenter: React.FC<NotificationCenterProps> = ({ onNavigate }) =
           <div className="overflow-y-auto flex-1">
             {loading ? (
               <div className="p-4 text-center text-gray-500">로딩 중...</div>
+            ) : hasError ? (
+              <div className="p-8 text-center">
+                <Bell className="w-12 h-12 mx-auto mb-3 text-yellow-400" />
+                <p className="text-gray-700 font-medium mb-2">알림 시스템 설정 필요</p>
+                <p className="text-sm text-gray-500 mb-4">
+                  데이터베이스에 알림 테이블을 생성해야 합니다.
+                </p>
+                <a
+                  href="/알림-시스템-설정-가이드.md"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center px-4 py-2 bg-primary text-primary-foreground rounded-full hover:bg-primary/90 text-sm font-medium"
+                >
+                  설정 가이드 보기
+                </a>
+              </div>
             ) : notifications.length === 0 ? (
               <div className="p-8 text-center text-gray-500">
                 <Bell className="w-12 h-12 mx-auto mb-2 text-gray-300" />
@@ -284,7 +317,7 @@ const NotificationCenter: React.FC<NotificationCenterProps> = ({ onNavigate }) =
                             )}
                             <button
                               onClick={() => handleDelete(notification.id)}
-                              className="text-xs text-red-600 hover:text-red-700"
+                              className="text-xs text-destructive hover:text-destructive"
                               title="삭제"
                             >
                               <Trash2 className="w-4 h-4" />

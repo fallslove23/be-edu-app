@@ -279,9 +279,9 @@ const SystemMonitor: React.FC = () => {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'good': return 'text-green-600 bg-green-100';
-      case 'warning': return 'text-yellow-600 bg-yellow-100';
-      case 'critical': return 'text-red-600 bg-red-100';
+      case 'good': return 'text-green-600 bg-green-500/10';
+      case 'warning': return 'text-orange-600 bg-yellow-100';
+      case 'critical': return 'text-destructive bg-destructive/10';
       default: return 'text-gray-600 bg-gray-100';
     }
   };
@@ -297,9 +297,9 @@ const SystemMonitor: React.FC = () => {
 
   const getTrendIcon = (trend: string) => {
     switch (trend) {
-      case 'up': return <ArrowTrendingUpIcon className="h-4 w-4 text-red-500" />;
+      case 'up': return <ArrowTrendingUpIcon className="h-4 w-4 text-destructive" />;
       case 'down': return <ArrowTrendingDownIcon className="h-4 w-4 text-green-500" />;
-      case 'stable': return <div className="h-4 w-4 bg-gray-400 rounded-full"></div>;
+      case 'stable': return <div className="h-4 w-4 bg-gray-400 rounded-lg"></div>;
       default: return null;
     }
   };
@@ -311,7 +311,7 @@ const SystemMonitor: React.FC = () => {
       case 'disk': return <CircleStackIcon className="h-6 w-6 text-purple-600" />;
       case 'network': return <GlobeAltIcon className="h-6 w-6 text-orange-600" />;
       case 'response_time': return <ClockIcon className="h-6 w-6 text-indigo-600" />;
-      case 'error_rate': return <ExclamationTriangleIcon className="h-6 w-6 text-red-600" />;
+      case 'error_rate': return <ExclamationTriangleIcon className="h-6 w-6 text-destructive" />;
       default: return <ChartBarIcon className="h-6 w-6 text-gray-600" />;
     }
   };
@@ -368,7 +368,7 @@ const SystemMonitor: React.FC = () => {
             </select>
             <button
               onClick={() => setIsMonitoring(!isMonitoring)}
-              className={`px-4 py-2 rounded-lg text-white flex items-center space-x-2 ${
+              className={`px-4 py-2 rounded-full text-white flex items-center space-x-2 ${
                 isMonitoring ? 'btn-danger' : 'btn-success'
               }`}
             >
@@ -467,7 +467,7 @@ const SystemMonitor: React.FC = () => {
                     <span>0</span>
                     <span>임계값: {metric.threshold}{metric.unit}</span>
                   </div>
-                  <div className="w-full bg-gray-200 rounded-full h-2">
+                  <div className="w-full bg-gray-200 rounded-lg h-2">
                     <div
                       className={`h-2 rounded-full ${
                         metric.status === 'critical' ? 'bg-red-500' :
@@ -512,12 +512,12 @@ const SystemMonitor: React.FC = () => {
               <div className="flex items-start justify-between">
                 <div className="flex items-start space-x-3">
                   <div className={`p-1 rounded-full ${
-                    alert.type === 'error' ? 'bg-red-100' :
+                    alert.type === 'error' ? 'bg-destructive/10' :
                     alert.type === 'warning' ? 'bg-yellow-100' : 'bg-blue-100'
                   }`}>
                     <ExclamationTriangleIcon className={`h-4 w-4 ${
-                      alert.type === 'error' ? 'text-red-600' :
-                      alert.type === 'warning' ? 'text-yellow-600' : 'text-blue-600'
+                      alert.type === 'error' ? 'text-destructive' :
+                      alert.type === 'warning' ? 'text-orange-600' : 'text-blue-600'
                     }`} />
                   </div>
                   <div className="flex-1">

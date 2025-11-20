@@ -242,9 +242,9 @@ const NewCourseManagement: React.FC = () => {
     switch (status) {
       case 'planning': return 'text-gray-600 bg-gray-100';
       case 'recruiting': return 'text-blue-600 bg-blue-100';
-      case 'ongoing': return 'text-green-600 bg-green-100';
+      case 'ongoing': return 'text-green-600 bg-green-500/10';
       case 'completed': return 'text-purple-600 bg-purple-100';
-      case 'cancelled': return 'text-red-600 bg-red-100';
+      case 'cancelled': return 'text-destructive bg-destructive/10';
       default: return 'text-gray-600 bg-gray-100';
     }
   };
@@ -335,7 +335,7 @@ const NewCourseManagement: React.FC = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-lg h-8 w-8 border-b-2 border-blue-600"></div>
         <span className="ml-2">과정 정보를 불러오는 중...</span>
       </div>
     );
@@ -355,14 +355,14 @@ const NewCourseManagement: React.FC = () => {
           <div className="flex items-center space-x-3">
             <button
               onClick={() => alert('과정 템플릿 관리는 CourseTemplateManagement 컴포넌트를 사용하세요.')}
-              className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2"
+              className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-full flex items-center space-x-2"
             >
               <Cog6ToothIcon className="h-4 w-4" />
               <span>템플릿 관리</span>
             </button>
             <button
               onClick={() => setShowAddModal(true)}
-              className="btn-primary px-4 py-2 rounded-lg flex items-center space-x-2"
+              className="btn-primary px-4 py-2 rounded-full flex items-center space-x-2"
             >
               <CalendarDaysIcon className="h-4 w-4" />
               <span>새 차수 개설</span>
@@ -393,7 +393,7 @@ const NewCourseManagement: React.FC = () => {
             <select
               value={yearFilter}
               onChange={(e) => setYearFilter(parseInt(e.target.value))}
-              className="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
               <option value={2025}>2025년</option>
               <option value={2024}>2024년</option>
@@ -403,7 +403,7 @@ const NewCourseManagement: React.FC = () => {
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
               <option value="all">전체 상태</option>
               <option value="planning">기획중</option>
@@ -413,7 +413,7 @@ const NewCourseManagement: React.FC = () => {
               <option value="cancelled">취소</option>
             </select>
 
-            <button className="flex items-center space-x-1 border border-gray-300 rounded-lg px-3 py-2 hover:bg-gray-50">
+            <button className="flex items-center space-x-1 border border-gray-300 rounded-full px-3 py-2 hover:bg-gray-50">
               <FunnelIcon className="h-4 w-4" />
               <span>필터</span>
             </button>
@@ -437,7 +437,7 @@ const NewCourseManagement: React.FC = () => {
 
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
           <div className="flex items-center">
-            <div className="p-2 bg-green-100 rounded-lg">
+            <div className="p-2 bg-green-500/10 rounded-lg">
               <ClockIcon className="h-6 w-6 text-green-600" />
             </div>
             <div className="ml-4">
@@ -465,7 +465,7 @@ const NewCourseManagement: React.FC = () => {
 
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
           <div className="flex items-center">
-            <div className="p-2 bg-orange-100 rounded-lg">
+            <div className="p-2 bg-orange-500/10 rounded-lg">
               <CalendarDaysIcon className="h-6 w-6 text-orange-600" />
             </div>
             <div className="ml-4">
@@ -497,7 +497,7 @@ const NewCourseManagement: React.FC = () => {
                 <div className="flex-1">
                   {/* 과정 정보 */}
                   <div className="flex items-center space-x-3 mb-3">
-                    <span className="text-lg font-medium text-blue-600 bg-blue-50 px-3 py-1 rounded-lg">
+                    <span className="text-lg font-medium text-blue-600 bg-blue-50 px-3 py-1 rounded-full">
                       {course.courseCode}
                     </span>
                     <span className={`text-sm font-medium px-2 py-1 rounded-full ${getStatusColor(course.status)}`}>
@@ -550,9 +550,9 @@ const NewCourseManagement: React.FC = () => {
                       <span>진행률</span>
                       <span>{getProgressPercentage(course.currentSession, course.totalSessions)}%</span>
                     </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2">
+                    <div className="w-full bg-gray-200 rounded-lg h-2">
                       <div
-                        className="bg-blue-600 h-2 rounded-full"
+                        className="bg-blue-600 h-2 rounded-lg"
                         style={{ width: `${getProgressPercentage(course.currentSession, course.totalSessions)}%` }}
                       ></div>
                     </div>
@@ -576,7 +576,7 @@ const NewCourseManagement: React.FC = () => {
                       e.stopPropagation();
                       // 편집 로직
                     }}
-                    className="p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-lg"
+                    className="p-2 text-gray-400 hover:text-green-600 hover:bg-green-500/10 rounded-lg"
                     title="편집"
                   >
                     <PencilIcon className="h-4 w-4" />
@@ -586,7 +586,7 @@ const NewCourseManagement: React.FC = () => {
                       e.stopPropagation();
                       // 삭제 로직
                     }}
-                    className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg"
+                    className="p-2 text-gray-400 hover:text-destructive hover:bg-destructive/10 rounded-lg"
                     title="삭제"
                   >
                     <TrashIcon className="h-4 w-4" />
@@ -610,7 +610,7 @@ const NewCourseManagement: React.FC = () => {
               {(!searchQuery && statusFilter === 'all') && (
                 <button
                   onClick={() => setShowAddModal(true)}
-                  className="btn-primary px-4 py-2 rounded-lg"
+                  className="btn-primary px-4 py-2 rounded-full"
                 >
                   첫 차수 개설하기
                 </button>
@@ -679,7 +679,7 @@ const NewCourseManagement: React.FC = () => {
             <div className="flex space-x-3">
               <button
                 onClick={() => setShowAddModal(false)}
-                className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
+                className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-full hover:bg-gray-50"
               >
                 취소
               </button>

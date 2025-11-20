@@ -182,7 +182,7 @@ const CourseManagement: React.FC = () => {
     return (
       <div className="flex items-center justify-center min-h-64 p-8">
         <div className="flex flex-col items-center space-y-4">
-          <div className="w-12 h-12 border-4 border-primary/20 border-t-primary rounded-full animate-spin"></div>
+          <div className="w-12 h-12 border-4 border-primary/20 border-t-primary rounded-lg animate-spin"></div>
           <p className="text-muted-foreground text-sm font-medium">과정 정보 로딩 중...</p>
         </div>
       </div>
@@ -214,7 +214,7 @@ const CourseManagement: React.FC = () => {
               <CalendarIcon className="h-5 w-5 mr-2" />
               플래너 동기화
             </button>
-            <button className="btn-primary flex items-center">
+            <button className="btn-primary flex items-center rounded-full">
               <PlusIcon className="h-5 w-5 mr-2" />
               새 과정 추가
             </button>
@@ -305,7 +305,7 @@ const CourseManagement: React.FC = () => {
         </div>
 
         {/* 결과 카운트 */}
-        <div className="flex items-center px-4 py-2.5 bg-secondary/30 rounded-lg border border-border">
+        <div className="flex items-center px-4 py-2.5 bg-secondary/30 rounded-full border border-border">
           <FunnelIcon className="h-4 w-4 mr-2 text-muted-foreground" />
           <span className="text-sm font-medium text-foreground whitespace-nowrap">
             총 <span className="text-primary font-semibold">{filteredCourses.length}</span>개 과정
@@ -364,9 +364,9 @@ const CourseManagement: React.FC = () => {
                     <div className="text-sm text-card-foreground">
                       {course.current_enrollment} / {course.max_capacity}명
                     </div>
-                    <div className="w-full bg-secondary rounded-full h-2 mt-1">
+                    <div className="w-full bg-secondary rounded-lg h-2 mt-1">
                       <div
-                        className="bg-primary h-2 rounded-full"
+                        className="bg-primary h-2 rounded-lg"
                         style={{
                           width: `${Math.min((course.current_enrollment / course.max_capacity) * 100, 100)}%`
                         }}

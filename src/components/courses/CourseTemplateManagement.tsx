@@ -375,10 +375,10 @@ const CourseTemplateManagement: React.FC = () => {
     switch (status) {
       case 'planned': return 'bg-gray-100 text-gray-700';
       case 'recruiting': return 'bg-blue-100 text-blue-700';
-      case 'confirmed': return 'bg-green-100 text-green-700';
-      case 'ongoing': return 'bg-yellow-100 text-yellow-700';
+      case 'confirmed': return 'bg-green-500/10 text-green-700';
+      case 'ongoing': return 'bg-yellow-100 text-orange-700';
       case 'completed': return 'bg-purple-100 text-purple-700';
-      case 'cancelled': return 'bg-red-100 text-red-700';
+      case 'cancelled': return 'bg-destructive/10 text-destructive';
       default: return 'bg-gray-100 text-gray-700';
     }
   };
@@ -461,7 +461,7 @@ const CourseTemplateManagement: React.FC = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-lg h-8 w-8 border-b-2 border-blue-600"></div>
         <span className="ml-2">과정 템플릿을 불러오는 중...</span>
       </div>
     );
@@ -487,14 +487,14 @@ const CourseTemplateManagement: React.FC = () => {
               <div className="flex items-center space-x-2">
                 <button
                   onClick={() => setShowTargetManager(true)}
-                  className="btn-primary px-4 py-2 rounded-lg flex items-center space-x-2"
+                  className="btn-primary px-4 py-2 rounded-full flex items-center space-x-2"
                 >
                   <Cog6ToothIcon className="h-4 w-4" />
                   <span>교육과정 체계 관리</span>
                 </button>
                 <button
                   onClick={() => setShowOfflineWizard(true)}
-                  className="btn-success px-4 py-2 rounded-lg flex items-center space-x-2"
+                  className="btn-success px-4 py-2 rounded-full flex items-center space-x-2"
                 >
                   <CalendarDaysIcon className="h-4 w-4" />
                   <span>새 과정 개설</span>
@@ -506,7 +506,7 @@ const CourseTemplateManagement: React.FC = () => {
       </div>
 
       {/* 검색 및 필터 */}
-      <div className="bg-white rounded-2xl shadow-md border border-gray-100 p-6">
+      <div className="bg-white rounded-lg shadow-md border border-gray-100 p-6">
         <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-3">
           <div className="flex-1 relative">
             <MagnifyingGlassIcon className="h-5 w-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
@@ -522,7 +522,7 @@ const CourseTemplateManagement: React.FC = () => {
           <select
             value={categoryFilter}
             onChange={(e) => setCategoryFilter(e.target.value)}
-            className="flex-1 sm:w-64 border-2 border-gray-200 rounded-xl px-6 py-3.5 text-base bg-white text-gray-700 font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all shadow-sm hover:border-gray-300 appearance-none cursor-pointer"
+            className="flex-1 sm:w-64 border-2 border-gray-200 rounded-lg px-6 py-3.5 text-base bg-white text-gray-700 font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all shadow-sm hover:border-gray-300 appearance-none cursor-pointer"
             style={{
               backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`,
               backgroundPosition: 'right 0.75rem center',
@@ -575,7 +575,7 @@ const CourseTemplateManagement: React.FC = () => {
                       <div className="flex-1">
                         <div className="flex items-center space-x-2 mb-2">
                           <span className="text-sm font-medium text-blue-600">{template.code}</span>
-                          <span className={`px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-700`}>
+                          <span className={`px-2 py-1 text-xs font-medium rounded-full bg-green-500/10 text-green-700`}>
                             {getCategoryLabel(template.category)}
                           </span>
                           <span className="text-xs text-gray-500">

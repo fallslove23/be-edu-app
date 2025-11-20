@@ -231,7 +231,7 @@ const CourseOperationManager: React.FC = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
+        <div className="animate-spin rounded-lg h-8 w-8 border-b-2 border-indigo-600"></div>
         <span className="ml-2">과정 운영 정보를 불러오는 중...</span>
       </div>
     );
@@ -315,9 +315,9 @@ const CourseOperationManager: React.FC = () => {
                     </div>
 
                     {/* 진행률 바 */}
-                    <div className="w-full bg-gray-200 rounded-full h-2">
+                    <div className="w-full bg-gray-200 rounded-lg h-2">
                       <div
-                        className="bg-indigo-600 h-2 rounded-full transition-all"
+                        className="bg-indigo-600 h-2 rounded-lg transition-all"
                         style={{ width: `${course.progress}%` }}
                       />
                     </div>

@@ -182,9 +182,9 @@ const StudentProfile: React.FC<StudentProfileProps> = ({ studentId, onBack }) =>
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'enrolled': return 'text-blue-600 bg-blue-100';
-      case 'completed': return 'text-green-600 bg-green-100';
-      case 'dropped': return 'text-red-600 bg-red-100';
-      case 'waiting': return 'text-yellow-600 bg-yellow-100';
+      case 'completed': return 'text-green-600 bg-green-500/10';
+      case 'dropped': return 'text-destructive bg-destructive/10';
+      case 'waiting': return 'text-orange-600 bg-yellow-100';
       case 'suspended': return 'text-gray-600 bg-gray-100';
       default: return 'text-gray-600 bg-gray-100';
     }
@@ -204,9 +204,9 @@ const StudentProfile: React.FC<StudentProfileProps> = ({ studentId, onBack }) =>
   const getGradeColor = (grade: string) => {
     if (grade.startsWith('A')) return 'text-green-600';
     if (grade.startsWith('B')) return 'text-blue-600';
-    if (grade.startsWith('C')) return 'text-yellow-600';
+    if (grade.startsWith('C')) return 'text-orange-600';
     if (grade.startsWith('D')) return 'text-orange-600';
-    return 'text-red-600';
+    return 'text-destructive';
   };
 
   const formatDate = (dateString: string) => {
@@ -225,7 +225,7 @@ const StudentProfile: React.FC<StudentProfileProps> = ({ studentId, onBack }) =>
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-lg h-8 w-8 border-b-2 border-blue-600"></div>
         <span className="ml-2">교육생 정보를 불러오는 중...</span>
       </div>
     );
@@ -263,7 +263,7 @@ const StudentProfile: React.FC<StudentProfileProps> = ({ studentId, onBack }) =>
                 <img
                   src={student.avatar}
                   alt={student.name}
-                  className="h-16 w-16 rounded-full object-cover"
+                  className="h-16 w-16 rounded-lg object-cover"
                 />
               ) : (
                 <UserCircleIcon className="h-16 w-16 text-gray-400" />
@@ -308,7 +308,7 @@ const StudentProfile: React.FC<StudentProfileProps> = ({ studentId, onBack }) =>
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
           <div className="flex items-center">
-            <div className="p-2 bg-green-100 rounded-lg">
+            <div className="p-2 bg-green-500/10 rounded-lg">
               <TrophyIcon className="h-6 w-6 text-green-600" />
             </div>
             <div className="ml-4">
@@ -344,7 +344,7 @@ const StudentProfile: React.FC<StudentProfileProps> = ({ studentId, onBack }) =>
 
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
           <div className="flex items-center">
-            <div className="p-2 bg-orange-100 rounded-lg">
+            <div className="p-2 bg-orange-500/10 rounded-lg">
               <AcademicCapIcon className="h-6 w-6 text-orange-600" />
             </div>
             <div className="ml-4">
@@ -463,7 +463,7 @@ const StudentProfile: React.FC<StudentProfileProps> = ({ studentId, onBack }) =>
                               {getStatusLabel(course.status)}
                             </span>
                             {course.certificateIssued && (
-                              <span className="text-xs px-2 py-1 rounded-full bg-green-100 text-green-600">
+                              <span className="text-xs px-2 py-1 rounded-full bg-green-500/10 text-green-700">
                                 수료증 발급
                               </span>
                             )}
@@ -520,7 +520,7 @@ const StudentProfile: React.FC<StudentProfileProps> = ({ studentId, onBack }) =>
                                 </div>
                               )}
                               {course.studentFeedback && (
-                                <div className="bg-green-50 border border-green-200 rounded p-3">
+                                <div className="bg-green-500/10 border border-green-200 rounded p-3">
                                   <span className="text-sm font-medium text-green-900">학습자 피드백:</span>
                                   <p className="text-sm text-green-800 mt-1">{course.studentFeedback}</p>
                                 </div>

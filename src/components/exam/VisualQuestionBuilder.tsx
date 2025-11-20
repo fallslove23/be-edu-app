@@ -51,7 +51,7 @@ const getQuestionTypeInfo = (type: QuestionType) => {
     },
     true_false: {
       label: 'O/X',
-      color: 'bg-green-100 text-green-800',
+      color: 'bg-green-500/10 text-green-700',
       icon: '✓✗'
     },
     short_answer: {
@@ -101,7 +101,7 @@ function SortableQuestionCard({
     <div
       ref={setNodeRef}
       style={style}
-      className={`relative group bg-white rounded-xl border-2 p-5 transition-all ${
+      className={`relative group bg-white rounded-lg border-2 p-5 transition-all ${
         isDragging
           ? 'border-blue-400 shadow-2xl z-50'
           : 'border-gray-200 hover:border-blue-300 hover:shadow-lg'
@@ -121,7 +121,7 @@ function SortableQuestionCard({
         {/* 헤더 */}
         <div className="flex items-start justify-between mb-3">
           <div className="flex items-center gap-3 flex-1">
-            <div className="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 text-white font-bold text-lg shadow-md">
+            <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 text-white font-bold text-lg shadow-md">
               {index + 1}
             </div>
             <div className="flex-1">
@@ -140,14 +140,14 @@ function SortableQuestionCard({
           <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
             <button
               onClick={onEdit}
-              className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+              className="p-2 text-blue-600 hover:bg-blue-50 rounded-full transition-colors"
               title="편집"
             >
               <PencilIcon className="h-5 w-5" />
             </button>
             <button
               onClick={onDelete}
-              className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+              className="p-2 text-destructive hover:bg-destructive/10 rounded-full transition-colors"
               title="삭제"
             >
               <TrashIcon className="h-5 w-5" />
@@ -170,9 +170,9 @@ function SortableQuestionCard({
               return (
                 <div
                   key={i}
-                  className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm ${
+                  className={`flex items-center gap-2 px-3 py-2 rounded-full text-sm ${
                     isCorrect
-                      ? 'bg-green-50 border border-green-200'
+                      ? 'bg-green-500/10 border border-green-200'
                       : 'bg-gray-50 border border-gray-200'
                   }`}
                 >
@@ -194,18 +194,18 @@ function SortableQuestionCard({
         {question.question_type === 'true_false' && (
           <div className="flex items-center gap-3">
             <div
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg ${
+              className={`flex items-center gap-2 px-4 py-2 rounded-full ${
                 question.correct_answer === 'true'
-                  ? 'bg-green-100 text-green-800 font-semibold'
+                  ? 'bg-green-500/10 text-green-700 font-semibold'
                   : 'bg-gray-100 text-gray-600'
               }`}
             >
               <CheckCircleIcon className="h-5 w-5" />O
             </div>
             <div
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg ${
+              className={`flex items-center gap-2 px-4 py-2 rounded-full ${
                 question.correct_answer === 'false'
-                  ? 'bg-red-100 text-red-800 font-semibold'
+                  ? 'bg-destructive/10 text-destructive font-semibold'
                   : 'bg-gray-100 text-gray-600'
               }`}
             >

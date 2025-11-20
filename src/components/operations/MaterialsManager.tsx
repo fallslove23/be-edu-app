@@ -181,7 +181,7 @@ const MaterialsManager: React.FC = () => {
     switch (type) {
       case 'document': return <DocumentTextIcon className="h-8 w-8 text-blue-600" />;
       case 'presentation': return <PresentationChartBarIcon className="h-8 w-8 text-orange-600" />;
-      case 'video': return <VideoCameraIcon className="h-8 w-8 text-red-600" />;
+      case 'video': return <VideoCameraIcon className="h-8 w-8 text-destructive" />;
       case 'audio': return <MicrophoneIcon className="h-8 w-8 text-purple-600" />;
       case 'image': return <PhotoIcon className="h-8 w-8 text-green-600" />;
       default: return <DocumentIcon className="h-8 w-8 text-gray-600" />;
@@ -191,9 +191,9 @@ const MaterialsManager: React.FC = () => {
   const getCategoryColor = (category: string) => {
     switch (category) {
       case 'lecture': return 'bg-blue-100 text-blue-800';
-      case 'reference': return 'bg-green-100 text-green-800';
-      case 'assignment': return 'bg-orange-100 text-orange-800';
-      case 'exam': return 'bg-red-100 text-red-800';
+      case 'reference': return 'bg-green-500/10 text-green-700';
+      case 'assignment': return 'bg-orange-500/10 text-orange-700';
+      case 'exam': return 'bg-destructive/10 text-destructive';
       case 'template': return 'bg-purple-100 text-purple-800';
       default: return 'bg-gray-100 text-gray-800';
     }
@@ -251,7 +251,7 @@ const MaterialsManager: React.FC = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-lg h-8 w-8 border-b-2 border-blue-600"></div>
         <span className="ml-2">교육 자료를 불러오는 중...</span>
       </div>
     );
@@ -271,13 +271,13 @@ const MaterialsManager: React.FC = () => {
           <div className="flex items-center space-x-3">
             <button
               onClick={() => setViewMode(viewMode === 'grid' ? 'list' : 'grid')}
-              className="p-2 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+              className="p-2 border border-gray-300 dark:border-gray-600 rounded-lg text-foreground hover:bg-muted"
             >
               {viewMode === 'grid' ? '목록' : '격자'}
             </button>
             <button 
               onClick={() => setShowUploadModal(true)}
-              className="btn-primary px-4 py-2 rounded-lg flex items-center space-x-2"
+              className="btn-primary px-4 py-2 rounded-full flex items-center space-x-2"
             >
               <CloudArrowUpIcon className="h-4 w-4" />
               <span>업로드</span>
@@ -306,7 +306,7 @@ const MaterialsManager: React.FC = () => {
             <select
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
-              className="border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500"
+              className="border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500"
             >
               <option value="all">모든 카테고리</option>
               <option value="lecture">강의자료</option>
@@ -319,7 +319,7 @@ const MaterialsManager: React.FC = () => {
             <select
               value={selectedType}
               onChange={(e) => setSelectedType(e.target.value)}
-              className="border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500"
+              className="border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500"
             >
               <option value="all">모든 타입</option>
               <option value="document">문서</option>
@@ -332,7 +332,7 @@ const MaterialsManager: React.FC = () => {
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as any)}
-              className="border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500"
+              className="border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500"
             >
               <option value="date">업로드순</option>
               <option value="name">이름순</option>
@@ -349,10 +349,10 @@ const MaterialsManager: React.FC = () => {
                 {selectedMaterials.size}개 항목 선택됨
               </span>
               <div className="flex items-center space-x-2">
-                <button className="text-sm text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300">
+                <button className="text-sm text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 rounded-full">
                   일괄 다운로드
                 </button>
-                <button className="text-sm text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300">
+                <button className="text-sm text-destructive hover:text-destructive dark:text-red-400 dark:hover:text-red-300 rounded-full">
                   삭제
                 </button>
               </div>
@@ -376,7 +376,7 @@ const MaterialsManager: React.FC = () => {
                 className="p-4 border border-gray-200 dark:border-gray-600 rounded-lg cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
               >
                 <div className="flex items-center space-x-3 mb-3">
-                  <FolderIcon className="h-8 w-8 text-yellow-600" />
+                  <FolderIcon className="h-8 w-8 text-foreground" />
                   <div className="flex-1 min-w-0">
                     <h4 className="font-medium text-gray-900 dark:text-white truncate">
                       {folder.name}
@@ -403,11 +403,11 @@ const MaterialsManager: React.FC = () => {
               교육 자료 ({filteredMaterials.length})
             </h3>
             <div className="flex items-center space-x-2">
-              <button className="text-sm text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">
+              <button className="text-sm text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white rounded-full">
                 모두 선택
               </button>
               <span className="text-gray-300 dark:text-gray-600">|</span>
-              <button className="text-sm text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">
+              <button className="text-sm text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white rounded-full">
                 선택 해제
               </button>
             </div>
@@ -420,7 +420,7 @@ const MaterialsManager: React.FC = () => {
               {filteredMaterials.map((material) => (
                 <div
                   key={material.id}
-                  className={`border rounded-lg p-4 transition-all cursor-pointer ${
+                  className={`border rounded-full p-4 transition-all cursor-pointer ${
                     selectedMaterials.has(material.id)
                       ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
                       : 'border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500'
@@ -441,7 +441,7 @@ const MaterialsManager: React.FC = () => {
                       >
                         <StarIcon className={`h-4 w-4 ${
                           material.isFavorite 
-                            ? 'text-yellow-500 fill-current' 
+                            ? 'text-foreground fill-current' 
                             : 'text-gray-400'
                         }`} />
                       </button>
@@ -494,11 +494,11 @@ const MaterialsManager: React.FC = () => {
                   </div>
                   
                   <div className="mt-3 pt-3 border-t border-gray-200 dark:border-gray-600 flex justify-between">
-                    <button className="text-sm text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 flex items-center space-x-1">
+                    <button className="text-sm text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 flex items-center space-x-1 rounded-full">
                       <EyeIcon className="h-3 w-3" />
                       <span>미리보기</span>
                     </button>
-                    <button className="text-sm text-gray-600 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 flex items-center space-x-1">
+                    <button className="text-sm text-gray-600 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 flex items-center space-x-1 rounded-full">
                       <CloudArrowDownIcon className="h-3 w-3" />
                       <span>다운로드</span>
                     </button>
@@ -511,7 +511,7 @@ const MaterialsManager: React.FC = () => {
               {filteredMaterials.map((material) => (
                 <div
                   key={material.id}
-                  className={`border rounded-lg p-4 transition-colors cursor-pointer ${
+                  className={`border rounded-full p-4 transition-colors cursor-pointer ${
                     selectedMaterials.has(material.id)
                       ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
                       : 'border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700'
@@ -540,7 +540,7 @@ const MaterialsManager: React.FC = () => {
                           {getCategoryLabel(material.category)}
                         </span>
                         {material.isFavorite && (
-                          <StarIcon className="h-4 w-4 text-yellow-500 fill-current" />
+                          <StarIcon className="h-4 w-4 text-foreground fill-current" />
                         )}
                       </div>
                       
@@ -559,13 +559,13 @@ const MaterialsManager: React.FC = () => {
                     </div>
                     
                     <div className="flex items-center space-x-2">
-                      <button className="p-2 text-gray-400 hover:text-blue-600 dark:hover:text-blue-400">
+                      <button className="p-2 text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 rounded-full">
                         <EyeIcon className="h-4 w-4" />
                       </button>
-                      <button className="p-2 text-gray-400 hover:text-green-600 dark:hover:text-green-400">
+                      <button className="p-2 text-gray-400 hover:text-green-600 dark:hover:text-green-400 rounded-full">
                         <CloudArrowDownIcon className="h-4 w-4" />
                       </button>
-                      <button className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+                      <button className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 rounded-full">
                         <ShareIcon className="h-4 w-4" />
                       </button>
                     </div>
@@ -600,7 +600,7 @@ const MaterialsManager: React.FC = () => {
                 <p className="text-sm text-gray-500 dark:text-gray-400">
                   최대 100MB, 모든 파일 형식 지원
                 </p>
-                <button className="mt-4 btn-primary">
+                <button className="mt-4 btn-primary rounded-full">
                   파일 선택
                 </button>
               </div>
@@ -613,7 +613,7 @@ const MaterialsManager: React.FC = () => {
               >
                 취소
               </button>
-              <button className="btn-primary">
+              <button className="btn-primary rounded-full">
                 업로드
               </button>
             </div>

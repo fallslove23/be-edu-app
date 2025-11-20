@@ -146,7 +146,7 @@ const MobileOptimizer: React.FC<MobileOptimizerProps> = ({ children }) => {
           <div className="flex items-center space-x-2">
             {isRefreshing ? (
               <>
-                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-lg animate-spin"></div>
                 <span className="text-sm font-medium">새로고침 중...</span>
               </>
             ) : (

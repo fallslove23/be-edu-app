@@ -96,7 +96,7 @@ const BSJournalWorkflow: React.FC = () => {
 
   const getStepColor = (status: WorkflowStep['status']) => {
     switch (status) {
-      case 'completed': return 'bg-green-100 text-green-700 border-green-300';
+      case 'completed': return 'bg-green-500/10 text-green-700 border-green-300';
       case 'active': return 'bg-blue-100 text-blue-700 border-blue-300';
       case 'pending': return 'bg-gray-100 text-gray-500 border-gray-300';
       default: return 'bg-gray-100 text-gray-500 border-gray-300';
@@ -130,7 +130,7 @@ const BSJournalWorkflow: React.FC = () => {
           </div>
           <button
             onClick={() => setCurrentStep('main')}
-            className="btn-primary px-4 py-2 rounded-lg flex items-center space-x-2"
+            className="btn-primary px-4 py-2 rounded-full flex items-center space-x-2"
           >
             <DocumentTextIcon className="h-4 w-4" />
             <span>활동일지 관리</span>
@@ -149,9 +149,9 @@ const BSJournalWorkflow: React.FC = () => {
             
             return (
               <div key={step.id} className="relative">
-                <div className={`border-2 rounded-lg p-4 transition-all hover:shadow-md ${getStepColor(step.status)}`}>
+                <div className={`border-2 rounded-full p-4 transition-all hover:shadow-md ${getStepColor(step.status)}`}>
                   <div className="flex items-start space-x-3">
-                    <div className={`p-2 rounded-lg bg-white ${getIconColor(step.status)}`}>
+                    <div className={`p-2 rounded-full bg-white ${getIconColor(step.status)}`}>
                       <Icon className="h-6 w-6" />
                     </div>
                     <div className="flex-1 min-w-0">
@@ -161,7 +161,7 @@ const BSJournalWorkflow: React.FC = () => {
                       {/* 상태 표시 */}
                       <div className="mt-3 flex items-center">
                         {step.status === 'completed' && (
-                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-green-100 text-green-800">
+                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-green-500/10 text-green-700">
                             <CheckCircleIcon className="h-3 w-3 mr-1" />
                             완료
                           </span>
@@ -186,7 +186,7 @@ const BSJournalWorkflow: React.FC = () => {
                 {/* 화살표 (마지막 항목 제외) */}
                 {!isLast && (
                   <div className="hidden lg:block absolute top-1/2 -right-2 transform -translate-y-1/2 z-10">
-                    <div className="bg-white border border-gray-300 rounded-full p-1">
+                    <div className="bg-white border border-gray-300 rounded-lg p-1">
                       <ArrowRightIcon className="h-4 w-4 text-gray-400" />
                     </div>
                   </div>
@@ -228,7 +228,7 @@ const BSJournalWorkflow: React.FC = () => {
         </div>
 
         {/* 운영자 안내 */}
-        <div className="bg-green-50 border border-green-200 rounded-lg p-6">
+        <div className="bg-green-500/10 border border-green-200 rounded-lg p-6">
           <div className="flex items-center space-x-2 mb-3">
             <CalendarDaysIcon className="h-5 w-5 text-green-600" />
             <h3 className="font-medium text-green-900">👨‍💼 운영자</h3>
@@ -259,7 +259,7 @@ const BSJournalWorkflow: React.FC = () => {
             </div>
 
             <div className="flex items-start space-x-3">
-              <div className="p-2 bg-green-100 rounded-lg">
+              <div className="p-2 bg-green-500/10 rounded-lg">
                 <InformationCircleIcon className="h-5 w-5 text-green-600" />
               </div>
               <div>
@@ -282,7 +282,7 @@ const BSJournalWorkflow: React.FC = () => {
           <div className="space-y-4">
             <div className="flex items-start space-x-3">
               <div className="p-2 bg-yellow-100 rounded-lg">
-                <InformationCircleIcon className="h-5 w-5 text-yellow-600" />
+                <InformationCircleIcon className="h-5 w-5 text-foreground" />
               </div>
               <div>
                 <h3 className="font-medium text-gray-900">라운드 기반 관리</h3>
@@ -291,8 +291,8 @@ const BSJournalWorkflow: React.FC = () => {
             </div>
 
             <div className="flex items-start space-x-3">
-              <div className="p-2 bg-red-100 rounded-lg">
-                <InformationCircleIcon className="h-5 w-5 text-red-600" />
+              <div className="p-2 bg-destructive/10 rounded-lg">
+                <InformationCircleIcon className="h-5 w-5 text-destructive" />
               </div>
               <div>
                 <h3 className="font-medium text-gray-900">자동 성적 반영</h3>

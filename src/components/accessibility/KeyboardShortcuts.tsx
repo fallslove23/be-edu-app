@@ -220,7 +220,7 @@ const ShortcutHelpModal: React.FC<{
             <select
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
-              className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
               {categories.map(category => (
                 <option key={category.key} value={category.key}>
@@ -749,7 +749,7 @@ const KeyboardShortcuts: React.FC = () => {
           
           <button
             onClick={() => setShowAccessibility(true)}
-            className="p-1.5 bg-gray-600/80 text-white rounded-full shadow-md hover:bg-gray-700/90 transition-all duration-200 backdrop-blur-sm"
+            className="p-1.5 bg-gray-600/80 text-white rounded-lg shadow-md hover:bg-gray-700/90 transition-all duration-200 backdrop-blur-sm"
             title="접근성 설정 (Ctrl+Alt+A)"
             aria-label="접근성 설정"
           >

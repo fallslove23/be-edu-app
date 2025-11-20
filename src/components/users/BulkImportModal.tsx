@@ -199,7 +199,7 @@ const BulkImportModal: React.FC<BulkImportModalProps> = ({ isOpen, onClose, onIm
         
         <div className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full sm:p-6">
           <div className="absolute top-0 right-0 pt-4 pr-4">
-            <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
+            <button onClick={onClose} className="text-gray-400 hover:text-gray-600 rounded-full">
               <XMarkIcon className="h-6 w-6" />
             </button>
           </div>
@@ -215,7 +215,7 @@ const BulkImportModal: React.FC<BulkImportModalProps> = ({ isOpen, onClose, onIm
                 <div className="flex space-x-4">
                   <button
                     onClick={() => setImportType('excel')}
-                    className={`flex items-center px-4 py-2 rounded-lg border transition-colors ${
+                    className={`flex items-center px-4 py-2 rounded-full border transition-colors ${
                       importType === 'excel'
                         ? 'bg-blue-50 border-blue-200 text-blue-700'
                         : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-50'
@@ -226,9 +226,9 @@ const BulkImportModal: React.FC<BulkImportModalProps> = ({ isOpen, onClose, onIm
                   </button>
                   <button
                     onClick={() => setImportType('google')}
-                    className={`flex items-center px-4 py-2 rounded-lg border transition-colors ${
+                    className={`flex items-center px-4 py-2 rounded-full border transition-colors ${
                       importType === 'google'
-                        ? 'bg-green-50 border-green-200 text-green-700'
+                        ? 'bg-green-500/10 border-green-200 text-green-700'
                         : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-50'
                     }`}
                   >
@@ -280,7 +280,7 @@ const BulkImportModal: React.FC<BulkImportModalProps> = ({ isOpen, onClose, onIm
                       value={googleSheetUrl}
                       onChange={(e) => setGoogleSheetUrl(e.target.value)}
                       placeholder="https://docs.google.com/spreadsheets/d/..."
-                      className="flex-1 border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="flex-1 border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     />
                     <button
                       onClick={handleGoogleSheetImport}
@@ -308,7 +308,7 @@ const BulkImportModal: React.FC<BulkImportModalProps> = ({ isOpen, onClose, onIm
               {(validUsers.length > 0 || errors.length > 0) && !isProcessing && (
                 <div className="mb-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                    <div className="bg-green-50 p-4 rounded-lg">
+                    <div className="bg-green-500/10 p-4 rounded-lg">
                       <div className="flex items-center">
                         <CheckCircleIcon className="h-5 w-5 text-green-600 mr-2" />
                         <span className="text-sm font-medium text-green-800">
@@ -316,10 +316,10 @@ const BulkImportModal: React.FC<BulkImportModalProps> = ({ isOpen, onClose, onIm
                         </span>
                       </div>
                     </div>
-                    <div className="bg-red-50 p-4 rounded-lg">
+                    <div className="bg-destructive/10 p-4 rounded-lg">
                       <div className="flex items-center">
-                        <ExclamationTriangleIcon className="h-5 w-5 text-red-600 mr-2" />
-                        <span className="text-sm font-medium text-red-800">
+                        <ExclamationTriangleIcon className="h-5 w-5 text-destructive mr-2" />
+                        <span className="text-sm font-medium text-destructive">
                           오류: {errors.length}개
                         </span>
                       </div>
@@ -328,11 +328,11 @@ const BulkImportModal: React.FC<BulkImportModalProps> = ({ isOpen, onClose, onIm
 
                   {/* 오류 목록 */}
                   {errors.length > 0 && (
-                    <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-4">
-                      <h4 className="text-sm font-medium text-red-800 mb-2">검증 오류</h4>
+                    <div className="bg-destructive/10 border border-destructive/50 rounded-lg p-4 mb-4">
+                      <h4 className="text-sm font-medium text-destructive mb-2">검증 오류</h4>
                       <div className="max-h-32 overflow-y-auto">
                         {errors.map((error, index) => (
-                          <div key={index} className="text-sm text-red-700">
+                          <div key={index} className="text-sm text-destructive">
                             {error.row}행 {error.field}: {error.message}
                           </div>
                         ))}
@@ -342,7 +342,7 @@ const BulkImportModal: React.FC<BulkImportModalProps> = ({ isOpen, onClose, onIm
 
                   {/* 유효한 사용자 미리보기 */}
                   {validUsers.length > 0 && (
-                    <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                    <div className="bg-green-500/10 border border-green-200 rounded-lg p-4">
                       <h4 className="text-sm font-medium text-green-800 mb-2">가져올 사용자 미리보기</h4>
                       <div className="max-h-32 overflow-y-auto">
                         {validUsers.slice(0, 5).map((user, index) => (
@@ -363,7 +363,7 @@ const BulkImportModal: React.FC<BulkImportModalProps> = ({ isOpen, onClose, onIm
               <div className="flex justify-end space-x-3">
                 <button
                   onClick={onClose}
-                  className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
+                  className="px-4 py-2 border border-gray-300 text-gray-700 rounded-full hover:bg-gray-50"
                 >
                   취소
                 </button>

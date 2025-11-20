@@ -193,9 +193,9 @@ const CourseManagement: React.FC = () => {
   const getStatusColor = (status: CourseStatus) => {
     switch (status) {
       case 'draft': return 'bg-gray-100 text-gray-700';
-      case 'active': return 'bg-green-100 text-green-700';
+      case 'active': return 'bg-green-500/10 text-green-700';
       case 'completed': return 'bg-blue-100 text-blue-700';
-      case 'cancelled': return 'bg-red-100 text-red-700';
+      case 'cancelled': return 'bg-destructive/10 text-destructive';
       default: return 'bg-gray-100 text-gray-700';
     }
   };
@@ -286,7 +286,7 @@ const CourseManagement: React.FC = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-lg h-8 w-8 border-b-2 border-blue-600"></div>
         <span className="ml-2">과정 정보를 불러오는 중...</span>
       </div>
     );
@@ -362,7 +362,7 @@ const CourseManagement: React.FC = () => {
                   console.log('과정 개설 버튼 클릭됨, currentView를 create로 변경');
                   setCurrentView('create');
                 }}
-                className="btn-primary px-4 py-2 rounded-lg flex items-center space-x-2"
+                className="btn-primary px-4 py-2 rounded-full flex items-center space-x-2"
               >
                 <PlusIcon className="h-4 w-4" />
                 <span>과정 개설</span>
@@ -388,7 +388,7 @@ const CourseManagement: React.FC = () => {
 
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
           <div className="flex items-center">
-            <div className="p-2 bg-green-100 rounded-lg">
+            <div className="p-2 bg-green-500/10 rounded-lg">
               <PlayIcon className="h-6 w-6 text-green-600" />
             </div>
             <div className="ml-4">
@@ -417,7 +417,7 @@ const CourseManagement: React.FC = () => {
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
           <div className="flex items-center">
             <div className="p-2 bg-yellow-100 rounded-lg">
-              <ChartBarIcon className="h-6 w-6 text-yellow-600" />
+              <ChartBarIcon className="h-6 w-6 text-foreground" />
             </div>
             <div className="ml-4">
               <p className="text-sm font-medium text-gray-600">평균 수료율</p>
@@ -452,7 +452,7 @@ const CourseManagement: React.FC = () => {
               ...prev, 
               status: e.target.value ? [e.target.value as CourseStatus] : undefined 
             }))}
-            className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           >
             <option value="">모든 상태</option>
             <option value="draft">준비중</option>
@@ -467,7 +467,7 @@ const CourseManagement: React.FC = () => {
               ...prev, 
               category: e.target.value ? [e.target.value] : undefined 
             }))}
-            className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           >
             <option value="">모든 분야</option>
             <option value="sales">영업</option>
@@ -500,7 +500,7 @@ const CourseManagement: React.FC = () => {
             {isManager && (
               <button
                 onClick={() => setCurrentView('create')}
-                className="btn-primary px-4 py-2 rounded-lg"
+                className="btn-primary px-4 py-2 rounded-full"
               >
                 첫 과정 개설하기
               </button>
@@ -553,9 +553,9 @@ const CourseManagement: React.FC = () => {
                       <span>등록률</span>
                       <span>{Math.round((course.currentEnrollment / course.max_trainees) * 100)}%</span>
                     </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2">
+                    <div className="w-full bg-gray-200 rounded-lg h-2">
                       <div
-                        className="bg-blue-600 h-2 rounded-full"
+                        className="bg-blue-600 h-2 rounded-lg"
                         style={{ width: `${(course.currentEnrollment / course.max_trainees) * 100}%` }}
                       ></div>
                     </div>
@@ -580,7 +580,7 @@ const CourseManagement: React.FC = () => {
                             setSelectedCourse(course);
                             setCurrentView('edit');
                           }}
-                          className="p-1 text-green-600 hover:bg-green-100 rounded"
+                          className="p-1 text-green-600 hover:bg-green-500/10 rounded"
                           title="편집"
                         >
                           <PencilIcon className="h-4 w-4" />
@@ -652,9 +652,9 @@ const CourseManagement: React.FC = () => {
                       <div className="text-sm font-medium text-gray-900">
                         {course.currentEnrollment}/{course.max_trainees}명
                       </div>
-                      <div className="w-16 bg-gray-200 rounded-full h-1.5 mt-1">
+                      <div className="w-16 bg-gray-200 rounded-lg h-1.5 mt-1">
                         <div
-                          className="bg-blue-600 h-1.5 rounded-full"
+                          className="bg-blue-600 h-1.5 rounded-lg"
                           style={{ width: `${(course.currentEnrollment / course.max_trainees) * 100}%` }}
                         ></div>
                       </div>
@@ -681,7 +681,7 @@ const CourseManagement: React.FC = () => {
                               setSelectedCourse(course);
                               setCurrentView('edit');
                             }}
-                            className="p-1 text-green-600 hover:bg-green-100 rounded"
+                            className="p-1 text-green-600 hover:bg-green-500/10 rounded"
                             title="편집"
                           >
                             <PencilIcon className="h-4 w-4" />

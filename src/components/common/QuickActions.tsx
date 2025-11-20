@@ -99,7 +99,7 @@ const QuickActions: React.FC<QuickActionsProps> = ({ onViewChange }) => {
           <button
             key={action.id}
             onClick={action.onClick}
-            className="flex flex-col items-center p-3 rounded-lg border border-gray-200 dark:border-gray-600 hover:border-blue-300 dark:hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors group"
+            className="flex flex-col items-center p-3 rounded-full border border-gray-200 dark:border-gray-600 hover:border-blue-300 dark:hover:border-blue-500 hover:bg-primary/20/20 transition-colors group"
             title={action.description}
           >
             <action.icon className="h-6 w-6 text-gray-600 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-400 mb-2" />

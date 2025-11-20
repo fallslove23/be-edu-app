@@ -310,8 +310,8 @@ const GoogleCalendarIntegration: React.FC = () => {
   const getEventTypeColor = (type: CalendarEvent['type']) => {
     switch (type) {
       case 'lecture': return 'bg-blue-100 text-blue-800 border-blue-200';
-      case 'exam': return 'bg-red-100 text-red-800 border-red-200';
-      case 'meeting': return 'bg-green-100 text-green-800 border-green-200';
+      case 'exam': return 'bg-destructive/10 text-destructive border-destructive/50';
+      case 'meeting': return 'bg-green-500/10 text-green-700 border-green-200';
       default: return 'bg-gray-100 text-gray-800 border-gray-200';
     }
   };
@@ -322,9 +322,9 @@ const GoogleCalendarIntegration: React.FC = () => {
       case 'synced':
         return <CheckCircleIcon className="h-4 w-4 text-green-500" />;
       case 'pending':
-        return <ClockIcon className="h-4 w-4 text-yellow-500" />;
+        return <ClockIcon className="h-4 w-4 text-foreground" />;
       case 'error':
-        return <ExclamationTriangleIcon className="h-4 w-4 text-red-500" />;
+        return <ExclamationTriangleIcon className="h-4 w-4 text-destructive" />;
       default:
         return <CloudIcon className="h-4 w-4 text-gray-400" />;
     }
@@ -360,14 +360,14 @@ const GoogleCalendarIntegration: React.FC = () => {
                 <button
                   onClick={syncWithGoogleCalendar}
                   disabled={isSyncing}
-                  className="btn-success px-4 py-2 rounded-lg flex items-center space-x-2 disabled:opacity-50"
+                  className="btn-success px-4 py-2 rounded-full flex items-center space-x-2 disabled:opacity-50"
                 >
                   <ArrowPathIcon className={`h-4 w-4 ${isSyncing ? 'animate-spin' : ''}`} />
                   <span>{isSyncing ? '동기화 중...' : '동기화'}</span>
                 </button>
                 <button
                   onClick={() => setShowEventForm(true)}
-                  className="btn-primary px-4 py-2 rounded-lg flex items-center space-x-2"
+                  className="btn-primary px-4 py-2 rounded-full flex items-center space-x-2"
                 >
                   <PlusIcon className="h-4 w-4" />
                   <span>일정 추가</span>
@@ -377,7 +377,7 @@ const GoogleCalendarIntegration: React.FC = () => {
               <button
                 onClick={connectToGoogleCalendar}
                 disabled={isConnecting}
-                className="btn-primary px-4 py-2 rounded-lg flex items-center space-x-2 disabled:opacity-50"
+                className="btn-primary px-4 py-2 rounded-full flex items-center space-x-2 disabled:opacity-50"
               >
                 <LinkIcon className="h-4 w-4" />
                 <span>{isConnecting ? '연결 중...' : 'Google Calendar 연결'}</span>
@@ -388,9 +388,9 @@ const GoogleCalendarIntegration: React.FC = () => {
       </div>
 
       {/* 연결 상태 */}
-      <div className={`rounded-lg p-4 ${
+      <div className={`rounded-full p-4 ${
         connectionStatus.connected 
-          ? 'bg-green-50 border border-green-200' 
+          ? 'bg-green-500/10 border border-green-200' 
           : 'bg-yellow-50 border border-yellow-200'
       }`}>
         <div className="flex items-center justify-between">
@@ -411,7 +411,7 @@ const GoogleCalendarIntegration: React.FC = () => {
           )}
         </div>
         {connectionStatus.error && (
-          <div className="mt-2 text-sm text-red-600">
+          <div className="mt-2 text-sm text-destructive">
             {connectionStatus.error}
           </div>
         )}
@@ -426,7 +426,7 @@ const GoogleCalendarIntegration: React.FC = () => {
               type="date"
               value={selectedDate}
               onChange={(e) => setSelectedDate(e.target.value)}
-              className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
           </div>
           <div className="flex items-center space-x-2">
@@ -484,7 +484,7 @@ const GoogleCalendarIntegration: React.FC = () => {
             {isConnected && (
               <button
                 onClick={() => setShowEventForm(true)}
-                className="btn-primary px-4 py-2 rounded-lg"
+                className="btn-primary px-4 py-2 rounded-full"
               >
                 첫 일정 추가하기
               </button>
@@ -570,7 +570,7 @@ const GoogleCalendarIntegration: React.FC = () => {
                       </button>
                       <button
                         onClick={() => handleDeleteEvent(event.id)}
-                        className="p-2 text-red-600 hover:bg-red-100 rounded-lg"
+                        className="p-2 text-destructive hover:bg-destructive/10 rounded-lg"
                         title="삭제"
                       >
                         <TrashIcon className="h-4 w-4" />
@@ -600,7 +600,7 @@ const GoogleCalendarIntegration: React.FC = () => {
 
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
           <div className="flex items-center">
-            <div className="p-2 bg-green-100 rounded-lg">
+            <div className="p-2 bg-green-500/10 rounded-lg">
               <CheckCircleIcon className="h-5 w-5 text-green-600" />
             </div>
             <div className="ml-3">
@@ -615,7 +615,7 @@ const GoogleCalendarIntegration: React.FC = () => {
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
           <div className="flex items-center">
             <div className="p-2 bg-yellow-100 rounded-lg">
-              <ClockIcon className="h-5 w-5 text-yellow-600" />
+              <ClockIcon className="h-5 w-5 text-foreground" />
             </div>
             <div className="ml-3">
               <p className="text-sm font-medium text-gray-600">대기 중</p>

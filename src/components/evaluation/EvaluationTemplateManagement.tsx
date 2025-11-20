@@ -263,8 +263,8 @@ export default function EvaluationTemplateManagement() {
 
   if (error) {
     return (
-      <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
-        <p className="text-red-800 dark:text-red-200">{error}</p>
+      <div className="bg-destructive/10 dark:bg-red-900/20 border border-destructive/50 dark:border-red-800 rounded-lg p-4">
+        <p className="text-destructive dark:text-red-200">{error}</p>
       </div>
     );
   }
@@ -309,7 +309,7 @@ export default function EvaluationTemplateManagement() {
                     </span>
                     <span className={`px-2 py-1 rounded-full text-xs ${
                       template.is_active
-                        ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200'
+                        ? 'bg-green-500/10 dark:bg-green-900/30 text-green-800 dark:text-green-200'
                         : 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300'
                     }`}>
                       {template.is_active ? '활성' : '비활성'}
@@ -322,13 +322,13 @@ export default function EvaluationTemplateManagement() {
                       setSelectedTemplate(template);
                       setShowComponentModal(true);
                     }}
-                    className="p-2 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded"
+                    className="p-2 text-blue-600 dark:text-blue-400 hover:bg-primary/20/20 rounded"
                   >
                     <PlusIcon className="w-5 h-5" />
                   </button>
                   <button
                     onClick={() => handleDeleteTemplate(template.id)}
-                    className="p-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded"
+                    className="p-2 text-destructive dark:text-red-400 hover:bg-destructive/10 dark:hover:bg-red-900/20 rounded"
                   >
                     <TrashIcon className="w-5 h-5" />
                   </button>
@@ -376,13 +376,13 @@ export default function EvaluationTemplateManagement() {
                                 setSubItemForm({ ...subItemForm, component_id: component.id });
                                 setShowSubItemModal(true);
                               }}
-                              className="p-1 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded"
+                              className="p-1 text-blue-600 dark:text-blue-400 hover:bg-primary/20/20 rounded"
                             >
                               <PlusIcon className="w-4 h-4" />
                             </button>
                             <button
                               onClick={() => toggleComponent(component.id)}
-                              className="p-1 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded"
+                              className="p-1 text-foreground hover:bg-muted rounded"
                             >
                               {expandedComponents.has(component.id) ? (
                                 <ChevronUpIcon className="w-4 h-4" />
@@ -392,7 +392,7 @@ export default function EvaluationTemplateManagement() {
                             </button>
                             <button
                               onClick={() => handleDeleteComponent(component.id)}
-                              className="p-1 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded"
+                              className="p-1 text-destructive dark:text-red-400 hover:bg-destructive/10 dark:hover:bg-red-900/20 rounded"
                             >
                               <TrashIcon className="w-4 h-4" />
                             </button>
@@ -433,7 +433,7 @@ export default function EvaluationTemplateManagement() {
                                     </span>
                                     <button
                                       onClick={() => handleDeleteSubItem(subItem.id)}
-                                      className="p-1 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded"
+                                      className="p-1 text-destructive dark:text-red-400 hover:bg-destructive/10 dark:hover:bg-red-900/20 rounded"
                                     >
                                       <TrashIcon className="w-4 h-4" />
                                     </button>
@@ -457,7 +457,7 @@ export default function EvaluationTemplateManagement() {
             <p className="text-gray-500 dark:text-gray-400">평가 템플릿이 없습니다</p>
             <button
               onClick={() => setShowTemplateModal(true)}
-              className="mt-4 inline-flex items-center px-4 py-2 bg-blue-600 dark:bg-blue-500 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600"
+              className="mt-4 inline-flex items-center px-4 py-2 bg-primary text-primary-foreground rounded-full hover:bg-primary/90"
             >
               <PlusIcon className="w-5 h-5 mr-2" />
               첫 템플릿 만들기
@@ -481,7 +481,7 @@ export default function EvaluationTemplateManagement() {
                 <select
                   value={templateForm.course_template_id}
                   onChange={(e) => setTemplateForm({ ...templateForm, course_template_id: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                 >
                   <option value="">선택하세요</option>
                   {courseTemplates.map((ct) => (
@@ -499,7 +499,7 @@ export default function EvaluationTemplateManagement() {
                   type="text"
                   value={templateForm.name}
                   onChange={(e) => setTemplateForm({ ...templateForm, name: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                   placeholder="예: BS Basic 표준 평가"
                 />
               </div>
@@ -510,7 +510,7 @@ export default function EvaluationTemplateManagement() {
                 <textarea
                   value={templateForm.description}
                   onChange={(e) => setTemplateForm({ ...templateForm, description: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                   placeholder="예: 실기 50% + 이론 30% + 태도 20%"
                   rows={3}
                 />
@@ -525,7 +525,7 @@ export default function EvaluationTemplateManagement() {
                   onChange={(e) =>
                     setTemplateForm({ ...templateForm, passing_total_score: parseFloat(e.target.value) })
                   }
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                   min="0"
                   max="100"
                   step="0.1"
@@ -538,7 +538,7 @@ export default function EvaluationTemplateManagement() {
                   setShowTemplateModal(false);
                   resetTemplateForm();
                 }}
-                className="px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600"
+                className="px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded-full hover:bg-gray-200 dark:hover:bg-gray-600"
               >
                 취소
               </button>
@@ -573,7 +573,7 @@ export default function EvaluationTemplateManagement() {
                     const code = generateCode(name);
                     setComponentForm({ ...componentForm, name, code });
                   }}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                   placeholder="예: 실기평가"
                 />
               </div>
@@ -585,7 +585,7 @@ export default function EvaluationTemplateManagement() {
                   type="text"
                   value={componentForm.code}
                   readOnly
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-100 dark:bg-gray-600 text-gray-600 dark:text-gray-400 cursor-not-allowed"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-gray-100 dark:bg-gray-600 text-gray-600 dark:text-gray-400 cursor-not-allowed"
                   placeholder="이름 입력 시 자동 생성됩니다"
                 />
               </div>
@@ -599,7 +599,7 @@ export default function EvaluationTemplateManagement() {
                   onChange={(e) =>
                     setComponentForm({ ...componentForm, weight_percentage: parseFloat(e.target.value) })
                   }
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                   min="0"
                   max="100"
                   step="0.1"
@@ -614,7 +614,7 @@ export default function EvaluationTemplateManagement() {
                   onChange={(e) =>
                     setComponentForm({ ...componentForm, evaluation_type: e.target.value as EvaluationType })
                   }
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                 >
                   <option value="instructor_manual">강사 수동 입력</option>
                   <option value="exam_auto">시험 자동 채점</option>
@@ -630,7 +630,7 @@ export default function EvaluationTemplateManagement() {
                 <textarea
                   value={componentForm.description}
                   onChange={(e) => setComponentForm({ ...componentForm, description: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                   rows={2}
                 />
               </div>
@@ -641,7 +641,7 @@ export default function EvaluationTemplateManagement() {
                   setShowComponentModal(false);
                   resetComponentForm();
                 }}
-                className="px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600"
+                className="px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded-full hover:bg-gray-200 dark:hover:bg-gray-600"
               >
                 취소
               </button>
@@ -676,7 +676,7 @@ export default function EvaluationTemplateManagement() {
                     const code = generateCode(name);
                     setSubItemForm({ ...subItemForm, name, code });
                   }}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                   placeholder="예: 기본지식"
                 />
               </div>
@@ -688,7 +688,7 @@ export default function EvaluationTemplateManagement() {
                   type="text"
                   value={subItemForm.code}
                   readOnly
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-100 dark:bg-gray-600 text-gray-600 dark:text-gray-400 cursor-not-allowed"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-gray-100 dark:bg-gray-600 text-gray-600 dark:text-gray-400 cursor-not-allowed"
                   placeholder="이름 입력 시 자동 생성됩니다"
                 />
               </div>
@@ -700,7 +700,7 @@ export default function EvaluationTemplateManagement() {
                   type="number"
                   value={subItemForm.max_score}
                   onChange={(e) => setSubItemForm({ ...subItemForm, max_score: parseFloat(e.target.value) })}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                   min="0"
                   step="0.1"
                 />
@@ -712,7 +712,7 @@ export default function EvaluationTemplateManagement() {
                 <textarea
                   value={subItemForm.description}
                   onChange={(e) => setSubItemForm({ ...subItemForm, description: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                   rows={2}
                 />
               </div>
@@ -723,7 +723,7 @@ export default function EvaluationTemplateManagement() {
                   setShowSubItemModal(false);
                   resetSubItemForm();
                 }}
-                className="px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600"
+                className="px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded-full hover:bg-gray-200 dark:hover:bg-gray-600"
               >
                 취소
               </button>

@@ -116,7 +116,7 @@ const PWAInstallPrompt: React.FC = () => {
             {!isIOS && installPrompt && (
               <button
                 onClick={handleInstallClick}
-                className="mobile-button bg-white bg-opacity-20 hover:bg-opacity-30 px-3 py-2 rounded-lg flex items-center space-x-1"
+                className="mobile-button bg-white bg-opacity-20 hover:bg-opacity-30 px-3 py-2 rounded-full flex items-center space-x-1"
               >
                 <ArrowDownTrayIcon className="h-4 w-4" />
                 <span className="text-xs font-medium">설치</span>
@@ -125,7 +125,7 @@ const PWAInstallPrompt: React.FC = () => {
             
             <button
               onClick={handleDismiss}
-              className="mobile-button p-2 hover:bg-white hover:bg-opacity-10 rounded-lg"
+              className="mobile-button p-2 hover:bg-white hover:bg-opacity-10 rounded-full"
             >
               <XMarkIcon className="h-4 w-4" />
             </button>
@@ -139,7 +139,7 @@ const PWAInstallPrompt: React.FC = () => {
           <div className="bg-white rounded-t-2xl w-full p-6 space-y-4 safe-bottom">
             <div className="flex justify-between items-start">
               <div className="flex items-center space-x-3">
-                <div className="bg-blue-100 rounded-xl p-3">
+                <div className="bg-blue-100 rounded-lg p-3">
                   <SparklesIcon className="h-8 w-8 text-blue-600" />
                 </div>
                 <div>
@@ -149,14 +149,14 @@ const PWAInstallPrompt: React.FC = () => {
               </div>
               <button
                 onClick={handleDismiss}
-                className="mobile-button p-2 hover:bg-gray-100 rounded-lg"
+                className="mobile-button p-2 hover:bg-gray-100 rounded-full"
               >
                 <XMarkIcon className="h-5 w-5 text-gray-400" />
               </button>
             </div>
 
             <div className="space-y-3">
-              <div className="flex items-center space-x-4 p-3 bg-gray-50 rounded-xl">
+              <div className="flex items-center space-x-4 p-3 bg-gray-50 rounded-lg">
                 <div className="bg-blue-500 text-white rounded-lg p-2 text-sm font-bold">1</div>
                 <div className="flex-1">
                   <p className="font-medium text-gray-900">Safari 하단의 공유 버튼 탭</p>
@@ -164,7 +164,7 @@ const PWAInstallPrompt: React.FC = () => {
                 </div>
               </div>
               
-              <div className="flex items-center space-x-4 p-3 bg-gray-50 rounded-xl">
+              <div className="flex items-center space-x-4 p-3 bg-gray-50 rounded-lg">
                 <div className="bg-blue-500 text-white rounded-lg p-2 text-sm font-bold">2</div>
                 <div className="flex-1">
                   <p className="font-medium text-gray-900">"홈 화면에 추가" 선택</p>
@@ -172,7 +172,7 @@ const PWAInstallPrompt: React.FC = () => {
                 </div>
               </div>
               
-              <div className="flex items-center space-x-4 p-3 bg-gray-50 rounded-xl">
+              <div className="flex items-center space-x-4 p-3 bg-gray-50 rounded-lg">
                 <div className="bg-blue-500 text-white rounded-lg p-2 text-sm font-bold">3</div>
                 <div className="flex-1">
                   <p className="font-medium text-gray-900">"추가" 버튼 탭</p>
@@ -181,7 +181,7 @@ const PWAInstallPrompt: React.FC = () => {
               </div>
             </div>
 
-            <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
               <div className="flex items-start space-x-3">
                 <SparklesIcon className="h-5 w-5 text-blue-600 mt-0.5" />
                 <div>
@@ -198,7 +198,7 @@ const PWAInstallPrompt: React.FC = () => {
 
             <button
               onClick={handleDismiss}
-              className="mobile-button w-full bg-gray-100 text-gray-700 py-3 rounded-xl font-medium"
+              className="mobile-button w-full bg-gray-100 text-gray-700 py-3 rounded-lg font-medium"
             >
               나중에 하기
             </button>

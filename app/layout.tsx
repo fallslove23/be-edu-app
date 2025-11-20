@@ -1,10 +1,7 @@
-import '../src/index.css'
-import type { Metadata } from 'next'
+'use client';
 
-export const metadata: Metadata = {
-  title: 'BS 학습 관리 앱',
-  description: 'BS 교육 과정 관리 시스템',
-}
+import '../src/index.css'
+import { AuthProvider } from '@/contexts/AuthContext'
 
 export default function RootLayout({
   children,
@@ -13,7 +10,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ko">
-      <body>{children}</body>
+      <body>
+        <AuthProvider>
+          {children}
+        </AuthProvider>
+      </body>
     </html>
   )
 }

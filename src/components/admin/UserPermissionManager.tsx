@@ -195,8 +195,8 @@ const UserPermissionManager: React.FC = () => {
   const getCategoryColor = (category: string): string => {
     switch (category) {
       case 'read': return 'bg-blue-100 text-blue-800';
-      case 'write': return 'bg-green-100 text-green-800';
-      case 'delete': return 'bg-red-100 text-red-800';
+      case 'write': return 'bg-green-500/10 text-green-700';
+      case 'delete': return 'bg-destructive/10 text-destructive';
       case 'admin': return 'bg-purple-100 text-purple-800';
       default: return 'bg-gray-100 text-gray-800';
     }
@@ -215,7 +215,7 @@ const UserPermissionManager: React.FC = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-lg h-8 w-8 border-b-2 border-blue-600"></div>
         <span className="ml-2">권한 정보를 불러오는 중...</span>
       </div>
     );
@@ -239,7 +239,7 @@ const UserPermissionManager: React.FC = () => {
                 setIsEditing(true);
                 setShowModal(true);
               }}
-              className="btn-primary px-4 py-2 rounded-lg flex items-center space-x-2"
+              className="btn-primary px-4 py-2 rounded-full flex items-center space-x-2"
             >
               <PlusIcon className="h-4 w-4" />
               <span>새 사용자</span>
@@ -259,7 +259,7 @@ const UserPermissionManager: React.FC = () => {
             <button
               key={key}
               onClick={() => setActiveTab(key as any)}
-              className={`py-4 px-1 border-b-2 font-medium text-sm flex items-center space-x-2 ${
+              className={`py-4 px-1 border-b-2 font-medium text-sm flex items-center space-x-2 rounded-full ${
                 activeTab === key
                   ? 'border-blue-500 text-blue-600'
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
@@ -328,8 +328,8 @@ const UserPermissionManager: React.FC = () => {
                         onClick={() => handleUserStatusToggle(user.id)}
                         className={`inline-flex items-center space-x-1 px-3 py-1 rounded-full text-xs font-medium ${
                           user.isActive
-                            ? 'bg-green-100 text-green-800 hover:bg-green-200'
-                            : 'bg-red-100 text-red-800 hover:bg-red-200'
+                            ? 'bg-green-500/10 text-green-700 hover:bg-green-200'
+                            : 'bg-destructive/10 text-destructive hover:bg-red-200'
                         }`}
                       >
                         {user.isActive ? (
@@ -362,7 +362,7 @@ const UserPermissionManager: React.FC = () => {
                       </button>
                       <button
                         onClick={() => handleDeleteUser(user.id)}
-                        className="text-red-600 hover:text-red-900"
+                        className="text-destructive hover:text-destructive"
                         title="삭제"
                       >
                         <TrashIcon className="h-4 w-4" />
@@ -389,7 +389,7 @@ const UserPermissionManager: React.FC = () => {
                 setIsEditing(true);
                 setShowModal(true);
               }}
-              className="btn-success px-4 py-2 rounded-lg flex items-center space-x-2"
+              className="btn-success px-4 py-2 rounded-full flex items-center space-x-2"
             >
               <PlusIcon className="h-4 w-4" />
               <span>새 역할</span>
@@ -460,7 +460,7 @@ const UserPermissionManager: React.FC = () => {
                             setRoles(prev => prev.filter(r => r.id !== role.id));
                           }
                         }}
-                        className="text-red-600 hover:text-red-900"
+                        className="text-destructive hover:text-destructive"
                         title="삭제"
                       >
                         <TrashIcon className="h-4 w-4" />
@@ -612,7 +612,7 @@ const UserPermissionManager: React.FC = () => {
                   setSelectedRole(null);
                   setIsEditing(false);
                 }}
-                className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
+                className="px-4 py-2 border border-gray-300 rounded-full text-gray-700 hover:bg-gray-50"
               >
                 취소
               </button>

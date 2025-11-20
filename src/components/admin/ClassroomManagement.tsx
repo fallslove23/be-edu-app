@@ -183,7 +183,7 @@ export const ClassroomManagement: React.FC = () => {
         </div>
         <button
           onClick={() => setIsFormOpen(true)}
-          className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
+          className="px-4 py-2 bg-primary text-primary-foreground rounded-full hover:bg-primary/90 transition-colors"
         >
           + 강의실 추가
         </button>
@@ -291,13 +291,13 @@ export const ClassroomManagement: React.FC = () => {
               <div className="flex items-center gap-2 pt-4 border-t border-border">
                 <button
                   onClick={() => startEdit(classroom)}
-                  className="flex-1 px-3 py-1.5 text-sm bg-primary text-primary-foreground rounded hover:bg-primary/90 transition-colors"
+                  className="flex-1 px-3 py-1.5 text-sm bg-primary text-primary-foreground rounded-full hover:bg-primary/90 transition-colors"
                 >
                   수정
                 </button>
                 <button
                   onClick={() => setDeleteConfirmId(classroom.id)}
-                  className="flex-1 px-3 py-1.5 text-sm bg-destructive text-destructive-foreground rounded hover:bg-destructive/90 transition-colors"
+                  className="flex-1 px-3 py-1.5 text-sm bg-destructive text-destructive-foreground rounded-full hover:bg-destructive/90 transition-colors"
                 >
                   삭제
                 </button>
@@ -314,13 +314,13 @@ export const ClassroomManagement: React.FC = () => {
                     <div className="flex justify-end gap-2">
                       <button
                         onClick={() => setDeleteConfirmId(null)}
-                        className="px-4 py-2 bg-secondary text-secondary-foreground rounded hover:bg-secondary/80 transition-colors"
+                        className="px-4 py-2 bg-secondary text-secondary-foreground rounded-full hover:bg-secondary/80 transition-colors"
                       >
                         취소
                       </button>
                       <button
                         onClick={() => handleDelete(classroom.id)}
-                        className="px-4 py-2 bg-destructive text-destructive-foreground rounded hover:bg-destructive/90 transition-colors"
+                        className="px-4 py-2 bg-destructive text-destructive-foreground rounded-full hover:bg-destructive/90 transition-colors"
                       >
                         삭제
                       </button>
@@ -436,7 +436,7 @@ export const ClassroomManagement: React.FC = () => {
                       key={facility}
                       type="button"
                       onClick={() => toggleFacility(facility)}
-                      className={`px-3 py-1.5 text-sm rounded-lg border transition-colors ${
+                      className={`px-3 py-1.5 text-sm rounded-full border transition-colors ${
                         formData.facilities.includes(facility)
                           ? 'bg-primary text-primary-foreground border-primary'
                           : 'bg-background text-muted-foreground border-input hover:border-primary'
@@ -459,7 +459,7 @@ export const ClassroomManagement: React.FC = () => {
                       key={equip}
                       type="button"
                       onClick={() => toggleEquipment(equip)}
-                      className={`px-3 py-1.5 text-sm rounded-lg border transition-colors ${
+                      className={`px-3 py-1.5 text-sm rounded-full border transition-colors ${
                         formData.equipment.includes(equip)
                           ? 'bg-primary text-primary-foreground border-primary'
                           : 'bg-background text-muted-foreground border-input hover:border-primary'
@@ -518,14 +518,14 @@ export const ClassroomManagement: React.FC = () => {
             <div className="flex justify-end gap-2 mt-6">
               <button
                 onClick={resetForm}
-                className="px-4 py-2 bg-secondary text-secondary-foreground rounded-lg hover:bg-secondary/80 transition-colors"
+                className="px-4 py-2 bg-secondary text-secondary-foreground rounded-full hover:bg-secondary/80 transition-colors"
               >
                 취소
               </button>
               <button
                 onClick={editingClassroom ? handleUpdate : handleCreate}
                 disabled={!formData.name.trim() || !formData.location.trim() || formData.capacity < 1}
-                className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-4 py-2 bg-primary text-primary-foreground rounded-full hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {editingClassroom ? '수정' : '추가'}
               </button>

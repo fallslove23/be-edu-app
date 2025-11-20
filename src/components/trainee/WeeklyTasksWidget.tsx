@@ -47,9 +47,9 @@ const WeeklyTasksWidget: React.FC<WeeklyTasksWidgetProps> = ({
   const getPriorityColor = (priority: string) => {
     switch (priority) {
       case 'high':
-        return 'text-red-600 bg-red-100';
+        return 'text-destructive bg-destructive/10';
       case 'medium':
-        return 'text-yellow-600 bg-yellow-100';
+        return 'text-orange-600 bg-yellow-100';
       default:
         return 'text-blue-600 bg-blue-100';
     }
@@ -59,9 +59,9 @@ const WeeklyTasksWidget: React.FC<WeeklyTasksWidgetProps> = ({
   const getNotificationIcon = (type: string) => {
     switch (type) {
       case 'warning':
-        return <ExclamationTriangleIcon className="h-5 w-5 text-yellow-500" />;
+        return <ExclamationTriangleIcon className="h-5 w-5 text-foreground" />;
       case 'error':
-        return <ExclamationCircleIcon className="h-5 w-5 text-red-500" />;
+        return <ExclamationCircleIcon className="h-5 w-5 text-destructive" />;
       case 'success':
         return <CheckCircleIcon className="h-5 w-5 text-green-500" />;
       default:
@@ -105,7 +105,7 @@ const WeeklyTasksWidget: React.FC<WeeklyTasksWidgetProps> = ({
           >
             알림 ({sortedNotifications.length})
             {sortedNotifications.length > 0 && (
-              <div className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full"></div>
+              <div className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-lg"></div>
             )}
           </button>
         </div>
@@ -133,7 +133,7 @@ const WeeklyTasksWidget: React.FC<WeeklyTasksWidgetProps> = ({
                       <div
                         key={schedule.id}
                         onClick={() => onTaskClick?.(schedule.id, 'class')}
-                        className={`p-3 rounded-lg border cursor-pointer transition-all hover:shadow-md ${
+                        className={`p-3 rounded-full border cursor-pointer transition-all hover:shadow-md ${
                           schedule.isToday 
                             ? 'bg-blue-50 border-blue-200' 
                             : 'bg-gray-50 border-gray-200 hover:bg-gray-100'
@@ -155,7 +155,7 @@ const WeeklyTasksWidget: React.FC<WeeklyTasksWidgetProps> = ({
                           </div>
                           <div className="flex items-center">
                             {schedule.isToday && (
-                              <span className="px-2 py-1 bg-red-100 text-red-800 rounded-full text-xs font-medium mr-2">
+                              <span className="px-2 py-1 bg-destructive/10 text-destructive rounded-full text-xs font-medium mr-2">
                                 오늘
                               </span>
                             )}
@@ -184,7 +184,7 @@ const WeeklyTasksWidget: React.FC<WeeklyTasksWidgetProps> = ({
                         <div
                           key={activity.id}
                           onClick={() => onTaskClick?.(activity.id, 'bs_activity')}
-                          className={`p-3 rounded-lg border cursor-pointer transition-all hover:shadow-md ${
+                          className={`p-3 rounded-full border cursor-pointer transition-all hover:shadow-md ${
                             isUrgent 
                               ? 'bg-yellow-50 border-yellow-200' 
                               : 'bg-gray-50 border-gray-200 hover:bg-gray-100'
@@ -204,14 +204,14 @@ const WeeklyTasksWidget: React.FC<WeeklyTasksWidgetProps> = ({
                               <div className="text-sm text-gray-600 flex items-center mt-2">
                                 <ExclamationCircleIcon className="h-4 w-4 mr-1" />
                                 마감: {format(parseISO(activity.dueDate), 'MM/dd (E)', { locale: ko })}
-                                {daysUntil === 0 && <span className="ml-2 text-red-600 font-medium">(오늘 마감)</span>}
-                                {daysUntil === 1 && <span className="ml-2 text-yellow-600 font-medium">(내일 마감)</span>}
+                                {daysUntil === 0 && <span className="ml-2 text-destructive font-medium">(오늘 마감)</span>}
+                                {daysUntil === 1 && <span className="ml-2 text-foreground font-medium">(내일 마감)</span>}
                                 {daysUntil > 1 && <span className="ml-2">({daysUntil}일 남음)</span>}
                               </div>
                             </div>
                             <div className="flex items-center">
                               {isUrgent && (
-                                <ExclamationTriangleIcon className="h-5 w-5 text-yellow-500 mr-2" />
+                                <ExclamationTriangleIcon className="h-5 w-5 text-foreground mr-2" />
                               )}
                               <ChevronRightIcon className="h-4 w-4 text-gray-400" />
                             </div>
@@ -258,7 +258,7 @@ const WeeklyTasksWidget: React.FC<WeeklyTasksWidgetProps> = ({
               {weeklyTasks.examsDue.length > 0 && (
                 <div>
                   <h3 className="text-lg font-medium text-gray-900 mb-3 flex items-center">
-                    <DocumentTextIcon className="h-5 w-5 mr-2 text-red-600" />
+                    <DocumentTextIcon className="h-5 w-5 mr-2 text-destructive" />
                     시험 일정 ({weeklyTasks.examsDue.length})
                   </h3>
                   <div className="space-y-2">
@@ -266,14 +266,14 @@ const WeeklyTasksWidget: React.FC<WeeklyTasksWidgetProps> = ({
                       <div
                         key={exam.id}
                         onClick={() => onTaskClick?.(exam.id, 'exam')}
-                        className="p-3 rounded-lg border cursor-pointer transition-all hover:shadow-md bg-red-50 border-red-200"
+                        className="p-3 rounded-lg border cursor-pointer transition-all hover:shadow-md bg-destructive/10 border-destructive/50"
                       >
                         <div className="flex items-center justify-between">
                           <div>
                             <div className="font-medium text-gray-900">
                               {exam.title}
                             </div>
-                            <div className="text-sm text-red-600 mt-1">
+                            <div className="text-sm text-destructive mt-1">
                               {exam.courseName}
                             </div>
                             <div className="text-sm text-gray-600 flex items-center mt-1">
@@ -304,8 +304,8 @@ const WeeklyTasksWidget: React.FC<WeeklyTasksWidgetProps> = ({
               <div
                 key={notification.id}
                 onClick={() => onNotificationClick?.(notification.id)}
-                className={`p-4 rounded-lg border cursor-pointer transition-all hover:shadow-md border-l-4 ${
-                  notification.priority === 'high' ? 'border-l-red-500 bg-red-50' :
+                className={`p-4 rounded-full border cursor-pointer transition-all hover:shadow-md border-l-4 ${
+                  notification.priority === 'high' ? 'border-l-red-500 bg-destructive/10' :
                   notification.priority === 'medium' ? 'border-l-yellow-500 bg-yellow-50' :
                   'border-l-blue-500 bg-blue-50'
                 }`}
@@ -338,7 +338,7 @@ const WeeklyTasksWidget: React.FC<WeeklyTasksWidgetProps> = ({
                 
                 {notification.actionUrl && notification.actionText && (
                   <div className="mt-3 pt-3 border-t border-gray-200">
-                    <button className="text-sm text-blue-600 hover:text-blue-800 transition-colors">
+                    <button className="text-sm text-blue-600 hover:text-blue-800 transition-colors rounded-full">
                       {notification.actionText} →
                     </button>
                   </div>

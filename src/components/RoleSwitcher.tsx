@@ -16,7 +16,7 @@ const RoleSwitcher: React.FC = () => {
     <div className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center space-x-2 px-3 py-2 text-sm bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+        className="flex items-center space-x-2 px-3 py-2 text-sm bg-gray-100 rounded-full hover:bg-gray-200 transition-colors"
       >
         <UserCircleIcon className="h-4 w-4" />
         <span>{roleLabels[user.role]}</span>

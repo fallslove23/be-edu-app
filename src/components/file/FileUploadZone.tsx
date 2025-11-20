@@ -52,7 +52,7 @@ const FileUploadZone: React.FC<FileUploadZoneProps> = ({
       return <FilmIcon className="h-8 w-8 text-purple-600" />;
     }
     if (FILE_CONFIGS.ALLOWED_TYPES.audio.includes(extension)) {
-      return <MusicalNoteIcon className="h-8 w-8 text-yellow-600" />;
+      return <MusicalNoteIcon className="h-8 w-8 text-foreground" />;
     }
     if (FILE_CONFIGS.ALLOWED_TYPES.archives.includes(extension)) {
       return <ArchiveBoxIcon className="h-8 w-8 text-gray-600" />;
@@ -240,12 +240,12 @@ const FileUploadZone: React.FC<FileUploadZoneProps> = ({
     <div className="space-y-4">
       {/* 에러 메시지 */}
       {errors.length > 0 && (
-        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+        <div className="bg-destructive/10 border border-destructive/50 rounded-lg p-4">
           <div className="flex items-start">
             <ExclamationTriangleIcon className="h-5 w-5 text-red-400 mt-0.5 mr-3" />
             <div className="flex-1">
-              <h3 className="text-sm font-medium text-red-800 mb-2">업로드 오류</h3>
-              <ul className="text-sm text-red-700 space-y-1">
+              <h3 className="text-sm font-medium text-destructive mb-2">업로드 오류</h3>
+              <ul className="text-sm text-destructive space-y-1">
                 {errors.map((error, index) => (
                   <li key={index}>• {error}</li>
                 ))}
@@ -253,7 +253,7 @@ const FileUploadZone: React.FC<FileUploadZoneProps> = ({
             </div>
             <button 
               onClick={clearErrors}
-              className="text-red-400 hover:text-red-600"
+              className="text-red-400 hover:text-destructive"
             >
               <XMarkIcon className="h-5 w-5" />
             </button>
@@ -267,7 +267,7 @@ const FileUploadZone: React.FC<FileUploadZoneProps> = ({
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
         className={`
-          relative border-2 border-dashed rounded-lg p-8 text-center transition-colors cursor-pointer
+          relative border-2 border-dashed rounded-full p-8 text-center transition-colors cursor-pointer
           ${isDragOver 
             ? 'border-blue-400 bg-blue-50' 
             : disabled 
@@ -324,13 +324,13 @@ const FileUploadZone: React.FC<FileUploadZoneProps> = ({
                 {progress.status === 'completed' ? (
                   <CheckCircleIcon className="h-5 w-5 text-green-600" />
                 ) : progress.status === 'error' ? (
-                  <ExclamationTriangleIcon className="h-5 w-5 text-red-600" />
+                  <ExclamationTriangleIcon className="h-5 w-5 text-destructive" />
                 ) : (
                   <span className="text-sm text-gray-600">{progress.progress}%</span>
                 )}
               </div>
               
-              <div className="w-full bg-gray-200 rounded-full h-2">
+              <div className="w-full bg-gray-200 rounded-lg h-2">
                 <div
                   className={`h-2 rounded-full transition-all duration-300 ${
                     progress.status === 'completed'
@@ -344,7 +344,7 @@ const FileUploadZone: React.FC<FileUploadZoneProps> = ({
               </div>
               
               {progress.error && (
-                <p className="text-xs text-red-600 mt-1">{progress.error}</p>
+                <p className="text-xs text-destructive mt-1">{progress.error}</p>
               )}
             </div>
           ))}
@@ -357,7 +357,7 @@ const FileUploadZone: React.FC<FileUploadZoneProps> = ({
           <h4 className="text-sm font-medium text-gray-900">업로드된 파일 ({uploadedFiles.length})</h4>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
             {uploadedFiles.map((file) => (
-              <div key={file.id} className="bg-green-50 border border-green-200 rounded-lg p-3">
+              <div key={file.id} className="bg-green-500/10 border border-green-200 rounded-lg p-3">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2 flex-1 min-w-0">
                     {getFileIcon(file.name)}
@@ -373,7 +373,7 @@ const FileUploadZone: React.FC<FileUploadZoneProps> = ({
                   
                   <button
                     onClick={() => removeFile(file.id)}
-                    className="ml-2 p-1 text-red-600 hover:text-red-800"
+                    className="ml-2 p-1 text-destructive hover:text-destructive"
                   >
                     <XMarkIcon className="h-4 w-4" />
                   </button>

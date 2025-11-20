@@ -134,7 +134,7 @@ const FileManager: React.FC<FileManagerProps> = ({
               <div className="text-lg font-semibold">
                 {FileManagerUtil.formatFileSize(storageStats.userUsage * 1024 * 1024)} / {storageStats.userQuota}MB
               </div>
-              <div className="w-32 bg-gray-200 rounded-full h-2 mt-1">
+              <div className="w-32 bg-gray-200 rounded-lg h-2 mt-1">
                 <div
                   className={`h-2 rounded-full transition-all duration-300 ${getUsageColor(usagePercentage)}`}
                   style={{ width: `${Math.min(usagePercentage, 100)}%` }}
@@ -148,7 +148,7 @@ const FileManager: React.FC<FileManagerProps> = ({
 
       {/* 정리 작업 결과 알림 */}
       {cleanupStats && (
-        <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+        <div className="bg-green-500/10 border border-green-200 rounded-lg p-4">
           <div className="flex items-start">
             <CheckCircleIcon className="h-5 w-5 text-green-400 mt-0.5 mr-3" />
             <div>
@@ -169,12 +169,12 @@ const FileManager: React.FC<FileManagerProps> = ({
 
       {/* 용량 경고 */}
       {usagePercentage >= 90 && (
-        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+        <div className="bg-destructive/10 border border-destructive/50 rounded-lg p-4">
           <div className="flex items-start">
             <ExclamationTriangleIcon className="h-5 w-5 text-red-400 mt-0.5 mr-3" />
             <div>
-              <h3 className="text-sm font-medium text-red-800">용량 부족 경고</h3>
-              <p className="text-sm text-red-700 mt-1">
+              <h3 className="text-sm font-medium text-destructive">용량 부족 경고</h3>
+              <p className="text-sm text-destructive mt-1">
                 할당된 용량의 {usagePercentage}%를 사용 중입니다. 불필요한 파일을 삭제해주세요.
               </p>
             </div>
@@ -290,7 +290,7 @@ const FileManager: React.FC<FileManagerProps> = ({
                   </div>
                 </div>
 
-                <div className="bg-green-50 rounded-lg p-6 border border-green-200">
+                <div className="bg-green-500/10 rounded-lg p-6 border border-green-200">
                   <div className="flex items-center">
                     <ChartBarIcon className="h-8 w-8 text-green-600" />
                     <div className="ml-4">
@@ -326,9 +326,9 @@ const FileManager: React.FC<FileManagerProps> = ({
                     <div key={cat.key} className="flex items-center justify-between">
                       <span className="text-sm text-gray-700">{cat.name}</span>
                       <div className="flex items-center space-x-3">
-                        <div className="w-24 bg-gray-200 rounded-full h-2">
+                        <div className="w-24 bg-gray-200 rounded-lg h-2">
                           <div
-                            className="bg-blue-500 h-2 rounded-full"
+                            className="bg-blue-500 h-2 rounded-lg"
                             style={{ 
                               width: `${storageStats.totalFiles > 0 ? (cat.count / storageStats.totalFiles) * 100 : 0}%` 
                             }}

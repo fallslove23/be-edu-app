@@ -277,7 +277,7 @@ const MaterialsLibrary: React.FC = () => {
     return (
       <div className="flex items-center justify-center min-h-64 p-8">
         <div className="flex flex-col items-center space-y-4">
-          <div className="w-8 h-8 border-4 border-muted border-t-primary rounded-full animate-spin"></div>
+          <div className="w-8 h-8 border-4 border-muted border-t-primary rounded-lg animate-spin"></div>
           <p className="text-muted-foreground text-sm">교육 자료를 불러오는 중...</p>
         </div>
       </div>
@@ -293,7 +293,7 @@ const MaterialsLibrary: React.FC = () => {
   return (
     <div className="space-y-6 p-6">
       {/* 헤더 */}
-      <div className="bg-card rounded-xl border border-border p-6">
+      <div className="bg-card rounded-lg border border-border p-6">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
           <div>
             <h1 className="text-2xl font-bold text-card-foreground mb-2">📚 교육 자료 라이브러리</h1>
@@ -310,7 +310,7 @@ const MaterialsLibrary: React.FC = () => {
             </button>
             <button 
               onClick={() => setShowUploadModal(true)}
-              className="bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors"
+              className="bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-full flex items-center space-x-2 transition-colors"
             >
               <CloudArrowUpIcon className="h-4 w-4" />
               <span>업로드</span>
@@ -320,7 +320,7 @@ const MaterialsLibrary: React.FC = () => {
       </div>
 
       {/* 검색 */}
-      <div className="bg-card rounded-xl border border-border p-6">
+      <div className="bg-card rounded-lg border border-border p-6">
         <div className="relative">
           <MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <input
@@ -334,13 +334,13 @@ const MaterialsLibrary: React.FC = () => {
       </div>
 
       {/* 필터 */}
-      <div className="bg-white rounded-2xl shadow-md border border-gray-100 p-6">
+      <div className="bg-white rounded-lg shadow-md border border-gray-100 p-6">
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
           <select
             id="category-filter"
             value={selectedCategory}
             onChange={(e) => setSelectedCategory(e.target.value)}
-            className="flex-1 sm:w-64 border-2 border-gray-200 rounded-xl px-6 py-3.5 text-base bg-white text-gray-700 font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all shadow-sm hover:border-gray-300 appearance-none cursor-pointer"
+            className="flex-1 sm:w-64 border-2 border-gray-200 rounded-lg px-6 py-3.5 text-base bg-white text-gray-700 font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all shadow-sm hover:border-gray-300 appearance-none cursor-pointer"
             style={{
               backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`,
               backgroundPosition: 'right 0.75rem center',
@@ -361,7 +361,7 @@ const MaterialsLibrary: React.FC = () => {
             id="type-filter"
             value={selectedType}
             onChange={(e) => setSelectedType(e.target.value)}
-            className="flex-1 sm:w-64 border-2 border-gray-200 rounded-xl px-6 py-3.5 text-base bg-white text-gray-700 font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all shadow-sm hover:border-gray-300 appearance-none cursor-pointer"
+            className="flex-1 sm:w-64 border-2 border-gray-200 rounded-lg px-6 py-3.5 text-base bg-white text-gray-700 font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all shadow-sm hover:border-gray-300 appearance-none cursor-pointer"
             style={{
               backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`,
               backgroundPosition: 'right 0.75rem center',
@@ -382,7 +382,7 @@ const MaterialsLibrary: React.FC = () => {
             id="sort-filter"
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value as any)}
-            className="flex-1 sm:w-64 border-2 border-gray-200 rounded-xl px-6 py-3.5 text-base bg-white text-gray-700 font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all shadow-sm hover:border-gray-300 appearance-none cursor-pointer"
+            className="flex-1 sm:w-64 border-2 border-gray-200 rounded-lg px-6 py-3.5 text-base bg-white text-gray-700 font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all shadow-sm hover:border-gray-300 appearance-none cursor-pointer"
             style={{
               backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`,
               backgroundPosition: 'right 0.75rem center',
@@ -424,7 +424,7 @@ const MaterialsLibrary: React.FC = () => {
       </div>
 
       {/* 폴더 목록 */}
-      <div className="bg-card rounded-xl border border-border">
+      <div className="bg-card rounded-lg border border-border">
         <div className="px-6 py-4 border-b border-border">
           <h3 className="text-lg font-medium text-card-foreground">폴더</h3>
         </div>
@@ -458,7 +458,7 @@ const MaterialsLibrary: React.FC = () => {
       </div>
 
       {/* 자료 목록 */}
-      <div className="bg-card rounded-xl border border-border">
+      <div className="bg-card rounded-lg border border-border">
         <div className="px-6 py-4 border-b border-border">
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-medium text-card-foreground">
@@ -488,7 +488,7 @@ const MaterialsLibrary: React.FC = () => {
               {filteredMaterials.map((material) => (
                 <div
                   key={material.id}
-                  className={`border rounded-lg p-4 transition-all cursor-pointer ${
+                  className={`border rounded-full p-4 transition-all cursor-pointer ${
                     selectedMaterials.has(material.id)
                       ? 'border-primary bg-primary/5'
                       : 'border-border hover:border-primary/50'
@@ -562,11 +562,11 @@ const MaterialsLibrary: React.FC = () => {
                   </div>
                   
                   <div className="mt-3 pt-3 border-t border-border flex justify-between">
-                    <button className="text-sm text-primary hover:text-primary/80 flex items-center space-x-1 transition-colors">
+                    <button className="text-sm text-primary hover:text-primary/80 flex items-center space-x-1 transition-colors rounded-full">
                       <EyeIcon className="h-3 w-3" />
                       <span>미리보기</span>
                     </button>
-                    <button className="text-sm text-muted-foreground hover:text-foreground flex items-center space-x-1 transition-colors">
+                    <button className="text-sm text-muted-foreground hover:text-foreground flex items-center space-x-1 transition-colors rounded-full">
                       <CloudArrowDownIcon className="h-3 w-3" />
                       <span>다운로드</span>
                     </button>
@@ -579,7 +579,7 @@ const MaterialsLibrary: React.FC = () => {
               {filteredMaterials.map((material) => (
                 <div
                   key={material.id}
-                  className={`border rounded-lg p-4 transition-colors cursor-pointer ${
+                  className={`border rounded-full p-4 transition-colors cursor-pointer ${
                     selectedMaterials.has(material.id)
                       ? 'border-primary bg-primary/5'
                       : 'border-border hover:bg-muted/50'
@@ -627,13 +627,13 @@ const MaterialsLibrary: React.FC = () => {
                     </div>
                     
                     <div className="flex items-center space-x-2">
-                      <button className="p-2 text-muted-foreground hover:text-primary transition-colors">
+                      <button className="p-2 text-muted-foreground hover:text-primary transition-colors rounded-full">
                         <EyeIcon className="h-4 w-4" />
                       </button>
-                      <button className="p-2 text-muted-foreground hover:text-success transition-colors">
+                      <button className="p-2 text-muted-foreground hover:text-success transition-colors rounded-full">
                         <CloudArrowDownIcon className="h-4 w-4" />
                       </button>
-                      <button className="p-2 text-muted-foreground hover:text-foreground transition-colors">
+                      <button className="p-2 text-muted-foreground hover:text-foreground transition-colors rounded-full">
                         <ShareIcon className="h-4 w-4" />
                       </button>
                     </div>
@@ -656,7 +656,7 @@ const MaterialsLibrary: React.FC = () => {
       {/* 업로드 모달 */}
       {showUploadModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-card rounded-xl max-w-md w-full border border-border">
+          <div className="bg-card rounded-lg max-w-md w-full border border-border">
             <div className="px-6 py-4 border-b border-border">
               <h3 className="text-lg font-medium text-card-foreground">파일 업로드</h3>
             </div>
@@ -670,7 +670,7 @@ const MaterialsLibrary: React.FC = () => {
                 <p className="text-sm text-muted-foreground">
                   최대 100MB, 모든 파일 형식 지원
                 </p>
-                <button className="mt-4 bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-lg transition-colors">
+                <button className="mt-4 bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-full transition-colors">
                   파일 선택
                 </button>
               </div>
@@ -679,7 +679,7 @@ const MaterialsLibrary: React.FC = () => {
             <div className="px-6 py-4 border-t border-border flex justify-end space-x-3">
               <button
                 onClick={() => setShowUploadModal(false)}
-                className="btn-neutral px-4 py-2 text-sm font-medium rounded-lg"
+                className="btn-neutral px-4 py-2 text-sm font-medium rounded-full"
               >
                 취소
               </button>
@@ -688,7 +688,7 @@ const MaterialsLibrary: React.FC = () => {
                   setShowUploadModal(false);
                   toast.success('파일이 업로드되었습니다.');
                 }}
-                className="bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 text-sm font-medium rounded-lg transition-colors"
+                className="bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 text-sm font-medium rounded-full transition-colors"
               >
                 업로드
               </button>

@@ -100,11 +100,11 @@ export default function RoundDetailPage() {
       case 'recruiting':
         return 'bg-blue-100 text-blue-700 border-blue-300';
       case 'in_progress':
-        return 'bg-green-100 text-green-700 border-green-300';
+        return 'bg-green-500/10 text-green-700 border-green-300';
       case 'completed':
         return 'bg-purple-100 text-purple-700 border-purple-300';
       case 'cancelled':
-        return 'bg-red-100 text-red-700 border-red-300';
+        return 'bg-destructive/10 text-destructive border-destructive/50';
       default:
         return 'bg-gray-100 text-gray-700 border-gray-300';
     }
@@ -143,7 +143,7 @@ export default function RoundDetailPage() {
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
           <p className="text-xl text-muted-foreground mb-4">차수를 찾을 수 없습니다.</p>
-          <button onClick={handleBack} className="btn-primary">
+          <button onClick={handleBack} className="btn-primary rounded-full">
             목록으로 돌아가기
           </button>
         </div>
@@ -186,7 +186,7 @@ export default function RoundDetailPage() {
                   완료
                 </button>
               )}
-              <button onClick={handleEdit} className="btn-slate btn-sm flex items-center">
+              <button onClick={handleEdit} className="btn-slate btn-sm flex items-center rounded-full">
                 <PencilIcon className="w-4 h-4 mr-1" />
                 편집
               </button>

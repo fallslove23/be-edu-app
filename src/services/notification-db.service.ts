@@ -6,7 +6,7 @@
 
 import { supabase } from './supabase';
 
-export interface Notification {
+export type Notification = {
   id: string;
   user_id: string;
   type: 'course_start' | 'course_updated' | 'conflict_detected' | 'course_confirmed' | 'session_changed';
@@ -19,9 +19,9 @@ export interface Notification {
   priority: 'low' | 'normal' | 'high' | 'urgent';
   created_at: string;
   read_at?: string;
-}
+};
 
-export interface NotificationPreference {
+export type NotificationPreference = {
   id: string;
   user_id: string;
   course_start_enabled: boolean;
@@ -32,9 +32,9 @@ export interface NotificationPreference {
   days_before_start: number;
   created_at: string;
   updated_at: string;
-}
+};
 
-export interface CreateNotificationParams {
+export type CreateNotificationParams = {
   user_id: string;
   type: Notification['type'];
   title: string;
@@ -320,3 +320,6 @@ class NotificationDBService {
 }
 
 export const notificationDBService = new NotificationDBService();
+
+// Re-export types for convenience
+export type { Notification, NotificationPreference, CreateNotificationParams };

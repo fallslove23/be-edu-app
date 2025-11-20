@@ -231,7 +231,7 @@ const UnifiedTemplateManagement: React.FC = () => {
 
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-        <div className="bg-white rounded-xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
+        <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-hidden">
           <div className="flex justify-between items-center p-6 border-b border-gray-200">
             <h2 className="text-xl font-bold text-gray-900">템플릿 편집: {editingTemplate.name}</h2>
             <button
@@ -255,7 +255,7 @@ const UnifiedTemplateManagement: React.FC = () => {
                     type="text"
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="w-full border-2 border-gray-200 rounded-xl px-6 py-3.5 text-base bg-white text-gray-700 font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all shadow-sm hover:border-gray-300"
+                    className="w-full border-2 border-gray-200 rounded-lg px-6 py-3.5 text-base bg-white text-gray-700 font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all shadow-sm hover:border-gray-300"
                     required
                   />
                 </div>
@@ -264,7 +264,7 @@ const UnifiedTemplateManagement: React.FC = () => {
                   <select
                     value={formData.category}
                     onChange={(e) => setFormData({ ...formData, category: e.target.value as 'basic' | 'advanced' })}
-                    className="w-full border-2 border-gray-200 rounded-xl px-6 py-3.5 text-base bg-white text-gray-700 font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all shadow-sm hover:border-gray-300 appearance-none cursor-pointer"
+                    className="w-full border-2 border-gray-200 rounded-lg px-6 py-3.5 text-base bg-white text-gray-700 font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all shadow-sm hover:border-gray-300 appearance-none cursor-pointer"
                     style={{
                       backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`,
                       backgroundPosition: 'right 0.75rem center',
@@ -284,7 +284,7 @@ const UnifiedTemplateManagement: React.FC = () => {
                 <textarea
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500"
+                  className="w-full border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500"
                   rows={3}
                   required
                 />
@@ -296,7 +296,7 @@ const UnifiedTemplateManagement: React.FC = () => {
                 <textarea
                   value={formData.objectives.join('\n')}
                   onChange={(e) => setFormData({ ...formData, objectives: e.target.value.split('\n').filter(o => o.trim()) })}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500"
+                  className="w-full border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500"
                   rows={4}
                   placeholder="학습 목표를 한 줄씩 입력하세요"
                 />
@@ -374,7 +374,7 @@ const UnifiedTemplateManagement: React.FC = () => {
 
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-        <div className="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-hidden">
+        <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-hidden">
           <div className="flex justify-between items-center p-6 border-b border-gray-200">
             <h2 className="text-xl font-bold text-gray-900">새 템플릿 생성</h2>
             <button
@@ -394,7 +394,7 @@ const UnifiedTemplateManagement: React.FC = () => {
                     type="text"
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     placeholder="예: BS Expert"
                     required
                   />
@@ -404,7 +404,7 @@ const UnifiedTemplateManagement: React.FC = () => {
                   <select
                     value={formData.category_id}
                     onChange={(e) => setFormData({ ...formData, category_id: e.target.value })}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white appearance-none cursor-pointer"
+                    className="w-full border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white appearance-none cursor-pointer"
                     style={{
                       backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`,
                       backgroundPosition: 'right 0.5rem center',
@@ -432,7 +432,7 @@ const UnifiedTemplateManagement: React.FC = () => {
                 <textarea
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500"
+                  className="w-full border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500"
                   rows={3}
                   placeholder="과정에 대한 상세 설명을 입력하세요"
                   required
@@ -446,7 +446,7 @@ const UnifiedTemplateManagement: React.FC = () => {
                     type="number"
                     value={formData.duration_days}
                     onChange={(e) => setFormData({ ...formData, duration_days: parseInt(e.target.value) || 0 })}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500"
+                    className="w-full border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500"
                     min="1"
                     max="30"
                     required
@@ -458,7 +458,7 @@ const UnifiedTemplateManagement: React.FC = () => {
                     type="number"
                     value={formData.total_hours}
                     onChange={(e) => setFormData({ ...formData, total_hours: parseInt(e.target.value) || 0 })}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500"
+                    className="w-full border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500"
                     min="1"
                     max="300"
                     required
@@ -474,7 +474,7 @@ const UnifiedTemplateManagement: React.FC = () => {
                     ...formData,
                     objectives: e.target.value.split('\n').filter(o => o.trim())
                   })}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500"
+                  className="w-full border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500"
                   rows={4}
                   placeholder="학습 목표를 한 줄씩 입력하세요"
                 />
@@ -484,7 +484,7 @@ const UnifiedTemplateManagement: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setIsNewTemplateModalOpen(false)}
-                  className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200"
+                  className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-full hover:bg-gray-200"
                 >
                   취소
                 </button>
@@ -506,7 +506,7 @@ const UnifiedTemplateManagement: React.FC = () => {
     return (
       <div className="flex items-center justify-center min-h-64 p-8">
         <div className="flex flex-col items-center space-y-4">
-          <div className="w-8 h-8 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
+          <div className="w-8 h-8 border-4 border-blue-200 border-t-blue-600 rounded-lg animate-spin"></div>
           <p className="text-gray-600 text-sm">템플릿 데이터 로딩 중...</p>
         </div>
       </div>
@@ -516,7 +516,7 @@ const UnifiedTemplateManagement: React.FC = () => {
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
       {/* 검색 및 액션 바 */}
-      <div className="bg-card rounded-xl shadow-sm border border-border p-4">
+      <div className="bg-card rounded-lg shadow-sm border border-border p-4">
         <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between">
           <div className="flex-1 w-full sm:w-auto">
             <div className="relative">
@@ -535,7 +535,7 @@ const UnifiedTemplateManagement: React.FC = () => {
             <select
               value={categoryFilter}
               onChange={(e) => setCategoryFilter(e.target.value)}
-              className="sm:w-40 border border-gray-300 rounded-lg px-3 py-2.5 text-sm bg-white text-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all hover:border-gray-400 appearance-none cursor-pointer"
+              className="sm:w-40 border border-gray-300 rounded-full px-3 py-2.5 text-sm bg-white text-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all hover:border-gray-400 appearance-none cursor-pointer"
               style={{
                 backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`,
                 backgroundPosition: 'right 0.5rem center',
@@ -552,7 +552,7 @@ const UnifiedTemplateManagement: React.FC = () => {
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as SortOption)}
-              className="sm:w-40 border border-gray-300 rounded-lg px-3 py-2.5 text-sm bg-white text-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all hover:border-gray-400 appearance-none cursor-pointer"
+              className="sm:w-40 border border-gray-300 rounded-full px-3 py-2.5 text-sm bg-white text-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all hover:border-gray-400 appearance-none cursor-pointer"
               style={{
                 backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`,
                 backgroundPosition: 'right 0.5rem center',
@@ -569,7 +569,7 @@ const UnifiedTemplateManagement: React.FC = () => {
 
             <button
               onClick={() => setIsNewTemplateModalOpen(true)}
-              className="bg-primary text-primary-foreground hover:bg-primary/90 flex items-center px-4 py-2.5 rounded-lg transition-colors text-sm font-medium whitespace-nowrap"
+              className="bg-primary text-primary-foreground hover:bg-primary/90 flex items-center px-4 py-2.5 rounded-full transition-colors text-sm font-medium whitespace-nowrap"
             >
               <PlusIcon className="w-4 h-4 mr-1.5" />
               새 템플릿
@@ -581,7 +581,7 @@ const UnifiedTemplateManagement: React.FC = () => {
       {/* 템플릿 그리드 */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {filteredTemplates.map(template => (
-          <div key={template.id} className="bg-card rounded-xl shadow-sm border border-border overflow-hidden">
+          <div key={template.id} className="bg-card rounded-lg shadow-sm border border-border overflow-hidden">
             {/* 헤더 */}
             <div className="p-6 border-b border-border">
               <div className="flex justify-between items-start mb-2">
@@ -595,7 +595,7 @@ const UnifiedTemplateManagement: React.FC = () => {
                       {template.category === 'basic' ? 'Basic' : 'Advanced'}
                     </span>
                     {templateUsageCount[template.id] !== undefined && templateUsageCount[template.id] > 0 && (
-                      <span className="flex items-center px-2 py-1 text-xs rounded-full bg-green-100 text-green-700">
+                      <span className="flex items-center px-2 py-1 text-xs rounded-full bg-green-500/10 text-green-700">
                         <ChartBarIcon className="w-3 h-3 mr-1" />
                         {templateUsageCount[template.id]}개 과정에서 사용 중
                       </span>
@@ -634,7 +634,7 @@ const UnifiedTemplateManagement: React.FC = () => {
                   <ul className="text-sm text-muted-foreground space-y-1">
                     {template.objectives.slice(0, 3).map((objective, idx) => (
                       <li key={idx} className="flex items-start">
-                        <span className="inline-block w-1 h-1 bg-muted-foreground rounded-full mt-2 mr-2 flex-shrink-0"></span>
+                        <span className="inline-block w-1 h-1 bg-muted-foreground rounded-lg mt-2 mr-2 flex-shrink-0"></span>
                         {objective}
                       </li>
                     ))}
@@ -673,21 +673,21 @@ const UnifiedTemplateManagement: React.FC = () => {
               <div className="flex space-x-2 pt-4 border-t border-border">
                 <button
                   onClick={() => handleEditTemplate(template)}
-                  className="bg-primary text-primary-foreground hover:bg-primary/90 flex-1 flex items-center justify-center px-4 py-2 text-sm font-medium rounded-lg transition-colors"
+                  className="bg-primary text-primary-foreground hover:bg-primary/90 flex-1 flex items-center justify-center px-4 py-2 text-sm font-medium rounded-full transition-colors"
                 >
                   <PencilIcon className="w-4 h-4 mr-2" />
                   편집
                 </button>
                 <button
                   onClick={() => handleDuplicateTemplate(template)}
-                  className="border border-border hover:bg-accent flex items-center justify-center px-4 py-2 text-sm font-medium rounded-lg transition-colors"
+                  className="border border-border hover:bg-accent flex items-center justify-center px-4 py-2 text-sm font-medium rounded-full transition-colors"
                   title="템플릿 복제"
                 >
                   <DocumentDuplicateIcon className="w-4 h-4" />
                 </button>
                 <button
                   onClick={() => setSelectedTemplate(template)}
-                  className="border border-border hover:bg-accent flex items-center justify-center px-4 py-2 text-sm font-medium rounded-lg transition-colors"
+                  className="border border-border hover:bg-accent flex items-center justify-center px-4 py-2 text-sm font-medium rounded-full transition-colors"
                   title="상세보기"
                 >
                   <EyeIcon className="w-4 h-4" />
@@ -700,7 +700,7 @@ const UnifiedTemplateManagement: React.FC = () => {
 
       {/* 템플릿이 없을 때 */}
       {filteredTemplates.length === 0 && (
-        <div className="text-center py-12 bg-card rounded-xl shadow-sm border border-border">
+        <div className="text-center py-12 bg-card rounded-lg shadow-sm border border-border">
           <AcademicCapIcon className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
           <h3 className="text-lg font-medium text-card-foreground mb-2">등록된 템플릿이 없습니다</h3>
           <p className="text-muted-foreground mb-6">
@@ -711,7 +711,7 @@ const UnifiedTemplateManagement: React.FC = () => {
           </p>
           <button
             onClick={() => setIsNewTemplateModalOpen(true)}
-            className="bg-primary text-primary-foreground hover:bg-primary/90 inline-flex items-center px-4 py-2 rounded-lg font-medium transition-colors"
+            className="bg-primary text-primary-foreground hover:bg-primary/90 inline-flex items-center px-4 py-2 rounded-full font-medium transition-colors"
           >
             <PlusIcon className="w-4 h-4 mr-2" />
             새 템플릿 생성
@@ -722,7 +722,7 @@ const UnifiedTemplateManagement: React.FC = () => {
       {/* 템플릿 상세 모달 */}
       {selectedTemplate && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+          <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
             <div className="p-6">
               <div className="flex items-start justify-between mb-6">
                 <div>

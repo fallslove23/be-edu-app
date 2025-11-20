@@ -399,9 +399,9 @@ BS교육연구소장`,
       case 'issued':
         return <TrophyIcon className="h-5 w-5 text-gray-700" />;
       case 'not_eligible':
-        return <XCircleIcon className="h-5 w-5 text-red-500" />;
+        return <XCircleIcon className="h-5 w-5 text-destructive" />;
       case 'pending_review':
-        return <ExclamationTriangleIcon className="h-5 w-5 text-yellow-500" />;
+        return <ExclamationTriangleIcon className="h-5 w-5 text-foreground" />;
       default:
         return null;
     }
@@ -429,9 +429,9 @@ BS교육연구소장`,
       case 'issued':
         return 'bg-gray-100 text-gray-700';
       case 'not_eligible':
-        return 'bg-red-100 text-red-700';
+        return 'bg-destructive/10 text-destructive';
       case 'pending_review':
-        return 'bg-yellow-100 text-yellow-700';
+        return 'bg-yellow-100 text-orange-700';
       default:
         return 'bg-gray-100 text-gray-700';
     }
@@ -454,7 +454,7 @@ BS교육연구소장`,
           <div className="flex items-center space-x-3">
             <button
               onClick={bulkIssueCertificates}
-              className="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors flex items-center"
+              className="bg-gray-600 text-white px-4 py-2 rounded-full hover:bg-gray-700 transition-colors flex items-center"
             >
               <ClipboardDocumentListIcon className="h-4 w-4 mr-2" />
               일괄 발급
@@ -463,13 +463,13 @@ BS교육연구소장`,
         </div>
 
         {/* 과정 필터 카드 */}
-        <div className="bg-white rounded-2xl shadow-md border border-gray-100 p-6 mt-6">
+        <div className="bg-white rounded-lg shadow-md border border-gray-100 p-6 mt-6">
           <div className="flex items-center gap-4">
             <select
               id="course-filter"
               value={selectedCourse}
               onChange={(e) => setSelectedCourse(e.target.value)}
-              className="flex-1 sm:w-64 border-2 border-gray-200 rounded-xl px-6 py-3.5 text-base bg-white text-gray-700 font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all shadow-sm hover:border-gray-300 appearance-none cursor-pointer"
+              className="flex-1 sm:w-64 border-2 border-gray-200 rounded-lg px-6 py-3.5 text-base bg-white text-gray-700 font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all shadow-sm hover:border-gray-300 appearance-none cursor-pointer"
               style={{
                 backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`,
                 backgroundPosition: 'right 0.75rem center',
@@ -634,7 +634,7 @@ BS교육연구소장`,
                           </div>
                           <button
                             onClick={() => issueCertificate(student.id)}
-                            className="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors text-sm"
+                            className="bg-gray-600 text-white px-4 py-2 rounded-full hover:bg-gray-700 transition-colors text-sm"
                           >
                             수료증 발급
                           </button>
@@ -684,11 +684,11 @@ BS교육연구소장`,
                             <EyeIcon className="h-4 w-4 mr-1" />
                             미리보기
                           </button>
-                          <button className="bg-gray-600 text-white px-3 py-1 rounded text-sm hover:bg-gray-700 transition-colors flex items-center">
+                          <button className="bg-gray-600 text-white px-3 py-1 rounded-full text-sm hover:bg-gray-700 transition-colors flex items-center">
                             <ArrowDownTrayIcon className="h-4 w-4 mr-1" />
                             다운로드
                           </button>
-                          <button className="bg-gray-700 text-white px-3 py-1 rounded text-sm hover:bg-gray-800 transition-colors flex items-center">
+                          <button className="bg-gray-700 text-white px-3 py-1 rounded-full text-sm hover:bg-gray-800 transition-colors flex items-center">
                             <PrinterIcon className="h-4 w-4 mr-1" />
                             인쇄
                           </button>
@@ -706,7 +706,7 @@ BS교육연구소장`,
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <h3 className="text-lg font-medium text-gray-900">수료증 템플릿</h3>
-                <button className="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors">
+                <button className="bg-gray-600 text-white px-4 py-2 rounded-full hover:bg-gray-700 transition-colors">
                   새 템플릿 추가
                 </button>
               </div>
@@ -740,7 +740,7 @@ BS교육연구소장`,
                         {template.course_category} • {template.created_date}
                       </div>
                       <div className="flex items-center space-x-2">
-                        <button className="text-gray-600 hover:text-gray-700 text-sm">
+                        <button className="text-gray-600 hover:text-gray-700 text-sm rounded-full">
                           편집
                         </button>
                         <button 
@@ -822,14 +822,14 @@ BS교육연구소장`,
               <div className="flex items-center justify-end space-x-3">
                 <button
                   onClick={() => setSelectedStudents([])}
-                  className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                  className="px-4 py-2 border border-gray-300 text-gray-700 rounded-full hover:bg-gray-50 transition-colors"
                 >
                   선택 취소
                 </button>
                 <button
                   onClick={bulkIssueCertificates}
                   disabled={selectedStudents.length === 0}
-                  className={`px-4 py-2 rounded-lg transition-colors ${
+                  className={`px-4 py-2 rounded-full transition-colors ${
                     selectedStudents.length === 0
                       ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
                       : 'bg-gray-700 text-white hover:bg-gray-800'

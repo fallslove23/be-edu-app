@@ -135,9 +135,9 @@ const OfflineManager: React.FC<OfflineManagerProps> = ({ compact = false }) => {
 
   const getStatusColor = (status: OfflineData['status']) => {
     switch (status) {
-      case 'synced': return 'text-green-600 bg-green-50';
-      case 'pending': return 'text-yellow-600 bg-yellow-50';
-      case 'failed': return 'text-red-600 bg-red-50';
+      case 'synced': return 'text-green-600 bg-green-500/10';
+      case 'pending': return 'text-orange-600 bg-yellow-50';
+      case 'failed': return 'text-destructive bg-destructive/10';
       case 'conflict': return 'text-purple-600 bg-purple-50';
       default: return 'text-gray-600 bg-gray-50';
     }
@@ -168,7 +168,7 @@ const OfflineManager: React.FC<OfflineManagerProps> = ({ compact = false }) => {
   if (compact) {
     return (
       <div className="flex items-center space-x-3 p-3 bg-white rounded-lg border border-gray-200">
-        <div className={`flex items-center space-x-1 ${syncStatus.isOnline ? 'text-green-600' : 'text-red-600'}`}>
+        <div className={`flex items-center space-x-1 ${syncStatus.isOnline ? 'text-green-600' : 'text-destructive'}`}>
           <WifiIcon className="h-4 w-4" />
           <span className="text-sm font-medium">
             {syncStatus.isOnline ? '온라인' : '오프라인'}
@@ -176,7 +176,7 @@ const OfflineManager: React.FC<OfflineManagerProps> = ({ compact = false }) => {
         </div>
         
         {syncStatus.pendingCount > 0 && (
-          <div className="flex items-center space-x-1 text-yellow-600">
+          <div className="flex items-center space-x-1 text-foreground">
             <CloudArrowUpIcon className="h-4 w-4" />
             <span className="text-sm">{syncStatus.pendingCount}</span>
           </div>
@@ -219,7 +219,7 @@ const OfflineManager: React.FC<OfflineManagerProps> = ({ compact = false }) => {
           <div className="flex items-center space-x-3">
             <button
               onClick={() => setShowSettings(true)}
-              className="p-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg"
+              className="p-2 text-gray-600 hover:text-foreground hover:bg-muted rounded-lg"
               title="설정"
             >
               <Cog6ToothIcon className="h-5 w-5" />
@@ -227,7 +227,7 @@ const OfflineManager: React.FC<OfflineManagerProps> = ({ compact = false }) => {
             
             <button
               onClick={handleCleanup}
-              className="p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg"
+              className="p-2 text-gray-600 hover:text-destructive hover:bg-destructive/10 rounded-full"
               title="데이터 정리"
             >
               <TrashIcon className="h-5 w-5" />
@@ -238,12 +238,12 @@ const OfflineManager: React.FC<OfflineManagerProps> = ({ compact = false }) => {
 
       {/* 상태 요약 */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className={`bg-white rounded-lg shadow-sm border p-6 ${syncStatus.isOnline ? 'border-green-200' : 'border-red-200'}`}>
+        <div className={`bg-white rounded-full shadow-sm border p-6 ${syncStatus.isOnline ? 'border-green-200' : 'border-destructive/50'}`}>
           <div className="flex items-center">
-            <WifiIcon className={`h-8 w-8 ${syncStatus.isOnline ? 'text-green-600' : 'text-red-600'}`} />
+            <WifiIcon className={`h-8 w-8 ${syncStatus.isOnline ? 'text-green-600' : 'text-destructive'}`} />
             <div className="ml-4">
               <p className="text-sm font-medium text-gray-600">연결 상태</p>
-              <p className={`text-2xl font-bold ${syncStatus.isOnline ? 'text-green-600' : 'text-red-600'}`}>
+              <p className={`text-2xl font-bold ${syncStatus.isOnline ? 'text-green-600' : 'text-destructive'}`}>
                 {syncStatus.isOnline ? '온라인' : '오프라인'}
               </p>
             </div>
@@ -252,10 +252,10 @@ const OfflineManager: React.FC<OfflineManagerProps> = ({ compact = false }) => {
 
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
           <div className="flex items-center">
-            <CloudArrowUpIcon className="h-8 w-8 text-yellow-600" />
+            <CloudArrowUpIcon className="h-8 w-8 text-foreground" />
             <div className="ml-4">
               <p className="text-sm font-medium text-gray-600">대기 중</p>
-              <p className="text-2xl font-bold text-yellow-600">{syncStatus.pendingCount}</p>
+              <p className="text-2xl font-bold text-foreground">{syncStatus.pendingCount}</p>
             </div>
           </div>
         </div>
@@ -307,7 +307,7 @@ const OfflineManager: React.FC<OfflineManagerProps> = ({ compact = false }) => {
               <span className="mr-4">대기: {syncStatus.pendingCount}개</span>
             )}
             {syncStatus.failedCount > 0 && (
-              <span className="mr-4 text-red-600">실패: {syncStatus.failedCount}개</span>
+              <span className="mr-4 text-destructive">실패: {syncStatus.failedCount}개</span>
             )}
             {syncStatus.conflictCount > 0 && (
               <span className="text-purple-600">충돌: {syncStatus.conflictCount}개</span>
@@ -435,7 +435,7 @@ const OfflineManager: React.FC<OfflineManagerProps> = ({ compact = false }) => {
                 <input
                   type="number"
                   defaultValue={config.syncInterval / 1000}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-full"
                   onChange={(e) => {
                     config.syncInterval = parseInt(e.target.value) * 1000;
                   }}
@@ -449,7 +449,7 @@ const OfflineManager: React.FC<OfflineManagerProps> = ({ compact = false }) => {
                 <input
                   type="number"
                   defaultValue={config.batchSize}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-full"
                   onChange={(e) => {
                     config.batchSize = parseInt(e.target.value);
                   }}
@@ -463,7 +463,7 @@ const OfflineManager: React.FC<OfflineManagerProps> = ({ compact = false }) => {
                 <input
                   type="number"
                   defaultValue={config.maxRetries}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-full"
                   onChange={(e) => {
                     config.maxRetries = parseInt(e.target.value);
                   }}

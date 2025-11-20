@@ -244,7 +244,7 @@ const MediaViewer: React.FC<MediaViewerProps> = ({
             {allowDownload && currentFile.type !== 'audio' && (
               <button
                 onClick={downloadFile}
-                className="p-2 text-white hover:bg-white/20 rounded-lg transition-colors"
+                className="p-2 text-white hover:bg-white/20 rounded-full transition-colors"
                 title="다운로드"
               >
                 <ArrowDownTrayIcon className="h-5 w-5" />
@@ -253,7 +253,7 @@ const MediaViewer: React.FC<MediaViewerProps> = ({
 
             <button
               onClick={onClose}
-              className="p-2 text-white hover:bg-white/20 rounded-lg transition-colors"
+              className="p-2 text-white hover:bg-white/20 rounded-full transition-colors"
               title="닫기"
             >
               <XMarkIcon className="h-5 w-5" />
@@ -345,7 +345,7 @@ const MediaViewer: React.FC<MediaViewerProps> = ({
             {onDelete && (
               <button
                 onClick={() => onDelete(currentFile.id)}
-                className="btn-danger w-full py-2 px-4 rounded-lg transition-colors mt-6"
+                className="btn-danger w-full py-2 px-4 rounded-full transition-colors mt-6"
               >
                 파일 삭제
               </button>
@@ -364,7 +364,7 @@ const MediaViewer: React.FC<MediaViewerProps> = ({
                 <button
                   key={file.id}
                   onClick={() => setCurrentIndex(actualIndex)}
-                  className={`flex-shrink-0 w-16 h-16 rounded-lg border-2 overflow-hidden transition-all ${
+                  className={`flex-shrink-0 w-16 h-16 rounded-full border-2 overflow-hidden transition-all ${
                     actualIndex === currentIndex
                       ? 'border-blue-500 opacity-100'
                       : 'border-transparent opacity-60 hover:opacity-80'

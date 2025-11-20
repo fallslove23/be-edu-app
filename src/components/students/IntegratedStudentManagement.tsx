@@ -177,7 +177,7 @@ const IntegratedStudentManagement: React.FC = () => {
           
           <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
             <div className="flex items-center">
-              <TrophyIcon className="h-8 w-8 text-yellow-500" />
+              <TrophyIcon className="h-8 w-8 text-foreground" />
               <div className="ml-4">
                 <p className="text-sm font-medium text-gray-600">평균 성과</p>
                 <p className="text-2xl font-semibold text-gray-900">85.2점</p>

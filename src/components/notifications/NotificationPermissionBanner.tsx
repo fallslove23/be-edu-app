@@ -53,7 +53,7 @@ export default function NotificationPermissionBanner() {
         <div className="flex items-start gap-4">
           {/* 아이콘 */}
           <div className="flex-shrink-0">
-            <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+            <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
               <BellIcon className="h-6 w-6 text-blue-600" />
             </div>
           </div>
@@ -69,13 +69,13 @@ export default function NotificationPermissionBanner() {
             <div className="flex items-center gap-2">
               <button
                 onClick={handleEnable}
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
+                className="px-4 py-2 bg-primary text-primary-foreground rounded-full text-sm font-medium hover:bg-primary/90 transition-colors"
               >
                 알림 허용
               </button>
               <button
                 onClick={handleDismiss}
-                className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg text-sm hover:bg-gray-50 transition-colors"
+                className="px-4 py-2 border border-gray-300 text-gray-700 rounded-full text-sm hover:bg-gray-50 transition-colors"
               >
                 나중에
               </button>

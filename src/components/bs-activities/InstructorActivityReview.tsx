@@ -223,7 +223,7 @@ const InstructorActivityReview: React.FC<InstructorActivityReviewProps> = ({
         <div className="p-4">
           <div className="flex items-start justify-between mb-3">
             <div className="flex items-center flex-1">
-              <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mr-3">
+              <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
                 <span className="text-sm font-medium text-blue-600">
                   {activity.trainee_name?.charAt(0) || 'U'}
                 </span>
@@ -232,7 +232,7 @@ const InstructorActivityReview: React.FC<InstructorActivityReviewProps> = ({
                 <div className="flex items-center">
                   <h3 className="font-semibold text-gray-900">{activity.trainee_name}</h3>
                   {activity.is_best_practice && (
-                    <span className="ml-2 px-2 py-0.5 text-xs bg-yellow-100 text-yellow-700 rounded-full flex items-center">
+                    <span className="ml-2 px-2 py-0.5 text-xs bg-yellow-100 text-orange-700 rounded-full flex items-center">
                       <StarIconSolid className="w-3 h-3 mr-1" />
                       우수사례
                     </span>
@@ -253,7 +253,7 @@ const InstructorActivityReview: React.FC<InstructorActivityReviewProps> = ({
               {activityCategoryLabels[activity.category]}
             </span>
             {activity.submission_status === 'submitted' && (
-              <span className="px-2 py-1 text-xs bg-green-100 text-green-700 rounded-full flex items-center">
+              <span className="px-2 py-1 text-xs bg-green-500/10 text-green-700 rounded-full flex items-center">
                 <CheckCircleIcon className="w-3 h-3 mr-1" />
                 제출완료
               </span>
@@ -397,10 +397,10 @@ const InstructorActivityReview: React.FC<InstructorActivityReviewProps> = ({
               )}
               <button
                 onClick={() => handleToggleBestPractice(activity)}
-                className={`flex-1 py-2.5 rounded-lg font-medium transition-colors flex items-center justify-center ${
+                className={`flex-1 py-2.5 rounded-full font-medium transition-colors flex items-center justify-center ${
                   activity.is_best_practice
-                    ? 'bg-yellow-100 text-yellow-700 hover:bg-yellow-200 border border-yellow-300'
-                    : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-300'
+                    ? 'bg-yellow-100 text-orange-700 hover:bg-yellow-200 border border-yellow-300'
+                    : 'bg-white text-foreground hover:bg-muted border border-gray-300'
                 }`}
               >
                 <StarIcon className="w-4 h-4 mr-2" />
@@ -437,7 +437,7 @@ const InstructorActivityReview: React.FC<InstructorActivityReviewProps> = ({
         </div>
         <div className="bg-white p-3 rounded-lg border border-gray-200">
           <div className="text-xs text-gray-500">우수 사례</div>
-          <div className="text-xl font-bold text-yellow-600 mt-1">
+          <div className="text-xl font-bold text-foreground mt-1">
             {activities.filter(a => a.is_best_practice).length}
           </div>
         </div>
@@ -462,7 +462,7 @@ const InstructorActivityReview: React.FC<InstructorActivityReviewProps> = ({
           <select
             value={categoryFilter}
             onChange={(e) => setCategoryFilter(e.target.value as ActivityCategory | 'all')}
-            className="flex-1 px-3 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="flex-1 px-3 py-2.5 border border-gray-300 rounded-full text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           >
             <option value="all">모든 유형</option>
             {(Object.keys(activityCategoryLabels) as ActivityCategory[]).map((cat) => (
@@ -475,7 +475,7 @@ const InstructorActivityReview: React.FC<InstructorActivityReviewProps> = ({
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value as SubmissionStatus | 'all')}
-            className="flex-1 px-3 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="flex-1 px-3 py-2.5 border border-gray-300 rounded-full text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           >
             <option value="all">모든 상태</option>
             <option value="submitted">제출완료</option>
@@ -564,7 +564,7 @@ const InstructorActivityReview: React.FC<InstructorActivityReviewProps> = ({
                   placeholder="교육생에게 전달할 피드백을 작성해주세요"
                   rows={4}
                   maxLength={500}
-                  className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
+                  className="w-full px-3 py-2.5 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
                 />
                 <div className="text-xs text-gray-400 mt-1 text-right">
                   {feedbackComment.length}/500

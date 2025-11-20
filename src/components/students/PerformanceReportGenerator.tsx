@@ -415,7 +415,7 @@ const PerformanceReportGenerator: React.FC<PerformanceReportGeneratorProps> = ({
                       type="text"
                       value={config.title}
                       onChange={(e) => handleConfigChange('title', e.target.value)}
-                      className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                      className="w-full border border-gray-300 rounded-full px-3 py-2"
                     />
                   </div>
                   <div>
@@ -423,7 +423,7 @@ const PerformanceReportGenerator: React.FC<PerformanceReportGeneratorProps> = ({
                     <select
                       value={config.format}
                       onChange={(e) => handleConfigChange('format', e.target.value)}
-                      className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                      className="w-full border border-gray-300 rounded-full px-3 py-2"
                     >
                       <option value="html">HTML (웹)</option>
                       <option value="excel">Excel (CSV)</option>
@@ -436,7 +436,7 @@ const PerformanceReportGenerator: React.FC<PerformanceReportGeneratorProps> = ({
                       type="date"
                       value={config.dateRange.start}
                       onChange={(e) => handleConfigChange('dateRange', { ...config.dateRange, start: e.target.value })}
-                      className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                      className="w-full border border-gray-300 rounded-full px-3 py-2"
                     />
                   </div>
                   <div>
@@ -445,7 +445,7 @@ const PerformanceReportGenerator: React.FC<PerformanceReportGeneratorProps> = ({
                       type="date"
                       value={config.dateRange.end}
                       onChange={(e) => handleConfigChange('dateRange', { ...config.dateRange, end: e.target.value })}
-                      className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                      className="w-full border border-gray-300 rounded-full px-3 py-2"
                     />
                   </div>
                 </div>
@@ -457,7 +457,7 @@ const PerformanceReportGenerator: React.FC<PerformanceReportGeneratorProps> = ({
                 <select
                   value={config.groupBy}
                   onChange={(e) => handleConfigChange('groupBy', e.target.value)}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                  className="w-full border border-gray-300 rounded-full px-3 py-2"
                 >
                   <option value="overall">전체 통합</option>
                   <option value="course">과정별</option>
@@ -565,7 +565,7 @@ const PerformanceReportGenerator: React.FC<PerformanceReportGeneratorProps> = ({
                 <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
                   {previewData.recommendations.map((item: string, index: number) => (
                     <div key={index} className="flex items-start space-x-2 mb-2 last:mb-0">
-                      <span className="text-yellow-600 font-bold">•</span>
+                      <span className="text-foreground font-bold">•</span>
                       <span className="text-yellow-800 text-sm">{item}</span>
                     </div>
                   ))}
@@ -579,7 +579,7 @@ const PerformanceReportGenerator: React.FC<PerformanceReportGeneratorProps> = ({
         <div className="px-6 py-4 border-t border-gray-200 flex justify-between items-center">
           <button
             onClick={onClose}
-            className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
+            className="px-4 py-2 border border-gray-300 rounded-full text-gray-700 hover:bg-gray-50"
           >
             취소
           </button>
@@ -587,7 +587,7 @@ const PerformanceReportGenerator: React.FC<PerformanceReportGeneratorProps> = ({
           <button
             onClick={generateReport}
             disabled={isGenerating}
-            className={`px-6 py-2 rounded-lg text-white flex items-center space-x-2 ${
+            className={`px-6 py-2 rounded-full text-white flex items-center space-x-2 ${
               isGenerating 
                 ? 'bg-gray-400 cursor-not-allowed' 
                 : 'btn-primary'

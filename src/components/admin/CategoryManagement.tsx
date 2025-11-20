@@ -161,13 +161,13 @@ export const CategoryManagement: React.FC = () => {
           <div className="flex items-center gap-2">
             <button
               onClick={() => startEdit(category)}
-              className="px-3 py-1.5 text-sm bg-primary text-primary-foreground rounded hover:bg-primary/90 transition-colors"
+              className="px-3 py-1.5 text-sm bg-primary text-primary-foreground rounded-full hover:bg-primary/90 transition-colors"
             >
               수정
             </button>
             <button
               onClick={() => setDeleteConfirmId(category.id)}
-              className="px-3 py-1.5 text-sm bg-destructive text-destructive-foreground rounded hover:bg-destructive/90 transition-colors"
+              className="px-3 py-1.5 text-sm bg-destructive text-destructive-foreground rounded-full hover:bg-destructive/90 transition-colors"
             >
               삭제
             </button>
@@ -197,13 +197,13 @@ export const CategoryManagement: React.FC = () => {
               <div className="flex justify-end gap-2">
                 <button
                   onClick={() => setDeleteConfirmId(null)}
-                  className="px-4 py-2 bg-secondary text-secondary-foreground rounded hover:bg-secondary/80 transition-colors"
+                  className="px-4 py-2 bg-secondary text-secondary-foreground rounded-full hover:bg-secondary/80 transition-colors"
                 >
                   취소
                 </button>
                 <button
                   onClick={() => handleDelete(category.id)}
-                  className="px-4 py-2 bg-destructive text-destructive-foreground rounded hover:bg-destructive/90 transition-colors"
+                  className="px-4 py-2 bg-destructive text-destructive-foreground rounded-full hover:bg-destructive/90 transition-colors"
                 >
                   삭제
                 </button>
@@ -238,7 +238,7 @@ export const CategoryManagement: React.FC = () => {
         </div>
         <button
           onClick={() => setIsFormOpen(true)}
-          className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
+          className="px-4 py-2 bg-primary text-primary-foreground rounded-full hover:bg-primary/90 transition-colors"
         >
           + 카테고리 추가
         </button>
@@ -328,7 +328,7 @@ export const CategoryManagement: React.FC = () => {
                     <button
                       key={color}
                       onClick={() => setFormData({ ...formData, color })}
-                      className={`w-10 h-10 rounded-lg border-2 transition-all ${
+                      className={`w-10 h-10 rounded-full border-2 transition-all ${
                         formData.color === color ? 'border-primary scale-110' : 'border-border'
                       }`}
                       style={{ backgroundColor: color }}
@@ -388,14 +388,14 @@ export const CategoryManagement: React.FC = () => {
             <div className="flex justify-end gap-2 mt-6">
               <button
                 onClick={resetForm}
-                className="px-4 py-2 bg-secondary text-secondary-foreground rounded-lg hover:bg-secondary/80 transition-colors"
+                className="px-4 py-2 bg-secondary text-secondary-foreground rounded-full hover:bg-secondary/80 transition-colors"
               >
                 취소
               </button>
               <button
                 onClick={editingCategory ? handleUpdate : handleCreate}
                 disabled={!formData.name.trim()}
-                className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-4 py-2 bg-primary text-primary-foreground rounded-full hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {editingCategory ? '수정' : '추가'}
               </button>

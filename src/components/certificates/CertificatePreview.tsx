@@ -72,7 +72,7 @@ const CertificatePreview: React.FC<CertificatePreviewProps> = ({
             {onDownload && (
               <button
                 onClick={onDownload}
-                className="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors flex items-center text-sm"
+                className="bg-gray-600 text-white px-4 py-2 rounded-full hover:bg-gray-700 transition-colors flex items-center text-sm"
               >
                 <ArrowDownTrayIcon className="h-4 w-4 mr-2" />
                 다운로드
@@ -81,7 +81,7 @@ const CertificatePreview: React.FC<CertificatePreviewProps> = ({
             {onPrint && (
               <button
                 onClick={onPrint}
-                className="bg-gray-700 text-white px-4 py-2 rounded-lg hover:bg-gray-800 transition-colors flex items-center text-sm"
+                className="bg-gray-700 text-white px-4 py-2 rounded-full hover:bg-gray-800 transition-colors flex items-center text-sm"
               >
                 <PrinterIcon className="h-4 w-4 mr-2" />
                 인쇄
@@ -101,7 +101,7 @@ const CertificatePreview: React.FC<CertificatePreviewProps> = ({
           <div className="bg-white border-2 border-gray-300 rounded-lg p-12 max-w-3xl mx-auto" style={{ aspectRatio: '4/3' }}>
             {/* 로고/헤더 영역 */}
             <div className={`mb-8 ${getLogoPositionClass(template.logo_position)}`}>
-              <div className="inline-flex items-center justify-center w-16 h-16 bg-gray-100 rounded-full mb-4">
+              <div className="inline-flex items-center justify-center w-16 h-16 bg-gray-100 rounded-lg mb-4">
                 <span className="text-2xl font-bold text-gray-600">BS</span>
               </div>
               <div className="text-lg font-medium text-gray-600">BS교육연구소</div>

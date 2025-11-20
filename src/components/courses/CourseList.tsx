@@ -104,7 +104,7 @@ const CourseList: React.FC<CourseListProps> = ({
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        <div className="animate-spin rounded-lg h-8 w-8 border-b-2 border-primary"></div>
         <span className="ml-2 text-muted-foreground">과정 목록을 불러오는 중...</span>
       </div>
     );
@@ -113,7 +113,7 @@ const CourseList: React.FC<CourseListProps> = ({
   return (
     <div className="space-y-6">
       {/* 헤더 */}
-      <div className="bg-card rounded-xl shadow-sm border border-border">
+      <div className="bg-card rounded-lg shadow-sm border border-border">
         <div className="p-6">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
             <div>
@@ -143,7 +143,7 @@ const CourseList: React.FC<CourseListProps> = ({
       </div>
 
       {/* 검색 및 필터 */}
-      <div className="bg-card rounded-xl shadow-sm border border-border">
+      <div className="bg-card rounded-lg shadow-sm border border-border">
         <div className="p-6">
           <div className="flex flex-col md:flex-row gap-3">
             {/* 검색 입력 */}
@@ -179,7 +179,7 @@ const CourseList: React.FC<CourseListProps> = ({
             </div>
 
             {/* 결과 카운트 */}
-            <div className="flex items-center px-4 py-2.5 bg-secondary/30 rounded-lg border border-border">
+            <div className="flex items-center px-4 py-2.5 bg-secondary/30 rounded-full border border-border">
               <FunnelIcon className="h-4 w-4 mr-2 text-muted-foreground" />
               <span className="text-sm font-medium text-foreground whitespace-nowrap">
                 총 <span className="text-primary font-semibold">{filteredCourses.length}</span>개 과정
@@ -191,7 +191,7 @@ const CourseList: React.FC<CourseListProps> = ({
 
       {/* 에러 메시지 */}
       {error && (
-        <div className="bg-destructive/10 border border-destructive text-destructive px-4 py-3 rounded-md">
+        <div className="bg-destructive/10 border border-destructive text-destructive px-4 py-3 rounded-full">
           <div className="flex items-center justify-between">
             <span>{error}</span>
             <button
@@ -223,7 +223,7 @@ const CourseList: React.FC<CourseListProps> = ({
       ) : (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {filteredCourses.map((course) => (
-            <div key={course.id} className="bg-card rounded-xl shadow-sm border border-border p-6 hover:shadow-lg transition-shadow">
+            <div key={course.id} className="bg-card rounded-lg shadow-sm border border-border p-6 hover:shadow-lg transition-shadow">
               {/* 과정명 및 상태 */}
               <div className="flex justify-between items-start mb-4">
                 <h3 className="text-lg font-semibold text-card-foreground line-clamp-2">

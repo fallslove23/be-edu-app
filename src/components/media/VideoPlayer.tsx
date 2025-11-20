@@ -186,7 +186,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   const progressPercent = duration > 0 ? (currentTime / duration) * 100 : 0;
 
   return (
-    <div className={`relative bg-black rounded-lg overflow-hidden ${className}`}>
+    <div className={`relative bg-black rounded-full overflow-hidden ${className}`}>
       <video
         ref={videoRef}
         src={src}
@@ -209,16 +209,16 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
           {/* 진행률 바 */}
           <div 
             ref={progressRef}
-            className="w-full h-2 bg-white/30 rounded-full cursor-pointer mb-4"
+            className="w-full h-2 bg-white/30 rounded-lg cursor-pointer mb-4"
             onClick={handleProgressClick}
           >
-            <div className="h-full bg-white/20 rounded-full relative">
+            <div className="h-full bg-white/20 rounded-lg relative">
               <div
-                className="h-full bg-blue-500 rounded-full"
+                className="h-full bg-blue-500 rounded-lg"
                 style={{ width: `${progressPercent}%` }}
               />
               <div
-                className="h-full bg-white/30 rounded-full absolute top-0"
+                className="h-full bg-white/30 rounded-lg absolute top-0"
                 style={{ width: `${buffered}%` }}
               />
             </div>
@@ -240,14 +240,14 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
 
               <button
                 onClick={() => skip(-10)}
-                className="p-2 hover:bg-white/20 rounded-full transition-colors"
+                className="p-2 hover:bg-white/20 rounded-lg transition-colors"
               >
                 <BackwardIcon className="h-5 w-5" />
               </button>
 
               <button
                 onClick={() => skip(10)}
-                className="p-2 hover:bg-white/20 rounded-full transition-colors"
+                className="p-2 hover:bg-white/20 rounded-lg transition-colors"
               >
                 <ForwardIcon className="h-5 w-5" />
               </button>
@@ -270,7 +270,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
                   step="0.1"
                   value={isMuted ? 0 : volume}
                   onChange={handleVolumeChange}
-                  className="w-16 h-1 bg-white/30 rounded-full slider"
+                  className="w-16 h-1 bg-white/30 rounded-lg slider"
                 />
               </div>
 
@@ -284,7 +284,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
               <div className="relative">
                 <button
                   onClick={() => setShowSettings(!showSettings)}
-                  className="p-2 hover:bg-white/20 rounded-full transition-colors"
+                  className="p-2 hover:bg-white/20 rounded-lg transition-colors"
                 >
                   <Cog6ToothIcon className="h-5 w-5" />
                 </button>
@@ -322,7 +322,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
 
       {/* 제목 오버레이 */}
       {title && (
-        <div className="absolute top-4 left-4 text-white bg-black/50 px-3 py-1 rounded-lg">
+        <div className="absolute top-4 left-4 text-white bg-black/50 px-3 py-1 rounded-full">
           <span className="text-sm font-medium">{title}</span>
         </div>
       )}

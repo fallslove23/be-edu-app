@@ -251,7 +251,7 @@ const SecureInput: React.FC<{
           onChange={handleChange}
           placeholder={placeholder}
           className={`mobile-input w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-            errors.length > 0 ? 'border-red-500' : 'border-gray-300'
+            errors.length > 0 ? 'border-destructive/50' : 'border-gray-300'
           } ${className}`}
         />
         
@@ -271,7 +271,7 @@ const SecureInput: React.FC<{
       </div>
       
       {errors.length > 0 && (
-        <div className="mt-1 text-sm text-red-600">
+        <div className="mt-1 text-sm text-destructive">
           {errors.map((error, index) => (
             <div key={index} className="flex items-center space-x-1">
               <ExclamationTriangleIcon className="h-4 w-4" />
@@ -330,12 +330,12 @@ const SecurityDashboard: React.FC = () => {
       
       {/* 현재 세션 정보 */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-        <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg">
+        <div className="bg-green-500/10 dark:bg-green-900/20 p-4 rounded-lg">
           <div className="flex items-center space-x-2 mb-2">
             <LockClosedIcon className="h-5 w-5 text-green-600" />
             <span className="font-medium">세션 상태</span>
           </div>
-          <p className={`text-sm ${sessionInfo.active ? 'text-green-600' : 'text-red-600'}`}>
+          <p className={`text-sm ${sessionInfo.active ? 'text-green-600' : 'text-destructive'}`}>
             {sessionInfo.active ? '활성' : '비활성'}
           </p>
           {sessionInfo.active && (
@@ -368,10 +368,10 @@ const SecurityDashboard: React.FC = () => {
                 <div className="flex items-center space-x-2">
                   <span className="text-sm font-medium capitalize">{log.type.replace('_', ' ')}</span>
                   <span className={`px-2 py-1 text-xs rounded-full ${
-                    log.severity === 'critical' ? 'bg-red-100 text-red-800' :
-                    log.severity === 'high' ? 'bg-orange-100 text-orange-800' :
+                    log.severity === 'critical' ? 'bg-destructive/10 text-destructive' :
+                    log.severity === 'high' ? 'bg-orange-500/10 text-orange-700' :
                     log.severity === 'medium' ? 'bg-yellow-100 text-yellow-800' :
-                    'bg-green-100 text-green-800'
+                    'bg-green-500/10 text-green-700'
                   }`}>
                     {log.severity}
                   </span>

@@ -86,11 +86,11 @@ const LearningProgressVisualization: React.FC<LearningProgressVisualizationProps
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'completed':
-        return 'text-green-600 bg-green-50 border-green-200';
+        return 'text-green-600 bg-green-500/10 border-green-200';
       case 'active':
         return 'text-blue-600 bg-blue-50 border-blue-200';
       case 'behind':
-        return 'text-red-600 bg-red-50 border-red-200';
+        return 'text-destructive bg-destructive/10 border-destructive/50';
       default:
         return 'text-gray-600 bg-gray-50 border-gray-200';
     }
@@ -191,7 +191,7 @@ const LearningProgressVisualization: React.FC<LearningProgressVisualizationProps
             </div>
           </div>
 
-          <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg border border-green-200 dark:border-green-800">
+          <div className="bg-green-500/10 dark:bg-green-900/20 p-4 rounded-lg border border-green-200 dark:border-green-800">
             <div className="flex items-center">
               <TrophyIcon className="h-8 w-8 text-green-600 dark:text-green-400" />
               <div className="ml-3">
@@ -203,7 +203,7 @@ const LearningProgressVisualization: React.FC<LearningProgressVisualizationProps
 
           <div className="bg-yellow-50 dark:bg-yellow-900/20 p-4 rounded-lg border border-yellow-200 dark:border-yellow-800">
             <div className="flex items-center">
-              <ChartBarIcon className="h-8 w-8 text-yellow-600 dark:text-yellow-400" />
+              <ChartBarIcon className="h-8 w-8 text-foreground dark:text-yellow-400" />
               <div className="ml-3">
                 <p className="text-sm font-medium text-yellow-900 dark:text-yellow-100">평균 점수</p>
                 <p className="text-2xl font-bold text-yellow-900 dark:text-yellow-100">{calculateAverageScore()}</p>
@@ -252,7 +252,7 @@ const LearningProgressVisualization: React.FC<LearningProgressVisualizationProps
                   <span className="text-gray-600 dark:text-gray-400">진도율</span>
                   <span className="font-medium text-gray-900 dark:text-white">{course.progress}%</span>
                 </div>
-                <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-lg h-2">
                   <div
                     className={`h-2 rounded-full transition-all duration-500 ${getProgressBarColor(course.progress)}`}
                     style={{ width: `${course.progress}%` }}
@@ -297,9 +297,9 @@ const LearningProgressVisualization: React.FC<LearningProgressVisualizationProps
                 return (
                   <div key={day} className="flex items-center">
                     <span className="w-6 text-xs text-gray-600 dark:text-gray-400">{day}</span>
-                    <div className="flex-1 mx-2 bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                    <div className="flex-1 mx-2 bg-gray-200 dark:bg-gray-700 rounded-lg h-2">
                       <div
-                        className="h-2 bg-blue-500 rounded-full transition-all duration-500"
+                        className="h-2 bg-blue-500 rounded-lg transition-all duration-500"
                         style={{ width: `${activity}%` }}
                       ></div>
                     </div>
@@ -322,9 +322,9 @@ const LearningProgressVisualization: React.FC<LearningProgressVisualizationProps
               ].map((timeSlot) => (
                 <div key={timeSlot.time} className="flex items-center">
                   <span className="w-16 text-xs text-gray-600 dark:text-gray-400">{timeSlot.label}</span>
-                  <div className="flex-1 mx-2 bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                  <div className="flex-1 mx-2 bg-gray-200 dark:bg-gray-700 rounded-lg h-2">
                     <div
-                      className="h-2 bg-green-500 rounded-full transition-all duration-500"
+                      className="h-2 bg-green-500 rounded-lg transition-all duration-500"
                       style={{ width: `${timeSlot.activity}%` }}
                     ></div>
                   </div>

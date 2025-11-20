@@ -364,9 +364,9 @@ const PresentationScheduler: React.FC<PresentationSchedulerProps> = ({
     switch (status) {
       case 'draft': return 'bg-gray-100 text-gray-700';
       case 'scheduled': return 'bg-blue-100 text-blue-700';
-      case 'in_progress': return 'bg-yellow-100 text-yellow-700';
-      case 'completed': return 'bg-green-100 text-green-700';
-      case 'cancelled': return 'bg-red-100 text-red-700';
+      case 'in_progress': return 'bg-yellow-100 text-orange-700';
+      case 'completed': return 'bg-green-500/10 text-green-700';
+      case 'cancelled': return 'bg-destructive/10 text-destructive';
       default: return 'bg-gray-100 text-gray-700';
     }
   };
@@ -385,7 +385,7 @@ const PresentationScheduler: React.FC<PresentationSchedulerProps> = ({
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-lg h-8 w-8 border-b-2 border-blue-600"></div>
         <span className="ml-2">발표 일정을 불러오는 중...</span>
       </div>
     );
@@ -409,26 +409,26 @@ const PresentationScheduler: React.FC<PresentationSchedulerProps> = ({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                발표일 <span className="text-red-500">*</span>
+                발표일 <span className="text-destructive">*</span>
               </label>
               <input
                 type="date"
                 value={formData.presentationDate}
                 onChange={(e) => setFormData(prev => ({ ...prev, presentationDate: e.target.value }))}
                 min={new Date().toISOString().split('T')[0]}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                선발 마감일시 <span className="text-red-500">*</span>
+                선발 마감일시 <span className="text-destructive">*</span>
               </label>
               <input
                 type="datetime-local"
                 value={formData.deadline}
                 onChange={(e) => setFormData(prev => ({ ...prev, deadline: e.target.value }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
             </div>
 
@@ -442,7 +442,7 @@ const PresentationScheduler: React.FC<PresentationSchedulerProps> = ({
                 onChange={(e) => setFormData(prev => ({ ...prev, maxPresenters: Number(e.target.value) }))}
                 min="1"
                 max="20"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
             </div>
 
@@ -453,7 +453,7 @@ const PresentationScheduler: React.FC<PresentationSchedulerProps> = ({
               <select
                 value={formData.timePerPresentation}
                 onChange={(e) => setFormData(prev => ({ ...prev, timePerPresentation: Number(e.target.value) }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               >
                 <option value={10}>10분</option>
                 <option value={15}>15분</option>
@@ -470,7 +470,7 @@ const PresentationScheduler: React.FC<PresentationSchedulerProps> = ({
                 type="time"
                 value={formData.startTime}
                 onChange={(e) => setFormData(prev => ({ ...prev, startTime: e.target.value }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
             </div>
 
@@ -482,7 +482,7 @@ const PresentationScheduler: React.FC<PresentationSchedulerProps> = ({
                 type="time"
                 value={formData.endTime}
                 onChange={(e) => setFormData(prev => ({ ...prev, endTime: e.target.value }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
             </div>
 
@@ -495,7 +495,7 @@ const PresentationScheduler: React.FC<PresentationSchedulerProps> = ({
                 value={formData.location}
                 onChange={(e) => setFormData(prev => ({ ...prev, location: e.target.value }))}
                 placeholder="예: 본사 강의실 A"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
             </div>
 
@@ -508,7 +508,7 @@ const PresentationScheduler: React.FC<PresentationSchedulerProps> = ({
                 onChange={(e) => setFormData(prev => ({ ...prev, notes: e.target.value }))}
                 rows={3}
                 placeholder="발표 관련 특이사항이나 안내사항을 입력하세요"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
               />
             </div>
           </div>
@@ -532,7 +532,7 @@ const PresentationScheduler: React.FC<PresentationSchedulerProps> = ({
           <div className="mt-6 flex justify-end space-x-3">
             <button
               onClick={() => setCurrentView('list')}
-              className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
+              className="px-4 py-2 border border-gray-300 rounded-full text-gray-700 hover:bg-gray-50"
             >
               취소
             </button>
@@ -625,12 +625,12 @@ const PresentationScheduler: React.FC<PresentationSchedulerProps> = ({
                   <p className="font-medium text-yellow-800">
                     {presentationDay.currentPresenter.studentName}
                   </p>
-                  <p className="text-sm text-yellow-700">
+                  <p className="text-sm text-foreground">
                     순서: {presentationDay.currentPresenter.presentationOrder}번 | 
                     시간: {presentationDay.currentPresenter.timeSlot}
                   </p>
                 </div>
-                <MegaphoneIcon className="h-8 w-8 text-yellow-600" />
+                <MegaphoneIcon className="h-8 w-8 text-foreground" />
               </div>
             </div>
           )}
@@ -647,11 +647,11 @@ const PresentationScheduler: React.FC<PresentationSchedulerProps> = ({
               return (
                 <div
                   key={student.studentId}
-                  className={`p-4 border rounded-lg ${
+                  className={`p-4 border rounded-full ${
                     isCurrent 
                       ? 'border-yellow-300 bg-yellow-50' 
                       : isCompleted 
-                        ? 'border-green-300 bg-green-50'
+                        ? 'border-green-300 bg-green-500/10'
                         : 'border-gray-200 bg-white'
                   }`}
                 >
@@ -662,7 +662,7 @@ const PresentationScheduler: React.FC<PresentationSchedulerProps> = ({
                           {student.presentationOrder}. {student.studentName}
                         </span>
                         {isCompleted && <CheckCircleIcon className="h-5 w-5 text-green-600" />}
-                        {isCurrent && <MegaphoneIcon className="h-5 w-5 text-yellow-600" />}
+                        {isCurrent && <MegaphoneIcon className="h-5 w-5 text-foreground" />}
                       </div>
                       <p className="text-sm text-gray-600">
                         시간: {student.timeSlot}
@@ -705,7 +705,7 @@ const PresentationScheduler: React.FC<PresentationSchedulerProps> = ({
           {isOperator && (
             <button
               onClick={() => setCurrentView('create')}
-              className="btn-primary px-4 py-2 rounded-lg flex items-center space-x-2"
+              className="btn-primary px-4 py-2 rounded-full flex items-center space-x-2"
             >
               <PlusIcon className="h-4 w-4" />
               <span>발표 일정 생성</span>
@@ -730,7 +730,7 @@ const PresentationScheduler: React.FC<PresentationSchedulerProps> = ({
             {isOperator && (
               <button
                 onClick={() => setCurrentView('create')}
-                className="btn-primary px-4 py-2 rounded-lg"
+                className="btn-primary px-4 py-2 rounded-full"
               >
                 첫 발표 일정 생성하기
               </button>
@@ -802,7 +802,7 @@ const PresentationScheduler: React.FC<PresentationSchedulerProps> = ({
                     
                     <button
                       onClick={() => {/* 상세보기 */}}
-                      className="p-2 text-green-600 hover:bg-green-100 rounded-lg"
+                      className="p-2 text-green-600 hover:bg-green-500/10 rounded-lg"
                       title="상세보기"
                     >
                       <EyeIcon className="h-4 w-4" />
@@ -811,7 +811,7 @@ const PresentationScheduler: React.FC<PresentationSchedulerProps> = ({
                     {isOperator && (
                       <button
                         onClick={() => {/* 편집 */}}
-                        className="p-2 text-orange-600 hover:bg-orange-100 rounded-lg"
+                        className="p-2 text-orange-600 hover:bg-orange-500/10 rounded-lg"
                         title="편집"
                       >
                         <PencilIcon className="h-4 w-4" />

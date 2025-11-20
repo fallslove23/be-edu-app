@@ -369,7 +369,7 @@ const AdvancedAnalytics: React.FC = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-lg h-8 w-8 border-b-2 border-blue-600"></div>
         <span className="ml-2">분석 데이터를 로딩 중...</span>
       </div>
     );
@@ -397,7 +397,7 @@ const AdvancedAnalytics: React.FC = () => {
             <select
               value={selectedTimeRange}
               onChange={(e) => setSelectedTimeRange(e.target.value as any)}
-              className="border border-gray-300 rounded-lg px-3 py-2 text-sm"
+              className="border border-gray-300 rounded-full px-3 py-2 text-sm"
             >
               <option value="7d">최근 7일</option>
               <option value="30d">최근 30일</option>
@@ -408,7 +408,7 @@ const AdvancedAnalytics: React.FC = () => {
             <select
               value={selectedDepartment}
               onChange={(e) => setSelectedDepartment(e.target.value)}
-              className="border border-gray-300 rounded-lg px-3 py-2 text-sm"
+              className="border border-gray-300 rounded-full px-3 py-2 text-sm"
             >
               <option value="all">전체 부서</option>
               {analyticsData.departmentStats.map(dept => (
@@ -418,16 +418,16 @@ const AdvancedAnalytics: React.FC = () => {
               ))}
             </select>
 
-            <div className="flex items-center border border-gray-300 rounded-lg">
+            <div className="flex items-center border border-border rounded-full overflow-hidden">
               <button
                 onClick={() => setViewMode('charts')}
-                className={`px-3 py-2 text-sm ${viewMode === 'charts' ? 'bg-blue-500 text-white' : 'text-gray-600'} rounded-l-lg transition-colors`}
+                className={`px-3 py-2 text-sm ${viewMode === 'charts' ? 'bg-primary text-primary-foreground' : 'text-foreground hover:bg-muted'} transition-colors`}
               >
                 <ChartBarIcon className="h-4 w-4" />
               </button>
               <button
                 onClick={() => setViewMode('table')}
-                className={`px-3 py-2 text-sm ${viewMode === 'table' ? 'bg-blue-500 text-white' : 'text-gray-600'} rounded-r-lg transition-colors`}
+                className={`px-3 py-2 text-sm ${viewMode === 'table' ? 'bg-primary text-primary-foreground' : 'text-foreground hover:bg-muted'} transition-colors`}
               >
                 <TableCellsIcon className="h-4 w-4" />
               </button>
@@ -450,7 +450,7 @@ const AdvancedAnalytics: React.FC = () => {
               </button>
             </div>
 
-            <button className="p-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors">
+            <button className="p-2 bg-gray-100 hover:bg-gray-200 rounded-full transition-colors">
               <Cog6ToothIcon className="h-4 w-4 text-gray-600" />
             </button>
           </div>
@@ -511,7 +511,7 @@ const AdvancedAnalytics: React.FC = () => {
                   <p className="text-2xl font-bold text-gray-900">
                     {performanceIndicators.avgProgress}%
                   </p>
-                  <div className={`flex items-center mt-1 ${performanceIndicators.progressChange >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                  <div className={`flex items-center mt-1 ${performanceIndicators.progressChange >= 0 ? 'text-green-600' : 'text-destructive'}`}>
                     {performanceIndicators.progressChange >= 0 ? (
                       <ArrowTrendingUpIcon className="h-4 w-4 mr-1" />
                     ) : (
@@ -522,7 +522,7 @@ const AdvancedAnalytics: React.FC = () => {
                     </span>
                   </div>
                 </div>
-                <div className="p-2 bg-green-100 rounded-lg">
+                <div className="p-2 bg-green-500/10 rounded-lg">
                   <ArrowTrendingUpIcon className="h-6 w-6 text-green-600" />
                 </div>
               </div>
@@ -535,7 +535,7 @@ const AdvancedAnalytics: React.FC = () => {
                   <p className="text-2xl font-bold text-gray-900">
                     {performanceIndicators.avgScore}점
                   </p>
-                  <div className={`flex items-center mt-1 ${performanceIndicators.scoreChange >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                  <div className={`flex items-center mt-1 ${performanceIndicators.scoreChange >= 0 ? 'text-green-600' : 'text-destructive'}`}>
                     {performanceIndicators.scoreChange >= 0 ? (
                       <ArrowTrendingUpIcon className="h-4 w-4 mr-1" />
                     ) : (
@@ -547,7 +547,7 @@ const AdvancedAnalytics: React.FC = () => {
                   </div>
                 </div>
                 <div className="p-2 bg-yellow-100 rounded-lg">
-                  <AcademicCapIcon className="h-6 w-6 text-yellow-600" />
+                  <AcademicCapIcon className="h-6 w-6 text-foreground" />
                 </div>
               </div>
             </div>
@@ -559,7 +559,7 @@ const AdvancedAnalytics: React.FC = () => {
                   <p className="text-2xl font-bold text-gray-900">
                     {performanceIndicators.completionRate}%
                   </p>
-                  <div className={`flex items-center mt-1 ${performanceIndicators.completionChange >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                  <div className={`flex items-center mt-1 ${performanceIndicators.completionChange >= 0 ? 'text-green-600' : 'text-destructive'}`}>
                     {performanceIndicators.completionChange >= 0 ? (
                       <ArrowTrendingUpIcon className="h-4 w-4 mr-1" />
                     ) : (
@@ -650,9 +650,9 @@ const AdvancedAnalytics: React.FC = () => {
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                           <div className="flex items-center">
-                            <div className="w-full bg-gray-200 rounded-full h-2 mr-2">
+                            <div className="w-full bg-gray-200 rounded-lg h-2 mr-2">
                               <div
-                                className="bg-blue-600 h-2 rounded-full"
+                                className="bg-blue-600 h-2 rounded-lg"
                                 style={{ width: `${item.progress}%` }}
                               ></div>
                             </div>
@@ -916,11 +916,11 @@ const AdvancedAnalytics: React.FC = () => {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm text-gray-600">평균 응답시간</p>
-                      <p className="text-2xl font-bold text-yellow-600">
+                      <p className="text-2xl font-bold text-foreground">
                         {analyticsData.realTimeMetrics[analyticsData.realTimeMetrics.length - 1].avgResponseTime}ms
                       </p>
                     </div>
-                    <ClockIcon className="h-8 w-8 text-yellow-500" />
+                    <ClockIcon className="h-8 w-8 text-foreground" />
                   </div>
                 </div>
               </>

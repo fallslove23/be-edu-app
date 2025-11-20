@@ -241,7 +241,7 @@ const StudentActivityInput: React.FC<StudentActivityInputProps> = ({
                   <p className="text-xs text-gray-500">2024-08-2{item}</p>
                 </div>
               </div>
-              <span className="px-2 py-1 text-xs bg-green-100 text-green-700 rounded-full">
+              <span className="px-2 py-1 text-xs bg-green-500/10 text-green-700 rounded-full">
                 제출완료
               </span>
             </div>
@@ -250,7 +250,7 @@ const StudentActivityInput: React.FC<StudentActivityInputProps> = ({
             </p>
             {item === 1 && (
               <div className="mt-3 flex items-center text-sm">
-                <span className="text-yellow-500 mr-1">⭐</span>
+                <span className="text-foreground mr-1">⭐</span>
                 <span className="font-medium text-gray-700">4.5점</span>
                 <span className="mx-2 text-gray-300">|</span>
                 <span className="text-gray-500">피드백 있음</span>
@@ -303,7 +303,7 @@ const StudentActivityInput: React.FC<StudentActivityInputProps> = ({
             value={activityDate}
             onChange={(e) => setActivityDate(e.target.value)}
             max={new Date().toISOString().split('T')[0]}
-            className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="w-full px-3 py-2.5 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           />
         </div>
 
@@ -317,7 +317,7 @@ const StudentActivityInput: React.FC<StudentActivityInputProps> = ({
               <button
                 key={cat}
                 onClick={() => setCategory(cat)}
-                className={`p-3 rounded-lg border-2 transition-all ${
+                className={`p-3 rounded-full border-2 transition-all ${
                   category === cat
                     ? 'border-blue-500 bg-blue-50 text-blue-700'
                     : 'border-gray-200 bg-white text-gray-700 hover:border-gray-300'
@@ -341,7 +341,7 @@ const StudentActivityInput: React.FC<StudentActivityInputProps> = ({
             onChange={(e) => setTitle(e.target.value)}
             placeholder="예: 신규 고객사 방문"
             maxLength={100}
-            className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="w-full px-3 py-2.5 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           />
           <div className="text-xs text-gray-400 mt-1 text-right">
             {title.length}/100
@@ -359,7 +359,7 @@ const StudentActivityInput: React.FC<StudentActivityInputProps> = ({
             placeholder="활동 내용을 자세히 작성해주세요&#10;- 누구를 만났나요?&#10;- 무엇을 했나요?&#10;- 어떤 결과가 있었나요?"
             rows={6}
             maxLength={1000}
-            className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
+            className="w-full px-3 py-2.5 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
           />
           <div className="text-xs text-gray-400 mt-1 text-right">
             {content.length}/1000
@@ -403,7 +403,7 @@ const StudentActivityInput: React.FC<StudentActivityInputProps> = ({
           {images.length < 5 && (
             <button
               onClick={handleCameraCapture}
-              className="w-full py-3 border-2 border-dashed border-gray-300 rounded-lg text-gray-600 hover:border-blue-500 hover:text-blue-600 transition-colors flex items-center justify-center"
+              className="w-full py-3 border-2 border-dashed border-gray-300 rounded-full text-gray-600 hover:border-blue-500 hover:text-blue-600 transition-colors flex items-center justify-center"
             >
               <CameraIcon className="w-5 h-5 mr-2" />
               사진 추가하기
@@ -418,7 +418,7 @@ const StudentActivityInput: React.FC<StudentActivityInputProps> = ({
           </label>
 
           {location ? (
-            <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
+            <div className="p-3 bg-green-500/10 border border-green-200 rounded-lg">
               <div className="flex items-start justify-between">
                 <div className="flex items-start">
                   <MapPinIcon className="w-5 h-5 text-green-600 mr-2 mt-0.5" />
@@ -438,7 +438,7 @@ const StudentActivityInput: React.FC<StudentActivityInputProps> = ({
           ) : (
             <button
               onClick={handleGetLocation}
-              className="w-full py-3 border border-gray-300 rounded-lg text-gray-700 hover:border-blue-500 hover:text-blue-600 transition-colors flex items-center justify-center"
+              className="w-full py-3 border border-gray-300 rounded-full text-gray-700 hover:border-blue-500 hover:text-blue-600 transition-colors flex items-center justify-center"
             >
               <MapPinIcon className="w-5 h-5 mr-2" />
               현재 위치 추가하기
@@ -459,7 +459,7 @@ const StudentActivityInput: React.FC<StudentActivityInputProps> = ({
         </button>
         <button
           onClick={handleSaveDraft}
-          className="w-full bg-white text-gray-700 py-3 rounded-lg font-medium border border-gray-300 hover:bg-gray-50 transition-colors"
+          className="w-full bg-white text-gray-700 py-3 rounded-full font-medium border border-gray-300 hover:bg-gray-50 transition-colors"
         >
           임시 저장
         </button>

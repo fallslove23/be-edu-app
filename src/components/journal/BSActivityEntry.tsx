@@ -244,7 +244,7 @@ const BSActivityEntry: React.FC<BSActivityEntryProps> = ({
           <div className="flex items-center space-x-3">
             <button
               onClick={onCancel}
-              className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg"
+              className="p-2 text-foreground hover:bg-muted rounded-full"
             >
               ←
             </button>
@@ -261,12 +261,12 @@ const BSActivityEntry: React.FC<BSActivityEntryProps> = ({
           
           <div className="flex items-center space-x-2">
             {isSubmitting ? (
-              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
+              <div className="animate-spin rounded-lg h-6 w-6 border-b-2 border-blue-600"></div>
             ) : (
               <>
                 <button
                   onClick={() => handleSubmit(true)}
-                  className="px-3 py-1.5 text-sm text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg"
+                  className="px-3 py-1.5 text-sm text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-full"
                 >
                   임시저장
                 </button>
@@ -288,7 +288,7 @@ const BSActivityEntry: React.FC<BSActivityEntryProps> = ({
               <ExclamationTriangleIcon className="h-5 w-5 text-yellow-400 mr-2" />
               <div>
                 <p className="text-sm text-yellow-800 font-medium">마감 임박!</p>
-                <p className="text-xs text-yellow-700">
+                <p className="text-xs text-foreground">
                   제출 마감: {formatDeadline(submissionDeadline)}
                 </p>
               </div>
@@ -313,7 +313,7 @@ const BSActivityEntry: React.FC<BSActivityEntryProps> = ({
                 value={formData.title || ''}
                 onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
                 placeholder="오늘 수행한 주요 활동을 한 줄로 요약해주세요"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
             </div>
 
@@ -328,13 +328,13 @@ const BSActivityEntry: React.FC<BSActivityEntryProps> = ({
                     value={formData.workSite || ''}
                     onChange={(e) => setFormData(prev => ({ ...prev, workSite: e.target.value }))}
                     placeholder="예: 서울 강남지점, 고객사 A"
-                    className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="flex-1 px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                   {isMobile && (
                     <button
                       type="button"
                       onClick={handleLocationCapture}
-                      className="p-2 text-blue-600 hover:bg-blue-100 rounded-lg"
+                      className="p-2 text-blue-600 hover:bg-blue-100 rounded-full"
                       title="현재 위치 추가"
                     >
                       <MapPinIcon className="h-5 w-5" />
@@ -352,7 +352,7 @@ const BSActivityEntry: React.FC<BSActivityEntryProps> = ({
                     type="date"
                     value={formData.workDate || ''}
                     onChange={(e) => setFormData(prev => ({ ...prev, workDate: e.target.value }))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                   <CalendarDaysIcon className="h-5 w-5 absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none" />
                 </div>
@@ -375,7 +375,7 @@ const BSActivityEntry: React.FC<BSActivityEntryProps> = ({
                 onChange={(e) => setFormData(prev => ({ ...prev, workContent: e.target.value }))}
                 placeholder="오늘 현장에서 수행한 구체적인 업무 내용을 상세히 작성해주세요..."
                 rows={isMobile ? 4 : 6}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
               />
             </div>
 
@@ -388,7 +388,7 @@ const BSActivityEntry: React.FC<BSActivityEntryProps> = ({
                 onChange={(e) => setFormData(prev => ({ ...prev, learningPoints: e.target.value }))}
                 placeholder="오늘 활동을 통해 새롭게 배운 점이나 깨달은 점을 작성해주세요..."
                 rows={isMobile ? 3 : 4}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
               />
             </div>
           </div>
@@ -408,7 +408,7 @@ const BSActivityEntry: React.FC<BSActivityEntryProps> = ({
                 onChange={(e) => setFormData(prev => ({ ...prev, challenges: e.target.value }))}
                 placeholder="활동 중 어려웠던 점이나 발생한 문제점을 작성해주세요..."
                 rows={isMobile ? 3 : 4}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
               />
             </div>
 
@@ -421,7 +421,7 @@ const BSActivityEntry: React.FC<BSActivityEntryProps> = ({
                 onChange={(e) => setFormData(prev => ({ ...prev, solutions: e.target.value }))}
                 placeholder="문제 해결을 위한 방안이나 개선 아이디어를 작성해주세요..."
                 rows={isMobile ? 3 : 4}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
               />
             </div>
 
@@ -434,7 +434,7 @@ const BSActivityEntry: React.FC<BSActivityEntryProps> = ({
                 onChange={(e) => setFormData(prev => ({ ...prev, nextActions: e.target.value }))}
                 placeholder="다음 활동에서 적용하거나 개선하고 싶은 점을 작성해주세요..."
                 rows={isMobile ? 3 : 4}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
               />
             </div>
           </div>
@@ -448,7 +448,7 @@ const BSActivityEntry: React.FC<BSActivityEntryProps> = ({
               <button
                 type="button"
                 onClick={handleImageCapture}
-                className="flex items-center space-x-2 px-3 py-2 text-sm text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg"
+                className="flex items-center space-x-2 px-3 py-2 text-sm text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-full"
               >
                 {isMobile ? <CameraIcon className="h-4 w-4" /> : <PhotoIcon className="h-4 w-4" />}
                 <span>{isMobile ? '촬영' : '이미지'}</span>
@@ -470,7 +470,7 @@ const BSActivityEntry: React.FC<BSActivityEntryProps> = ({
                       ...prev,
                       attachments: prev.attachments?.filter(a => a.id !== attachment.id)
                     }))}
-                    className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs"
+                    className="absolute -top-1 -right-1 bg-red-500 text-white rounded-lg w-5 h-5 flex items-center justify-center text-xs"
                   >
                     ×
                   </button>

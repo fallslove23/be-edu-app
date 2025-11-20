@@ -82,7 +82,7 @@ export default function ExamCloneWizard({
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-hidden flex flex-col">
+      <div className="bg-white rounded-lg shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-hidden flex flex-col">
         {/* 헤더 */}
         <div className="p-6 border-b border-gray-200 bg-gradient-to-r from-purple-50 to-pink-50">
           <div className="flex items-center justify-between">
@@ -160,7 +160,7 @@ export default function ExamCloneWizard({
                   type="text"
                   value={clonedExam.title}
                   onChange={(e) => updateExamField('title', e.target.value)}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  className="w-full border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                   placeholder="복제된 시험 제목"
                 />
               </div>
@@ -173,7 +173,7 @@ export default function ExamCloneWizard({
                   value={clonedExam.description || ''}
                   onChange={(e) => updateExamField('description', e.target.value)}
                   rows={3}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  className="w-full border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                   placeholder="시험 설명"
                 />
               </div>
@@ -187,7 +187,7 @@ export default function ExamCloneWizard({
                     type="number"
                     value={clonedExam.duration_minutes}
                     onChange={(e) => updateExamField('duration_minutes', parseInt(e.target.value))}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    className="w-full border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                     min="1"
                   />
                 </div>
@@ -199,7 +199,7 @@ export default function ExamCloneWizard({
                     type="number"
                     value={clonedExam.passing_score}
                     onChange={(e) => updateExamField('passing_score', parseInt(e.target.value))}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    className="w-full border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                     min="0"
                   />
                 </div>
@@ -224,7 +224,7 @@ export default function ExamCloneWizard({
 
               <div className="space-y-4">
                 {/* 문제 섞기 */}
-                <label className="flex items-center gap-3 p-4 border-2 border-gray-200 rounded-lg hover:border-purple-300 cursor-pointer transition-all">
+                <label className="flex items-center gap-3 p-4 border-2 border-gray-200 rounded-full hover:border-purple-300 cursor-pointer transition-all">
                   <input
                     type="checkbox"
                     checked={options.shuffleQuestions}
@@ -252,7 +252,7 @@ export default function ExamCloneWizard({
                       <button
                         key={level}
                         onClick={() => updateOption('adjustDifficulty', level)}
-                        className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                        className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
                           options.adjustDifficulty === level
                             ? 'bg-purple-600 text-white shadow-md'
                             : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -270,7 +270,7 @@ export default function ExamCloneWizard({
                 </div>
 
                 {/* 랜덤 출제 */}
-                <label className="flex items-center gap-3 p-4 border-2 border-gray-200 rounded-lg hover:border-purple-300 cursor-pointer transition-all">
+                <label className="flex items-center gap-3 p-4 border-2 border-gray-200 rounded-full hover:border-purple-300 cursor-pointer transition-all">
                   <input
                     type="checkbox"
                     checked={clonedExam.randomize_questions}
@@ -286,7 +286,7 @@ export default function ExamCloneWizard({
                 </label>
 
                 {/* 정답 표시 */}
-                <label className="flex items-center gap-3 p-4 border-2 border-gray-200 rounded-lg hover:border-purple-300 cursor-pointer transition-all">
+                <label className="flex items-center gap-3 p-4 border-2 border-gray-200 rounded-full hover:border-purple-300 cursor-pointer transition-all">
                   <input
                     type="checkbox"
                     checked={clonedExam.show_correct_answers}
@@ -307,7 +307,7 @@ export default function ExamCloneWizard({
           {/* Step 3: 일정 설정 */}
           {step === 3 && (
             <div className="space-y-6 animate-fade-in">
-              <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+              <div className="bg-green-500/10 border border-green-200 rounded-lg p-4">
                 <div className="flex items-start gap-3">
                   <CalendarIcon className="h-6 w-6 text-green-600 flex-shrink-0 mt-1" />
                   <div>
@@ -333,7 +333,7 @@ export default function ExamCloneWizard({
                 </div>
               )}
 
-              <label className="flex items-center gap-3 p-4 border-2 border-gray-200 rounded-lg hover:border-green-300 cursor-pointer transition-all">
+              <label className="flex items-center gap-3 p-4 border-2 border-gray-200 rounded-full hover:border-green-300 cursor-pointer transition-all">
                 <input
                   type="checkbox"
                   checked={options.adjustSchedule}
@@ -357,7 +357,7 @@ export default function ExamCloneWizard({
                     type="number"
                     value={options.daysOffset}
                     onChange={(e) => updateOption('daysOffset', parseInt(e.target.value))}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    className="w-full border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-green-500 focus:border-transparent"
                     min="0"
                   />
                   <p className="text-xs text-gray-500 mt-1">
@@ -365,7 +365,7 @@ export default function ExamCloneWizard({
                   </p>
 
                   {exam.scheduled_at && options.daysOffset !== undefined && (
-                    <div className="mt-3 p-3 bg-green-50 rounded border border-green-200">
+                    <div className="mt-3 p-3 bg-green-500/10 rounded border border-green-200">
                       <div className="text-xs text-green-700 mb-1">새로운 일정</div>
                       <div className="font-medium text-green-900 text-sm">
                         {format(addDays(new Date(exam.scheduled_at), options.daysOffset), 'yyyy년 MM월 dd일 HH:mm')}
@@ -387,7 +387,7 @@ export default function ExamCloneWizard({
         <div className="p-6 border-t border-gray-200 bg-gray-50 flex items-center justify-between">
           <button
             onClick={onClose}
-            className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors"
+            className="px-6 py-2 border border-gray-300 text-gray-700 rounded-full hover:bg-gray-100 transition-colors"
           >
             취소
           </button>
@@ -395,7 +395,7 @@ export default function ExamCloneWizard({
             {step > 1 && (
               <button
                 onClick={handleBack}
-                className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors"
+                className="px-6 py-2 border border-gray-300 text-gray-700 rounded-full hover:bg-gray-100 transition-colors"
               >
                 이전
               </button>
@@ -403,14 +403,14 @@ export default function ExamCloneWizard({
             {step < 3 ? (
               <button
                 onClick={handleNext}
-                className="px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+                className="px-6 py-2 bg-purple-600 text-white rounded-full hover:bg-purple-700 transition-colors"
               >
                 다음
               </button>
             ) : (
               <button
                 onClick={handleClone}
-                className="px-6 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg hover:from-purple-700 hover:to-pink-700 transition-colors shadow-lg"
+                className="px-6 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-full hover:from-purple-700 hover:to-pink-700 transition-colors shadow-lg"
               >
                 복제 완료
               </button>

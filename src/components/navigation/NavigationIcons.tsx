@@ -9,7 +9,7 @@ import {
   FolderIcon,
   CloudArrowUpIcon,
   CloudArrowDownIcon,
-  // Student Management  
+  // Student Management
   UsersIcon,
   UserIcon,
   UserPlusIcon,
@@ -40,6 +40,17 @@ import {
   ChartPieIcon,
   SpeakerWaveIcon,
   ShieldCheckIcon,
+  // Additional icons
+  BuildingOfficeIcon,
+  BuildingOffice2Icon,
+  CurrencyDollarIcon,
+  Cog6ToothIcon,
+  DevicePhoneMobileIcon,
+  FolderOpenIcon,
+  ArrowUpTrayIcon,
+  PaperAirplaneIcon,
+  LinkIcon,
+  StarIcon,
 } from '@heroicons/react/24/outline';
 
 // Heroicon component mapping
@@ -95,6 +106,26 @@ export const iconMap: Record<string, React.ComponentType<{ className?: string }>
   'chart-pie': ChartPieIcon,
   'speaker-wave': SpeakerWaveIcon,
   'shield-check': ShieldCheckIcon,
+
+  // Resource Management
+  'building-office': BuildingOfficeIcon,
+  'building-office-2': BuildingOffice2Icon,
+  'currency-dollar': CurrencyDollarIcon,
+
+  // System & Files
+  'cog-6-tooth': Cog6ToothIcon,
+  'device-phone-mobile': DevicePhoneMobileIcon,
+  'folder-open': FolderOpenIcon,
+  'arrow-up-tray': ArrowUpTrayIcon,
+  'paper-airplane': PaperAirplaneIcon,
+
+  // External Links
+  'link': LinkIcon,
+  'star': StarIcon,
+
+  // Additional utility
+  'library': BookOpenIcon, // Using book-open for library
+  'backpack': UserIcon, // Using user for backpack (no exact match)
 };
 
 interface NavigationIconProps {

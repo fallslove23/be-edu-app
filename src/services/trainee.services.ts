@@ -1,32 +1,5 @@
-// import { supabase } from './supabase';
+import { supabase } from './supabase';
 import type { Trainee, CreateTraineeData, BulkUploadResult } from '../types/trainee.types';
-
-// 임시로 mock supabase 객체 사용
-const supabase = {
-  from: () => ({
-    select: () => ({
-      eq: () => ({
-        order: () => Promise.resolve({ data: null, error: { message: 'Mock mode' } })
-      }),
-      or: () => Promise.resolve({ data: null, error: { message: 'Mock mode' } })
-    }),
-    insert: () => ({
-      select: () => ({
-        single: () => Promise.resolve({ data: null, error: { message: 'Mock mode' } })
-      })
-    }),
-    update: () => ({
-      eq: () => ({
-        select: () => ({
-          single: () => Promise.resolve({ data: null, error: { message: 'Mock mode' } })
-        })
-      })
-    }),
-    delete: () => ({
-      eq: () => Promise.resolve({ data: null, error: { message: 'Mock mode' } })
-    })
-  })
-};
 
 export class TraineeService {
   // 모든 교육생 조회

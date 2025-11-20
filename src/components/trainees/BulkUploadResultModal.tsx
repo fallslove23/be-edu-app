@@ -64,7 +64,7 @@ const BulkUploadResultModal: React.FC<BulkUploadResultModalProps> = ({
               </div>
             </div>
 
-            <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+            <div className="bg-green-500/10 border border-green-200 rounded-lg p-4">
               <div className="flex items-center">
                 <CheckCircleIcon className="h-8 w-8 text-green-600 mr-3" />
                 <div>
@@ -76,20 +76,20 @@ const BulkUploadResultModal: React.FC<BulkUploadResultModalProps> = ({
 
             <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
               <div className="flex items-center">
-                <DocumentDuplicateIcon className="h-8 w-8 text-yellow-600 mr-3" />
+                <DocumentDuplicateIcon className="h-8 w-8 text-foreground mr-3" />
                 <div>
                   <p className="text-sm font-medium text-yellow-900">중복</p>
-                  <p className="text-2xl font-bold text-yellow-600">{duplicates.length}명</p>
+                  <p className="text-2xl font-bold text-foreground">{duplicates.length}명</p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+            <div className="bg-destructive/10 border border-destructive/50 rounded-lg p-4">
               <div className="flex items-center">
-                <ExclamationTriangleIcon className="h-8 w-8 text-red-600 mr-3" />
+                <ExclamationTriangleIcon className="h-8 w-8 text-destructive mr-3" />
                 <div>
-                  <p className="text-sm font-medium text-red-900">실패</p>
-                  <p className="text-2xl font-bold text-red-600">{failed.length}명</p>
+                  <p className="text-sm font-medium text-destructive">실패</p>
+                  <p className="text-2xl font-bold text-destructive">{failed.length}명</p>
                 </div>
               </div>
             </div>
@@ -102,7 +102,7 @@ const BulkUploadResultModal: React.FC<BulkUploadResultModalProps> = ({
                 <CheckCircleIcon className="h-5 w-5 text-green-600 mr-2" />
                 성공적으로 등록된 교육생 ({success.length}명)
               </h3>
-              <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+              <div className="bg-green-500/10 border border-green-200 rounded-lg p-4">
                 <div className="max-h-40 overflow-y-auto">
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
                     {success.map((trainee, index) => (
@@ -123,7 +123,7 @@ const BulkUploadResultModal: React.FC<BulkUploadResultModalProps> = ({
           {duplicates.length > 0 && (
             <div className="mb-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center">
-                <DocumentDuplicateIcon className="h-5 w-5 text-yellow-600 mr-2" />
+                <DocumentDuplicateIcon className="h-5 w-5 text-foreground mr-2" />
                 중복된 교육생 ({duplicates.length}명)
               </h3>
               <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
@@ -135,13 +135,13 @@ const BulkUploadResultModal: React.FC<BulkUploadResultModalProps> = ({
                     <div className="flex gap-2 mb-4">
                       <button
                         onClick={() => handleDuplicateAction('update')}
-                        className="px-3 py-1.5 text-sm font-medium text-yellow-800 bg-yellow-100 border border-yellow-300 rounded-md hover:bg-yellow-200"
+                        className="px-3 py-1.5 text-sm font-medium text-yellow-800 bg-yellow-100 border border-yellow-300 rounded-full hover:bg-yellow-200"
                       >
                         기존 정보 업데이트
                       </button>
                       <button
                         onClick={() => handleDuplicateAction('skip')}
-                        className="px-3 py-1.5 text-sm font-medium text-yellow-800 bg-yellow-100 border border-yellow-300 rounded-md hover:bg-yellow-200"
+                        className="px-3 py-1.5 text-sm font-medium text-yellow-800 bg-yellow-100 border border-yellow-300 rounded-full hover:bg-yellow-200"
                       >
                         건너뛰기
                       </button>
@@ -152,9 +152,9 @@ const BulkUploadResultModal: React.FC<BulkUploadResultModalProps> = ({
                   {duplicates.map((duplicate, index) => (
                     <div key={index} className="flex justify-between items-center py-2 border-b border-yellow-200 last:border-b-0">
                       <div className="flex items-center text-sm">
-                        <UserIcon className="h-4 w-4 mr-2 text-yellow-600 flex-shrink-0" />
+                        <UserIcon className="h-4 w-4 mr-2 text-foreground flex-shrink-0" />
                         <span className="font-medium">{duplicate.trainee.name}</span>
-                        <span className="mx-2 text-yellow-600">→</span>
+                        <span className="mx-2 text-foreground">→</span>
                         <span className="text-yellow-800">
                           기존: {duplicate.existingTrainee.name} ({duplicate.duplicateField === 'email' ? duplicate.existingTrainee.email : duplicate.existingTrainee.employee_id})
                         </span>
@@ -170,21 +170,21 @@ const BulkUploadResultModal: React.FC<BulkUploadResultModalProps> = ({
           {failed.length > 0 && (
             <div className="mb-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center">
-                <ExclamationTriangleIcon className="h-5 w-5 text-red-600 mr-2" />
+                <ExclamationTriangleIcon className="h-5 w-5 text-destructive mr-2" />
                 등록 실패한 교육생 ({failed.length}명)
               </h3>
-              <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+              <div className="bg-destructive/10 border border-destructive/50 rounded-lg p-4">
                 <div className="max-h-40 overflow-y-auto space-y-2">
                   {failed.map((failedItem, index) => (
-                    <div key={index} className="bg-white border border-red-200 rounded p-3">
+                    <div key={index} className="bg-white border border-destructive/50 rounded p-3">
                       <div className="flex items-start">
-                        <ExclamationTriangleIcon className="h-4 w-4 text-red-600 mr-2 mt-0.5 flex-shrink-0" />
+                        <ExclamationTriangleIcon className="h-4 w-4 text-destructive mr-2 mt-0.5 flex-shrink-0" />
                         <div className="flex-1">
-                          <p className="font-medium text-red-900">
+                          <p className="font-medium text-destructive">
                             {failedItem.trainee.name || '이름 없음'}
                             {failedItem.trainee.email && ` (${failedItem.trainee.email})`}
                           </p>
-                          <p className="text-sm text-red-700 mt-1">{failedItem.error}</p>
+                          <p className="text-sm text-destructive mt-1">{failedItem.error}</p>
                         </div>
                       </div>
                     </div>

@@ -130,9 +130,9 @@ const SmartQuestionBankSelector: React.FC<SmartQuestionBankSelectorProps> = ({
   const getTagColor = (color: string) => {
     const colors = {
       blue: 'bg-blue-100 text-blue-800 hover:bg-blue-200',
-      green: 'bg-green-100 text-green-800 hover:bg-green-200',
+      green: 'bg-green-500/10 text-green-700 hover:bg-green-200',
       purple: 'bg-purple-100 text-purple-800 hover:bg-purple-200',
-      orange: 'bg-orange-100 text-orange-800 hover:bg-orange-200',
+      orange: 'bg-orange-500/10 text-orange-700 hover:bg-orange-200',
     };
     return colors[color as keyof typeof colors] || colors.blue;
   };
@@ -151,7 +151,7 @@ const SmartQuestionBankSelector: React.FC<SmartQuestionBankSelectorProps> = ({
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-xl shadow-2xl max-w-6xl w-full max-h-[90vh] overflow-hidden flex flex-col">
+      <div className="bg-white rounded-lg shadow-2xl max-w-6xl w-full max-h-[90vh] overflow-hidden flex flex-col">
         {/* 헤더 */}
         <div className="p-6 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-indigo-50">
           <div className="flex items-center justify-between mb-4">
@@ -181,7 +181,7 @@ const SmartQuestionBankSelector: React.FC<SmartQuestionBankSelectorProps> = ({
                   </p>
                   <button
                     onClick={() => onSelect(recommendedBank)}
-                    className="px-3 py-1.5 bg-purple-600 text-white text-sm rounded-lg hover:bg-purple-700 transition-colors"
+                    className="px-3 py-1.5 bg-purple-600 text-white text-sm rounded-full hover:bg-purple-700 transition-colors"
                   >
                     바로 사용하기
                   </button>
@@ -276,7 +276,7 @@ const SmartQuestionBankSelector: React.FC<SmartQuestionBankSelectorProps> = ({
                 return (
                   <div
                     key={bank.id}
-                    className={`relative group border-2 rounded-xl p-5 transition-all cursor-pointer ${
+                    className={`relative group border-2 rounded-lg p-5 transition-all cursor-pointer ${
                       isRecommended
                         ? 'border-purple-300 bg-purple-50 hover:shadow-lg hover:border-purple-400'
                         : 'border-gray-200 bg-white hover:shadow-lg hover:border-blue-300'
@@ -306,7 +306,7 @@ const SmartQuestionBankSelector: React.FC<SmartQuestionBankSelectorProps> = ({
                             {bank.category}
                           </span>
                         )}
-                        <span className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full font-medium">
+                        <span className="px-2 py-1 bg-green-500/10 text-green-700 text-xs rounded-full font-medium">
                           {bank.question_count || 0}문제
                         </span>
                       </div>
@@ -331,10 +331,10 @@ const SmartQuestionBankSelector: React.FC<SmartQuestionBankSelectorProps> = ({
                             onSelect(bank);
                           }
                         }}
-                        className={`px-4 py-2 text-sm rounded-lg font-medium transition-all ${
+                        className={`px-4 py-2 text-sm rounded-full font-medium transition-all ${
                           isRecommended
                             ? 'bg-purple-600 text-white hover:bg-purple-700'
-                            : 'bg-blue-600 text-white hover:bg-blue-700'
+                            : 'bg-primary text-primary-foreground hover:bg-primary/90'
                         }`}
                       >
                         선택

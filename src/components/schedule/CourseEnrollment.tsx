@@ -168,7 +168,7 @@ const CourseEnrollmentComponent: React.FC<CourseEnrollmentProps> = ({
     return (
       <div className="flex items-center justify-center min-h-32 p-4">
         <div className="flex flex-col items-center space-y-2">
-          <div className="w-8 h-8 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
+          <div className="w-8 h-8 border-4 border-blue-200 border-t-blue-600 rounded-lg animate-spin"></div>
           <p className="text-gray-600 text-sm">등록 정보 로딩 중...</p>
         </div>
       </div>
@@ -205,7 +205,7 @@ const CourseEnrollmentComponent: React.FC<CourseEnrollmentProps> = ({
             </div>
           </div>
 
-          <div className="bg-green-50 rounded-lg p-4">
+          <div className="bg-green-500/10 rounded-lg p-4">
             <div className="flex items-center">
               <AcademicCapIcon className="h-6 w-6 text-green-600 mr-2" />
               <div>
@@ -232,7 +232,7 @@ const CourseEnrollmentComponent: React.FC<CourseEnrollmentProps> = ({
         {enrollments.length > course.max_capacity * 0.9 && (
           <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
             <div className="flex items-center">
-              <ExclamationTriangleIcon className="h-5 w-5 text-yellow-600 mr-2" />
+              <ExclamationTriangleIcon className="h-5 w-5 text-foreground mr-2" />
               <span className="text-sm font-medium text-yellow-800">
                 정원이 {Math.round((enrollments.length / course.max_capacity) * 100)}% 찼습니다.
               </span>
@@ -265,7 +265,7 @@ const CourseEnrollmentComponent: React.FC<CourseEnrollmentProps> = ({
                     
                     <button
                       onClick={() => unenrollTrainee(enrollment.id)}
-                      className="text-red-600 hover:text-red-700 p-1"
+                      className="text-destructive hover:text-destructive p-1"
                       title="등록 취소"
                     >
                       <XMarkIcon className="h-4 w-4" />
@@ -318,7 +318,7 @@ const CourseEnrollmentComponent: React.FC<CourseEnrollmentProps> = ({
                   <p className="text-sm text-blue-800">
                     {selectedTrainees.length}명 선택됨
                     {enrollments.length + selectedTrainees.length > course.max_capacity && (
-                      <span className="text-red-600 ml-2">
+                      <span className="text-destructive ml-2">
                         (정원 초과: {enrollments.length + selectedTrainees.length}/{course.max_capacity})
                       </span>
                     )}
@@ -332,7 +332,7 @@ const CourseEnrollmentComponent: React.FC<CourseEnrollmentProps> = ({
                   availableTrainees.map(trainee => (
                     <div
                       key={trainee.id}
-                      className={`border rounded-lg p-3 cursor-pointer transition-all ${
+                      className={`border rounded-full p-3 cursor-pointer transition-all ${
                         selectedTrainees.includes(trainee.id)
                           ? 'border-blue-500 bg-blue-50'
                           : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
@@ -373,7 +373,7 @@ const CourseEnrollmentComponent: React.FC<CourseEnrollmentProps> = ({
             <div className="flex justify-between items-center p-6 border-t border-gray-200">
               <button
                 onClick={() => setIsEnrollModalOpen(false)}
-                className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200"
+                className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-full hover:bg-gray-200"
               >
                 취소
               </button>

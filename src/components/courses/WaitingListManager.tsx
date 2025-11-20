@@ -146,9 +146,9 @@ const WaitingListManager: React.FC<WaitingListManagerProps> = ({
   const getPriorityBadgeClass = (priority: string) => {
     switch (priority) {
       case 'urgent':
-        return 'bg-red-100 text-red-800';
+        return 'bg-destructive/10 text-destructive';
       case 'high':
-        return 'bg-orange-100 text-orange-800';
+        return 'bg-orange-500/10 text-orange-700';
       default:
         return 'bg-gray-100 text-gray-800';
     }
@@ -162,7 +162,7 @@ const WaitingListManager: React.FC<WaitingListManagerProps> = ({
       case 'notified':
         return 'bg-blue-100 text-blue-800';
       case 'expired':
-        return 'bg-red-100 text-red-800';
+        return 'bg-destructive/10 text-destructive';
       default:
         return 'bg-gray-100 text-gray-800';
     }
@@ -188,7 +188,7 @@ const WaitingListManager: React.FC<WaitingListManagerProps> = ({
         <div className="flex items-center justify-between p-6 border-b border-gray-200">
           <div>
             <h2 className="text-xl font-semibold text-gray-900 flex items-center">
-              <ClockIcon className="h-6 w-6 mr-2 text-yellow-600" />
+              <ClockIcon className="h-6 w-6 mr-2 text-foreground" />
               대기자 관리
             </h2>
             <p className="text-sm text-gray-600 mt-1">
@@ -241,11 +241,11 @@ const WaitingListManager: React.FC<WaitingListManagerProps> = ({
         <div className="flex-1 overflow-y-auto" style={{ maxHeight: '400px' }}>
           {loading ? (
             <div className="flex items-center justify-center py-12">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+              <div className="animate-spin rounded-lg h-8 w-8 border-b-2 border-blue-600"></div>
               <span className="ml-2 text-gray-600">대기자 목록을 불러오는 중...</span>
             </div>
           ) : error ? (
-            <div className="text-center py-12 text-red-500">
+            <div className="text-center py-12 text-destructive">
               <ExclamationTriangleIcon className="h-12 w-12 mx-auto mb-4 text-red-300" />
               <p>{error}</p>
             </div>
@@ -346,7 +346,7 @@ const WaitingListManager: React.FC<WaitingListManagerProps> = ({
                       <button
                         onClick={() => handleRemoveFromWaitingList(entry)}
                         disabled={processing === entry.id}
-                        className="p-1 text-red-600 hover:text-red-800 transition-colors"
+                        className="p-1 text-destructive hover:text-destructive transition-colors"
                         title="대기자 제거"
                       >
                         <TrashIcon className="h-4 w-4" />
@@ -356,7 +356,7 @@ const WaitingListManager: React.FC<WaitingListManagerProps> = ({
                   
                   {processing === entry.id && (
                     <div className="mt-2 flex items-center text-sm text-blue-600">
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600 mr-2"></div>
+                      <div className="animate-spin rounded-lg h-4 w-4 border-b-2 border-blue-600 mr-2"></div>
                       처리 중...
                     </div>
                   )}
@@ -383,7 +383,7 @@ const WaitingListManager: React.FC<WaitingListManagerProps> = ({
           <div className="flex justify-end">
             <button
               onClick={onClose}
-              className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+              className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-full hover:bg-gray-50 transition-colors"
             >
               닫기
             </button>
@@ -396,7 +396,7 @@ const WaitingListManager: React.FC<WaitingListManagerProps> = ({
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-60">
           <div className="bg-white rounded-lg p-6 max-w-sm mx-4">
             <div className="flex items-center">
-              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600 mr-3"></div>
+              <div className="animate-spin rounded-lg h-6 w-6 border-b-2 border-blue-600 mr-3"></div>
               <span className="text-gray-700">대기자 목록을 처리하는 중...</span>
             </div>
           </div>

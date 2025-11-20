@@ -273,7 +273,7 @@ const EducationTargetManager: React.FC<EducationTargetManagerProps> = ({ onClose
         </div>
         <button
           onClick={() => setShowAddJobCategory(true)}
-          className="btn-primary px-4 py-2 rounded-lg flex items-center space-x-2"
+          className="btn-primary px-4 py-2 rounded-full flex items-center space-x-2"
         >
           <PlusIcon className="h-4 w-4" />
           <span>직군 추가</span>
@@ -287,26 +287,26 @@ const EducationTargetManager: React.FC<EducationTargetManagerProps> = ({ onClose
           <div className="grid grid-cols-3 gap-3 mb-4">
             <div>
               <label className="block text-sm font-medium text-blue-700 mb-1">
-                직군명 <span className="text-red-500">*</span>
+                직군명 <span className="text-destructive">*</span>
               </label>
               <input
                 type="text"
                 value={newJobCategory.name}
                 onChange={(e) => setNewJobCategory(prev => ({ ...prev, name: e.target.value }))}
                 placeholder="예: 마케팅"
-                className="w-full px-3 py-2 border border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-blue-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
             </div>
             <div>
               <label className="block text-sm font-medium text-blue-700 mb-1">
-                직군 코드 <span className="text-red-500">*</span>
+                직군 코드 <span className="text-destructive">*</span>
               </label>
               <input
                 type="text"
                 value={newJobCategory.code}
                 onChange={(e) => setNewJobCategory(prev => ({ ...prev, code: e.target.value.toUpperCase() }))}
                 placeholder="예: MKT"
-                className="w-full px-3 py-2 border border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-blue-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
             </div>
             <div>
@@ -318,7 +318,7 @@ const EducationTargetManager: React.FC<EducationTargetManagerProps> = ({ onClose
                 value={newJobCategory.description}
                 onChange={(e) => setNewJobCategory(prev => ({ ...prev, description: e.target.value }))}
                 placeholder="직군 설명"
-                className="w-full px-3 py-2 border border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-blue-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
             </div>
           </div>
@@ -328,7 +328,7 @@ const EducationTargetManager: React.FC<EducationTargetManagerProps> = ({ onClose
                 setShowAddJobCategory(false);
                 setNewJobCategory({ name: '', code: '', description: '' });
               }}
-              className="px-3 py-2 border border-blue-300 text-blue-700 rounded-lg hover:bg-blue-100"
+              className="px-3 py-2 border border-blue-300 text-blue-700 rounded-full hover:bg-blue-100"
             >
               취소
             </button>
@@ -360,7 +360,7 @@ const EducationTargetManager: React.FC<EducationTargetManagerProps> = ({ onClose
                         type="text"
                         defaultValue={category.name}
                         onBlur={(e) => handleUpdateJobCategory(category.id, { name: e.target.value })}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       />
                     </div>
                     <div>
@@ -369,7 +369,7 @@ const EducationTargetManager: React.FC<EducationTargetManagerProps> = ({ onClose
                         type="text"
                         defaultValue={category.code}
                         onBlur={(e) => handleUpdateJobCategory(category.id, { code: e.target.value.toUpperCase() })}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       />
                     </div>
                     <div>
@@ -378,14 +378,14 @@ const EducationTargetManager: React.FC<EducationTargetManagerProps> = ({ onClose
                         type="text"
                         defaultValue={category.description}
                         onBlur={(e) => handleUpdateJobCategory(category.id, { description: e.target.value })}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       />
                     </div>
                   </div>
                   <div className="flex justify-end space-x-2">
                     <button
                       onClick={() => setEditingJobCategory(null)}
-                      className="p-2 text-green-600 hover:bg-green-100 rounded"
+                      className="p-2 text-green-600 hover:bg-green-500/10 rounded"
                       title="완료"
                     >
                       <CheckIcon className="h-4 w-4" />
@@ -404,7 +404,7 @@ const EducationTargetManager: React.FC<EducationTargetManagerProps> = ({ onClose
                             {category.code}
                           </span>
                           {!category.isActive && (
-                            <span className="px-2 py-1 bg-red-100 text-red-700 text-xs font-medium rounded">
+                            <span className="px-2 py-1 bg-destructive/10 text-destructive text-xs font-medium rounded">
                               비활성
                             </span>
                           )}
@@ -430,7 +430,7 @@ const EducationTargetManager: React.FC<EducationTargetManagerProps> = ({ onClose
                     </button>
                     <button
                       onClick={() => handleDeleteJobCategory(category.id)}
-                      className="p-2 text-red-600 hover:bg-red-100 rounded"
+                      className="p-2 text-destructive hover:bg-destructive/10 rounded"
                       title="삭제"
                     >
                       <TrashIcon className="h-4 w-4" />
@@ -450,7 +450,7 @@ const EducationTargetManager: React.FC<EducationTargetManagerProps> = ({ onClose
               </p>
               <button
                 onClick={() => setShowAddJobCategory(true)}
-                className="btn-primary px-4 py-2 rounded-lg"
+                className="btn-primary px-4 py-2 rounded-full"
               >
                 첫 직군 추가하기
               </button>
@@ -474,7 +474,7 @@ const EducationTargetManager: React.FC<EducationTargetManagerProps> = ({ onClose
         </div>
         <button
           onClick={handleAddCourseSeries}
-          className="btn-success px-4 py-2 rounded-lg flex items-center space-x-2"
+          className="btn-success px-4 py-2 rounded-full flex items-center space-x-2"
         >
           <PlusIcon className="h-4 w-4" />
           <span>시리즈 추가</span>
@@ -512,7 +512,7 @@ const EducationTargetManager: React.FC<EducationTargetManagerProps> = ({ onClose
                 </button>
                 <button
                   onClick={() => handleDeleteCourseSeries(series.id)}
-                  className="p-2 text-red-600 hover:bg-red-100 rounded"
+                  className="p-2 text-destructive hover:bg-destructive/10 rounded"
                   title="삭제"
                 >
                   <TrashIcon className="h-4 w-4" />
@@ -534,7 +534,7 @@ const EducationTargetManager: React.FC<EducationTargetManagerProps> = ({ onClose
                           s.id === series.id ? { ...s, name: e.target.value } : s
                         ));
                       }}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     />
                   </div>
                   <div>
@@ -547,7 +547,7 @@ const EducationTargetManager: React.FC<EducationTargetManagerProps> = ({ onClose
                           s.id === series.id ? { ...s, code: e.target.value.toUpperCase() } : s
                         ));
                       }}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     />
                   </div>
                 </div>
@@ -562,7 +562,7 @@ const EducationTargetManager: React.FC<EducationTargetManagerProps> = ({ onClose
                       ));
                     }}
                     rows={2}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                 </div>
 
@@ -631,7 +631,7 @@ const EducationTargetManager: React.FC<EducationTargetManagerProps> = ({ onClose
             </p>
             <button
               onClick={handleAddCourseSeries}
-              className="btn-success px-4 py-2 rounded-lg"
+              className="btn-success px-4 py-2 rounded-full"
             >
               첫 시리즈 추가하기
             </button>

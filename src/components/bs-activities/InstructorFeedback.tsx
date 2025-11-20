@@ -246,7 +246,7 @@ const InstructorFeedback: React.FC<InstructorFeedbackProps> = ({
                           placeholder="이 활동에 대한 피드백을 작성하세요"
                           rows={3}
                           readOnly={readonly}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
                         />
                       </div>
 
@@ -261,7 +261,7 @@ const InstructorFeedback: React.FC<InstructorFeedbackProps> = ({
                               {!readonly && (
                                 <button
                                   onClick={() => removeSuggestionFromActivity(activityDetail.id, suggestionIndex)}
-                                  className="text-red-600 hover:text-red-800"
+                                  className="text-destructive hover:text-destructive"
                                 >
                                   <TrashIcon className="w-4 h-4" />
                                 </button>
@@ -275,7 +275,7 @@ const InstructorFeedback: React.FC<InstructorFeedbackProps> = ({
                                 value={newSuggestion}
                                 onChange={(e) => setNewSuggestion(e.target.value)}
                                 placeholder="새 제안사항 추가"
-                                className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                className="flex-1 px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                 onKeyPress={(e) => {
                                   if (e.key === 'Enter') {
                                     addSuggestionToActivity(activityDetail.id, newSuggestion);
@@ -310,12 +310,12 @@ const InstructorFeedback: React.FC<InstructorFeedbackProps> = ({
               <h3 className="text-lg font-medium text-gray-900 mb-3">잘한 점</h3>
               <div className="space-y-2">
                 {strengths.map((strength, index) => (
-                  <div key={index} className="flex items-center justify-between bg-green-50 px-3 py-2 rounded">
+                  <div key={index} className="flex items-center justify-between bg-green-500/10 px-3 py-2 rounded">
                     <span className="text-sm">{strength}</span>
                     {!readonly && (
                       <button
                         onClick={() => removeFromList(strengths, setStrengths, index)}
-                        className="text-red-600 hover:text-red-800"
+                        className="text-destructive hover:text-destructive"
                       >
                         <TrashIcon className="w-4 h-4" />
                       </button>
@@ -329,7 +329,7 @@ const InstructorFeedback: React.FC<InstructorFeedbackProps> = ({
                       value={newStrength}
                       onChange={(e) => setNewStrength(e.target.value)}
                       placeholder="잘한 점 추가"
-                      className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="flex-1 px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       onKeyPress={(e) => {
                         if (e.key === 'Enter') {
                           addToList(strengths, setStrengths, newStrength, setNewStrength);
@@ -352,12 +352,12 @@ const InstructorFeedback: React.FC<InstructorFeedbackProps> = ({
               <h3 className="text-lg font-medium text-gray-900 mb-3">개선할 점</h3>
               <div className="space-y-2">
                 {improvements.map((improvement, index) => (
-                  <div key={index} className="flex items-center justify-between bg-orange-50 px-3 py-2 rounded">
+                  <div key={index} className="flex items-center justify-between bg-orange-500/10 px-3 py-2 rounded">
                     <span className="text-sm">{improvement}</span>
                     {!readonly && (
                       <button
                         onClick={() => removeFromList(improvements, setImprovements, index)}
-                        className="text-red-600 hover:text-red-800"
+                        className="text-destructive hover:text-destructive"
                       >
                         <TrashIcon className="w-4 h-4" />
                       </button>
@@ -371,7 +371,7 @@ const InstructorFeedback: React.FC<InstructorFeedbackProps> = ({
                       value={newImprovement}
                       onChange={(e) => setNewImprovement(e.target.value)}
                       placeholder="개선할 점 추가"
-                      className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="flex-1 px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       onKeyPress={(e) => {
                         if (e.key === 'Enter') {
                           addToList(improvements, setImprovements, newImprovement, setNewImprovement);
@@ -399,7 +399,7 @@ const InstructorFeedback: React.FC<InstructorFeedbackProps> = ({
                     {!readonly && (
                       <button
                         onClick={() => removeFromList(suggestions, setSuggestions, index)}
-                        className="text-red-600 hover:text-red-800"
+                        className="text-destructive hover:text-destructive"
                       >
                         <TrashIcon className="w-4 h-4" />
                       </button>
@@ -413,7 +413,7 @@ const InstructorFeedback: React.FC<InstructorFeedbackProps> = ({
                       value={newSuggestion}
                       onChange={(e) => setNewSuggestion(e.target.value)}
                       placeholder="제안사항 추가"
-                      className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="flex-1 px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       onKeyPress={(e) => {
                         if (e.key === 'Enter') {
                           addToList(suggestions, setSuggestions, newSuggestion, setNewSuggestion);
@@ -441,7 +441,7 @@ const InstructorFeedback: React.FC<InstructorFeedbackProps> = ({
                     {!readonly && (
                       <button
                         onClick={() => removeFromList(nextGoals, setNextGoals, index)}
-                        className="text-red-600 hover:text-red-800"
+                        className="text-destructive hover:text-destructive"
                       >
                         <TrashIcon className="w-4 h-4" />
                       </button>
@@ -455,7 +455,7 @@ const InstructorFeedback: React.FC<InstructorFeedbackProps> = ({
                       value={newGoal}
                       onChange={(e) => setNewGoal(e.target.value)}
                       placeholder="다음 목표 추가"
-                      className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="flex-1 px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       onKeyPress={(e) => {
                         if (e.key === 'Enter') {
                           addToList(nextGoals, setNextGoals, newGoal, setNewGoal);
@@ -480,7 +480,7 @@ const InstructorFeedback: React.FC<InstructorFeedbackProps> = ({
           <div className="flex justify-end space-x-3 p-6 border-t border-gray-200">
             <button
               onClick={onClose}
-              className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+              className="px-4 py-2 text-gray-700 bg-gray-100 rounded-full hover:bg-gray-200 transition-colors"
             >
               취소
             </button>

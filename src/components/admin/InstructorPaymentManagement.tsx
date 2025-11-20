@@ -202,9 +202,9 @@ const InstructorPaymentManagement: React.FC = () => {
       case 'pending':
         return 'bg-yellow-100 text-yellow-800';
       case 'completed':
-        return 'bg-green-100 text-green-800';
+        return 'bg-green-500/10 text-green-700';
       case 'cancelled':
-        return 'bg-red-100 text-red-800';
+        return 'bg-destructive/10 text-destructive';
       default:
         return 'bg-gray-100 text-gray-800';
     }
@@ -235,7 +235,7 @@ const InstructorPaymentManagement: React.FC = () => {
           <button
             onClick={handleUpdateSummaries}
             disabled={!selectedCourse || loading}
-            className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 disabled:bg-gray-300 disabled:cursor-not-allowed"
+            className="px-4 py-2 bg-primary text-primary-foreground rounded-full hover:bg-primary/90 disabled:bg-gray-300 disabled:cursor-not-allowed"
           >
             집계 업데이트
           </button>
@@ -273,7 +273,7 @@ const InstructorPaymentManagement: React.FC = () => {
         <div>
           {loading ? (
             <div className="text-center py-8">
-              <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+              <div className="inline-block animate-spin rounded-lg h-8 w-8 border-b-2 border-blue-500"></div>
               <p className="mt-2 text-gray-600">로딩 중...</p>
             </div>
           ) : summaries.length === 0 ? (
@@ -328,7 +328,7 @@ const InstructorPaymentManagement: React.FC = () => {
                           className={`px-2 py-1 rounded-full text-xs font-medium ${
                             summary.instructor_type === 'primary'
                               ? 'bg-blue-100 text-blue-800'
-                              : 'bg-green-100 text-green-800'
+                              : 'bg-green-500/10 text-green-700'
                           }`}
                         >
                           {getInstructorTypeLabel(summary.instructor_type)}
@@ -354,7 +354,7 @@ const InstructorPaymentManagement: React.FC = () => {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-center">
                         {summary.is_finalized ? (
-                          <span className="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs font-medium">
+                          <span className="px-2 py-1 bg-green-500/10 text-green-700 rounded-full text-xs font-medium">
                             확정
                           </span>
                         ) : (
@@ -380,7 +380,7 @@ const InstructorPaymentManagement: React.FC = () => {
                           {summary.is_finalized && (
                             <button
                               onClick={() => handleCreatePayment(summary)}
-                              className="px-3 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600 text-xs"
+                              className="px-3 py-1 bg-primary text-primary-foreground rounded-full hover:bg-primary/90 text-xs"
                             >
                               지급 등록
                             </button>
@@ -549,13 +549,13 @@ const InstructorPaymentManagement: React.FC = () => {
                     setShowPaymentModal(false);
                     setSelectedSummary(null);
                   }}
-                  className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50"
+                  className="px-4 py-2 border border-gray-300 rounded-full hover:bg-gray-50"
                 >
                   취소
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+                  className="px-4 py-2 bg-primary text-primary-foreground rounded-full hover:bg-primary/90"
                 >
                   등록
                 </button>

@@ -9,7 +9,7 @@ import {
 import { useAuth } from '../../contexts/AuthContext';
 
 const SecureLogin: React.FC = () => {
-  const [email, setEmail] = useState('');
+  const [employeeId, setEmployeeId] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
@@ -39,11 +39,11 @@ const SecureLogin: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (isLocked) return;
 
     try {
-      await login(email, password);
+      await login(employeeId, password);
       // 성공하면 시도 횟수 초기화
       setLoginAttempts(0);
     } catch (error) {
@@ -65,19 +65,19 @@ const SecureLogin: React.FC = () => {
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
-  // 테스트 계정 정보
+  // 테스트 계정 정보 (사번 기반)
   const testAccounts = [
-    { email: 'admin@company.com', password: 'admin123', role: '관리자' },
-    { email: 'instructor@company.com', password: 'instructor123', role: '강사' },
-    { email: 'manager@company.com', password: 'manager123', role: '매니저' },
-    { email: 'trainee@company.com', password: 'trainee123', role: '교육생' }
+    { employeeId: '30121212', password: 'osstem', role: '관리자', name: '홍길동' },
+    { employeeId: '30121213', password: 'osstem', role: '강사', name: '김강사' },
+    { employeeId: 'A30121214', password: 'osstem', role: '매니저', name: 'John Smith (해외)' },
+    { employeeId: '30121215', password: 'osstem', role: '교육생', name: '이교육' }
   ];
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
         <div className="text-center">
-          <div className="mx-auto h-16 w-16 flex items-center justify-center bg-blue-600 rounded-full">
+          <div className="mx-auto h-16 w-16 flex items-center justify-center bg-blue-600 rounded-lg">
             <ShieldCheckIcon className="h-10 w-10 text-white" />
           </div>
           <h2 className="mt-6 text-3xl font-extrabold text-gray-900 dark:text-white">
@@ -90,7 +90,7 @@ const SecureLogin: React.FC = () => {
 
         <div className="mt-8 space-y-6">
           {/* 보안 상태 표시 */}
-          <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg border border-green-200 dark:border-green-800">
+          <div className="bg-green-500/10 dark:bg-green-900/20 p-4 rounded-lg border border-green-200 dark:border-green-800">
             <div className="flex items-center">
               <LockClosedIcon className="h-5 w-5 text-green-600 dark:text-green-400" />
               <span className="ml-2 text-sm text-green-800 dark:text-green-200">
@@ -101,10 +101,10 @@ const SecureLogin: React.FC = () => {
 
           {/* 계정 잠금 알림 */}
           {isLocked && (
-            <div className="bg-red-50 dark:bg-red-900/20 p-4 rounded-lg border border-red-200 dark:border-red-800">
+            <div className="bg-destructive/10 dark:bg-red-900/20 p-4 rounded-lg border border-destructive/50 dark:border-red-800">
               <div className="flex items-center">
-                <ExclamationCircleIcon className="h-5 w-5 text-red-600 dark:text-red-400" />
-                <span className="ml-2 text-sm text-red-800 dark:text-red-200">
+                <ExclamationCircleIcon className="h-5 w-5 text-destructive dark:text-red-400" />
+                <span className="ml-2 text-sm text-destructive dark:text-red-200">
                   너무 많은 로그인 시도로 인해 계정이 일시적으로 잠겼습니다.
                   {lockoutTime > 0 && ` ${formatLockoutTime(lockoutTime)} 후 다시 시도하세요.`}
                 </span>
@@ -116,7 +116,7 @@ const SecureLogin: React.FC = () => {
           {loginAttempts > 0 && loginAttempts < 5 && (
             <div className="bg-yellow-50 dark:bg-yellow-900/20 p-4 rounded-lg border border-yellow-200 dark:border-yellow-800">
               <div className="flex items-center">
-                <ExclamationCircleIcon className="h-5 w-5 text-yellow-600 dark:text-yellow-400" />
+                <ExclamationCircleIcon className="h-5 w-5 text-foreground dark:text-yellow-400" />
                 <span className="ml-2 text-sm text-yellow-800 dark:text-yellow-200">
                   로그인 실패 {loginAttempts}/5 회. {5 - loginAttempts}번 더 실패하면 계정이 잠깁니다.
                 </span>
@@ -127,20 +127,20 @@ const SecureLogin: React.FC = () => {
           <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
             <div className="space-y-4">
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                  이메일 주소
+                <label htmlFor="employeeId" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  사번
                 </label>
                 <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  autoComplete="email"
+                  id="employeeId"
+                  name="employeeId"
+                  type="text"
+                  autoComplete="username"
                   required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  value={employeeId}
+                  onChange={(e) => setEmployeeId(e.target.value)}
                   disabled={isLocked}
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 dark:disabled:bg-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
-                  placeholder="이메일을 입력하세요"
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 dark:disabled:bg-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+                  placeholder="사번을 입력하세요 (예: 20031409)"
                 />
               </div>
 
@@ -158,7 +158,7 @@ const SecureLogin: React.FC = () => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     disabled={isLocked}
-                    className="block w-full px-3 py-2 pr-10 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 dark:disabled:bg-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+                    className="block w-full px-3 py-2 pr-10 border border-gray-300 dark:border-gray-600 rounded-full shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 dark:disabled:bg-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
                     placeholder="비밀번호를 입력하세요"
                   />
                   <button
@@ -195,8 +195,8 @@ const SecureLogin: React.FC = () => {
             </div>
 
             {error && (
-              <div className="bg-red-50 dark:bg-red-900/20 p-3 rounded-lg border border-red-200 dark:border-red-800">
-                <p className="text-sm text-red-700 dark:text-red-300">{error}</p>
+              <div className="bg-destructive/10 dark:bg-red-900/20 p-3 rounded-lg border border-destructive/50 dark:border-red-800">
+                <p className="text-sm text-destructive dark:text-red-300">{error}</p>
               </div>
             )}
 
@@ -217,20 +217,23 @@ const SecureLogin: React.FC = () => {
             <div className="space-y-2">
               {testAccounts.map((account, index) => (
                 <div key={index} className="flex justify-between items-center text-xs">
-                  <span className="text-gray-600 dark:text-gray-400">{account.role}</span>
+                  <span className="text-gray-600 dark:text-gray-400">{account.role} - {account.name}</span>
                   <button
                     type="button"
                     onClick={() => {
-                      setEmail(account.email);
+                      setEmployeeId(account.employeeId);
                       setPassword(account.password);
                     }}
                     className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300"
                   >
-                    {account.email}
+                    {account.employeeId}
                   </button>
                 </div>
               ))}
             </div>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-3">
+              초기 비밀번호: osstem (로그인 후 변경 필요)
+            </p>
           </div>
         </div>
       </div>

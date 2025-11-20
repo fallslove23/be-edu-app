@@ -203,7 +203,7 @@ const CourseForm: React.FC<CourseFormProps> = ({
           </div>
           <button
             onClick={onCancel}
-            className="p-2 hover:bg-gray-100 rounded-lg"
+            className="p-2 hover:bg-gray-100 rounded-full"
           >
             <XMarkIcon className="h-6 w-6 text-gray-500" />
           </button>
@@ -220,50 +220,50 @@ const CourseForm: React.FC<CourseFormProps> = ({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  과정명 <span className="text-red-500">*</span>
+                  과정명 <span className="text-destructive">*</span>
                 </label>
                 <input
                   type="text"
                   value={formData.name}
                   onChange={(e) => handleInputChange('name', e.target.value)}
                   placeholder="BS 신입 영업사원 기초과정"
-                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                    errors.name ? 'border-red-500' : 'border-gray-300'
+                  className={`w-full px-3 py-2 border rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                    errors.name ? 'border-destructive/50' : 'border-gray-300'
                   }`}
                 />
-                {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
+                {errors.name && <p className="text-destructive text-xs mt-1">{errors.name}</p>}
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  과정코드 <span className="text-red-500">*</span>
+                  과정코드 <span className="text-destructive">*</span>
                 </label>
                 <input
                   type="text"
                   value={formData.courseCode}
                   onChange={(e) => handleInputChange('courseCode', e.target.value)}
                   placeholder="BS-2025-SA01-01"
-                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                    errors.courseCode ? 'border-red-500' : 'border-gray-300'
+                  className={`w-full px-3 py-2 border rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                    errors.courseCode ? 'border-destructive/50' : 'border-gray-300'
                   }`}
                 />
-                {errors.courseCode && <p className="text-red-500 text-xs mt-1">{errors.courseCode}</p>}
+                {errors.courseCode && <p className="text-destructive text-xs mt-1">{errors.courseCode}</p>}
               </div>
 
               <div className="md:col-span-2">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  과정 설명 <span className="text-red-500">*</span>
+                  과정 설명 <span className="text-destructive">*</span>
                 </label>
                 <textarea
                   value={formData.description}
                   onChange={(e) => handleInputChange('description', e.target.value)}
                   placeholder="과정의 목표, 대상, 주요 내용을 설명해주세요"
                   rows={4}
-                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none ${
-                    errors.description ? 'border-red-500' : 'border-gray-300'
+                  className={`w-full px-3 py-2 border rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none ${
+                    errors.description ? 'border-destructive/50' : 'border-gray-300'
                   }`}
                 />
-                {errors.description && <p className="text-red-500 text-xs mt-1">{errors.description}</p>}
+                {errors.description && <p className="text-destructive text-xs mt-1">{errors.description}</p>}
               </div>
             </div>
           </div>
@@ -283,7 +283,7 @@ const CourseForm: React.FC<CourseFormProps> = ({
                 <select
                   value={formData.category}
                   onChange={(e) => handleInputChange('category', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 >
                   <option value="sales">영업</option>
                   <option value="marketing">마케팅</option>
@@ -300,7 +300,7 @@ const CourseForm: React.FC<CourseFormProps> = ({
                 <select
                   value={formData.courseType}
                   onChange={(e) => handleInputChange('courseType', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 >
                   <option value="basic">기초</option>
                   <option value="intermediate">중급</option>
@@ -321,62 +321,62 @@ const CourseForm: React.FC<CourseFormProps> = ({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  등록 시작일 <span className="text-red-500">*</span>
+                  등록 시작일 <span className="text-destructive">*</span>
                 </label>
                 <input
                   type="date"
                   value={formData.registrationStartDate}
                   onChange={(e) => handleInputChange('registrationStartDate', e.target.value)}
-                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                    errors.registrationStartDate ? 'border-red-500' : 'border-gray-300'
+                  className={`w-full px-3 py-2 border rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                    errors.registrationStartDate ? 'border-destructive/50' : 'border-gray-300'
                   }`}
                 />
-                {errors.registrationStartDate && <p className="text-red-500 text-xs mt-1">{errors.registrationStartDate}</p>}
+                {errors.registrationStartDate && <p className="text-destructive text-xs mt-1">{errors.registrationStartDate}</p>}
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  등록 종료일 <span className="text-red-500">*</span>
+                  등록 종료일 <span className="text-destructive">*</span>
                 </label>
                 <input
                   type="date"
                   value={formData.registrationEndDate}
                   onChange={(e) => handleInputChange('registrationEndDate', e.target.value)}
-                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                    errors.registrationEndDate ? 'border-red-500' : 'border-gray-300'
+                  className={`w-full px-3 py-2 border rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                    errors.registrationEndDate ? 'border-destructive/50' : 'border-gray-300'
                   }`}
                 />
-                {errors.registrationEndDate && <p className="text-red-500 text-xs mt-1">{errors.registrationEndDate}</p>}
+                {errors.registrationEndDate && <p className="text-destructive text-xs mt-1">{errors.registrationEndDate}</p>}
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  과정 시작일 <span className="text-red-500">*</span>
+                  과정 시작일 <span className="text-destructive">*</span>
                 </label>
                 <input
                   type="date"
                   value={formData.start_date}
                   onChange={(e) => handleInputChange('start_date', e.target.value)}
-                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                    errors.start_date ? 'border-red-500' : 'border-gray-300'
+                  className={`w-full px-3 py-2 border rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                    errors.start_date ? 'border-destructive/50' : 'border-gray-300'
                   }`}
                 />
-                {errors.start_date && <p className="text-red-500 text-xs mt-1">{errors.start_date}</p>}
+                {errors.start_date && <p className="text-destructive text-xs mt-1">{errors.start_date}</p>}
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  과정 종료일 <span className="text-red-500">*</span>
+                  과정 종료일 <span className="text-destructive">*</span>
                 </label>
                 <input
                   type="date"
                   value={formData.end_date}
                   onChange={(e) => handleInputChange('end_date', e.target.value)}
-                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                    errors.end_date ? 'border-red-500' : 'border-gray-300'
+                  className={`w-full px-3 py-2 border rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                    errors.end_date ? 'border-destructive/50' : 'border-gray-300'
                   }`}
                 />
-                {errors.end_date && <p className="text-red-500 text-xs mt-1">{errors.end_date}</p>}
+                {errors.end_date && <p className="text-destructive text-xs mt-1">{errors.end_date}</p>}
               </div>
             </div>
           </div>
@@ -391,7 +391,7 @@ const CourseForm: React.FC<CourseFormProps> = ({
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  최대 수강생 <span className="text-red-500">*</span>
+                  최대 수강생 <span className="text-destructive">*</span>
                 </label>
                 <input
                   type="number"
@@ -399,16 +399,16 @@ const CourseForm: React.FC<CourseFormProps> = ({
                   onChange={(e) => handleInputChange('max_trainees', parseInt(e.target.value) || 0)}
                   min="1"
                   max="100"
-                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                    errors.max_trainees ? 'border-red-500' : 'border-gray-300'
+                  className={`w-full px-3 py-2 border rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                    errors.max_trainees ? 'border-destructive/50' : 'border-gray-300'
                   }`}
                 />
-                {errors.max_trainees && <p className="text-red-500 text-xs mt-1">{errors.max_trainees}</p>}
+                {errors.max_trainees && <p className="text-destructive text-xs mt-1">{errors.max_trainees}</p>}
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  총 회차 수 <span className="text-red-500">*</span>
+                  총 회차 수 <span className="text-destructive">*</span>
                 </label>
                 <input
                   type="number"
@@ -416,16 +416,16 @@ const CourseForm: React.FC<CourseFormProps> = ({
                   onChange={(e) => handleInputChange('totalSessions', parseInt(e.target.value) || 0)}
                   min="1"
                   max="50"
-                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                    errors.totalSessions ? 'border-red-500' : 'border-gray-300'
+                  className={`w-full px-3 py-2 border rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                    errors.totalSessions ? 'border-destructive/50' : 'border-gray-300'
                   }`}
                 />
-                {errors.totalSessions && <p className="text-red-500 text-xs mt-1">{errors.totalSessions}</p>}
+                {errors.totalSessions && <p className="text-destructive text-xs mt-1">{errors.totalSessions}</p>}
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  회차별 시간 (분) <span className="text-red-500">*</span>
+                  회차별 시간 (분) <span className="text-destructive">*</span>
                 </label>
                 <input
                   type="number"
@@ -433,14 +433,14 @@ const CourseForm: React.FC<CourseFormProps> = ({
                   onChange={(e) => handleInputChange('sessionDuration', parseInt(e.target.value) || 0)}
                   min="30"
                   step="30"
-                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                    errors.sessionDuration ? 'border-red-500' : 'border-gray-300'
+                  className={`w-full px-3 py-2 border rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                    errors.sessionDuration ? 'border-destructive/50' : 'border-gray-300'
                   }`}
                 />
                 <p className="text-xs text-gray-500 mt-1">
                   {formData.sessionDuration > 0 && `${formatDuration(formData.sessionDuration)}`}
                 </p>
-                {errors.sessionDuration && <p className="text-red-500 text-xs mt-1">{errors.sessionDuration}</p>}
+                {errors.sessionDuration && <p className="text-destructive text-xs mt-1">{errors.sessionDuration}</p>}
               </div>
             </div>
           </div>
@@ -463,7 +463,7 @@ const CourseForm: React.FC<CourseFormProps> = ({
                     value={formData.manager_id}
                     onChange={(e) => handleInputChange('manager_id', e.target.value)}
                     placeholder="manager-001"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                 </div>
 
@@ -476,7 +476,7 @@ const CourseForm: React.FC<CourseFormProps> = ({
                     value={formData.instructor_id}
                     onChange={(e) => handleInputChange('instructor_id', e.target.value)}
                     placeholder="instructor-001"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                 </div>
               </div>
@@ -526,9 +526,9 @@ const CourseForm: React.FC<CourseFormProps> = ({
 
           {/* 에러 메시지 */}
           {errors.submit && (
-            <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-center space-x-2">
-              <ExclamationTriangleIcon className="h-5 w-5 text-red-600" />
-              <p className="text-red-700">{errors.submit}</p>
+            <div className="bg-destructive/10 border border-destructive/50 rounded-lg p-4 flex items-center space-x-2">
+              <ExclamationTriangleIcon className="h-5 w-5 text-destructive" />
+              <p className="text-destructive">{errors.submit}</p>
             </div>
           )}
 
@@ -537,7 +537,7 @@ const CourseForm: React.FC<CourseFormProps> = ({
             <button
               type="button"
               onClick={onCancel}
-              className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
+              className="px-6 py-3 border border-gray-300 text-gray-700 rounded-full hover:bg-gray-50"
             >
               취소
             </button>
@@ -547,7 +547,7 @@ const CourseForm: React.FC<CourseFormProps> = ({
               className="btn-primary"
             >
               {isSubmitting && (
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                <div className="animate-spin rounded-lg h-4 w-4 border-b-2 border-white"></div>
               )}
               <span>{isSubmitting ? '저장 중...' : isEditing ? '수정 완료' : '개설 완료'}</span>
             </button>

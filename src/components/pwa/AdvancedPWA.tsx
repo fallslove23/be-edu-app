@@ -276,7 +276,7 @@ const OfflineManager: React.FC = () => {
           {isOnline ? (
             <WifiIcon className="h-5 w-5 text-green-500" />
           ) : (
-            <WifiIcon className="h-5 w-5 text-red-500" />
+            <WifiIcon className="h-5 w-5 text-destructive" />
           )}
           <span className="font-medium">
             {isOnline ? '온라인' : '오프라인 모드'}
@@ -298,7 +298,7 @@ const OfflineManager: React.FC = () => {
       {!isOnline && (
         <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded p-3 mb-4">
           <div className="flex items-center space-x-2">
-            <ExclamationTriangleIcon className="h-5 w-5 text-yellow-600" />
+            <ExclamationTriangleIcon className="h-5 w-5 text-foreground" />
             <span className="text-sm text-yellow-800 dark:text-yellow-200">
               오프라인 모드입니다. 변경사항은 온라인 상태에서 동기화됩니다.
             </span>
@@ -407,7 +407,7 @@ const PWAInstallPrompt: React.FC = () => {
             <button
               onClick={handleInstall}
               disabled={isInstalling}
-              className="px-3 py-1 bg-white text-blue-500 rounded text-xs font-medium hover:bg-gray-100 disabled:opacity-50"
+              className="px-3 py-1 bg-white text-blue-500 rounded-full text-xs font-medium hover:bg-gray-100 disabled:opacity-50"
             >
               {isInstalling ? '설치 중...' : '설치'}
             </button>
@@ -584,7 +584,7 @@ const AdvancedPWA: React.FC = () => {
       <div className="mb-6">
         <h3 className="text-lg font-semibold mb-3">설치 상태</h3>
         <div className="flex items-center space-x-4">
-          <div className={`p-3 rounded-lg ${isInstalled ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'}`}>
+          <div className={`p-3 rounded-full ${isInstalled ? 'bg-green-500/10 text-green-700' : 'bg-gray-100 text-gray-700'}`}>
             <CheckCircleIcon className="w-6 h-6 inline mr-2" />
             {isInstalled ? 'PWA 설치됨' : 'PWA 미설치'}
           </div>
@@ -614,7 +614,7 @@ const AdvancedPWA: React.FC = () => {
       {/* Service Worker 상태 */}
       <div className="mb-6">
         <h3 className="text-lg font-semibold mb-3">Service Worker</h3>
-        <div className={`p-3 rounded-lg ${swRegistration ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+        <div className={`p-3 rounded-full ${swRegistration ? 'bg-green-500/10 text-green-700' : 'bg-destructive/10 text-destructive'}`}>
           <ServerIcon className="w-6 h-6 inline mr-2" />
           {swRegistration ? '등록됨' : '미등록'}
         </div>

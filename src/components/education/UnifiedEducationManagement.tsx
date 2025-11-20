@@ -107,7 +107,7 @@ const UnifiedEducationManagement: React.FC<UnifiedEducationManagementProps> = ({
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
       <div className="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8">
         {/* 통합 헤더 + 탭 네비게이션 */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 mb-6 overflow-hidden">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 mb-6 overflow-hidden">
           {/* 상단 액션 바 */}
           <div className="px-6 py-4 border-b border-gray-200">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
@@ -132,7 +132,7 @@ const UnifiedEducationManagement: React.FC<UnifiedEducationManagementProps> = ({
                 <button
                   onClick={handleRefresh}
                   disabled={isRefreshing}
-                  className="px-3 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors flex items-center text-sm font-medium disabled:opacity-50"
+                  className="px-3 py-2 bg-gray-100 text-gray-700 rounded-full hover:bg-gray-200 transition-colors flex items-center text-sm font-medium disabled:opacity-50"
                   title="새로고침"
                 >
                   <ArrowPathIcon className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} />

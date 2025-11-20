@@ -90,7 +90,7 @@ const MyHistory: React.FC = () => {
           >
             <span className="mr-2">📚</span>
             수료 과정
-            <span className="ml-2 text-xs bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300 px-2 py-0.5 rounded-full">
+            <span className="ml-2 text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full">
               {completedCourses.length}
             </span>
           </button>
@@ -104,7 +104,7 @@ const MyHistory: React.FC = () => {
           >
             <span className="mr-2">🏆</span>
             인증서
-            <span className="ml-2 text-xs bg-green-100 dark:bg-green-900 text-green-600 dark:text-green-300 px-2 py-0.5 rounded-full">
+            <span className="ml-2 text-xs bg-green-500/10 dark:bg-green-900 text-green-600 dark:text-green-300 px-2 py-0.5 rounded-full">
               {certifications.length}
             </span>
           </button>
@@ -147,16 +147,16 @@ const MyHistory: React.FC = () => {
                 </div>
                 <div className="text-right">
                   <div className="text-2xl font-bold text-primary mb-1">{course.score}점</div>
-                  <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+                  <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-500/10 text-green-700 dark:bg-green-900 dark:text-green-200">
                     {course.status}
                   </span>
                 </div>
               </div>
               <div className="flex gap-2">
-                <button className="px-4 py-2 text-sm bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-colors">
+                <button className="px-4 py-2 text-sm bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 rounded-full hover:bg-primary/20/40 transition-colors">
                   📄 상세보기
                 </button>
-                <button className="px-4 py-2 text-sm bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400 rounded-lg hover:bg-purple-100 dark:hover:bg-purple-900/40 transition-colors">
+                <button className="px-4 py-2 text-sm bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400 rounded-full hover:bg-purple-100 dark:hover:bg-purple-900/40 transition-colors">
                   📊 성적표
                 </button>
               </div>
@@ -192,7 +192,7 @@ const MyHistory: React.FC = () => {
                   <span className="text-foreground font-mono text-xs">{cert.certificate_number}</span>
                 </div>
               </div>
-              <button className="w-full px-4 py-2 text-sm bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors">
+              <button className="w-full px-4 py-2 text-sm bg-primary text-primary-foreground rounded-full hover:bg-primary/90 transition-colors">
                 📥 다운로드
               </button>
             </div>
@@ -235,7 +235,7 @@ const MyHistory: React.FC = () => {
                         activity.type === 'presentation'
                           ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
                           : activity.type === 'practice'
-                          ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
+                          ? 'bg-green-500/10 text-green-700 dark:bg-green-900 dark:text-green-200'
                           : 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200'
                       }`}>
                         {activity.type === 'presentation' ? '발표' : activity.type === 'practice' ? '실습' : '시험'}

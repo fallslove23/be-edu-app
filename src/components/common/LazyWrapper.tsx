@@ -58,10 +58,10 @@ const DefaultLoadingFallback: React.FC = () => (
     <div className="flex flex-col items-center space-y-4">
       <div className="relative">
         {/* 스피너 */}
-        <div className="w-12 h-12 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
+        <div className="w-12 h-12 border-4 border-blue-200 border-t-blue-600 rounded-lg animate-spin"></div>
         
         {/* 중앙 점 */}
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-2 h-2 bg-blue-600 rounded-full animate-pulse"></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-2 h-2 bg-blue-600 rounded-lg animate-pulse"></div>
       </div>
       
       <div className="text-center">
@@ -78,24 +78,24 @@ const DefaultErrorFallback: React.FC<{ error: Error; resetErrorBoundary: () => v
   resetErrorBoundary 
 }) => (
   <div className="flex items-center justify-center min-h-64 p-8">
-    <div className="text-center bg-red-50 border border-red-200 rounded-lg p-6 max-w-md">
-      <div className="text-red-600 mb-4">
+    <div className="text-center bg-destructive/10 border border-destructive/50 rounded-lg p-6 max-w-md">
+      <div className="text-destructive mb-4">
         <svg className="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.96-.833-2.73 0L3.084 16.5c-.77.833.192 2.5 1.732 2.5z" />
         </svg>
       </div>
       
-      <h3 className="text-lg font-semibold text-red-800 mb-2">
+      <h3 className="text-lg font-semibold text-destructive mb-2">
         컴포넌트 로드 실패
       </h3>
       
-      <p className="text-red-700 text-sm mb-4">
+      <p className="text-destructive text-sm mb-4">
         죄송합니다. 요청하신 페이지를 불러오는 중 오류가 발생했습니다.
       </p>
       
       <details className="text-left mb-4">
-        <summary className="text-xs text-red-600 cursor-pointer">오류 상세 정보</summary>
-        <pre className="text-xs text-red-500 mt-2 p-2 bg-red-100 rounded overflow-auto">
+        <summary className="text-xs text-destructive cursor-pointer">오류 상세 정보</summary>
+        <pre className="text-xs text-destructive mt-2 p-2 bg-destructive/10 rounded overflow-auto">
           {error.message}
         </pre>
       </details>
@@ -103,14 +103,14 @@ const DefaultErrorFallback: React.FC<{ error: Error; resetErrorBoundary: () => v
       <div className="space-y-2">
         <button
           onClick={resetErrorBoundary}
-          className="btn-danger mobile-button w-full py-2 px-4 rounded-lg text-sm font-medium"
+          className="btn-danger mobile-button w-full py-2 px-4 rounded-full text-sm font-medium"
         >
           다시 시도
         </button>
         
         <button
           onClick={() => window.location.reload()}
-          className="mobile-button w-full bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 px-4 rounded-lg text-sm"
+          className="mobile-button w-full bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 px-4 rounded-full text-sm"
         >
           페이지 새로고침
         </button>
@@ -172,7 +172,7 @@ export const ComponentLoadingFallback: React.FC<{
 }> = ({ componentName, description }) => (
   <div className="flex items-center justify-center min-h-48 p-6">
     <div className="text-center">
-      <div className="w-10 h-10 border-3 border-blue-200 border-t-blue-600 rounded-full animate-spin mx-auto mb-3"></div>
+      <div className="w-10 h-10 border-3 border-blue-200 border-t-blue-600 rounded-lg animate-spin mx-auto mb-3"></div>
       <p className="text-gray-600 font-medium">{componentName} 로딩 중...</p>
       {description && <p className="text-gray-400 text-sm mt-1">{description}</p>}
     </div>

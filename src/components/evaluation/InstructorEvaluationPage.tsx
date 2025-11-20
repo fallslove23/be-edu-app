@@ -115,7 +115,7 @@ export default function InstructorEvaluationPage() {
               <h3 className="font-semibold text-yellow-800 dark:text-yellow-200 mb-2">
                 진행 중인 과정이 없습니다
               </h3>
-              <p className="text-yellow-700 dark:text-yellow-300">
+              <p className="text-foreground dark:text-yellow-300">
                 평가를 입력하려면 먼저 과정 회차를 생성하고 학생을 등록해주세요.
               </p>
             </div>
@@ -135,7 +135,7 @@ export default function InstructorEvaluationPage() {
         <select
           value={selectedRoundId}
           onChange={(e) => setSelectedRoundId(e.target.value)}
-          className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+          className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
         >
           {courseRounds.map((round: any) => (
             <option key={round.id} value={round.id}>
@@ -156,7 +156,7 @@ export default function InstructorEvaluationPage() {
           <select
             value={selectedTraineeId}
             onChange={(e) => setSelectedTraineeId(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
           >
             {trainees.map((trainee: any, index: number) => (
               <option key={trainee.user_id} value={trainee.user_id}>
@@ -189,7 +189,7 @@ export default function InstructorEvaluationPage() {
               <h3 className="font-semibold text-yellow-800 dark:text-yellow-200 mb-2">
                 등록된 학생이 없습니다
               </h3>
-              <p className="text-yellow-700 dark:text-yellow-300">
+              <p className="text-foreground dark:text-yellow-300">
                 선택한 과정에 학생을 먼저 등록해주세요.
               </p>
             </div>

@@ -4,6 +4,7 @@ export default {
   content: [
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
+    "./app/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
     extend: {
@@ -94,7 +95,7 @@ export default {
   },
   plugins: [
     // 모바일 전용 유틸리티 추가
-    function({ addUtilities }) {
+    function({ addUtilities, addComponents }) {
       const newUtilities = {
         '.touch-manipulation': {
           'touch-action': 'manipulation',
@@ -134,7 +135,43 @@ export default {
           '-webkit-mask-image': 'linear-gradient(to bottom, black 0%, black 85%, transparent 100%)',
         },
       }
+
+      // 버튼 컴포넌트 스타일 정의
+      const buttonComponents = {
+        '.btn-base': {
+          '@apply px-4 py-2 rounded-full font-medium shadow-sm transition-colors duration-200 flex items-center gap-2': {},
+        },
+        '.btn-lg': {
+          '@apply px-5 py-2.5': {},
+        },
+        '.btn-sm': {
+          '@apply px-3 py-1.5 text-sm': {},
+        },
+        '.btn-primary': {
+          '@apply bg-blue-600 text-white hover:bg-blue-700 active:bg-blue-800': {},
+        },
+        '.btn-secondary': {
+          '@apply bg-gray-600 text-white hover:bg-gray-700 active:bg-gray-800': {},
+        },
+        '.btn-success': {
+          '@apply bg-emerald-600 text-white hover:bg-emerald-700 active:bg-emerald-800': {},
+        },
+        '.btn-danger': {
+          '@apply bg-red-600 text-white hover:bg-red-700 active:bg-red-800': {},
+        },
+        '.btn-warning': {
+          '@apply bg-yellow-500 text-white hover:bg-yellow-600 active:bg-yellow-700': {},
+        },
+        '.btn-dark': {
+          '@apply bg-slate-800 text-white hover:bg-slate-900 active:bg-slate-950': {},
+        },
+        '.btn-outline': {
+          '@apply bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 active:bg-gray-100': {},
+        },
+      }
+
       addUtilities(newUtilities)
+      addComponents(buttonComponents)
     }
   ],
 }

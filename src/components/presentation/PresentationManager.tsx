@@ -274,7 +274,7 @@ const PresentationManager: React.FC<PresentationManagerProps> = ({ journalId }) 
     switch (status) {
       case 'draft': return 'text-gray-600 bg-gray-100';
       case 'ready': return 'text-blue-600 bg-blue-100';
-      case 'presented': return 'text-green-600 bg-green-100';
+      case 'presented': return 'text-green-600 bg-green-500/10';
       case 'completed': return 'text-purple-600 bg-purple-100';
       default: return 'text-gray-600 bg-gray-100';
     }
@@ -310,7 +310,7 @@ const PresentationManager: React.FC<PresentationManagerProps> = ({ journalId }) 
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-lg h-8 w-8 border-b-2 border-blue-600"></div>
         <span className="ml-2">발표 자료를 불러오는 중...</span>
       </div>
     );
@@ -359,7 +359,7 @@ const PresentationManager: React.FC<PresentationManagerProps> = ({ journalId }) 
             )}
             <button
               onClick={() => {/* 새 발표 생성 */}}
-              className="btn-primary px-4 py-2 rounded-lg flex items-center space-x-2"
+              className="btn-primary px-4 py-2 rounded-full flex items-center space-x-2"
             >
               <PlusIcon className="h-4 w-4" />
               <span>발표 생성</span>
@@ -417,7 +417,7 @@ const PresentationManager: React.FC<PresentationManagerProps> = ({ journalId }) 
 
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
           <div className="flex items-center">
-            <div className="p-2 bg-green-100 rounded-lg">
+            <div className="p-2 bg-green-500/10 rounded-lg">
               <PlayIcon className="h-6 w-6 text-green-600" />
             </div>
             <div className="ml-4">
@@ -449,7 +449,7 @@ const PresentationManager: React.FC<PresentationManagerProps> = ({ journalId }) 
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
           <div className="flex items-center">
             <div className="p-2 bg-yellow-100 rounded-lg">
-              <StarIcon className="h-6 w-6 text-yellow-600" />
+              <StarIcon className="h-6 w-6 text-foreground" />
             </div>
             <div className="ml-4">
               <p className="text-sm font-medium text-gray-600">평균 평점</p>
@@ -495,7 +495,7 @@ const PresentationManager: React.FC<PresentationManagerProps> = ({ journalId }) 
                       {getStatusLabel(presentation.status)}
                     </span>
                     {presentation.score && (
-                      <span className="text-xs text-yellow-600">
+                      <span className="text-xs text-foreground">
                         ★ {presentation.score}
                       </span>
                     )}
@@ -568,7 +568,7 @@ const PresentationManager: React.FC<PresentationManagerProps> = ({ journalId }) 
                       e.stopPropagation();
                       // 다운로드
                     }}
-                    className="p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-lg"
+                    className="p-2 text-gray-400 hover:text-green-600 hover:bg-green-500/10 rounded-lg"
                     title="다운로드"
                   >
                     <ArrowDownTrayIcon className="h-4 w-4" />
@@ -604,7 +604,7 @@ const PresentationManager: React.FC<PresentationManagerProps> = ({ journalId }) 
               {(!searchQuery && statusFilter === 'all') && (
                 <button
                   onClick={() => {/* 발표 생성 */}}
-                  className="btn-primary px-4 py-2 rounded-lg"
+                  className="btn-primary px-4 py-2 rounded-full"
                 >
                   첫 발표 생성하기
                 </button>
@@ -671,12 +671,12 @@ const PresentationManager: React.FC<PresentationManagerProps> = ({ journalId }) 
                   <div className="space-y-2">
                     {selectedPresentation.score && (
                       <div className="flex items-center text-sm">
-                        <StarIcon className="h-4 w-4 mr-2 text-yellow-500" />
+                        <StarIcon className="h-4 w-4 mr-2 text-foreground" />
                         <span>{getScoreStars(selectedPresentation.score)}</span>
                       </div>
                     )}
                     {selectedPresentation.feedback && (
-                      <div className="bg-green-50 border border-green-200 rounded-lg p-3">
+                      <div className="bg-green-500/10 border border-green-200 rounded-lg p-3">
                         <p className="text-sm text-green-800">
                           <strong>피드백:</strong> {selectedPresentation.feedback}
                         </p>
@@ -736,14 +736,14 @@ const PresentationManager: React.FC<PresentationManagerProps> = ({ journalId }) 
               <div className="flex items-center justify-end space-x-3 pt-4 border-t border-gray-200">
                 <button
                   onClick={() => {/* 발표 시작 */}}
-                  className="btn-success px-4 py-2 rounded-lg flex items-center space-x-2"
+                  className="btn-success px-4 py-2 rounded-full flex items-center space-x-2"
                 >
                   <PlayIcon className="h-4 w-4" />
                   <span>발표 시작</span>
                 </button>
                 <button
                   onClick={() => {/* 다운로드 */}}
-                  className="btn-primary px-4 py-2 rounded-lg flex items-center space-x-2"
+                  className="btn-primary px-4 py-2 rounded-full flex items-center space-x-2"
                 >
                   <ArrowDownTrayIcon className="h-4 w-4" />
                   <span>다운로드</span>
