@@ -1,3 +1,5 @@
+'use client';
+
 /**
  * 과목 관리 컴포넌트
  * - 과목 조회, 등록, 수정, 삭제
@@ -422,3 +424,5 @@ export function SubjectManagement() {
     </div>
   );
 }
+
+export default SubjectManagement;

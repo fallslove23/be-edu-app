@@ -1,3 +1,5 @@
+'use client';
+
 /**
  * 커리큘럼 관리 컴포넌트
  * - 과정(Course Round) 생성 및 관리
@@ -1801,7 +1803,7 @@ export default function CurriculumManager() {
       {/* 일정 추가 모달 */}
       {showSessionModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-2xl">
+          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-3xl max-h-[90vh] overflow-y-auto">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-bold text-gray-900 dark:text-white">일정 추가</h2>
               <button
@@ -1936,27 +1938,31 @@ export default function CurriculumManager() {
               </div>
 
               {/* ResourceSelector 통합 */}
-              <ResourceSelector
-                sessionDate={sessionForm.session_date}
-                startTime={sessionForm.start_time}
-                endTime={sessionForm.end_time}
-                subjectId={sessionForm.subject_id}
-                selectedInstructorId={sessionForm.actual_instructor_id}
-                selectedClassroomId={sessionForm.classroom_id}
-                onInstructorChange={(instructorId) =>
-                  setSessionForm({ ...sessionForm, actual_instructor_id: instructorId })
-                }
-                onClassroomChange={(classroomId) => {
-                  const classroom = classrooms.find(c => c.id === classroomId);
-                  setSessionForm({
-                    ...sessionForm,
-                    classroom_id: classroomId,
-                    classroom: classroom?.name || ''
-                  });
-                }}
-                excludeSessionId={undefined}
-                showRecommendations={true}
-              />
+              {/* ResourceSelector 통합 */}
+              <div className="border-t pt-4 mt-4">
+                <h3 className="text-lg font-semibold mb-4">자원 선택</h3>
+                <ResourceSelector
+                  sessionDate={sessionForm.session_date}
+                  startTime={sessionForm.start_time}
+                  endTime={sessionForm.end_time}
+                  subjectId={sessionForm.subject_id}
+                  selectedInstructorId={sessionForm.actual_instructor_id}
+                  selectedClassroomId={sessionForm.classroom_id}
+                  onInstructorChange={(instructorId) =>
+                    setSessionForm({ ...sessionForm, actual_instructor_id: instructorId })
+                  }
+                  onClassroomChange={(classroomId) => {
+                    const classroom = classrooms.find(c => c.id === classroomId);
+                    setSessionForm({
+                      ...sessionForm,
+                      classroom_id: classroomId,
+                      classroom: classroom?.name || ''
+                    });
+                  }}
+                  excludeSessionId={undefined}
+                  showRecommendations={true}
+                />
+              </div>
             </div>
 
             <div className="mt-6 flex justify-end gap-3">
@@ -1983,7 +1989,7 @@ export default function CurriculumManager() {
       {/* 일정 수정 모달 */}
       {showEditModal && selectedSession && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-2xl">
+          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-3xl max-h-[90vh] overflow-y-auto">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-bold text-gray-900 dark:text-white">일정 수정</h2>
               <button
@@ -2121,27 +2127,31 @@ export default function CurriculumManager() {
               </div>
 
               {/* ResourceSelector 통합 */}
-              <ResourceSelector
-                sessionDate={sessionForm.session_date}
-                startTime={sessionForm.start_time}
-                endTime={sessionForm.end_time}
-                subjectId={sessionForm.subject_id}
-                selectedInstructorId={sessionForm.actual_instructor_id}
-                selectedClassroomId={sessionForm.classroom_id}
-                onInstructorChange={(instructorId) =>
-                  setSessionForm({ ...sessionForm, actual_instructor_id: instructorId })
-                }
-                onClassroomChange={(classroomId) => {
-                  const classroom = classrooms.find(c => c.id === classroomId);
-                  setSessionForm({
-                    ...sessionForm,
-                    classroom_id: classroomId,
-                    classroom: classroom?.name || ''
-                  });
-                }}
-                excludeSessionId={selectedSession?.id}
-                showRecommendations={true}
-              />
+              {/* ResourceSelector 통합 */}
+              <div className="border-t pt-4 mt-4">
+                <h3 className="text-lg font-semibold mb-4">자원 선택</h3>
+                <ResourceSelector
+                  sessionDate={sessionForm.session_date}
+                  startTime={sessionForm.start_time}
+                  endTime={sessionForm.end_time}
+                  subjectId={sessionForm.subject_id}
+                  selectedInstructorId={sessionForm.actual_instructor_id}
+                  selectedClassroomId={sessionForm.classroom_id}
+                  onInstructorChange={(instructorId) =>
+                    setSessionForm({ ...sessionForm, actual_instructor_id: instructorId })
+                  }
+                  onClassroomChange={(classroomId) => {
+                    const classroom = classrooms.find(c => c.id === classroomId);
+                    setSessionForm({
+                      ...sessionForm,
+                      classroom_id: classroomId,
+                      classroom: classroom?.name || ''
+                    });
+                  }}
+                  excludeSessionId={selectedSession?.id}
+                  showRecommendations={true}
+                />
+              </div>
             </div>
 
             <div className="mt-6 flex justify-end gap-3">

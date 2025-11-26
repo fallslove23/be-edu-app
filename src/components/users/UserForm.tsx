@@ -3,7 +3,6 @@ import { useForm } from 'react-hook-form';
 import { ArrowLeftIcon, CheckIcon } from '@heroicons/react/24/outline';
 import type { User, UserRole, UserStatus } from '../../types/auth.types';
 import { roleLabels, userStatusLabels } from '../../types/auth.types';
-import { CommonCodeService, CommonCode } from '@/services/common-code.service';
 
 interface UserFormProps {
   user: User | null;
@@ -27,11 +26,18 @@ interface UserFormData {
 }
 
 const UserForm: React.FC<UserFormProps> = ({ user, onBack, onSave }) => {
-  // 공통 코드 상태
-  const [departments, setDepartments] = useState<CommonCode[]>([]);
-  const [positions, setPositions] = useState<CommonCode[]>([]);
-  const [relationships, setRelationships] = useState<CommonCode[]>([]);
-  const [loading, setLoading] = useState(true);
+  // 로딩 상태
+  const [loading, setLoading] = useState(false);
+
+  // 부서 자동완성 상태
+  const [departmentInput, setDepartmentInput] = useState(user?.department || '');
+  const [showDepartmentSuggestions, setShowDepartmentSuggestions] = useState(false);
+  const [departmentHistory, setDepartmentHistory] = useState<string[]>([]);
+
+  // 직급 자동완성 상태
+  const [positionInput, setPositionInput] = useState(user?.position || '');
+  const [showPositionSuggestions, setShowPositionSuggestions] = useState(false);
+  const [positionHistory, setPositionHistory] = useState<string[]>([]);
 
   const {
     register,
@@ -70,38 +76,119 @@ const UserForm: React.FC<UserFormProps> = ({ user, onBack, onSave }) => {
 
   const selectedRole = watch('role');
 
-  // 공통 코드 로드
-  useEffect(() => {
-    const loadCommonCodes = async () => {
-      try {
-        setLoading(true);
-        const [deptCodes, posCodes, relCodes] = await Promise.all([
-          CommonCodeService.getDepartments(),
-          CommonCodeService.getPositions(),
-          CommonCodeService.getRelationships()
-        ]);
-        setDepartments(deptCodes);
-        setPositions(posCodes);
-        setRelationships(relCodes);
-      } catch (error) {
-        console.error('공통 코드 로드 실패:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
 
-    loadCommonCodes();
+  // 부서 히스토리 로드
+  useEffect(() => {
+    const savedHistory = localStorage.getItem('departmentHistory');
+    if (savedHistory) {
+      try {
+        setDepartmentHistory(JSON.parse(savedHistory));
+      } catch (error) {
+        console.error('부서 히스토리 로드 실패:', error);
+      }
+    }
   }, []);
 
+  // 직급 히스토리 로드
+  useEffect(() => {
+    const savedHistory = localStorage.getItem('positionHistory');
+    if (savedHistory) {
+      try {
+        setPositionHistory(JSON.parse(savedHistory));
+      } catch (error) {
+        console.error('직급 히스토리 로드 실패:', error);
+      }
+    }
+
+    // 기본 직급 목록 초기화 (히스토리가 없을 경우)
+    if (!savedHistory) {
+      const defaultPositions = ['사원', '주임', '대리', '과장', '차장', '부장', '이사', '상무', '전무', '부사장', '사장', '대표이사'];
+      setPositionHistory(defaultPositions);
+      localStorage.setItem('positionHistory', JSON.stringify(defaultPositions));
+    }
+  }, []);
+
+  // 부서 입력값 변경 핸들러
+  const handleDepartmentInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setDepartmentInput(value);
+    setShowDepartmentSuggestions(true);
+  };
+
+  // 부서 제안 선택 핸들러
+  const handleSelectDepartment = (dept: string) => {
+    setDepartmentInput(dept);
+    setShowDepartmentSuggestions(false);
+  };
+
+  // 부서 히스토리 저장
+  const saveDepartmentToHistory = (dept: string) => {
+    if (!dept || dept.trim() === '') return;
+
+    const trimmedDept = dept.trim();
+    const newHistory = [trimmedDept, ...departmentHistory.filter(d => d !== trimmedDept)].slice(0, 10);
+    setDepartmentHistory(newHistory);
+    localStorage.setItem('departmentHistory', JSON.stringify(newHistory));
+  };
+
+  // 필터링된 부서 제안 목록
+  const getDepartmentSuggestions = () => {
+    if (!departmentInput.trim()) {
+      return departmentHistory.slice(0, 10);
+    }
+
+    return departmentHistory.filter(dept =>
+      dept.toLowerCase().includes(departmentInput.toLowerCase())
+    ).slice(0, 10);
+  };
+
+  // 직급 입력값 변경 핸들러
+  const handlePositionInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setPositionInput(value);
+    setShowPositionSuggestions(true);
+  };
+
+  // 직급 제안 선택 핸들러
+  const handleSelectPosition = (pos: string) => {
+    setPositionInput(pos);
+    setShowPositionSuggestions(false);
+  };
+
+  // 직급 히스토리 저장
+  const savePositionToHistory = (pos: string) => {
+    if (!pos || pos.trim() === '') return;
+
+    const trimmedPos = pos.trim();
+    const newHistory = [trimmedPos, ...positionHistory.filter(p => p !== trimmedPos)].slice(0, 15);
+    setPositionHistory(newHistory);
+    localStorage.setItem('positionHistory', JSON.stringify(newHistory));
+  };
+
+  // 필터링된 직급 제안 목록
+  const getPositionSuggestions = () => {
+    if (!positionInput.trim()) {
+      return positionHistory.slice(0, 15);
+    }
+
+    return positionHistory.filter(pos =>
+      pos.toLowerCase().includes(positionInput.toLowerCase())
+    ).slice(0, 15);
+  };
+
   const onSubmit = async (data: UserFormData) => {
+    // 부서명과 직급을 히스토리에 저장
+    saveDepartmentToHistory(departmentInput);
+    savePositionToHistory(positionInput);
+
     const userData: Partial<User> = {
       name: data.name,
       email: data.email,
       phone: data.phone,
       employee_id: data.employee_id,
       role: data.role,
-      department: data.department,
-      position: data.position,
+      department: departmentInput, // 자동완성 입력값 사용
+      position: positionInput, // 자동완성 입력값 사용
       hire_date: data.hire_date,
       status: data.status
     };
@@ -256,41 +343,69 @@ const UserForm: React.FC<UserFormProps> = ({ user, onBack, onSave }) => {
               </select>
             </div>
 
-            <div>
+            <div className="relative">
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 부서 *
               </label>
-              <select
-                {...register('department', { required: '부서를 선택해주세요.' })}
-                className="w-full border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              <input
+                type="text"
+                value={departmentInput}
+                onChange={handleDepartmentInputChange}
+                onFocus={() => setShowDepartmentSuggestions(true)}
+                onBlur={() => setTimeout(() => setShowDepartmentSuggestions(false), 200)}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                placeholder="부서명을 입력하세요"
                 disabled={loading}
-              >
-                <option value="">부서 선택</option>
-                {departments.map(dept => (
-                  <option key={dept.id} value={dept.name}>{dept.name}</option>
-                ))}
-              </select>
-              {errors.department && (
-                <p className="mt-1 text-sm text-destructive">{errors.department.message}</p>
+              />
+              {showDepartmentSuggestions && getDepartmentSuggestions().length > 0 && (
+                <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+                  {getDepartmentSuggestions().map((dept, index) => (
+                    <button
+                      key={index}
+                      type="button"
+                      onClick={() => handleSelectDepartment(dept)}
+                      className="w-full text-left px-3 py-2 hover:bg-gray-100 transition-colors"
+                    >
+                      {dept}
+                    </button>
+                  ))}
+                </div>
+              )}
+              {!departmentInput.trim() && (
+                <p className="mt-1 text-sm text-destructive">부서명을 입력해주세요.</p>
               )}
             </div>
 
-            <div>
+            <div className="relative">
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 직급 *
               </label>
-              <select
-                {...register('position', { required: '직급을 선택해주세요.' })}
-                className="w-full border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              <input
+                type="text"
+                value={positionInput}
+                onChange={handlePositionInputChange}
+                onFocus={() => setShowPositionSuggestions(true)}
+                onBlur={() => setTimeout(() => setShowPositionSuggestions(false), 200)}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                placeholder="직급을 입력하세요 (예: 사원, 과장, 부장)"
                 disabled={loading}
-              >
-                <option value="">직급 선택</option>
-                {positions.map(pos => (
-                  <option key={pos.id} value={pos.name}>{pos.name}</option>
-                ))}
-              </select>
-              {errors.position && (
-                <p className="mt-1 text-sm text-destructive">{errors.position.message}</p>
+              />
+              {showPositionSuggestions && getPositionSuggestions().length > 0 && (
+                <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+                  {getPositionSuggestions().map((pos, index) => (
+                    <button
+                      key={index}
+                      type="button"
+                      onClick={() => handleSelectPosition(pos)}
+                      className="w-full text-left px-3 py-2 hover:bg-gray-100 transition-colors"
+                    >
+                      {pos}
+                    </button>
+                  ))}
+                </div>
+              )}
+              {!positionInput.trim() && (
+                <p className="mt-1 text-sm text-destructive">직급을 입력해주세요.</p>
               )}
             </div>
 
@@ -335,12 +450,14 @@ const UserForm: React.FC<UserFormProps> = ({ user, onBack, onSave }) => {
                 <select
                   {...register('emergency_contact_relationship')}
                   className="w-full border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  disabled={loading}
                 >
                   <option value="">관계 선택</option>
-                  {relationships.map(rel => (
-                    <option key={rel.id} value={rel.name}>{rel.name}</option>
-                  ))}
+                  <option value="부모">부모</option>
+                  <option value="배우자">배우자</option>
+                  <option value="자녀">자녀</option>
+                  <option value="형제자매">형제자매</option>
+                  <option value="친구">친구</option>
+                  <option value="기타">기타</option>
                 </select>
               </div>
 

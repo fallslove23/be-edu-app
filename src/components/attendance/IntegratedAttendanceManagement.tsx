@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState, useEffect } from 'react';
 import {
   CalendarDaysIcon,
@@ -25,7 +27,7 @@ import {
 } from '../../services/attendance.service';
 import { supabase } from '../../services/supabase';
 
-type ViewMode = 'calendar' | 'session' | 'trainee' | 'daily';
+type ViewMode = 'check' | 'trainee' | 'statistics';
 
 interface Session {
   id: string;
@@ -33,18 +35,6 @@ interface Session {
   session_code: string;
   start_date: string;
   end_date: string;
-  status: string;
-}
-
-interface CurriculumItem {
-  id: string;
-  session_id: string;
-  title: string;
-  date: string;
-  day: number;
-  order_index: number;
-  start_time: string;
-  end_time: string;
   status: string;
 }
 
@@ -58,39 +48,38 @@ interface TraineeTarget {
 }
 
 const IntegratedAttendanceManagement: React.FC = () => {
-  const [viewMode, setViewMode] = useState<ViewMode>('calendar');
+  const [viewMode, setViewMode] = useState<ViewMode>('check');
   const [sessions, setSessions] = useState<Session[]>([]);
   const [selectedSession, setSelectedSession] = useState<Session | null>(null);
-  const [curriculumItems, setCurriculumItems] = useState<CurriculumItem[]>([]);
-  const [selectedCurriculum, setSelectedCurriculum] = useState<CurriculumItem | null>(null);
+  const [selectedDate, setSelectedDate] = useState<string>(format(new Date(), 'yyyy-MM-dd'));
   const [attendanceTargets, setAttendanceTargets] = useState<TraineeTarget[]>([]);
   const [attendanceRecords, setAttendanceRecords] = useState<AttendanceRecord[]>([]);
   const [statistics, setStatistics] = useState<AttendanceStatistics[]>([]);
   const [traineeSummary, setTraineeSummary] = useState<TraineeAttendanceSummary[]>([]);
   const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [statusFilter, setStatusFilter] = useState<'all' | AttendanceStatus | 'unchecked'>('all');
 
   // 초기 데이터 로드
   useEffect(() => {
     loadSessions();
   }, []);
 
-  // 세션 변경 시 커리큘럼 로드
+  // 세션 변경 시 통계 및 요약 로드
   useEffect(() => {
     if (selectedSession) {
-      loadCurriculumItems(selectedSession.id);
       loadStatistics(selectedSession.id);
       loadTraineeSummary(selectedSession.id);
     }
   }, [selectedSession]);
 
-  // 커리큘럼 선택 시 출석 대상 및 기록 로드
+  // 세션과 날짜 선택 시 출석 대상 및 기록 로드
   useEffect(() => {
-    if (selectedCurriculum) {
-      loadAttendanceTargets(selectedCurriculum.id);
-      loadAttendanceRecords(selectedCurriculum.id);
+    if (selectedSession && selectedDate) {
+      loadAttendanceTargets(selectedSession.id, selectedDate);
+      loadAttendanceRecords(selectedSession.id, selectedDate);
     }
-  }, [selectedCurriculum]);
+  }, [selectedSession, selectedDate]);
 
   const loadSessions = async () => {
     try {
@@ -101,6 +90,8 @@ const IntegratedAttendanceManagement: React.FC = () => {
           id,
           round_name,
           round_code,
+          round_number,
+          course_name,
           start_date,
           end_date,
           status
@@ -110,15 +101,35 @@ const IntegratedAttendanceManagement: React.FC = () => {
 
       if (error) throw error;
 
-      // Map course_rounds to Session interface
-      const mappedSessions = (data || []).map(round => ({
-        id: round.id,
-        session_name: round.round_name,
-        session_code: round.round_code,
-        start_date: round.start_date,
-        end_date: round.end_date,
-        status: round.status
-      }));
+      // Debug: 첫 번째 레코드 확인
+      if (data && data.length > 0) {
+        console.log('📊 Course Round Data Sample:', data[0]);
+      }
+
+      // Map course_rounds to Session interface with formatted display name
+      const mappedSessions = (data || []).map(round => {
+        // 차수 표시 형식: "25-8차 BS Basic" 또는 "{year}-{round_number}차 {course_name}"
+        const year = round.start_date ? new Date(round.start_date).getFullYear().toString().slice(-2) : '';
+        const displayName = round.round_number && round.course_name
+          ? `${year}-${round.round_number}차 ${round.course_name}`
+          : round.round_name; // fallback to round_name if fields are missing
+
+        console.log('🔄 Mapping round:', {
+          round_name: round.round_name,
+          round_number: round.round_number,
+          course_name: round.course_name,
+          displayName
+        });
+
+        return {
+          id: round.id,
+          session_name: displayName,
+          session_code: round.round_code,
+          start_date: round.start_date,
+          end_date: round.end_date,
+          status: round.status
+        };
+      });
 
       setSessions(mappedSessions);
 
@@ -139,26 +150,9 @@ const IntegratedAttendanceManagement: React.FC = () => {
     }
   };
 
-  const loadCurriculumItems = async (sessionId: string) => {
+  const loadAttendanceTargets = async (sessionId: string, attendanceDate: string) => {
     try {
-      const { data, error } = await supabase
-        .from('curriculum_items')
-        .select('*')
-        .eq('session_id', sessionId)
-        .order('date', { ascending: true })
-        .order('order_index', { ascending: true });
-
-      if (error) throw error;
-      setCurriculumItems(data || []);
-    } catch (error) {
-      console.error('Failed to load curriculum:', error);
-      toast.error('커리큘럼을 불러오는데 실패했습니다.');
-    }
-  };
-
-  const loadAttendanceTargets = async (curriculumItemId: string) => {
-    try {
-      const targets = await AttendanceService.getAttendanceTargets(curriculumItemId);
+      const targets = await AttendanceService.getAttendanceTargets(sessionId, attendanceDate);
       setAttendanceTargets(targets);
     } catch (error) {
       console.error('Failed to load attendance targets:', error);
@@ -166,9 +160,9 @@ const IntegratedAttendanceManagement: React.FC = () => {
     }
   };
 
-  const loadAttendanceRecords = async (curriculumItemId: string) => {
+  const loadAttendanceRecords = async (sessionId: string, attendanceDate: string) => {
     try {
-      const records = await AttendanceService.getAttendanceRecords(curriculumItemId);
+      const records = await AttendanceService.getAttendanceRecords(sessionId, attendanceDate);
       setAttendanceRecords(records);
     } catch (error) {
       console.error('Failed to load attendance records:', error);
@@ -195,23 +189,21 @@ const IntegratedAttendanceManagement: React.FC = () => {
   };
 
   const handleAttendanceCheck = async (traineeId: string, status: AttendanceStatus) => {
-    if (!selectedCurriculum) return;
+    if (!selectedSession || !selectedDate) return;
 
     try {
       await AttendanceService.checkAttendance({
-        curriculum_item_id: selectedCurriculum.id,
+        session_id: selectedSession.id,
         trainee_id: traineeId,
+        attendance_date: selectedDate,
         status,
       });
 
       toast.success('출석 체크가 완료되었습니다.');
-      await loadAttendanceRecords(selectedCurriculum.id);
-      await loadAttendanceTargets(selectedCurriculum.id);
-
-      if (selectedSession) {
-        await loadStatistics(selectedSession.id);
-        await loadTraineeSummary(selectedSession.id);
-      }
+      await loadAttendanceRecords(selectedSession.id, selectedDate);
+      await loadAttendanceTargets(selectedSession.id, selectedDate);
+      await loadStatistics(selectedSession.id);
+      await loadTraineeSummary(selectedSession.id);
     } catch (error) {
       console.error('Failed to check attendance:', error);
       toast.error('출석 체크에 실패했습니다.');
@@ -219,7 +211,7 @@ const IntegratedAttendanceManagement: React.FC = () => {
   };
 
   const handleBulkAttendanceCheck = async (status: AttendanceStatus) => {
-    if (!selectedCurriculum || attendanceTargets.length === 0) return;
+    if (!selectedSession || !selectedDate || attendanceTargets.length === 0) return;
 
     const confirmed = window.confirm(
       `전체 ${attendanceTargets.length}명을 "${getStatusLabel(status)}"로 일괄 처리하시겠습니까?`
@@ -231,21 +223,19 @@ const IntegratedAttendanceManagement: React.FC = () => {
       const records = attendanceTargets
         .filter(t => !t.attendance_status)
         .map(t => ({
-          curriculum_item_id: selectedCurriculum.id,
+          session_id: selectedSession.id,
           trainee_id: t.id,
+          attendance_date: selectedDate,
           status,
         }));
 
       await AttendanceService.checkAttendanceBulk(records);
       toast.success(`${records.length}명의 출석 체크가 완료되었습니다.`);
 
-      await loadAttendanceRecords(selectedCurriculum.id);
-      await loadAttendanceTargets(selectedCurriculum.id);
-
-      if (selectedSession) {
-        await loadStatistics(selectedSession.id);
-        await loadTraineeSummary(selectedSession.id);
-      }
+      await loadAttendanceRecords(selectedSession.id, selectedDate);
+      await loadAttendanceTargets(selectedSession.id, selectedDate);
+      await loadStatistics(selectedSession.id);
+      await loadTraineeSummary(selectedSession.id);
     } catch (error) {
       console.error('Failed to bulk check attendance:', error);
       toast.error('일괄 출석 체크에 실패했습니다.');
@@ -285,13 +275,59 @@ const IntegratedAttendanceManagement: React.FC = () => {
     }
   };
 
-  const filteredTargets = attendanceTargets.filter(target =>
-    target.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    target.email?.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredTargets = attendanceTargets.filter(target => {
+    // 검색 필터
+    const matchesSearch = target.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      target.email?.toLowerCase().includes(searchQuery.toLowerCase());
 
-  // 캘린더 뷰 렌더링
-  const renderCalendarView = () => {
+    // 상태 필터
+    if (statusFilter === 'all') return matchesSearch;
+    if (statusFilter === 'unchecked') return matchesSearch && !target.attendance_status;
+    return matchesSearch && target.attendance_status === statusFilter;
+  });
+
+  // 출석 통계 계산
+  const getAttendanceSummary = () => {
+    const total = attendanceTargets.length;
+    const checked = attendanceTargets.filter(t => t.attendance_status).length;
+    const unchecked = total - checked;
+    const present = attendanceTargets.filter(t => t.attendance_status === 'present').length;
+    const late = attendanceTargets.filter(t => t.attendance_status === 'late').length;
+    const absent = attendanceTargets.filter(t => t.attendance_status === 'absent').length;
+    const excused = attendanceTargets.filter(t => t.attendance_status === 'excused').length;
+    const attendanceRate = total > 0 ? Math.round(((present + late) / total) * 100) : 0;
+
+    return { total, checked, unchecked, present, late, absent, excused, attendanceRate };
+  };
+
+  // Excel 내보내기
+  const exportToExcel = () => {
+    if (!selectedSession || !selectedDate) return;
+
+    const data = attendanceTargets.map(target => ({
+      '이름': target.name,
+      '이메일': target.email || '-',
+      '부서': target.department || '-',
+      '전화번호': target.phone || '-',
+      '출석상태': getStatusLabel(target.attendance_status)
+    }));
+
+    const csv = [
+      Object.keys(data[0]).join(','),
+      ...data.map(row => Object.values(row).join(','))
+    ].join('\n');
+
+    const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `출석부_${selectedSession.session_name}_${selectedDate}.csv`;
+    link.click();
+
+    toast.success('출석부가 다운로드되었습니다.');
+  };
+
+  // 출석 체크 뷰
+  const renderCheckView = () => {
     if (!selectedSession) {
       return (
         <div className="text-center py-12 text-gray-500">
@@ -300,130 +336,110 @@ const IntegratedAttendanceManagement: React.FC = () => {
       );
     }
 
-    // 날짜별로 커리큘럼 그룹화
-    const groupedByDate = curriculumItems.reduce((acc, item) => {
-      if (!acc[item.date]) {
-        acc[item.date] = [];
-      }
-      acc[item.date].push(item);
-      return acc;
-    }, {} as Record<string, CurriculumItem[]>);
-
-    const dates = Object.keys(groupedByDate).sort();
-
-    return (
-      <div className="space-y-4">
-        {dates.map(date => {
-          const items = groupedByDate[date];
-          const stat = statistics.find(s => s.date === date);
-
-          return (
-            <div key={date} className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6">
-              <div className="flex items-center justify-between mb-4">
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                    {format(new Date(date), 'M월 d일 (EEE)', { locale: ko })}
-                  </h3>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                    {items[0]?.day}일차 • {items.length}개 세션
-                  </p>
-                </div>
-
-                {stat && (
-                  <div className="flex items-center gap-4 text-sm">
-                    <div className="text-center">
-                      <div className="text-2xl font-bold text-emerald-600">{stat.attendance_rate}%</div>
-                      <div className="text-gray-500">출석률</div>
-                    </div>
-                    <div className="text-gray-400">|</div>
-                    <div className="flex gap-2">
-                      <span className="text-emerald-600">✓ {stat.present_count}</span>
-                      <span className="text-yellow-600">⏰ {stat.late_count}</span>
-                      <span className="text-red-600">✗ {stat.absent_count}</span>
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              <div className="space-y-2">
-                {items.map(item => (
-                  <button
-                    key={item.id}
-                    onClick={() => {
-                      setSelectedCurriculum(item);
-                      setViewMode('session');
-                    }}
-                    className="w-full text-left p-4 rounded-lg bg-gray-50 dark:bg-gray-700/50 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors"
-                  >
-                    <div className="flex items-center justify-between">
-                      <div className="flex-1">
-                        <h4 className="font-medium text-gray-900 dark:text-white">{item.title}</h4>
-                        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                          {item.start_time} - {item.end_time}
-                        </p>
-                      </div>
-                      <div className="text-sm text-gray-500">
-                        {item.order_index}교시
-                      </div>
-                    </div>
-                  </button>
-                ))}
-              </div>
-            </div>
-          );
-        })}
-      </div>
-    );
-  };
-
-  // 세션별 출석 체크 뷰
-  const renderSessionView = () => {
-    if (!selectedCurriculum) {
-      return (
-        <div className="text-center py-12 text-gray-500">
-          세션을 선택해주세요.
-        </div>
-      );
-    }
+    const summary = getAttendanceSummary();
 
     return (
       <div className="space-y-6">
-        {/* 세션 정보 */}
-        <div className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl shadow-lg p-6 text-white">
-          <button
-            onClick={() => {
-              setViewMode('calendar');
-              setSelectedCurriculum(null);
-            }}
-            className="text-white/80 hover:text-white text-sm mb-4"
-          >
-            ← 목록으로 돌아가기
-          </button>
-
-          <h2 className="text-2xl font-bold mb-2">{selectedCurriculum.title}</h2>
-          <div className="flex items-center gap-4 text-blue-100">
-            <span>{format(new Date(selectedCurriculum.date), 'yyyy년 M월 d일 (EEE)', { locale: ko })}</span>
+        {/* 날짜 및 세션 정보 */}
+        <div className="bg-gradient-to-r from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 rounded-xl shadow-sm border border-blue-200 dark:border-blue-800 p-6">
+          <h2 className="text-2xl font-bold mb-2 text-gray-900 dark:text-white">{selectedSession.session_name}</h2>
+          <div className="flex items-center gap-4 text-gray-600 dark:text-gray-300 text-sm">
+            <span className="font-medium">{selectedSession.session_code}</span>
             <span>•</span>
-            <span>{selectedCurriculum.start_time} - {selectedCurriculum.end_time}</span>
-            <span>•</span>
-            <span>{selectedCurriculum.day}일차 {selectedCurriculum.order_index}교시</span>
+            <span>{format(new Date(selectedSession.start_date), 'yyyy-MM-dd')} ~ {format(new Date(selectedSession.end_date), 'yyyy-MM-dd')}</span>
           </div>
         </div>
 
-        {/* 일괄 처리 버튼 */}
-        <div className="flex gap-2 flex-wrap">
-          <button
-            onClick={() => handleBulkAttendanceCheck('present')}
-            className="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors"
-          >
-            전체 출석 처리
-          </button>
-          <button
-            onClick={() => handleBulkAttendanceCheck('absent')}
-            className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
-          >
-            미체크자 결석 처리
-          </button>
+        {/* 출석 현황 요약 카드 */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4">
+            <div className="text-sm text-gray-500 dark:text-gray-400 mb-1">총 인원</div>
+            <div className="text-2xl font-bold text-gray-900 dark:text-white">{summary.total}명</div>
+          </div>
+          <div className="bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-lg shadow-sm p-4 text-white">
+            <div className="text-sm text-emerald-100 mb-1">출석률</div>
+            <div className="text-2xl font-bold">{summary.attendanceRate}%</div>
+            <div className="text-xs text-emerald-100 mt-1">출석 {summary.present} / 지각 {summary.late}</div>
+          </div>
+          <div className="bg-gradient-to-br from-red-500 to-red-600 rounded-lg shadow-sm p-4 text-white">
+            <div className="text-sm text-red-100 mb-1">결석</div>
+            <div className="text-2xl font-bold">{summary.absent}명</div>
+          </div>
+          <div className="bg-gradient-to-br from-gray-500 to-gray-600 rounded-lg shadow-sm p-4 text-white">
+            <div className="text-sm text-gray-100 mb-1">미체크</div>
+            <div className="text-2xl font-bold">{summary.unchecked}명</div>
+          </div>
+        </div>
+
+        {/* 일괄 처리 버튼 및 필터 */}
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <div className="flex gap-2 flex-wrap">
+            <button
+              onClick={() => handleBulkAttendanceCheck('present')}
+              className="btn-base btn-success flex items-center gap-2"
+            >
+              <CheckCircleIcon className="w-5 h-5" />
+              전체 출석 처리
+            </button>
+            <button
+              onClick={() => handleBulkAttendanceCheck('absent')}
+              className="btn-base btn-danger flex items-center gap-2"
+            >
+              <XCircleIcon className="w-5 h-5" />
+              미체크자 결석 처리
+            </button>
+            <button
+              onClick={exportToExcel}
+              className="btn-base btn-secondary flex items-center gap-2"
+            >
+              <DocumentArrowDownIcon className="w-5 h-5" />
+              Excel 내보내기
+            </button>
+          </div>
+
+          {/* 빠른 필터 */}
+          <div className="flex gap-2">
+            <button
+              onClick={() => setStatusFilter('all')}
+              className={`px-3 py-1 rounded-lg text-sm font-medium transition-colors ${
+                statusFilter === 'all'
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'
+              }`}
+            >
+              전체 ({summary.total})
+            </button>
+            <button
+              onClick={() => setStatusFilter('unchecked')}
+              className={`px-3 py-1 rounded-lg text-sm font-medium transition-colors ${
+                statusFilter === 'unchecked'
+                  ? 'bg-gray-600 text-white'
+                  : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'
+              }`}
+            >
+              미체크 ({summary.unchecked})
+            </button>
+            <button
+              onClick={() => setStatusFilter('present')}
+              className={`px-3 py-1 rounded-lg text-sm font-medium transition-colors ${
+                statusFilter === 'present'
+                  ? 'bg-emerald-600 text-white'
+                  : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'
+              }`}
+            >
+              출석 ({summary.present})
+            </button>
+            <button
+              onClick={() => setStatusFilter('absent')}
+              className={`px-3 py-1 rounded-lg text-sm font-medium transition-colors ${
+                statusFilter === 'absent'
+                  ? 'bg-red-600 text-white'
+                  : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'
+              }`}
+            >
+              결석 ({summary.absent})
+            </button>
+          </div>
         </div>
 
         {/* 검색 */}
@@ -434,7 +450,7 @@ const IntegratedAttendanceManagement: React.FC = () => {
             placeholder="교육생 검색..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+            className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
           />
         </div>
 
@@ -452,43 +468,53 @@ const IntegratedAttendanceManagement: React.FC = () => {
                   </div>
 
                   <div className="flex items-center gap-2">
-                    {target.attendance_status ? (
-                      <span className={`px-3 py-1 rounded-full text-sm font-medium flex items-center gap-1 ${getStatusColor(target.attendance_status)}`}>
-                        {getStatusIcon(target.attendance_status)}
-                        {getStatusLabel(target.attendance_status)}
-                      </span>
-                    ) : (
-                      <div className="flex gap-1">
-                        <button
-                          onClick={() => handleAttendanceCheck(target.id, 'present')}
-                          className="p-2 text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 rounded-lg"
-                          title="출석"
-                        >
-                          <CheckCircleIcon className="w-5 h-5" />
-                        </button>
-                        <button
-                          onClick={() => handleAttendanceCheck(target.id, 'late')}
-                          className="p-2 text-yellow-600 hover:bg-yellow-50 dark:hover:bg-yellow-900/20 rounded-lg"
-                          title="지각"
-                        >
-                          <ClockIcon className="w-5 h-5" />
-                        </button>
-                        <button
-                          onClick={() => handleAttendanceCheck(target.id, 'absent')}
-                          className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg"
-                          title="결석"
-                        >
-                          <XCircleIcon className="w-5 h-5" />
-                        </button>
-                        <button
-                          onClick={() => handleAttendanceCheck(target.id, 'excused')}
-                          className="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg"
-                          title="사유결석"
-                        >
-                          <ExclamationTriangleIcon className="w-5 h-5" />
-                        </button>
-                      </div>
-                    )}
+                    {/* 출석 상태 버튼 - 항상 표시하여 변경 가능 */}
+                    <div className="flex gap-1">
+                      <button
+                        onClick={() => handleAttendanceCheck(target.id, 'present')}
+                        className={`p-2 rounded-lg transition-colors ${
+                          target.attendance_status === 'present'
+                            ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-300'
+                            : 'text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/20'
+                        }`}
+                        title="출석"
+                      >
+                        <CheckCircleIcon className="w-5 h-5" />
+                      </button>
+                      <button
+                        onClick={() => handleAttendanceCheck(target.id, 'late')}
+                        className={`p-2 rounded-lg transition-colors ${
+                          target.attendance_status === 'late'
+                            ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300'
+                            : 'text-yellow-600 hover:bg-yellow-50 dark:hover:bg-yellow-900/20'
+                        }`}
+                        title="지각"
+                      >
+                        <ClockIcon className="w-5 h-5" />
+                      </button>
+                      <button
+                        onClick={() => handleAttendanceCheck(target.id, 'absent')}
+                        className={`p-2 rounded-lg transition-colors ${
+                          target.attendance_status === 'absent'
+                            ? 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300'
+                            : 'text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20'
+                        }`}
+                        title="결석"
+                      >
+                        <XCircleIcon className="w-5 h-5" />
+                      </button>
+                      <button
+                        onClick={() => handleAttendanceCheck(target.id, 'excused')}
+                        className={`p-2 rounded-lg transition-colors ${
+                          target.attendance_status === 'excused'
+                            ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300'
+                            : 'text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20'
+                        }`}
+                        title="사유결석"
+                      >
+                        <ExclamationTriangleIcon className="w-5 h-5" />
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -582,6 +608,88 @@ const IntegratedAttendanceManagement: React.FC = () => {
     );
   };
 
+  // 통계 뷰
+  const renderStatisticsView = () => {
+    if (!selectedSession) {
+      return (
+        <div className="text-center py-12 text-gray-500">
+          차수를 선택해주세요.
+        </div>
+      );
+    }
+
+    return (
+      <div className="space-y-6">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden">
+          <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+            <thead className="bg-gray-50 dark:bg-gray-700">
+              <tr>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                  날짜
+                </th>
+                <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                  등록 인원
+                </th>
+                <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                  체크 인원
+                </th>
+                <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                  출석
+                </th>
+                <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                  지각
+                </th>
+                <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                  결석
+                </th>
+                <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                  사유결석
+                </th>
+                <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                  출석률
+                </th>
+              </tr>
+            </thead>
+            <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+              {statistics.map((stat, index) => (
+                <tr key={index} className="hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="font-medium text-gray-900 dark:text-white">
+                      {format(new Date(stat.date), 'yyyy-MM-dd (EEE)', { locale: ko })}
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-900 dark:text-white">
+                    {stat.total_enrolled}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-900 dark:text-white">
+                    {stat.total_checked}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-center">
+                    <span className="text-emerald-600 font-medium">{stat.present_count}</span>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-center">
+                    <span className="text-yellow-600 font-medium">{stat.late_count}</span>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-center">
+                    <span className="text-red-600 font-medium">{stat.absent_count}</span>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-center">
+                    <span className="text-blue-600 font-medium">{stat.excused_count}</span>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-center">
+                    <span className={`font-bold ${stat.attendance_rate >= 80 ? 'text-emerald-600' : 'text-red-600'}`}>
+                      {stat.attendance_rate}%
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="p-6">
       {/* 헤더 */}
@@ -590,44 +698,58 @@ const IntegratedAttendanceManagement: React.FC = () => {
           📋 통합 출석 관리
         </h1>
         <p className="text-gray-500 dark:text-gray-400">
-          커리큘럼 기반 실시간 출석 체크 및 통계
+          세션 및 날짜 기반 실시간 출석 체크 및 통계
         </p>
       </div>
 
-      {/* 차수 선택 */}
-      <div className="mb-6">
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-          과정 차수
-        </label>
-        <select
-          value={selectedSession?.id || ''}
-          onChange={(e) => {
-            const session = sessions.find(s => s.id === e.target.value);
-            setSelectedSession(session || null);
-          }}
-          className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
-        >
-          <option value="">차수를 선택하세요</option>
-          {sessions.map(session => (
-            <option key={session.id} value={session.id}>
-              {session.session_name} ({session.session_code}) - {format(new Date(session.start_date), 'yyyy-MM-dd')}
-            </option>
-          ))}
-        </select>
+      {/* 차수 및 날짜 선택 */}
+      <div className="mb-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            과정 차수
+          </label>
+          <select
+            value={selectedSession?.id || ''}
+            onChange={(e) => {
+              const session = sessions.find(s => s.id === e.target.value);
+              setSelectedSession(session || null);
+            }}
+            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+          >
+            <option value="">차수를 선택하세요</option>
+            {sessions.map(session => (
+              <option key={session.id} value={session.id}>
+                {session.session_name} ({session.session_code}) - {format(new Date(session.start_date), 'yyyy-MM-dd')}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            출석 날짜
+          </label>
+          <input
+            type="date"
+            value={selectedDate}
+            onChange={(e) => setSelectedDate(e.target.value)}
+            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+          />
+        </div>
       </div>
 
       {/* 뷰 모드 탭 */}
       <div className="mb-6 flex gap-2 border-b border-gray-200 dark:border-gray-700">
         <button
-          onClick={() => setViewMode('calendar')}
+          onClick={() => setViewMode('check')}
           className={`px-4 py-2 font-medium ${
-            viewMode === 'calendar'
+            viewMode === 'check'
               ? 'text-blue-600 border-b-2 border-blue-600'
               : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
           }`}
         >
-          <CalendarDaysIcon className="w-5 h-5 inline mr-2" />
-          캘린더
+          <CheckCircleIcon className="w-5 h-5 inline mr-2" />
+          출석 체크
         </button>
         <button
           onClick={() => setViewMode('trainee')}
@@ -638,7 +760,18 @@ const IntegratedAttendanceManagement: React.FC = () => {
           }`}
         >
           <UserGroupIcon className="w-5 h-5 inline mr-2" />
-          교육생별
+          교육생별 통계
+        </button>
+        <button
+          onClick={() => setViewMode('statistics')}
+          className={`px-4 py-2 font-medium ${
+            viewMode === 'statistics'
+              ? 'text-blue-600 border-b-2 border-blue-600'
+              : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
+          }`}
+        >
+          <ChartBarIcon className="w-5 h-5 inline mr-2" />
+          통계
         </button>
       </div>
 
@@ -650,9 +783,9 @@ const IntegratedAttendanceManagement: React.FC = () => {
         </div>
       ) : (
         <>
-          {viewMode === 'calendar' && renderCalendarView()}
-          {viewMode === 'session' && renderSessionView()}
+          {viewMode === 'check' && renderCheckView()}
           {viewMode === 'trainee' && renderTraineeView()}
+          {viewMode === 'statistics' && renderStatisticsView()}
         </>
       )}
     </div>

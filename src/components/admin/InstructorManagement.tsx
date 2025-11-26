@@ -1,3 +1,5 @@
+'use client';
+
 /**
  * 강사 통합 관리 컴포넌트 (간소화)
  * - 강사 계정 생성, 조회, 수정
@@ -1116,3 +1118,5 @@ export function InstructorManagement() {
     </div>
   );
 }
+
+export default InstructorManagement;

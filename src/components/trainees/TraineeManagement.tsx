@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState, useEffect } from 'react';
 import {
   PlusIcon,
@@ -1135,13 +1137,13 @@ const TraineeManagement: React.FC = () => {
                   <td className="p-4 text-card-foreground">{trainee.phone}</td>
                   <td className="p-4 text-card-foreground">{trainee.workplace || '-'}</td>
                   <td className="p-4">
-                    <div className="flex items-center space-x-2">
+                    <div className="flex items-center justify-center space-x-2">
                       <button
                         onClick={() => {
                           setSelectedTrainee(trainee);
                           setIsDetailModalOpen(true);
                         }}
-                        className="btn-base btn-sm btn-primary"
+                        className="btn-base btn-sm btn-primary w-9 h-9 !p-0 !gap-0 inline-flex items-center justify-center"
                         title="상세보기"
                       >
                         <EyeIcon className="w-4 h-4" />
@@ -1150,7 +1152,7 @@ const TraineeManagement: React.FC = () => {
                         onClick={() => {
                           setShowReportForTrainee(trainee.id);
                         }}
-                        className="btn-base btn-sm btn-primary"
+                        className="btn-base btn-sm btn-purple w-9 h-9 !p-0 !gap-0 inline-flex items-center justify-center"
                         title="리포트 보기"
                       >
                         <ClipboardDocumentListIcon className="w-4 h-4" />
@@ -1160,7 +1162,7 @@ const TraineeManagement: React.FC = () => {
                           setSelectedTrainee(trainee);
                           setIsEditModalOpen(true);
                         }}
-                        className="btn-base btn-sm btn-secondary"
+                        className="btn-base btn-sm btn-secondary w-9 h-9 !p-0 !gap-0 inline-flex items-center justify-center"
                         title="편집"
                       >
                         <PencilIcon className="w-4 h-4" />
@@ -1177,7 +1179,7 @@ const TraineeManagement: React.FC = () => {
                             }
                           }
                         }}
-                        className="btn-base btn-sm btn-danger"
+                        className="btn-base btn-sm btn-danger w-9 h-9 !p-0 !gap-0 inline-flex items-center justify-center"
                         title="삭제"
                       >
                         <TrashIcon className="w-4 h-4" />
