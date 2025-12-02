@@ -370,7 +370,7 @@ const SystemMonitor: React.FC = () => {
               </select>
               <button
                 onClick={() => setIsMonitoring(!isMonitoring)}
-                className={`px-4 py-2 rounded-full text-white flex items-center space-x-2 ${isMonitoring ? 'btn-danger' : 'btn-primary'
+                className={`px-4 py-2 rounded-lg text-white flex items-center space-x-2 ${isMonitoring ? 'btn-danger' : 'btn-primary'
                   }`}
               >
                 {isMonitoring ? (
@@ -454,7 +454,7 @@ const SystemMonitor: React.FC = () => {
                     <span className="text-2xl font-bold text-gray-900">
                       {metric.value}{metric.unit}
                     </span>
-                    <span className={`inline-flex items-center space-x-1 px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(metric.status)}`}>
+                    <span className={`inline-flex items-center space-x-1 px-2 py-1 rounded-lg text-xs font-medium ${getStatusColor(metric.status)}`}>
                       {getStatusIcon(metric.status)}
                       <span>
                         {metric.status === 'good' ? '양호' :
@@ -470,7 +470,7 @@ const SystemMonitor: React.FC = () => {
                     </div>
                     <div className="w-full bg-gray-200 rounded-lg h-2">
                       <div
-                        className={`h-2 rounded-full ${metric.status === 'critical' ? 'bg-red-500' :
+                        className={`h-2 rounded-lg ${metric.status === 'critical' ? 'bg-red-500' :
                             metric.status === 'warning' ? 'bg-yellow-500' : 'bg-green-500'
                           }`}
                         style={{
@@ -511,7 +511,7 @@ const SystemMonitor: React.FC = () => {
               <div key={alert.id} className={`p-4 ${alert.resolved ? 'opacity-50' : ''}`}>
                 <div className="flex items-start justify-between">
                   <div className="flex items-start space-x-3">
-                    <div className={`p-1 rounded-full ${alert.type === 'error' ? 'bg-destructive/10' :
+                    <div className={`p-1 rounded-lg ${alert.type === 'error' ? 'bg-destructive/10' :
                         alert.type === 'warning' ? 'bg-yellow-100' : 'bg-blue-100'
                       }`}>
                       <ExclamationTriangleIcon className={`h-4 w-4 ${alert.type === 'error' ? 'text-destructive' :

@@ -90,7 +90,7 @@ const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
               key={item.id}
               onClick={() => handleItemClick(item)}
               className={`
-                flex flex-col items-center justify-center py-2 px-1 min-h-touch
+                flex flex-col items-center justify-center py-3 px-1 min-h-touch
                 transition-all duration-200 touch-manipulation
                 ${isActive
                   ? 'text-primary'
@@ -100,7 +100,7 @@ const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
               title={item.label}
             >
               <div className={`
-                relative mb-1 p-2 rounded-xl transition-all duration-200
+                relative mb-1.5 p-2.5 rounded-xl transition-all duration-200
                 ${isActive
                   ? 'bg-primary/10 scale-110'
                   : 'hover:bg-muted active:scale-95'
@@ -108,14 +108,14 @@ const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
               `}>
                 <NavigationIcon
                   iconName={item.icon}
-                  className={`w-5 h-5 ${isActive ? 'text-primary' : ''}`}
+                  className={`w-6 h-6 ${isActive ? 'text-primary' : ''}`}
                 />
                 {isActive && (
                   <div className="absolute -top-1 -right-1 w-2 h-2 bg-primary rounded-full animate-pulse" />
                 )}
               </div>
               <span className={`
-                text-[10px] font-medium truncate w-full text-center
+                text-xs font-medium truncate w-full text-center leading-tight
                 ${isActive ? 'text-primary' : ''}
               `}>
                 {item.label}
