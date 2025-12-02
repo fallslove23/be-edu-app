@@ -236,70 +236,8 @@ const PerformanceTracking: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* 헤더 */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900 flex items-center">
-              <ChartBarIcon className="h-6 w-6 mr-2" />
-              성과 추적
-            </h1>
-            <p className="text-gray-600">교육생들의 학습 성과를 추적하고 분석합니다.</p>
-          </div>
-          <div className="flex items-center space-x-3">
-            <button className="bg-gray-600 text-white px-4 py-2 rounded-full hover:bg-gray-700 transition-colors flex items-center">
-              <ArrowDownTrayIcon className="h-4 w-4 mr-2" />
-              진도 리포트
-            </button>
-          </div>
-        </div>
-
-        {/* 필터 카드 */}
-        <div className="bg-white rounded-lg shadow-md border border-gray-100 p-6 mt-6">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-            <select
-              id="period-filter"
-              value={selectedPeriod}
-              onChange={(e) => setSelectedPeriod(e.target.value)}
-              className="flex-1 sm:w-64 border-2 border-gray-200 rounded-lg px-6 py-3.5 text-base bg-white text-gray-700 font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all shadow-sm hover:border-gray-300 appearance-none cursor-pointer"
-              style={{
-                backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`,
-                backgroundPosition: 'right 0.75rem center',
-                backgroundRepeat: 'no-repeat',
-                backgroundSize: '1.5em 1.5em',
-                paddingRight: '2.5rem'
-              }}
-            >
-              <option value="this_week">이번 주</option>
-              <option value="this_month">이번 달</option>
-              <option value="this_quarter">이번 분기</option>
-              <option value="this_year">올해</option>
-            </select>
-
-            <select
-              id="course-filter"
-              value={selectedCourse}
-              onChange={(e) => setSelectedCourse(e.target.value)}
-              className="flex-1 sm:w-64 border-2 border-gray-200 rounded-lg px-6 py-3.5 text-base bg-white text-gray-700 font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all shadow-sm hover:border-gray-300 appearance-none cursor-pointer"
-              style={{
-                backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`,
-                backgroundPosition: 'right 0.75rem center',
-                backgroundRepeat: 'no-repeat',
-                backgroundSize: '1.5em 1.5em',
-                paddingRight: '2.5rem'
-              }}
-            >
-              <option value="all">전체 과정</option>
-              {courseProgressData.map(course => (
-                <option key={course.id} value={course.id}>{course.course_name}</option>
-              ))}
-            </select>
-          </div>
-        </div>
-      </div>
-
       {/* 탭 메뉴 */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200">
+      <div className="bg-card rounded-lg shadow-sm border border-border">
         <div className="border-b border-gray-200 overflow-x-auto">
           <nav className="-mb-px flex">
             {[

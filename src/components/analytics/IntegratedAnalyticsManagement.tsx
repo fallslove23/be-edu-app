@@ -104,65 +104,43 @@ const IntegratedAnalyticsManagement: React.FC<IntegratedAnalyticsManagementProps
   return (
     <PageContainer>
       {/* 헤더 */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900">분석 및 보고서</h1>
-            <p className="text-gray-600">{getActiveTabConfig()?.description}</p>
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 mb-6">
+        <div className="flex flex-col space-y-4">
+          <div className="flex justify-between items-start">
+            <div>
+              <h1 className="text-xl sm:text-2xl font-bold text-gray-900">분석 및 보고서</h1>
+              <p className="text-sm text-gray-600 mt-1">{getActiveTabConfig()?.description}</p>
+            </div>
           </div>
 
-          <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-3 sm:space-y-0 sm:space-x-4">
-            {/* 기간 선택 */}
+          {/* 모바일 최적화된 필터 */}
+          <div className="flex flex-col sm:flex-row gap-3">
             <select
               value={dateRange}
               onChange={(e) => setDateRange(e.target.value)}
-              className="border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             >
               <option value="7days">최근 7일</option>
               <option value="30days">최근 30일</option>
               <option value="3months">최근 3개월</option>
               <option value="6months">최근 6개월</option>
               <option value="1year">최근 1년</option>
-              <option value="custom">사용자 지정</option>
             </select>
 
-            {/* 통합 검색 */}
-            <div className="relative w-full sm:w-96">
-              <MagnifyingGlassIcon className="h-5 w-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-              <input
-                type="text"
-                placeholder="교육생, 과정, 지표명으로 검색..."
-                className="pl-10 pr-4 py-2 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-            </div>
-
-            {/* 빠른 액션 버튼들 */}
-            <div className="flex space-x-3">
-              {getQuickActions().map((action, index) => (
-                <button
-                  key={index}
-                  onClick={action.action}
-                  className={`px-4 py-2 rounded-full transition-colors flex items-center text-sm font-medium ${action.primary
-                    ? 'btn-primary'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                    }`}
-                >
-                  {action.primary && action.label.includes('생성') && <ArrowDownTrayIcon className="h-4 w-4 mr-2" />}
-                  {action.primary && !action.label.includes('생성') && <PresentationChartLineIcon className="h-4 w-4 mr-2" />}
-                  {action.label}
-                </button>
-              ))}
-            </div>
+            <button
+              className="btn-primary px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap"
+            >
+              <ArrowDownTrayIcon className="h-4 w-4 inline mr-1.5" />
+              리포트 생성
+            </button>
           </div>
         </div>
       </div>
 
       {/* 탭 네비게이션 */}
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 mb-6">
-        <div className="border-b border-gray-200">
-          <nav className="flex space-x-8 px-6" aria-label="탭">
+        <div className="border-b border-gray-200 overflow-x-auto">
+          <nav className="flex px-4 sm:px-6" aria-label="탭">
             {availableTabs.map((tab) => {
               const Icon = tab.icon;
               const isActive = activeTab === tab.id;
@@ -171,12 +149,12 @@ const IntegratedAnalyticsManagement: React.FC<IntegratedAnalyticsManagementProps
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center space-x-2 py-4 px-1 border-b-2 font-medium text-sm transition-colors ${isActive
+                  className={`flex items-center space-x-1.5 sm:space-x-2 py-3 sm:py-4 px-3 sm:px-4 border-b-2 font-medium text-xs sm:text-sm transition-colors whitespace-nowrap ${isActive
                     ? 'border-blue-500 text-blue-600'
                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                     }`}
                 >
-                  <Icon className="h-5 w-5" />
+                  <Icon className="h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0" />
                   <span>{tab.label}</span>
                 </button>
               );
@@ -186,53 +164,8 @@ const IntegratedAnalyticsManagement: React.FC<IntegratedAnalyticsManagementProps
       </div>
 
       {/* 탭 콘텐츠 */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-        <div className="p-6">
-          {renderTabContent()}
-        </div>
-      </div>
-
-      {/* 분석 통계 대시보드 */}
-      <div className="mt-6 grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-          <div className="flex items-center">
-            <ChartBarIcon className="h-8 w-8 text-blue-500" />
-            <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">총 분석 건수</p>
-              <p className="text-2xl font-semibold text-gray-900">1,248</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-          <div className="flex items-center">
-            <PresentationChartLineIcon className="h-8 w-8 text-green-500" />
-            <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">활성 대시보드</p>
-              <p className="text-2xl font-semibold text-gray-900">15개</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-          <div className="flex items-center">
-            <DocumentArrowDownIcon className="h-8 w-8 text-purple-500" />
-            <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">생성된 보고서</p>
-              <p className="text-2xl font-semibold text-gray-900">89개</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-          <div className="flex items-center">
-            <FunnelIcon className="h-8 w-8 text-orange-500" />
-            <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">평균 처리시간</p>
-              <p className="text-2xl font-semibold text-gray-900">2.3초</p>
-            </div>
-          </div>
-        </div>
+      <div>
+        {renderTabContent()}
       </div>
     </PageContainer>
   );
