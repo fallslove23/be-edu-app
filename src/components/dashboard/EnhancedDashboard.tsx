@@ -332,11 +332,11 @@ const EnhancedDashboard: React.FC = () => {
     <PageContainer>
       <div className="space-y-6">
         {/* 통계 카드 그리드 */}
-        <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <StaggerContainer className="flex gap-4 overflow-x-auto pb-2 md:grid md:grid-cols-2 lg:grid-cols-4 md:overflow-x-visible md:pb-0 snap-x snap-mandatory">
           {statCards.map((stat, index) => (
             <div
               key={index}
-              className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex flex-col justify-between relative overflow-hidden hover:shadow-md transition-shadow"
+              className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex flex-col justify-between relative overflow-hidden hover:shadow-md transition-shadow min-w-[280px] md:min-w-0 snap-start flex-shrink-0"
             >
               {/* 헤더 */}
               <div className="flex items-start justify-between mb-4">

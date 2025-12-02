@@ -28,11 +28,11 @@ const DashboardWrapper: React.FC<DashboardWrapperProps> = ({ onNavigate }) => {
         <div className="bg-card rounded-lg shadow-sm border border-border">
           <div className="p-4 sm:p-6">
             <h3 className="text-base sm:text-lg font-semibold text-card-foreground mb-4 sm:mb-6">빠른 작업</h3>
-            <div className="grid grid-cols-2 gap-2 sm:gap-3">
+            <div className="flex gap-3 overflow-x-auto pb-2 sm:grid sm:grid-cols-2 sm:overflow-x-visible sm:pb-0 snap-x snap-mandatory">
               {/* 새 과정 개설 */}
               <button
                 onClick={() => onNavigate?.('course-management')}
-                className="group relative p-3 sm:p-5 bg-card hover:bg-muted rounded-lg transition-all duration-200 text-left border border-border hover:border-primary hover:shadow-lg mobile-button touch-manipulation"
+                className="group relative p-3 sm:p-5 bg-card hover:bg-muted rounded-lg transition-all duration-200 text-left border border-border hover:border-primary hover:shadow-lg mobile-button touch-manipulation min-w-[160px] sm:min-w-0 snap-start flex-shrink-0"
               >
                 <div className="flex items-start justify-between mb-2 sm:mb-3">
                   <div className="w-9 h-9 sm:w-11 sm:h-11 bg-primary rounded-lg flex items-center justify-center group-hover:bg-primary/90 group-hover:scale-105 transition-all shadow-sm">
@@ -46,7 +46,7 @@ const DashboardWrapper: React.FC<DashboardWrapperProps> = ({ onNavigate }) => {
               {/* 교육생 등록 */}
               <button
                 onClick={() => onNavigate?.('trainees')}
-                className="group relative p-3 sm:p-5 bg-card hover:bg-muted rounded-lg transition-all duration-200 text-left border border-border hover:border-primary hover:shadow-lg mobile-button touch-manipulation"
+                className="group relative p-3 sm:p-5 bg-card hover:bg-muted rounded-lg transition-all duration-200 text-left border border-border hover:border-primary hover:shadow-lg mobile-button touch-manipulation min-w-[160px] sm:min-w-0 snap-start flex-shrink-0"
               >
                 <div className="flex items-start justify-between mb-2 sm:mb-3">
                   <div className="w-9 h-9 sm:w-11 sm:h-11 bg-primary rounded-lg flex items-center justify-center group-hover:bg-primary/90 group-hover:scale-105 transition-all shadow-sm">
@@ -60,7 +60,7 @@ const DashboardWrapper: React.FC<DashboardWrapperProps> = ({ onNavigate }) => {
               {/* 출석 체크 */}
               <button
                 onClick={() => onNavigate?.('course-management')}
-                className="group relative p-3 sm:p-5 bg-card hover:bg-muted rounded-lg transition-all duration-200 text-left border border-border hover:border-primary hover:shadow-lg mobile-button touch-manipulation"
+                className="group relative p-3 sm:p-5 bg-card hover:bg-muted rounded-lg transition-all duration-200 text-left border border-border hover:border-primary hover:shadow-lg mobile-button touch-manipulation min-w-[160px] sm:min-w-0 snap-start flex-shrink-0"
               >
                 <div className="flex items-start justify-between mb-2 sm:mb-3">
                   <div className="w-9 h-9 sm:w-11 sm:h-11 bg-primary rounded-lg flex items-center justify-center group-hover:bg-primary/90 group-hover:scale-105 transition-all shadow-sm">
@@ -74,7 +74,7 @@ const DashboardWrapper: React.FC<DashboardWrapperProps> = ({ onNavigate }) => {
               {/* 일정 관리 */}
               <button
                 onClick={() => onNavigate?.('schedule-management')}
-                className="group relative p-3 sm:p-5 bg-card hover:bg-muted rounded-lg transition-all duration-200 text-left border border-border hover:border-primary hover:shadow-lg mobile-button touch-manipulation"
+                className="group relative p-3 sm:p-5 bg-card hover:bg-muted rounded-lg transition-all duration-200 text-left border border-border hover:border-primary hover:shadow-lg mobile-button touch-manipulation min-w-[160px] sm:min-w-0 snap-start flex-shrink-0"
               >
                 <div className="flex items-start justify-between mb-2 sm:mb-3">
                   <div className="w-9 h-9 sm:w-11 sm:h-11 bg-primary rounded-lg flex items-center justify-center group-hover:bg-primary/90 group-hover:scale-105 transition-all shadow-sm">

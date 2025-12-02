@@ -262,7 +262,7 @@
   }
 }
 
-/* Scrollbar Hide */
+/* Scrollbar Styling */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
@@ -279,4 +279,28 @@
 
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.2);
+}
+
+/* 모바일 가로 스크롤 최적화 */
+@media (max-width: 768px) {
+  /* 가로 스크롤 컨테이너 */
+  .overflow-x-auto {
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0, 0, 0, 0.1) transparent;
+  }
+
+  /* 스냅 스크롤 부드럽게 */
+  .snap-x {
+    scroll-padding: 1rem;
+  }
+
+  /* 가로 스크롤 시 패딩 추가 */
+  .overflow-x-auto:first-child {
+    padding-left: 0.5rem;
+  }
+
+  .overflow-x-auto:last-child {
+    padding-right: 0.5rem;
+  }
 }
