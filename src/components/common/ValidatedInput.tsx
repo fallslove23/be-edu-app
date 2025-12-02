@@ -96,16 +96,16 @@ const ValidatedInput: React.FC<ValidatedInputProps> = ({
   }, [value, validateOnChange, touched, type, min, max, required]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = type === 'number' || type === 'score' 
+    const newValue = type === 'number' || type === 'score'
       ? (e.target.value === '' ? '' : Number(e.target.value))
       : e.target.value;
 
     const result = validateInput(newValue);
-    
+
     if (validateOnChange) {
       setValidation(result);
     }
-    
+
     onChange(newValue, result);
   };
 
@@ -131,7 +131,7 @@ const ValidatedInput: React.FC<ValidatedInputProps> = ({
 
   const getValidationClass = () => {
     if (!showValidation || !touched) return '';
-    
+
     if (!validation.isValid) {
       return 'border-destructive/50 focus:border-destructive/50 focus:ring-red-200';
     } else if (validation.warnings.length > 0) {
@@ -167,12 +167,12 @@ const ValidatedInput: React.FC<ValidatedInputProps> = ({
   return (
     <div className="w-full">
       {label && (
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label className="block text-sm font-medium text-foreground mb-2">
           {label}
           {required && <span className="text-destructive ml-1">*</span>}
         </label>
       )}
-      
+
       <div className="relative">
         <input
           type={getInputType()}
@@ -184,14 +184,15 @@ const ValidatedInput: React.FC<ValidatedInputProps> = ({
           required={required}
           {...getNumberProps()}
           className={`
-            w-full px-3 py-2 border rounded-full
-            focus:ring-2 focus:ring-blue-200 focus:border-blue-500
-            disabled:bg-gray-100 disabled:cursor-not-allowed
+            w-full px-3 py-2 border border-input rounded-full
+            focus:ring-2 focus:ring-ring/20 focus:border-ring
+            disabled:bg-muted disabled:cursor-not-allowed
+            bg-background text-foreground
             ${getValidationClass()}
             ${className}
           `}
         />
-        
+
         {showValidation && touched && (
           <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
             {getValidationIcon()}
@@ -207,7 +208,7 @@ const ValidatedInput: React.FC<ValidatedInputProps> = ({
               <span>{error}</span>
             </div>
           ))}
-          
+
           {validation.warnings.map((warning, index) => (
             <div key={`warning-${index}`} className="flex items-center space-x-1 text-sm text-foreground">
               <ExclamationTriangleIcon className="h-4 w-4" />

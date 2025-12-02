@@ -51,3 +51,5 @@ temp-backups/
 
 # Archive (legacy Vite files)
 archive/
+.vercel
+.env*.local

@@ -10,6 +10,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { QuestionBankService } from '../../services/question-bank.service';
 import type { QuestionBank, Question } from '../../services/question-bank.service';
+import { PageContainer } from '../common/PageContainer';
 
 interface QuestionBankManagementProps {
   onBack: () => void;
@@ -118,8 +119,8 @@ const QuestionBankManagement: React.FC<QuestionBankManagementProps> = ({ onBack,
   const filteredBanks = questionBanks.filter(bank => {
     if (!searchTerm) return true;
     return bank.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-           bank.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-           bank.category?.toLowerCase().includes(searchTerm.toLowerCase());
+      bank.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      bank.category?.toLowerCase().includes(searchTerm.toLowerCase());
   });
 
   // 문제은행 생성/수정 폼
@@ -148,152 +149,154 @@ const QuestionBankManagement: React.FC<QuestionBankManagementProps> = ({ onBack,
 
   // 문제은행 목록 뷰
   return (
-    <div className="space-y-6">
-      {/* 헤더 */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <button
-              onClick={onBack}
-              className="mb-4 text-gray-600 hover:text-gray-800 flex items-center transition-colors"
-            >
-              <ArrowLeftIcon className="h-4 w-4 mr-1" />
-              뒤로 가기
-            </button>
-            <h1 className="text-2xl font-bold text-gray-900 flex items-center">
-              <BookOpenIcon className="h-8 w-8 mr-3 text-gray-600" />
-              문제은행 관리
-            </h1>
-            <p className="mt-2 text-gray-600">
-              시험 문제를 체계적으로 관리하고 재사용하세요.
-            </p>
-          </div>
-          <button
-            onClick={() => {
-              setSelectedBank(null);
-              setCurrentView('bank-form');
-            }}
-            className="bg-gray-700 text-white px-4 py-2 rounded-full hover:bg-gray-800 transition-colors flex items-center"
-          >
-            <PlusIcon className="h-5 w-5 mr-2" />
-            새 문제은행
-          </button>
-        </div>
-      </div>
-
-      {/* 검색 */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-        <div className="relative">
-          <MagnifyingGlassIcon className="h-5 w-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-          <input
-            type="text"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="문제은행 검색..."
-            className="pl-10 pr-4 py-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
-          />
-        </div>
-      </div>
-
-      {/* 문제은행 목록 */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-medium text-gray-900">문제은행 목록</h2>
-          <div className="text-sm text-gray-600">
-            총 <span className="font-semibold text-gray-900">{filteredBanks.length}</span>개
-          </div>
-        </div>
-
-        {loading ? (
-          <div className="flex items-center justify-center py-12">
-            <div className="animate-spin rounded-lg h-8 w-8 border-b-2 border-gray-600"></div>
-            <span className="ml-3 text-gray-600">문제은행을 불러오는 중...</span>
-          </div>
-        ) : filteredBanks.length === 0 ? (
-          <div className="text-center py-12">
-            <BookOpenIcon className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-            <p className="text-gray-600 mb-4">
-              {searchTerm ? '검색 결과가 없습니다.' : '문제은행이 없습니다.'}
-            </p>
-            {!searchTerm && (
+    <PageContainer>
+      <div className="space-y-6">
+        {/* 헤더 */}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <div className="flex items-center justify-between">
+            <div>
               <button
-                onClick={() => setCurrentView('bank-form')}
-                className="bg-gray-700 text-white px-4 py-2 rounded-full hover:bg-gray-800 transition-colors"
+                onClick={onBack}
+                className="mb-4 btn-ghost flex items-center transition-colors"
               >
-                첫 문제은행 만들기
+                <ArrowLeftIcon className="h-4 w-4 mr-1" />
+                뒤로 가기
               </button>
-            )}
+              <h1 className="text-2xl font-bold text-gray-900 flex items-center">
+                <BookOpenIcon className="h-8 w-8 mr-3 text-gray-600" />
+                문제은행 관리
+              </h1>
+              <p className="mt-2 text-gray-600">
+                시험 문제를 체계적으로 관리하고 재사용하세요.
+              </p>
+            </div>
+            <button
+              onClick={() => {
+                setSelectedBank(null);
+                setCurrentView('bank-form');
+              }}
+              className="btn-primary flex items-center"
+            >
+              <PlusIcon className="h-5 w-5 mr-2" />
+              새 문제은행
+            </button>
           </div>
-        ) : (
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {filteredBanks.map((bank) => (
-              <div
-                key={bank.id}
-                className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
-              >
-                <div className="flex items-start justify-between mb-3">
-                  <div className="flex-1">
-                    <h3 className="font-medium text-gray-900 line-clamp-1">
-                      {bank.name}
-                    </h3>
-                    {bank.category && (
-                      <p className="text-sm text-gray-600 mt-1">{bank.category}</p>
-                    )}
-                  </div>
-                </div>
+        </div>
 
-                {bank.description && (
-                  <p className="text-sm text-gray-600 mb-4 line-clamp-2">
-                    {bank.description}
-                  </p>
-                )}
+        {/* 검색 */}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+          <div className="relative">
+            <MagnifyingGlassIcon className="h-5 w-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="문제은행 검색..."
+              className="pl-10 pr-4 py-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
+            />
+          </div>
+        </div>
 
-                <div className="space-y-2 mb-4">
-                  <div className="flex items-center text-sm text-gray-600">
-                    <span>📝 {bank.question_count || 0}개 문제</span>
-                  </div>
-                  <div className="text-sm text-gray-600">
-                    📅 {new Date(bank.updated_at).toLocaleDateString()}
-                  </div>
-                </div>
+        {/* 문제은행 목록 */}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-lg font-medium text-gray-900">문제은행 목록</h2>
+            <div className="text-sm text-gray-600">
+              총 <span className="font-semibold text-gray-900">{filteredBanks.length}</span>개
+            </div>
+          </div>
 
-                <div className="flex items-center space-x-2">
-                  <button
-                    onClick={() => handleViewQuestions(bank)}
-                    className="flex-1 bg-gray-600 text-white px-3 py-2 rounded text-sm hover:bg-gray-700 transition-colors"
-                  >
-                    문제 관리
-                  </button>
-                  <button
-                    onClick={() => handleEditBank(bank)}
-                    className="px-3 py-2 border border-gray-300 text-gray-700 rounded text-sm hover:bg-gray-50 transition-colors"
-                    title="편집"
-                  >
-                    <PencilIcon className="h-4 w-4" />
-                  </button>
-                  {onSelectBank && (
-                    <button
-                      onClick={() => onSelectBank(bank)}
-                      className="px-3 py-2 border border-gray-300 text-gray-700 rounded text-sm hover:bg-gray-50 transition-colors"
-                      title="시험 생성"
-                    >
-                      ✓
-                    </button>
+          {loading ? (
+            <div className="flex items-center justify-center py-12">
+              <div className="animate-spin rounded-lg h-8 w-8 border-b-2 border-gray-600"></div>
+              <span className="ml-3 text-gray-600">문제은행을 불러오는 중...</span>
+            </div>
+          ) : filteredBanks.length === 0 ? (
+            <div className="text-center py-12">
+              <BookOpenIcon className="h-12 w-12 text-gray-300 mx-auto mb-4" />
+              <p className="text-gray-600 mb-4">
+                {searchTerm ? '검색 결과가 없습니다.' : '문제은행이 없습니다.'}
+              </p>
+              {!searchTerm && (
+                <button
+                  onClick={() => setCurrentView('bank-form')}
+                  className="btn-primary"
+                >
+                  첫 문제은행 만들기
+                </button>
+              )}
+            </div>
+          ) : (
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {filteredBanks.map((bank) => (
+                <div
+                  key={bank.id}
+                  className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
+                >
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex-1">
+                      <h3 className="font-medium text-gray-900 line-clamp-1">
+                        {bank.name}
+                      </h3>
+                      {bank.category && (
+                        <p className="text-sm text-gray-600 mt-1">{bank.category}</p>
+                      )}
+                    </div>
+                  </div>
+
+                  {bank.description && (
+                    <p className="text-sm text-gray-600 mb-4 line-clamp-2">
+                      {bank.description}
+                    </p>
                   )}
-                  <button
-                    onClick={() => handleDeleteBank(bank.id, bank.name)}
-                    className="px-3 py-2 border border-destructive/50 text-destructive rounded text-sm hover:bg-destructive/10 transition-colors"
-                    title="삭제"
-                  >
-                    <TrashIcon className="h-4 w-4" />
-                  </button>
+
+                  <div className="space-y-2 mb-4">
+                    <div className="flex items-center text-sm text-gray-600">
+                      <span>📝 {bank.question_count || 0}개 문제</span>
+                    </div>
+                    <div className="text-sm text-gray-600">
+                      📅 {new Date(bank.updated_at).toLocaleDateString()}
+                    </div>
+                  </div>
+
+                  <div className="flex items-center space-x-2">
+                    <button
+                      onClick={() => handleViewQuestions(bank)}
+                      className="flex-1 btn-secondary text-sm"
+                    >
+                      문제 관리
+                    </button>
+                    <button
+                      onClick={() => handleEditBank(bank)}
+                      className="btn-outline p-2"
+                      title="편집"
+                    >
+                      <PencilIcon className="h-4 w-4" />
+                    </button>
+                    {onSelectBank && (
+                      <button
+                        onClick={() => onSelectBank(bank)}
+                        className="btn-outline p-2"
+                        title="시험 생성"
+                      >
+                        ✓
+                      </button>
+                    )}
+                    <button
+                      onClick={() => handleDeleteBank(bank.id, bank.name)}
+                      className="btn-danger p-2"
+                      title="삭제"
+                    >
+                      <TrashIcon className="h-4 w-4" />
+                    </button>
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        )}
+              ))}
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+    </PageContainer>
   );
 };
 
@@ -325,84 +328,86 @@ const BankForm: React.FC<BankFormProps> = ({ bank, onSave, onCancel }) => {
   };
 
   return (
-    <div className="space-y-6">
-      {/* 헤더 */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <button
-              onClick={onCancel}
-              className="mb-4 text-gray-600 hover:text-gray-800 flex items-center transition-colors"
-            >
-              <ArrowLeftIcon className="h-4 w-4 mr-1" />
-              뒤로 가기
-            </button>
-            <h1 className="text-2xl font-bold text-gray-900">
-              {bank ? '문제은행 수정' : '새 문제은행'}
-            </h1>
+    <PageContainer>
+      <div className="space-y-6">
+        {/* 헤더 */}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <button
+                onClick={onCancel}
+                className="mb-4 btn-ghost flex items-center transition-colors"
+              >
+                <ArrowLeftIcon className="h-4 w-4 mr-1" />
+                뒤로 가기
+              </button>
+              <h1 className="text-2xl font-bold text-gray-900">
+                {bank ? '문제은행 수정' : '새 문제은행'}
+              </h1>
+            </div>
           </div>
         </div>
+
+        {/* 폼 */}
+        <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 space-y-6">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              문제은행 이름 <span className="text-destructive">*</span>
+            </label>
+            <input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="예: BS 영업 기초 문제은행"
+              className="w-full border border-gray-300 rounded-full px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              카테고리
+            </label>
+            <input
+              type="text"
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              placeholder="예: BS 영업 기초과정"
+              className="w-full border border-gray-300 rounded-full px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              설명
+            </label>
+            <textarea
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="문제은행에 대한 설명을 입력하세요..."
+              rows={4}
+              className="w-full border border-gray-300 rounded-full px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
+            />
+          </div>
+
+          <div className="flex items-center justify-end space-x-3 pt-4 border-t">
+            <button
+              type="button"
+              onClick={onCancel}
+              className="btn-outline"
+            >
+              취소
+            </button>
+            <button
+              type="submit"
+              className="btn-primary"
+            >
+              {bank ? '수정' : '생성'}
+            </button>
+          </div>
+        </form>
       </div>
-
-      {/* 폼 */}
-      <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 space-y-6">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            문제은행 이름 <span className="text-destructive">*</span>
-          </label>
-          <input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="예: BS 영업 기초 문제은행"
-            className="w-full border border-gray-300 rounded-full px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
-            required
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            카테고리
-          </label>
-          <input
-            type="text"
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-            placeholder="예: BS 영업 기초과정"
-            className="w-full border border-gray-300 rounded-full px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            설명
-          </label>
-          <textarea
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            placeholder="문제은행에 대한 설명을 입력하세요..."
-            rows={4}
-            className="w-full border border-gray-300 rounded-full px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
-          />
-        </div>
-
-        <div className="flex items-center justify-end space-x-3 pt-4 border-t">
-          <button
-            type="button"
-            onClick={onCancel}
-            className="px-4 py-2 border border-gray-300 text-gray-700 rounded-full hover:bg-gray-50 transition-colors"
-          >
-            취소
-          </button>
-          <button
-            type="submit"
-            className="px-4 py-2 bg-gray-700 text-white rounded-full hover:bg-gray-800 transition-colors"
-          >
-            {bank ? '수정' : '생성'}
-          </button>
-        </div>
-      </form>
-    </div>
+    </PageContainer >
   );
 };
 
@@ -505,133 +510,133 @@ const QuestionList: React.FC<QuestionListProps> = ({ bank, onBack, onRefresh }) 
   }
 
   return (
-    <div className="space-y-6">
-      {/* 헤더 */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <button
-              onClick={onBack}
-              className="mb-4 text-gray-600 hover:text-gray-800 flex items-center transition-colors"
-            >
-              <ArrowLeftIcon className="h-4 w-4 mr-1" />
-              문제은행 목록으로
-            </button>
-            <h1 className="text-2xl font-bold text-gray-900">
-              {bank.name}
-            </h1>
-            <p className="mt-2 text-gray-600">
-              {bank.description || '문제를 추가하고 관리하세요.'}
-            </p>
-          </div>
-          <button
-            onClick={() => {
-              setSelectedQuestion(null);
-              setShowQuestionForm(true);
-            }}
-            className="bg-gray-700 text-white px-4 py-2 rounded-full hover:bg-gray-800 transition-colors flex items-center"
-          >
-            <PlusIcon className="h-5 w-5 mr-2" />
-            새 문제
-          </button>
-        </div>
-      </div>
-
-      {/* 문제 목록 */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-medium text-gray-900">문제 목록</h2>
-          <div className="text-sm text-gray-600">
-            총 <span className="font-semibold text-gray-900">{questions.length}</span>개
-          </div>
-        </div>
-
-        {loading ? (
-          <div className="flex items-center justify-center py-12">
-            <div className="animate-spin rounded-lg h-8 w-8 border-b-2 border-gray-600"></div>
-            <span className="ml-3 text-gray-600">문제를 불러오는 중...</span>
-          </div>
-        ) : questions.length === 0 ? (
-          <div className="text-center py-12">
-            <p className="text-gray-600 mb-4">문제가 없습니다.</p>
-            <button
-              onClick={() => setShowQuestionForm(true)}
-              className="bg-gray-700 text-white px-4 py-2 rounded-full hover:bg-gray-800 transition-colors"
-            >
-              첫 문제 만들기
-            </button>
-          </div>
-        ) : (
-          <div className="space-y-4">
-            {questions.map((question, index) => (
-              <div
-                key={question.id}
-                className="border border-gray-200 rounded-lg p-4 hover:shadow-sm transition-shadow"
+    <PageContainer>
+      <div className="space-y-6">
+        {/* 헤더 */}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <button
+                onClick={onBack}
+                className="mb-4 btn-ghost flex items-center transition-colors"
               >
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <div className="flex items-center space-x-2 mb-2">
-                      <span className="text-sm font-medium text-gray-500">Q{index + 1}</span>
-                      <span className={`px-2 py-1 text-xs rounded-full ${
-                        question.type === 'multiple_choice' ? 'bg-blue-100 text-blue-700' :
-                        question.type === 'true_false' ? 'bg-green-500/10 text-green-700' :
-                        question.type === 'short_answer' ? 'bg-yellow-100 text-orange-700' :
-                        'bg-purple-100 text-purple-700'
-                      }`}>
-                        {question.type === 'multiple_choice' ? '객관식' :
-                         question.type === 'true_false' ? 'O/X' :
-                         question.type === 'short_answer' ? '단답형' : '서술형'}
-                      </span>
-                      {question.difficulty && (
-                        <span className={`px-2 py-1 text-xs rounded-full ${
-                          question.difficulty === 'easy' ? 'bg-green-500/10 text-green-700' :
-                          question.difficulty === 'medium' ? 'bg-yellow-100 text-orange-700' :
-                          'bg-destructive/10 text-destructive'
-                        }`}>
-                          {question.difficulty === 'easy' ? '쉬움' :
-                           question.difficulty === 'medium' ? '보통' : '어려움'}
+                <ArrowLeftIcon className="h-4 w-4 mr-1" />
+                문제은행 목록으로
+              </button>
+              <h1 className="text-2xl font-bold text-gray-900">
+                {bank.name}
+              </h1>
+              <p className="mt-2 text-gray-600">
+                {bank.description || '문제를 추가하고 관리하세요.'}
+              </p>
+            </div>
+            <button
+              onClick={() => {
+                setSelectedQuestion(null);
+                setShowQuestionForm(true);
+              }}
+              className="btn-primary flex items-center"
+            >
+              <PlusIcon className="h-5 w-5 mr-2" />
+              새 문제
+            </button>
+          </div>
+        </div>
+
+        {/* 문제 목록 */}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-lg font-medium text-gray-900">문제 목록</h2>
+            <div className="text-sm text-gray-600">
+              총 <span className="font-semibold text-gray-900">{questions.length}</span>개
+            </div>
+          </div>
+
+          {loading ? (
+            <div className="flex items-center justify-center py-12">
+              <div className="animate-spin rounded-lg h-8 w-8 border-b-2 border-gray-600"></div>
+              <span className="ml-3 text-gray-600">문제를 불러오는 중...</span>
+            </div>
+          ) : questions.length === 0 ? (
+            <div className="text-center py-12">
+              <p className="text-gray-600 mb-4">문제가 없습니다.</p>
+              <button
+                onClick={() => setShowQuestionForm(true)}
+                className="btn-primary"
+              >
+                첫 문제 만들기
+              </button>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {questions.map((question, index) => (
+                <div
+                  key={question.id}
+                  className="border border-gray-200 rounded-lg p-4 hover:shadow-sm transition-shadow"
+                >
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <div className="flex items-center space-x-2 mb-2">
+                        <span className="text-sm font-medium text-gray-500">Q{index + 1}</span>
+                        <span className={`px-2 py-1 text-xs rounded-full ${question.type === 'multiple_choice' ? 'bg-blue-100 text-blue-700' :
+                          question.type === 'true_false' ? 'bg-green-500/10 text-green-700' :
+                            question.type === 'short_answer' ? 'bg-yellow-100 text-orange-700' :
+                              'bg-purple-100 text-purple-700'
+                          }`}>
+                          {question.type === 'multiple_choice' ? '객관식' :
+                            question.type === 'true_false' ? 'O/X' :
+                              question.type === 'short_answer' ? '단답형' : '서술형'}
                         </span>
+                        {question.difficulty && (
+                          <span className={`px-2 py-1 text-xs rounded-full ${question.difficulty === 'easy' ? 'bg-green-500/10 text-green-700' :
+                            question.difficulty === 'medium' ? 'bg-yellow-100 text-orange-700' :
+                              'bg-destructive/10 text-destructive'
+                            }`}>
+                            {question.difficulty === 'easy' ? '쉬움' :
+                              question.difficulty === 'medium' ? '보통' : '어려움'}
+                          </span>
+                        )}
+                        <span className="text-sm text-gray-600">{question.points}점</span>
+                      </div>
+                      <p className="text-gray-900 mb-2">{question.question_text}</p>
+                      {question.explanation && (
+                        <p className="text-sm text-gray-600">💡 {question.explanation}</p>
                       )}
-                      <span className="text-sm text-gray-600">{question.points}점</span>
                     </div>
-                    <p className="text-gray-900 mb-2">{question.question_text}</p>
-                    {question.explanation && (
-                      <p className="text-sm text-gray-600">💡 {question.explanation}</p>
-                    )}
-                  </div>
-                  <div className="flex items-center space-x-2 ml-4">
-                    <button
-                      onClick={() => {
-                        setSelectedQuestion(question);
-                        setShowQuestionForm(true);
-                      }}
-                      className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded transition-colors"
-                      title="편집"
-                    >
-                      <PencilIcon className="h-4 w-4" />
-                    </button>
-                    <button
-                      onClick={() => handleDuplicateQuestion(question.id)}
-                      className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded transition-colors"
-                      title="복사"
-                    >
-                      <DocumentDuplicateIcon className="h-4 w-4" />
-                    </button>
-                    <button
-                      onClick={() => handleDeleteQuestion(question.id)}
-                      className="p-2 text-destructive hover:text-destructive hover:bg-destructive/10 rounded transition-colors"
-                      title="삭제"
-                    >
-                      <TrashIcon className="h-4 w-4" />
-                    </button>
+                    <div className="flex items-center space-x-2 ml-4">
+                      <button
+                        onClick={() => {
+                          setSelectedQuestion(question);
+                          setShowQuestionForm(true);
+                        }}
+                        className="btn-ghost p-2"
+                        title="편집"
+                      >
+                        <PencilIcon className="h-4 w-4" />
+                      </button>
+                      <button
+                        onClick={() => handleDuplicateQuestion(question.id)}
+                        className="btn-ghost p-2"
+                        title="복사"
+                      >
+                        <DocumentDuplicateIcon className="h-4 w-4" />
+                      </button>
+                      <button
+                        onClick={() => handleDeleteQuestion(question.id)}
+                        className="btn-ghost p-2 text-destructive hover:text-destructive"
+                        title="삭제"
+                      >
+                        <TrashIcon className="h-4 w-4" />
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        )}
+              ))}
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+    </PageContainer >
   );
 };
 
@@ -646,7 +651,7 @@ interface QuestionFormProps {
 const QuestionForm: React.FC<QuestionFormProps> = ({ bankId, question, onSave, onCancel }) => {
   const [type, setType] = useState<'multiple_choice' | 'true_false' | 'short_answer' | 'essay'>(
     (question?.type === 'multiple_choice' || question?.type === 'true_false' ||
-     question?.type === 'short_answer' || question?.type === 'essay')
+      question?.type === 'short_answer' || question?.type === 'essay')
       ? question.type
       : 'multiple_choice'
   );
@@ -695,194 +700,196 @@ const QuestionForm: React.FC<QuestionFormProps> = ({ bankId, question, onSave, o
   };
 
   return (
-    <div className="space-y-6">
-      {/* 헤더 */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-        <button
-          onClick={onCancel}
-          className="mb-4 text-gray-600 hover:text-gray-800 flex items-center transition-colors"
-        >
-          <ArrowLeftIcon className="h-4 w-4 mr-1" />
-          뒤로 가기
-        </button>
-        <h1 className="text-2xl font-bold text-gray-900">
-          {question ? '문제 수정' : '새 문제'}
-        </h1>
-      </div>
+    <PageContainer>
+      <div className="space-y-6">
+        {/* 헤더 */}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <button
+            onClick={onCancel}
+            className="mb-4 btn-ghost flex items-center transition-colors"
+          >
+            <ArrowLeftIcon className="h-4 w-4 mr-1" />
+            뒤로 가기
+          </button>
+          <h1 className="text-2xl font-bold text-gray-900">
+            {question ? '문제 수정' : '새 문제'}
+          </h1>
+        </div>
 
-      {/* 폼 */}
-      <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              문제 유형 <span className="text-destructive">*</span>
-            </label>
-            <select
-              value={type}
-              onChange={(e) => setType(e.target.value as any)}
-              className="w-full border border-gray-300 rounded-full px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-500"
-            >
-              <option value="multiple_choice">객관식</option>
-              <option value="true_false">O/X</option>
-              <option value="short_answer">단답형</option>
-              <option value="essay">서술형</option>
-            </select>
+        {/* 폼 */}
+        <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                문제 유형 <span className="text-destructive">*</span>
+              </label>
+              <select
+                value={type}
+                onChange={(e) => setType(e.target.value as any)}
+                className="w-full border border-gray-300 rounded-full px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-500"
+              >
+                <option value="multiple_choice">객관식</option>
+                <option value="true_false">O/X</option>
+                <option value="short_answer">단답형</option>
+                <option value="essay">서술형</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                난이도
+              </label>
+              <select
+                value={difficulty}
+                onChange={(e) => setDifficulty(e.target.value as any)}
+                className="w-full border border-gray-300 rounded-full px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-500"
+              >
+                <option value="easy">쉬움</option>
+                <option value="medium">보통</option>
+                <option value="hard">어려움</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                배점 <span className="text-destructive">*</span>
+              </label>
+              <input
+                type="number"
+                value={points}
+                onChange={(e) => setPoints(parseInt(e.target.value) || 0)}
+                min="1"
+                className="w-full border border-gray-300 rounded-full px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-500"
+                required
+              />
+            </div>
           </div>
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              난이도
+              문제 내용 <span className="text-destructive">*</span>
             </label>
-            <select
-              value={difficulty}
-              onChange={(e) => setDifficulty(e.target.value as any)}
-              className="w-full border border-gray-300 rounded-full px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-500"
-            >
-              <option value="easy">쉬움</option>
-              <option value="medium">보통</option>
-              <option value="hard">어려움</option>
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              배점 <span className="text-destructive">*</span>
-            </label>
-            <input
-              type="number"
-              value={points}
-              onChange={(e) => setPoints(parseInt(e.target.value) || 0)}
-              min="1"
+            <textarea
+              value={questionText}
+              onChange={(e) => setQuestionText(e.target.value)}
+              placeholder="문제를 입력하세요..."
+              rows={3}
               className="w-full border border-gray-300 rounded-full px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-500"
               required
             />
           </div>
-        </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            문제 내용 <span className="text-destructive">*</span>
-          </label>
-          <textarea
-            value={questionText}
-            onChange={(e) => setQuestionText(e.target.value)}
-            placeholder="문제를 입력하세요..."
-            rows={3}
-            className="w-full border border-gray-300 rounded-full px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-500"
-            required
-          />
-        </div>
+          {/* 객관식 선택지 */}
+          {type === 'multiple_choice' && (
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                선택지 <span className="text-destructive">*</span>
+              </label>
+              <div className="space-y-2">
+                {options.map((option, index) => (
+                  <div key={index} className="flex items-center space-x-2">
+                    <input
+                      type="radio"
+                      name="correct"
+                      checked={correctAnswer === index}
+                      onChange={() => setCorrectAnswer(index)}
+                      className="w-4 h-4 text-gray-600"
+                    />
+                    <span className="text-sm font-medium text-gray-700 w-8">{index + 1}.</span>
+                    <input
+                      type="text"
+                      value={option}
+                      onChange={(e) => {
+                        const newOptions = [...options];
+                        newOptions[index] = e.target.value;
+                        setOptions(newOptions);
+                      }}
+                      placeholder={`선택지 ${index + 1}`}
+                      className="flex-1 border border-gray-300 rounded-full px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-500"
+                      required
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
-        {/* 객관식 선택지 */}
-        {type === 'multiple_choice' && (
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              선택지 <span className="text-destructive">*</span>
-            </label>
-            <div className="space-y-2">
-              {options.map((option, index) => (
-                <div key={index} className="flex items-center space-x-2">
+          {/* O/X 답 */}
+          {type === 'true_false' && (
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                정답 <span className="text-destructive">*</span>
+              </label>
+              <div className="flex items-center space-x-4">
+                <label className="flex items-center">
                   <input
                     type="radio"
-                    name="correct"
-                    checked={correctAnswer === index}
-                    onChange={() => setCorrectAnswer(index)}
-                    className="w-4 h-4 text-gray-600"
+                    checked={correctAnswer === true}
+                    onChange={() => setCorrectAnswer(true)}
+                    className="w-4 h-4 text-gray-600 mr-2"
                   />
-                  <span className="text-sm font-medium text-gray-700 w-8">{index + 1}.</span>
+                  <span>O (참)</span>
+                </label>
+                <label className="flex items-center">
                   <input
-                    type="text"
-                    value={option}
-                    onChange={(e) => {
-                      const newOptions = [...options];
-                      newOptions[index] = e.target.value;
-                      setOptions(newOptions);
-                    }}
-                    placeholder={`선택지 ${index + 1}`}
-                    className="flex-1 border border-gray-300 rounded-full px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-500"
-                    required
+                    type="radio"
+                    checked={correctAnswer === false}
+                    onChange={() => setCorrectAnswer(false)}
+                    className="w-4 h-4 text-gray-600 mr-2"
                   />
-                </div>
-              ))}
+                  <span>X (거짓)</span>
+                </label>
+              </div>
             </div>
-          </div>
-        )}
+          )}
 
-        {/* O/X 답 */}
-        {type === 'true_false' && (
+          {/* 단답형/서술형 모범답안 */}
+          {(type === 'short_answer' || type === 'essay') && (
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                모범 답안
+              </label>
+              <textarea
+                value={correctAnswer}
+                onChange={(e) => setCorrectAnswer(e.target.value)}
+                placeholder="모범 답안을 입력하세요..."
+                rows={type === 'essay' ? 5 : 2}
+                className="w-full border border-gray-300 rounded-full px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-500"
+              />
+            </div>
+          )}
+
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              정답 <span className="text-destructive">*</span>
-            </label>
-            <div className="flex items-center space-x-4">
-              <label className="flex items-center">
-                <input
-                  type="radio"
-                  checked={correctAnswer === true}
-                  onChange={() => setCorrectAnswer(true)}
-                  className="w-4 h-4 text-gray-600 mr-2"
-                />
-                <span>O (참)</span>
-              </label>
-              <label className="flex items-center">
-                <input
-                  type="radio"
-                  checked={correctAnswer === false}
-                  onChange={() => setCorrectAnswer(false)}
-                  className="w-4 h-4 text-gray-600 mr-2"
-                />
-                <span>X (거짓)</span>
-              </label>
-            </div>
-          </div>
-        )}
-
-        {/* 단답형/서술형 모범답안 */}
-        {(type === 'short_answer' || type === 'essay') && (
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              모범 답안
+              해설
             </label>
             <textarea
-              value={correctAnswer}
-              onChange={(e) => setCorrectAnswer(e.target.value)}
-              placeholder="모범 답안을 입력하세요..."
-              rows={type === 'essay' ? 5 : 2}
+              value={explanation}
+              onChange={(e) => setExplanation(e.target.value)}
+              placeholder="문제에 대한 해설을 입력하세요..."
+              rows={3}
               className="w-full border border-gray-300 rounded-full px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-500"
             />
           </div>
-        )}
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            해설
-          </label>
-          <textarea
-            value={explanation}
-            onChange={(e) => setExplanation(e.target.value)}
-            placeholder="문제에 대한 해설을 입력하세요..."
-            rows={3}
-            className="w-full border border-gray-300 rounded-full px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-500"
-          />
-        </div>
-
-        <div className="flex items-center justify-end space-x-3 pt-4 border-t">
-          <button
-            type="button"
-            onClick={onCancel}
-            className="px-4 py-2 border border-gray-300 text-gray-700 rounded-full hover:bg-gray-50 transition-colors"
-          >
-            취소
-          </button>
-          <button
-            type="submit"
-            className="px-4 py-2 bg-gray-700 text-white rounded-full hover:bg-gray-800 transition-colors"
-          >
-            {question ? '수정' : '생성'}
-          </button>
-        </div>
-      </form>
-    </div>
+          <div className="flex items-center justify-end space-x-3 pt-4 border-t">
+            <button
+              type="button"
+              onClick={onCancel}
+              className="btn-outline"
+            >
+              취소
+            </button>
+            <button
+              type="submit"
+              className="btn-primary"
+            >
+              {question ? '수정' : '생성'}
+            </button>
+          </div>
+        </form>
+      </div>
+    </PageContainer>
   );
 };
 

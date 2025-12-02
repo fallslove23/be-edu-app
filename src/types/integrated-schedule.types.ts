@@ -274,6 +274,9 @@ export interface CalendarEvent {
   status?: string;
   editable: boolean;
   allDay?: boolean;
+  scheduleId?: string;
+  instructorId?: string;
+  classroomId?: string;
 }
 
 // 일정과 함께 조회되는 확장 정보

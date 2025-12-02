@@ -14,6 +14,7 @@ import {
   AcademicCapIcon
 } from '@heroicons/react/24/outline';
 import CertificatePreview from './CertificatePreview';
+import { PageContainer } from '../common/PageContainer';
 
 type CertificateStatus = 'eligible' | 'issued' | 'not_eligible' | 'pending_review';
 type ViewType = 'dashboard' | 'eligible' | 'issued' | 'templates' | 'bulk';
@@ -438,7 +439,7 @@ BS교육연구소장`,
   };
 
   return (
-    <div className="space-y-6">
+    <PageContainer>
       {/* 헤더 */}
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
         <div className="flex items-center justify-between">
@@ -853,7 +854,7 @@ BS교육연구소장`,
           onPrint={handlePrint}
         />
       )}
-    </div>
+    </PageContainer>
   );
 };
 

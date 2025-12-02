@@ -144,7 +144,7 @@ export default function InteractiveExamAnalytics({
       correct_count: Math.floor(Math.random() * 5),
       total_count: 5,
       correct_rate: 0,
-      difficulty: i < 3 ? 'easy' : i < 7 ? 'medium' : 'hard',
+      difficulty: (i < 3 ? 'easy' : i < 7 ? 'medium' : 'hard') as 'easy' | 'medium' | 'hard',
     })).map(q => ({
       ...q,
       correct_rate: (q.correct_count / q.total_count) * 100,
@@ -357,7 +357,7 @@ export default function InteractiveExamAnalytics({
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg shadow-2xl w-full max-w-7xl max-h-[90vh] overflow-hidden flex flex-col">
+      <div className="bg-white rounded-lg shadow-2xl w-full max-h-[90vh] overflow-hidden flex flex-col">
         {/* 헤더 */}
         <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-6">
           <div className="flex items-center justify-between">
@@ -370,7 +370,7 @@ export default function InteractiveExamAnalytics({
             </div>
             <button
               onClick={onClose}
-              className="p-2 hover:bg-white/20 rounded-full transition-colors"
+              className="btn-ghost p-2 rounded-full text-white hover:bg-white/20"
             >
               <XMarkIcon className="h-6 w-6" />
             </button>
@@ -410,44 +410,40 @@ export default function InteractiveExamAnalytics({
           <div className="flex space-x-1 p-2">
             <button
               onClick={() => setActiveTab('overview')}
-              className={`flex-1 px-4 py-3 rounded-full font-medium transition-all ${
-                activeTab === 'overview'
-                  ? 'bg-white text-blue-600 shadow'
-                  : 'text-gray-600 hover:bg-white/50'
-              }`}
+              className={`flex-1 px-4 py-3 rounded-full font-medium transition-all ${activeTab === 'overview'
+                ? 'bg-white text-blue-600 shadow'
+                : 'text-gray-600 hover:bg-white/50'
+                }`}
             >
               <ChartBarIcon className="h-5 w-5 inline mr-2" />
               전체 개요
             </button>
             <button
               onClick={() => setActiveTab('questions')}
-              className={`flex-1 px-4 py-3 rounded-full font-medium transition-all ${
-                activeTab === 'questions'
-                  ? 'bg-white text-blue-600 shadow'
-                  : 'text-gray-600 hover:bg-white/50'
-              }`}
+              className={`flex-1 px-4 py-3 rounded-full font-medium transition-all ${activeTab === 'questions'
+                ? 'bg-white text-blue-600 shadow'
+                : 'text-gray-600 hover:bg-white/50'
+                }`}
             >
               <AcademicCapIcon className="h-5 w-5 inline mr-2" />
               문제별 분석
             </button>
             <button
               onClick={() => setActiveTab('students')}
-              className={`flex-1 px-4 py-3 rounded-full font-medium transition-all ${
-                activeTab === 'students'
-                  ? 'bg-white text-blue-600 shadow'
-                  : 'text-gray-600 hover:bg-white/50'
-              }`}
+              className={`flex-1 px-4 py-3 rounded-full font-medium transition-all ${activeTab === 'students'
+                ? 'bg-white text-blue-600 shadow'
+                : 'text-gray-600 hover:bg-white/50'
+                }`}
             >
               <UserGroupIcon className="h-5 w-5 inline mr-2" />
               학습자 분석
             </button>
             <button
               onClick={() => setActiveTab('trends')}
-              className={`flex-1 px-4 py-3 rounded-full font-medium transition-all ${
-                activeTab === 'trends'
-                  ? 'bg-white text-blue-600 shadow'
-                  : 'text-gray-600 hover:bg-white/50'
-              }`}
+              className={`flex-1 px-4 py-3 rounded-full font-medium transition-all ${activeTab === 'trends'
+                ? 'bg-white text-blue-600 shadow'
+                : 'text-gray-600 hover:bg-white/50'
+                }`}
             >
               <ClockIcon className="h-5 w-5 inline mr-2" />
               추세 분석
@@ -506,11 +502,10 @@ export default function InteractiveExamAnalytics({
                         <tr key={q.question_number} className="hover:bg-gray-50">
                           <td className="px-4 py-3 text-sm text-gray-900">문제 {q.question_number}</td>
                           <td className="px-4 py-3 text-sm">
-                            <span className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${
-                              q.difficulty === 'easy' ? 'bg-green-500/10 text-green-700' :
+                            <span className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${q.difficulty === 'easy' ? 'bg-green-500/10 text-green-700' :
                               q.difficulty === 'medium' ? 'bg-yellow-100 text-yellow-800' :
-                              'bg-destructive/10 text-destructive'
-                            }`}>
+                                'bg-destructive/10 text-destructive'
+                              }`}>
                               {q.difficulty === 'easy' ? '쉬움' : q.difficulty === 'medium' ? '보통' : '어려움'}
                             </span>
                           </td>
@@ -520,16 +515,16 @@ export default function InteractiveExamAnalytics({
                           <td className="px-4 py-3 text-sm text-right font-semibold">
                             <span className={
                               q.correct_rate >= 80 ? 'text-green-600' :
-                              q.correct_rate >= 60 ? 'text-foreground' :
-                              'text-destructive'
+                                q.correct_rate >= 60 ? 'text-foreground' :
+                                  'text-destructive'
                             }>
                               {q.correct_rate.toFixed(1)}%
                             </span>
                           </td>
                           <td className="px-4 py-3 text-sm text-gray-600">
                             {q.correct_rate >= 80 ? '✅ 우수' :
-                             q.correct_rate >= 60 ? '⚠️ 보통' :
-                             '❌ 개선 필요'}
+                              q.correct_rate >= 60 ? '⚠️ 보통' :
+                                '❌ 개선 필요'}
                           </td>
                         </tr>
                       ))}
@@ -563,10 +558,10 @@ export default function InteractiveExamAnalytics({
                         .map((attempt, index) => {
                           const duration = attempt.completed_at
                             ? Math.floor(
-                                (new Date(attempt.completed_at).getTime() -
-                                  new Date(attempt.started_at).getTime()) /
-                                  60000
-                              )
+                              (new Date(attempt.completed_at).getTime() -
+                                new Date(attempt.started_at).getTime()) /
+                              60000
+                            )
                             : 0;
 
                           return (
@@ -579,19 +574,17 @@ export default function InteractiveExamAnalytics({
                               </td>
                               <td className="px-4 py-3 text-sm text-gray-900">{attempt.user_name}</td>
                               <td className="px-4 py-3 text-sm text-right">
-                                <span className={`font-semibold ${
-                                  attempt.score >= exam.passing_score ? 'text-green-600' : 'text-destructive'
-                                }`}>
+                                <span className={`font-semibold ${attempt.score >= exam.passing_score ? 'text-green-600' : 'text-destructive'
+                                  }`}>
                                   {attempt.score}점
                                 </span>
                               </td>
                               <td className="px-4 py-3 text-sm text-right text-gray-600">{duration}분</td>
                               <td className="px-4 py-3 text-sm">
-                                <span className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${
-                                  attempt.score >= exam.passing_score
-                                    ? 'bg-green-500/10 text-green-700'
-                                    : 'bg-destructive/10 text-destructive'
-                                }`}>
+                                <span className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${attempt.score >= exam.passing_score
+                                  ? 'bg-green-500/10 text-green-700'
+                                  : 'bg-destructive/10 text-destructive'
+                                  }`}>
                                   {attempt.score >= exam.passing_score ? '합격' : '불합격'}
                                 </span>
                               </td>
@@ -655,7 +648,7 @@ export default function InteractiveExamAnalytics({
           </div>
           <button
             onClick={onClose}
-            className="px-4 py-2 bg-gray-600 text-white rounded-full hover:bg-gray-700 transition-colors"
+            className="btn-secondary"
           >
             닫기
           </button>

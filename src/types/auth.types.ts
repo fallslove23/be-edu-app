@@ -1,4 +1,4 @@
-export type UserRole = 'admin' | 'manager' | 'operator' | 'instructor' | 'trainee';
+export type UserRole = 'admin' | 'manager' | 'operator' | 'instructor' | 'trainee' | 'course_manager';
 
 export interface User {
   id: string;
@@ -40,7 +40,8 @@ export const roleLabels: Record<UserRole, string> = {
   manager: '조직장',
   operator: '운영',
   instructor: '강사',
-  trainee: '교육생'
+  trainee: '교육생',
+  course_manager: '과정 담당자'
 };
 
 export const userStatusLabels: Record<UserStatus, string> = {

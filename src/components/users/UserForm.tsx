@@ -231,7 +231,7 @@ const UserForm: React.FC<UserFormProps> = ({ user, onBack, onSave }) => {
         {/* 기본 정보 */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
           <h2 className="text-lg font-medium text-gray-900 mb-4">기본 정보</h2>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -254,7 +254,7 @@ const UserForm: React.FC<UserFormProps> = ({ user, onBack, onSave }) => {
               </label>
               <input
                 type="email"
-                {...register('email', { 
+                {...register('email', {
                   required: '이메일을 입력해주세요.',
                   pattern: {
                     value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
@@ -275,7 +275,7 @@ const UserForm: React.FC<UserFormProps> = ({ user, onBack, onSave }) => {
               </label>
               <input
                 type="tel"
-                {...register('phone', { 
+                {...register('phone', {
                   required: '전화번호를 입력해주세요.',
                   pattern: {
                     value: /^010-\d{4}-\d{4}$/,
@@ -310,7 +310,7 @@ const UserForm: React.FC<UserFormProps> = ({ user, onBack, onSave }) => {
         {/* 회사 정보 */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
           <h2 className="text-lg font-medium text-gray-900 mb-4">회사 정보</h2>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -429,7 +429,7 @@ const UserForm: React.FC<UserFormProps> = ({ user, onBack, onSave }) => {
         {selectedRole === 'trainee' && (
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
             <h2 className="text-lg font-medium text-gray-900 mb-4">비상 연락처</h2>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -482,7 +482,7 @@ const UserForm: React.FC<UserFormProps> = ({ user, onBack, onSave }) => {
             <button
               type="button"
               onClick={onBack}
-              className="px-6 py-2 border border-gray-300 text-gray-700 rounded-full hover:bg-gray-50 transition-colors"
+              className="btn-secondary"
             >
               취소
             </button>

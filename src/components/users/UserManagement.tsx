@@ -19,6 +19,7 @@ import { roleLabels, userStatusLabels } from '../../types/auth.types';
 import UserForm from './UserForm';
 import UserDetail from './UserDetail';
 import BulkImportModal from './BulkImportModal';
+import { PageContainer } from '../common/PageContainer';
 import { UserService, CreateUserData, UpdateUserData } from '../../services/user.services';
 
 type ViewType = 'list' | 'form' | 'detail';
@@ -308,7 +309,7 @@ const UserManagement: React.FC = () => {
         status: user.status || 'active'
       }));
 
-      const results = await UserService.bulkCreateUsers(createDataList);
+      const results = await UserService.createBulkUsers(createDataList);
 
       alert(`${results.success.length}명의 사용자가 추가되었습니다.${results.failed.length > 0 ? `\\n실패: ${results.failed.length}명` : ''}`);
       setShowImportModal(false);
@@ -335,270 +336,264 @@ const UserManagement: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="text-gray-500">로딩 중...</div>
-      </div>
-    );
-  }
-
-  if (currentView === 'form') {
-    return (
-      <UserForm
-        user={selectedUser}
-        onBack={handleBack}
-        onSave={handleSaveUser}
-      />
-    );
-  }
-
-  if (currentView === 'detail' && selectedUser) {
-    return (
-      <UserDetail
-        user={selectedUser}
-        onBack={handleBack}
-        onEdit={handleEditUser}
-      />
+      <PageContainer>
+        <div className="flex items-center justify-center h-64">
+          <div className="text-gray-500">로딩 중...</div>
+        </div>
+      </PageContainer>
     );
   }
 
   return (
-    <div className="p-6 space-y-6">
-      {/* 에러 메시지 */}
-      {error && (
-        <div className="bg-destructive/10 border border-destructive/50 text-destructive px-4 py-3 rounded-lg">
-          {error}
-        </div>
-      )}
+    <PageContainer>
+      {currentView === 'form' ? (
+        <UserForm
+          user={selectedUser}
+          onBack={handleBack}
+          onSave={handleSaveUser}
+        />
+      ) : currentView === 'detail' && selectedUser ? (
+        <UserDetail
+          user={selectedUser}
+          onBack={handleBack}
+          onEdit={handleEditUser}
+        />
+      ) : (
+        <>
+          {/* 에러 메시지 */}
+          {error && (
+            <div className="bg-destructive/10 border border-destructive/50 text-destructive px-4 py-3 rounded-lg">
+              {error}
+            </div>
+          )}
 
-      {/* 헤더 */}
-      <div className="bg-card rounded-lg shadow-sm border border-border p-6">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
-          <div>
-            <h1 className="text-2xl font-bold text-foreground flex items-center">
-              <UsersIcon className="h-6 w-6 mr-2 text-primary" />
-              사용자 관리
-            </h1>
-            <p className="text-muted-foreground mt-1">시스템 사용자를 역할별로 관리합니다.</p>
-          </div>
-          <div className="flex items-center space-x-3">
-            <button
-              onClick={() => setShowImportModal(true)}
-              className="flex items-center space-x-2 px-4 py-2.5 border border-border text-foreground rounded-lg hover:bg-muted transition-colors font-medium shadow-sm"
-            >
-              <ArrowUpTrayIcon className="h-4 w-4" />
-              <span>일괄 불러오기</span>
-            </button>
-            <button
-              onClick={handleCreateUser}
-              className="flex items-center space-x-2 bg-primary text-primary-foreground px-4 py-2.5 rounded-lg hover:bg-primary/90 transition-colors font-medium shadow-sm"
-            >
-              <PlusIcon className="h-5 w-5" />
-              <span>사용자 추가</span>
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* 역할별 탭 메뉴 */}
-      <div className="bg-card rounded-lg shadow-sm border border-border">
-        <div className="border-b border-border">
-          <nav className="-mb-px flex overflow-x-auto">
-            {tabs.map((tab) => (
-              <button
-                key={tab.key}
-                onClick={() => setActiveTab(tab.key)}
-                className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors whitespace-nowrap flex-shrink-0 ${
-                  activeTab === tab.key
-                    ? 'border-primary text-primary'
-                    : 'border-transparent text-muted-foreground hover:text-foreground hover:border-muted'
-                }`}
-              >
-                {tab.label}
-                <span className={`ml-2 px-2 py-0.5 text-xs rounded-full ${
-                  activeTab === tab.key
-                    ? 'bg-primary/10 text-primary'
-                    : 'bg-muted text-muted-foreground'
-                }`}>
-                  {tab.count}
-                </span>
-              </button>
-            ))}
-          </nav>
-        </div>
-      </div>
-
-      {/* 검색 및 필터 */}
-      <div className="bg-card rounded-lg shadow-sm border border-border p-6">
-        <div className="flex flex-col md:flex-row gap-3">
-          {/* 검색 입력 */}
-          <div className="flex-1 relative">
-            <MagnifyingGlassIcon className="h-5 w-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
-            <input
-              type="text"
-              placeholder="이름, 이메일, 사번, 부서 검색..."
-              className="pl-10 pr-4 py-2.5 w-full border border-border rounded-lg bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
+          {/* 헤더 */}
+          <div className="bg-card rounded-lg shadow-sm border border-border p-6">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
+              <div>
+                <h1 className="text-2xl font-bold text-foreground flex items-center">
+                  <UsersIcon className="h-6 w-6 mr-2 text-primary" />
+                  사용자 관리
+                </h1>
+                <p className="text-muted-foreground mt-1">시스템 사용자를 역할별로 관리합니다.</p>
+              </div>
+              <div className="flex items-center space-x-3">
+                <button
+                  onClick={() => setShowImportModal(true)}
+                  className="btn-outline"
+                >
+                  <ArrowUpTrayIcon className="h-4 w-4" />
+                  <span>일괄 불러오기</span>
+                </button>
+                <button
+                  onClick={handleCreateUser}
+                  className="btn-primary"
+                >
+                  <PlusIcon className="h-5 w-5" />
+                  <span>사용자 추가</span>
+                </button>
+              </div>
+            </div>
           </div>
 
-          {/* 상태 필터 */}
-          <select
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value as UserStatus | 'all')}
-            className="w-full md:w-48 border border-border rounded-lg px-3 py-2.5 bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-          >
-            <option value="all">모든 상태</option>
-            {(Object.keys(userStatusLabels) as UserStatus[]).map(status => (
-              <option key={status} value={status}>{userStatusLabels[status]}</option>
-            ))}
-          </select>
-
-          {/* 엑셀 내보내기 버튼 */}
-          <button className="flex items-center space-x-2 px-4 py-2.5 border border-border text-foreground rounded-lg hover:bg-muted transition-colors font-medium">
-            <DocumentArrowDownIcon className="h-4 w-4" />
-            <span>엑셀 내보내기</span>
-          </button>
-
-          {/* 결과 카운트 */}
-          <div className="flex items-center px-4 py-2 bg-muted/50 border border-border rounded-lg">
-            <FunnelIcon className="h-4 w-4 mr-2 text-muted-foreground" />
-            <span className="text-sm font-medium text-foreground">
-              총 <span className="text-primary font-semibold">{filteredUsers.length}</span>명
-            </span>
-          </div>
-        </div>
-      </div>
-
-      {/* 사용자 목록 */}
-      <div className="bg-card rounded-lg shadow-sm border border-border">
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-muted/50 border-b border-border">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                  사용자 정보
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                  역할/부서
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                  상태
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                  최근 접속
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                  액션
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-background divide-y divide-border">
-              {filteredUsers.map((user) => (
-                <tr key={user.id} className="hover:bg-muted/30 transition-colors">
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex items-center">
-                      <div className="flex-shrink-0 h-10 w-10">
-                        <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                          <UserIcon className="h-6 w-6 text-primary" />
-                        </div>
-                      </div>
-                      <div className="ml-4">
-                        <div className="text-sm font-medium text-foreground">{user.name}</div>
-                        <div className="text-sm text-muted-foreground flex items-center">
-                          <EnvelopeIcon className="h-3 w-3 mr-1" />
-                          {user.email}
-                        </div>
-                        <div className="text-sm text-muted-foreground flex items-center">
-                          <PhoneIcon className="h-3 w-3 mr-1" />
-                          {user.phone}
-                        </div>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-foreground">
-                      <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                        user.role === 'admin' ? 'bg-destructive/10 text-destructive' :
-                        user.role === 'manager' ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-400' :
-                        user.role === 'operator' ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-400' :
-                        user.role === 'instructor' ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400' :
-                        'bg-primary/10 text-primary'
+          {/* 역할별 탭 메뉴 */}
+          <div className="bg-card rounded-lg shadow-sm border border-border">
+            <div className="border-b border-border">
+              <nav className="-mb-px flex overflow-x-auto">
+                {tabs.map((tab) => (
+                  <button
+                    key={tab.key}
+                    onClick={() => setActiveTab(tab.key)}
+                    className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors whitespace-nowrap flex-shrink-0 ${activeTab === tab.key
+                      ? 'border-primary text-primary'
+                      : 'border-transparent text-muted-foreground hover:text-foreground hover:border-muted'
+                      }`}
+                  >
+                    {tab.label}
+                    <span className={`ml-2 px-2 py-0.5 text-xs rounded-full ${activeTab === tab.key
+                      ? 'bg-primary/10 text-primary'
+                      : 'bg-muted text-muted-foreground'
                       }`}>
-                        {roleLabels[user.role]}
-                      </span>
-                    </div>
-                    <div className="text-sm text-muted-foreground flex items-center mt-1">
-                      <BuildingOfficeIcon className="h-3 w-3 mr-1" />
-                      {user.department} / {user.position}
-                    </div>
-                    <div className="text-xs text-muted-foreground">사번: {user.employee_id}</div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                      user.status === 'active' ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400' :
-                      user.status === 'pending' ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-400' :
-                      user.status === 'suspended' ? 'bg-destructive/10 text-destructive' :
-                      'bg-muted text-muted-foreground'
-                    }`}>
-                      {userStatusLabels[user.status]}
+                      {tab.count}
                     </span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
-                    {user.last_login ? new Date(user.last_login).toLocaleDateString('ko-KR') : '미접속'}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                    <div className="flex items-center space-x-2">
-                      <button
-                        onClick={() => handleViewUser(user)}
-                        className="px-3 py-1.5 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors text-xs font-medium"
-                      >
-                        상세보기
-                      </button>
-                      <button
-                        onClick={() => handleEditUser(user)}
-                        className="px-3 py-1.5 border border-border text-foreground rounded-lg hover:bg-muted transition-colors text-xs font-medium"
-                      >
-                        수정
-                      </button>
-                      <button
-                        onClick={() => handleDeleteUser(user)}
-                        className="p-1.5 text-destructive hover:bg-destructive/10 rounded-lg transition-colors"
-                        title="사용자 삭제"
-                      >
-                        <TrashIcon className="h-4 w-4" />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-
-        {filteredUsers.length === 0 && !loading && (
-          <div className="text-center py-12">
-            <UsersIcon className="mx-auto h-12 w-12 text-muted-foreground" />
-            <h3 className="mt-2 text-sm font-medium text-foreground">사용자가 없습니다</h3>
-            <p className="mt-1 text-sm text-muted-foreground">새 사용자를 추가해보세요.</p>
+                  </button>
+                ))}
+              </nav>
+            </div>
           </div>
-        )}
 
-        {loading && (
-          <div className="text-center py-12">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-            <p className="text-muted-foreground">로딩 중...</p>
+          {/* 검색 및 필터 */}
+          <div className="bg-card rounded-lg shadow-sm border border-border p-6">
+            <div className="flex flex-col md:flex-row gap-3">
+              {/* 검색 입력 */}
+              <div className="flex-1 relative">
+                <MagnifyingGlassIcon className="h-5 w-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
+                <input
+                  type="text"
+                  placeholder="이름, 이메일, 사번, 부서 검색..."
+                  className="pl-10 pr-4 py-2.5 w-full border border-border rounded-lg bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+              </div>
+
+              {/* 상태 필터 */}
+              <select
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value as UserStatus | 'all')}
+                className="w-full md:w-48 border border-border rounded-lg px-3 py-2.5 bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+              >
+                <option value="all">모든 상태</option>
+                {(Object.keys(userStatusLabels) as UserStatus[]).map(status => (
+                  <option key={status} value={status}>{userStatusLabels[status]}</option>
+                ))}
+              </select>
+
+              {/* 엑셀 내보내기 버튼 */}
+              <button className="btn-outline">
+                <DocumentArrowDownIcon className="h-4 w-4" />
+                <span>엑셀 내보내기</span>
+              </button>
+
+              {/* 결과 카운트 */}
+              <div className="flex items-center px-4 py-2 bg-muted/50 border border-border rounded-lg">
+                <FunnelIcon className="h-4 w-4 mr-2 text-muted-foreground" />
+                <span className="text-sm font-medium text-foreground">
+                  총 <span className="text-primary font-semibold">{filteredUsers.length}</span>명
+                </span>
+              </div>
+            </div>
           </div>
-        )}
-      </div>
 
-      {/* 일괄 불러오기 모달 */}
-      <BulkImportModal
-        isOpen={showImportModal}
-        onClose={() => setShowImportModal(false)}
-        onImport={handleBulkImport}
-      />
-    </div>
+          {/* 사용자 목록 */}
+          <div className="bg-card rounded-lg shadow-sm border border-border">
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-muted/50 border-b border-border">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                      사용자 정보
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                      역할/부서
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                      상태
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                      최근 접속
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                      액션
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-background divide-y divide-border">
+                  {filteredUsers.map((user) => (
+                    <tr key={user.id} className="hover:bg-muted/30 transition-colors">
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex items-center">
+                          <div className="flex-shrink-0 h-10 w-10">
+                            <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                              <UserIcon className="h-6 w-6 text-primary" />
+                            </div>
+                          </div>
+                          <div className="ml-4">
+                            <div className="text-sm font-medium text-foreground">{user.name}</div>
+                            <div className="text-sm text-muted-foreground flex items-center">
+                              <EnvelopeIcon className="h-3 w-3 mr-1" />
+                              {user.email}
+                            </div>
+                            <div className="text-sm text-muted-foreground flex items-center">
+                              <PhoneIcon className="h-3 w-3 mr-1" />
+                              {user.phone}
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm text-foreground">
+                          <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${user.role === 'admin' ? 'bg-destructive/10 text-destructive' :
+                            user.role === 'manager' ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-400' :
+                              user.role === 'operator' ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-400' :
+                                user.role === 'instructor' ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400' :
+                                  'bg-primary/10 text-primary'
+                            }`}>
+                            {roleLabels[user.role]}
+                          </span>
+                        </div>
+                        <div className="text-sm text-muted-foreground flex items-center mt-1">
+                          <BuildingOfficeIcon className="h-3 w-3 mr-1" />
+                          {user.department} / {user.position}
+                        </div>
+                        <div className="text-xs text-muted-foreground">사번: {user.employee_id}</div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${user.status === 'active' ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400' :
+                          user.status === 'pending' ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-400' :
+                            user.status === 'suspended' ? 'bg-destructive/10 text-destructive' :
+                              'bg-muted text-muted-foreground'
+                          }`}>
+                          {userStatusLabels[user.status]}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
+                        {user.last_login ? new Date(user.last_login).toLocaleDateString('ko-KR') : '미접속'}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <div className="flex items-center space-x-2">
+                          <button
+                            onClick={() => handleViewUser(user)}
+                            className="btn-primary px-3 py-1.5 text-xs h-auto min-h-0"
+                          >
+                            상세보기
+                          </button>
+                          <button
+                            onClick={() => handleEditUser(user)}
+                            className="btn-outline px-3 py-1.5 text-xs h-auto min-h-0"
+                          >
+                            수정
+                          </button>
+                          <button
+                            onClick={() => handleDeleteUser(user)}
+                            className="p-1.5 text-destructive hover:bg-destructive/10 rounded-lg transition-colors"
+                            title="사용자 삭제"
+                          >
+                            <TrashIcon className="h-4 w-4" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {filteredUsers.length === 0 && !loading && (
+              <div className="text-center py-12">
+                <UsersIcon className="mx-auto h-12 w-12 text-muted-foreground" />
+                <h3 className="mt-2 text-sm font-medium text-foreground">사용자가 없습니다</h3>
+                <p className="mt-1 text-sm text-muted-foreground">새 사용자를 추가해보세요.</p>
+              </div>
+            )}
+
+            {loading && (
+              <div className="text-center py-12">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+                <p className="text-muted-foreground">로딩 중...</p>
+              </div>
+            )}
+          </div>
+
+          {/* 일괄 불러오기 모달 */}
+          <BulkImportModal
+            isOpen={showImportModal}
+            onClose={() => setShowImportModal(false)}
+            onImport={handleBulkImport}
+          />
+        </>
+      )}
+    </PageContainer>
   );
 };
 

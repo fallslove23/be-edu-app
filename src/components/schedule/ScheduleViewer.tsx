@@ -65,10 +65,10 @@ const ScheduleViewer: React.FC<ScheduleViewerProps> = ({
     const dayOfWeek = start.getDay();
     const mondayOffset = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
     start.setDate(start.getDate() + mondayOffset);
-    
+
     const end = new Date(start);
     end.setDate(start.getDate() + 6);
-    
+
     return { start, end };
   };
 
@@ -76,13 +76,13 @@ const ScheduleViewer: React.FC<ScheduleViewerProps> = ({
   const getWeekDays = () => {
     const { start } = getWeekRange(currentDate);
     const days = [];
-    
+
     for (let i = 0; i < 7; i++) {
       const date = new Date(start);
       date.setDate(start.getDate() + i);
       days.push(date);
     }
-    
+
     return days;
   };
 
@@ -341,7 +341,7 @@ const ScheduleViewer: React.FC<ScheduleViewerProps> = ({
   const handleAddSchedule = async () => {
     try {
       if (!scheduleForm.round_id || !scheduleForm.session_date || !scheduleForm.start_time ||
-          !scheduleForm.end_time || !scheduleForm.actual_instructor_id || !scheduleForm.classroom_id) {
+        !scheduleForm.end_time || !scheduleForm.actual_instructor_id || !scheduleForm.classroom_id) {
         toast.error('필수 항목을 모두 입력해주세요.');
         return;
       }
@@ -477,7 +477,7 @@ const ScheduleViewer: React.FC<ScheduleViewerProps> = ({
   };
 
   return (
-    <div className="space-y-4 max-w-7xl mx-auto">
+    <div className="space-y-4 w-full">
       {/* 오프라인 상태 표시 */}
       {isOffline && (
         <div className="bg-muted border-2 border-destructive rounded-lg p-4">
@@ -577,35 +577,32 @@ const ScheduleViewer: React.FC<ScheduleViewerProps> = ({
         {weekDays.map((day, index) => {
           const daySchedules = getSchedulesForDate(day);
           const dayNames = ['일', '월', '화', '수', '목', '금', '토'];
-          
+
           return (
             <div key={index} className="bg-card rounded-lg shadow-sm border border-border overflow-hidden">
               {/* 날짜 헤더 */}
-              <div className={`p-3 border-b border-border ${
-                isToday(day)
+              <div className={`p-3 border-b border-border ${isToday(day)
                   ? 'bg-accent border-accent'
                   : 'bg-secondary'
-              }`}>
+                }`}>
                 <div className="flex items-center justify-between">
-                  <div className={`text-sm font-medium ${
-                    isToday(day) ? 'text-accent-foreground' : 'text-muted-foreground'
-                  }`}>
+                  <div className={`text-sm font-medium ${isToday(day) ? 'text-accent-foreground' : 'text-muted-foreground'
+                    }`}>
                     {dayNames[day.getDay()]}요일
                   </div>
-                  <div className={`text-lg font-bold ${
-                    isToday(day)
+                  <div className={`text-lg font-bold ${isToday(day)
                       ? 'text-accent-foreground'
                       : day.getDay() === 0
                         ? 'text-destructive'
                         : day.getDay() === 6
                           ? 'text-primary'
                           : 'text-card-foreground'
-                  }`}>
+                    }`}>
                     {day.getDate()}
                   </div>
                 </div>
               </div>
-              
+
               {/* 스케줄 목록 */}
               <div className="p-3 min-h-[200px] space-y-2">
                 {daySchedules.length > 0 ? (

@@ -28,10 +28,11 @@ import { ReportService } from '../../services/report.services';
 import type { StudentReport } from '../../types/report.types';
 import toast from 'react-hot-toast';
 import * as XLSX from 'xlsx';
+import { PageContainer } from '../common/PageContainer';
 
 const TraineeManagement: React.FC = () => {
   console.log('👥 TraineeManagement 컴포넌트가 렌더링되었습니다.');
-  
+
   const [trainees, setTrainees] = useState<Trainee[]>([]);
   const [filteredTrainees, setFilteredTrainees] = useState<Trainee[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -156,7 +157,7 @@ const TraineeManagement: React.FC = () => {
         const sheetName = workbook.SheetNames[0];
         const worksheet = workbook.Sheets[sheetName];
         const jsonData = XLSX.utils.sheet_to_json(worksheet);
-        
+
         console.log('📊 엑셀 데이터 파싱 완료:', jsonData);
         setExcelData(jsonData);
         toast.success('엑셀 파일을 성공적으로 불러왔습니다.');
@@ -205,7 +206,7 @@ const TraineeManagement: React.FC = () => {
       setUploadResult(result);
       setShowResultModal(true);
       setIsExcelModalOpen(false);
-      
+
       // 성공한 경우 교육생 목록 새로고침
       if (result.success.length > 0) {
         await loadTrainees();
@@ -295,7 +296,7 @@ const TraineeManagement: React.FC = () => {
               ✕
             </button>
           </div>
-          
+
           <form onSubmit={handleSubmit} className="p-6 space-y-4">
             <div>
               <label className="block text-sm font-medium text-card-foreground mb-2">이름 *</label>
@@ -377,13 +378,13 @@ const TraineeManagement: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setIsCreateModalOpen(false)}
-                className="btn-neutral px-4 py-2 text-sm font-medium rounded-lg"
+                className="btn-outline"
               >
                 취소
               </button>
               <button
                 type="submit"
-                className="bg-primary text-primary-foreground hover:bg-primary/90 px-6 py-2 text-sm font-medium rounded-lg transition-colors"
+                className="btn-primary"
               >
                 등록
               </button>
@@ -425,7 +426,7 @@ const TraineeManagement: React.FC = () => {
     const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
       if (!selectedTrainee) return;
-      
+
       try {
         await TraineeService.updateTrainee(selectedTrainee.id, formData);
         toast.success('교육생 정보가 수정되었습니다!');
@@ -454,7 +455,7 @@ const TraineeManagement: React.FC = () => {
               ✕
             </button>
           </div>
-          
+
           <form onSubmit={handleSubmit} className="p-6 space-y-4">
             <div>
               <label className="block text-sm font-medium text-card-foreground mb-2">이름 *</label>
@@ -539,13 +540,13 @@ const TraineeManagement: React.FC = () => {
                   setIsEditModalOpen(false);
                   setSelectedTrainee(null);
                 }}
-                className="btn-neutral px-4 py-2 text-sm font-medium rounded-lg"
+                className="btn-outline"
               >
                 취소
               </button>
               <button
                 type="submit"
-                className="bg-primary text-primary-foreground hover:bg-primary/90 px-6 py-2 text-sm font-medium rounded-lg transition-colors"
+                className="btn-primary"
               >
                 수정
               </button>
@@ -575,7 +576,7 @@ const TraineeManagement: React.FC = () => {
               ✕
             </button>
           </div>
-          
+
           <div className="p-6 space-y-6">
             {/* 기본 정보 */}
             <div>
@@ -683,7 +684,7 @@ const TraineeManagement: React.FC = () => {
                 setSelectedTrainee(selectedTrainee);
                 setIsEditModalOpen(true);
               }}
-              className="btn-base btn-secondary"
+              className="btn-secondary"
             >
               편집
             </button>
@@ -692,7 +693,7 @@ const TraineeManagement: React.FC = () => {
                 setIsDetailModalOpen(false);
                 setSelectedTrainee(null);
               }}
-              className="btn-base btn-outline"
+              className="btn-outline"
             >
               닫기
             </button>
@@ -721,7 +722,7 @@ const TraineeManagement: React.FC = () => {
               <XMarkIcon className="w-5 h-5" />
             </button>
           </div>
-          
+
           <div className="p-6 space-y-6">
             {/* 템플릿 다운로드 */}
             <div className="bg-muted/50 p-4 rounded-lg">
@@ -788,14 +789,14 @@ const TraineeManagement: React.FC = () => {
                 setIsExcelModalOpen(false);
                 setExcelData([]);
               }}
-              className="btn-neutral px-4 py-2 text-sm font-medium rounded-lg"
+              className="btn-outline"
             >
               취소
             </button>
             <button
               onClick={processExcelData}
               disabled={excelData.length === 0 || isProcessing}
-              className="bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed px-6 py-2 text-sm font-medium rounded-lg transition-colors flex items-center space-x-2"
+              className="btn-primary flex items-center space-x-2"
             >
               {isProcessing ? (
                 <>
@@ -932,297 +933,235 @@ const TraineeManagement: React.FC = () => {
   if (isLoading) {
     console.log('⏳ TraineeManagement 로딩 중...');
     return (
-      <div className="flex items-center justify-center min-h-64 p-8">
-        <div className="flex flex-col items-center space-y-4">
-          <div className="w-8 h-8 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
-          <p className="text-muted-foreground text-sm">교육생 데이터 로딩 중...</p>
+      <PageContainer>
+        <div className="flex items-center justify-center min-h-64 p-8">
+          <div className="flex flex-col items-center space-y-4">
+            <div className="w-8 h-8 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
+            <p className="text-muted-foreground text-sm">교육생 데이터 로딩 중...</p>
+          </div>
         </div>
-      </div>
+      </PageContainer>
     );
   }
 
-  console.log('👥 TraineeManagement 메인 렌더링 시작', { 
-    trainees: trainees.length, 
-    filtered: filteredTrainees.length 
+  console.log('👥 TraineeManagement 메인 렌더링 시작', {
+    trainees: trainees.length,
+    filtered: filteredTrainees.length
   });
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto">
-      {/* 헤더 */}
-      <div className="bg-card rounded-lg shadow-sm border border-border p-6">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-          <div className="flex items-center space-x-3">
-            <UsersIcon className="h-8 w-8 text-primary" />
-            <div>
-              <h1 className="text-2xl font-bold text-card-foreground">교육생 관리</h1>
-              <p className="text-muted-foreground">교육생 등록, 관리 및 상태 추적</p>
-            </div>
-          </div>
-          
-          <div className="flex items-center space-x-3">
-            <button
-              onClick={() => setIsExcelModalOpen(true)}
-              className="btn-base btn-lg btn-success"
-            >
-              <DocumentArrowUpIcon className="w-4 h-4" />
-              엑셀 가져오기
-            </button>
-            <button
-              onClick={() => setIsCreateModalOpen(true)}
-              className="btn-base btn-lg btn-dark"
-            >
-              <PlusIcon className="w-5 h-5" />
-              새 교육생 등록
-            </button>
-          </div>
+    <PageContainer>
+      <div className="flex justify-between items-center mb-6">
+        <div>
+          <h1 className="text-2xl font-bold text-foreground mb-2">👥 교육생 관리</h1>
+          <p className="text-muted-foreground">교육생 정보를 등록하고 관리합니다.</p>
         </div>
+        <div className="flex space-x-2">
+          <button
+            onClick={() => setIsExcelModalOpen(true)}
+            className="btn-outline flex items-center space-x-2"
+          >
+            <DocumentArrowUpIcon className="w-5 h-5" />
+            <span>엑셀 등록</span>
+          </button>
+          <button
+            onClick={() => setIsCreateModalOpen(true)}
+            className="btn-primary flex items-center space-x-2"
+          >
+            <PlusIcon className="w-5 h-5" />
+            <span>교육생 등록</span>
+          </button>
+        </div>
+      </div>
 
-        {/* 검색 및 필터 */}
-        <div className="mt-6 flex flex-col md:flex-row gap-2">
-          {/* 검색 입력 */}
-          <div className="flex-1 relative">
-            <MagnifyingGlassIcon className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
+      {/* 필터 및 검색 */}
+      <div className="bg-card rounded-lg shadow-sm border border-border p-4 mb-6">
+        <div className="flex flex-col md:flex-row md:items-center space-y-4 md:space-y-0 md:space-x-4">
+          <div className="relative flex-1">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <MagnifyingGlassIcon className="h-5 w-5 text-muted-foreground" />
+            </div>
             <input
               type="text"
-              placeholder="이름, 이메일, 사번으로 검색..."
-              className="pl-10 pr-4 py-2.5 w-full border border-border rounded-lg bg-card text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all shadow-sm text-sm"
+              placeholder="이름, 사번, 이메일 검색..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-10 w-full border border-input rounded-lg px-3 py-2 bg-background text-foreground focus:ring-2 focus:ring-ring"
             />
           </div>
 
-          {/* 상태 필터 */}
-          <select
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value as TraineeStatus | 'all')}
-            className="sm:w-36 border border-gray-300 rounded-lg px-3 py-2.5 text-sm bg-white text-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all hover:border-gray-400 appearance-none cursor-pointer"
-            style={{
-              backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`,
-              backgroundPosition: 'right 0.5rem center',
-              backgroundRepeat: 'no-repeat',
-              backgroundSize: '1.25em 1.25em',
-              paddingRight: '2rem'
-            }}
-          >
-            <option value="all">모든 상태</option>
-            {Object.entries(traineeStatusLabels).map(([status, label]) => (
-              <option key={status} value={status}>{label}</option>
-            ))}
-          </select>
-
-          {/* 부서 필터 */}
-          <select
-            value={departmentFilter}
-            onChange={(e) => setDepartmentFilter(e.target.value)}
-            className="sm:w-36 border border-gray-300 rounded-lg px-3 py-2.5 text-sm bg-white text-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all hover:border-gray-400 appearance-none cursor-pointer"
-            style={{
-              backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`,
-              backgroundPosition: 'right 0.5rem center',
-              backgroundRepeat: 'no-repeat',
-              backgroundSize: '1.25em 1.25em',
-              paddingRight: '2rem'
-            }}
-          >
-            <option value="all">모든 부서</option>
-            {departments.map(dept => (
-              <option key={dept} value={dept}>{dept}</option>
-            ))}
-          </select>
-
-          {/* 결과 카운트 */}
-          <div className="flex items-center px-3 py-2.5 bg-secondary/30 rounded-lg border border-border">
-            <FunnelIcon className="h-4 w-4 mr-1.5 text-muted-foreground" />
-            <span className="text-sm font-medium text-foreground whitespace-nowrap">
-              총 <span className="text-primary font-semibold">{filteredTrainees.length}</span>명
-            </span>
-          </div>
-        </div>
-      </div>
-
-      {/* 통계 카드 */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div className="bg-card rounded-lg shadow-sm border border-border p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-muted-foreground text-sm">전체 교육생</p>
-              <p className="text-2xl font-bold text-card-foreground">{trainees.length}</p>
+          <div className="flex space-x-2">
+            <div className="relative">
+              <select
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value as TraineeStatus | 'all')}
+                className="appearance-none border border-input rounded-lg pl-3 pr-8 py-2 bg-background text-foreground focus:ring-2 focus:ring-ring"
+              >
+                <option value="all">모든 상태</option>
+                <option value="active">재학</option>
+                <option value="inactive">휴학</option>
+                <option value="graduated">수료</option>
+                <option value="suspended">제적</option>
+              </select>
+              <div className="absolute inset-y-0 right-0 pr-2 flex items-center pointer-events-none">
+                <FunnelIcon className="h-4 w-4 text-muted-foreground" />
+              </div>
             </div>
-          </div>
-        </div>
 
-        <div className="bg-card rounded-lg shadow-sm border border-border p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-muted-foreground text-sm">활성 교육생</p>
-              <p className="text-2xl font-bold text-card-foreground">
-                {trainees.filter(t => t.status === 'active').length}
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-card rounded-lg shadow-sm border border-border p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-muted-foreground text-sm">수료생</p>
-              <p className="text-2xl font-bold text-card-foreground">
-                {trainees.filter(t => t.status === 'graduated').length}
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-card rounded-lg shadow-sm border border-border p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-muted-foreground text-sm">부서 수</p>
-              <p className="text-2xl font-bold text-card-foreground">{departments.length}</p>
-            </div>
-            <div className="p-3 bg-secondary text-secondary-foreground rounded-lg">
-              <ChartBarIcon className="h-6 w-6" />
+            <div className="relative">
+              <select
+                value={departmentFilter}
+                onChange={(e) => setDepartmentFilter(e.target.value)}
+                className="appearance-none border border-input rounded-lg pl-3 pr-8 py-2 bg-background text-foreground focus:ring-2 focus:ring-ring"
+              >
+                <option value="all">모든 부서</option>
+                {departments.map((dept, index) => (
+                  <option key={index} value={dept}>{dept}</option>
+                ))}
+              </select>
+              <div className="absolute inset-y-0 right-0 pr-2 flex items-center pointer-events-none">
+                <FunnelIcon className="h-4 w-4 text-muted-foreground" />
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* 교육생 목록 */}
-      <div className="bg-card rounded-lg shadow-sm border border-border">
-        <div className="p-6 border-b border-border">
-          <div className="flex justify-between items-center">
-            <h2 className="text-lg font-bold text-card-foreground">
-              교육생 목록 ({filteredTrainees.length}명)
-            </h2>
-            <div className="flex items-center space-x-2 text-sm text-muted-foreground">
-              <FunnelIcon className="w-4 h-4" />
-              <span>필터 적용됨</span>
-            </div>
-          </div>
-        </div>
-
+      {/* 교육생 목록 테이블 */}
+      <div className="bg-card rounded-lg shadow-sm border border-border overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-muted">
+          <table className="min-w-full divide-y divide-border">
+            <thead className="bg-muted/50">
               <tr>
-                <th className="text-left p-4 text-sm font-medium text-muted-foreground">본부</th>
-                <th className="text-left p-4 text-sm font-medium text-muted-foreground">팀</th>
-                <th className="text-left p-4 text-sm font-medium text-muted-foreground">직급</th>
-                <th className="text-left p-4 text-sm font-medium text-muted-foreground">성명</th>
-                <th className="text-left p-4 text-sm font-medium text-muted-foreground">사번</th>
-                <th className="text-left p-4 text-sm font-medium text-muted-foreground">차수</th>
-                <th className="text-left p-4 text-sm font-medium text-muted-foreground">전화번호</th>
-                <th className="text-left p-4 text-sm font-medium text-muted-foreground">근무지(e-hr)</th>
-                <th className="text-left p-4 text-sm font-medium text-muted-foreground">액션</th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                  이름 / 사번
+                </th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                  부서 / 직급
+                </th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                  연락처
+                </th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                  상태
+                </th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                  등록일
+                </th>
+                <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                  관리
+                </th>
               </tr>
             </thead>
-            <tbody>
-              {filteredTrainees.map((trainee, index) => (
-                <tr key={trainee.id} className={index % 2 === 0 ? 'bg-background' : 'bg-muted/30'}>
-                  <td className="p-4 text-card-foreground">{trainee.division || '-'}</td>
-                  <td className="p-4 text-card-foreground">{trainee.team || '-'}</td>
-                  <td className="p-4 text-card-foreground">{trainee.position}</td>
-                  <td className="p-4">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm font-medium">
-                        {trainee.name.charAt(0)}
-                      </div>
-                      <div className="font-medium text-card-foreground">{trainee.name}</div>
-                    </div>
-                  </td>
-                  <td className="p-4 text-card-foreground">{trainee.employee_id}</td>
-                  <td className="p-4">
-                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
-                      {trainee.cohort || '-'}
-                    </span>
-                  </td>
-                  <td className="p-4 text-card-foreground">{trainee.phone}</td>
-                  <td className="p-4 text-card-foreground">{trainee.workplace || '-'}</td>
-                  <td className="p-4">
-                    <div className="flex items-center justify-center space-x-2">
-                      <button
-                        onClick={() => {
-                          setSelectedTrainee(trainee);
-                          setIsDetailModalOpen(true);
-                        }}
-                        className="btn-base btn-sm btn-primary w-9 h-9 !p-0 !gap-0 inline-flex items-center justify-center"
-                        title="상세보기"
-                      >
-                        <EyeIcon className="w-4 h-4" />
-                      </button>
-                      <button
-                        onClick={() => {
-                          setShowReportForTrainee(trainee.id);
-                        }}
-                        className="btn-base btn-sm btn-purple w-9 h-9 !p-0 !gap-0 inline-flex items-center justify-center"
-                        title="리포트 보기"
-                      >
-                        <ClipboardDocumentListIcon className="w-4 h-4" />
-                      </button>
-                      <button
-                        onClick={() => {
-                          setSelectedTrainee(trainee);
-                          setIsEditModalOpen(true);
-                        }}
-                        className="btn-base btn-sm btn-secondary w-9 h-9 !p-0 !gap-0 inline-flex items-center justify-center"
-                        title="편집"
-                      >
-                        <PencilIcon className="w-4 h-4" />
-                      </button>
-                      <button
-                        onClick={async () => {
-                          if (window.confirm(`정말로 ${trainee.name} 교육생을 삭제하시겠습니까?`)) {
-                            try {
-                              await TraineeService.deleteTrainee(trainee.id);
-                              toast.success('교육생이 삭제되었습니다.');
-                              loadTrainees();
-                            } catch (error) {
-                              toast.error('교육생 삭제 중 오류가 발생했습니다.');
-                            }
-                          }
-                        }}
-                        className="btn-base btn-sm btn-danger w-9 h-9 !p-0 !gap-0 inline-flex items-center justify-center"
-                        title="삭제"
-                      >
-                        <TrashIcon className="w-4 h-4" />
-                      </button>
+            <tbody className="bg-card divide-y divide-border">
+              {isLoading ? (
+                <tr>
+                  <td colSpan={6} className="px-6 py-10 text-center text-muted-foreground">
+                    <div className="flex justify-center items-center space-x-2">
+                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-primary"></div>
+                      <span>데이터를 불러오는 중...</span>
                     </div>
                   </td>
                 </tr>
-              ))}
+              ) : filteredTrainees.length === 0 ? (
+                <tr>
+                  <td colSpan={6} className="px-6 py-10 text-center text-muted-foreground">
+                    검색 결과가 없습니다.
+                  </td>
+                </tr>
+              ) : (
+                filteredTrainees.map((trainee) => (
+                  <tr key={trainee.id} className="hover:bg-muted/50 transition-colors">
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex items-center">
+                        <div className="flex-shrink-0 h-10 w-10 bg-primary/10 rounded-full flex items-center justify-center text-primary font-bold">
+                          {trainee.name.charAt(0)}
+                        </div>
+                        <div className="ml-4">
+                          <div className="text-sm font-medium text-foreground">{trainee.name}</div>
+                          <div className="text-sm text-muted-foreground">{trainee.employee_id}</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-foreground">{trainee.department}</div>
+                      <div className="text-sm text-muted-foreground">{trainee.position}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-foreground">{trainee.email}</div>
+                      <div className="text-sm text-muted-foreground">{trainee.phone}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full border ${getStatusColor(trainee.status)}`}>
+                        {traineeStatusLabels[trainee.status]}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
+                      {new Date(trainee.created_at).toLocaleDateString('ko-KR')}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                      <div className="flex justify-end space-x-2">
+                        <button
+                          onClick={() => {
+                            setSelectedTrainee(trainee);
+                            setIsDetailModalOpen(true);
+                          }}
+                          className="text-muted-foreground hover:text-primary transition-colors"
+                          title="상세 정보"
+                        >
+                          <EyeIcon className="w-5 h-5" />
+                        </button>
+                        <button
+                          onClick={() => {
+                            setSelectedTrainee(trainee);
+                            setIsEditModalOpen(true);
+                          }}
+                          className="text-muted-foreground hover:text-blue-500 transition-colors"
+                          title="수정"
+                        >
+                          <PencilIcon className="w-5 h-5" />
+                        </button>
+                        <button
+                          onClick={() => {
+                            setShowReportForTrainee(trainee.id);
+                          }}
+                          className="text-muted-foreground hover:text-green-500 transition-colors"
+                          title="리포트 보기"
+                        >
+                          <ClipboardDocumentListIcon className="w-5 h-5" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>
 
-        {filteredTrainees.length === 0 && (
-          <div className="text-center py-12">
-            <UsersIcon className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-            <h3 className="text-lg font-medium text-card-foreground mb-2">교육생이 없습니다</h3>
-            <p className="text-muted-foreground mb-6">
-              {searchTerm || statusFilter !== 'all' || departmentFilter !== 'all' 
-                ? '검색 조건에 맞는 교육생이 없습니다.' 
-                : '첫 번째 교육생을 등록해보세요.'
-              }
-            </p>
-            {(!searchTerm && statusFilter === 'all' && departmentFilter === 'all') && (
-              <button
-                onClick={() => setIsCreateModalOpen(true)}
-                className="bg-primary text-primary-foreground hover:bg-primary/90 inline-flex items-center px-4 py-2 rounded-lg font-medium transition-colors"
-              >
-                <PlusIcon className="w-4 h-4 mr-2" />
-                새 교육생 등록
-              </button>
-            )}
+        {/* 페이지네이션 (추후 구현) */}
+        <div className="bg-muted/30 px-4 py-3 border-t border-border flex items-center justify-between sm:px-6">
+          <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+            <div>
+              <p className="text-sm text-muted-foreground">
+                총 <span className="font-medium text-foreground">{filteredTrainees.length}</span>명의 교육생
+              </p>
+            </div>
+            <div>
+              {/* 페이지네이션 컴포넌트 자리 */}
+            </div>
           </div>
-        )}
+        </div>
       </div>
 
-      {/* 모달들 */}
+      {/* 모달 컴포넌트들 */}
       <CreateTraineeModal />
       <EditTraineeModal />
       <TraineeDetailModal />
       <ExcelImportModal />
       <UploadResultModal />
       <TraineeReportModal />
-    </div>
+    </PageContainer>
   );
 
   // 교육생 리포트 모달
@@ -1291,11 +1230,10 @@ const TraineeManagement: React.FC = () => {
                     <button
                       key={tab.id}
                       onClick={() => setActiveTab(tab.id as any)}
-                      className={`pb-3 px-2 font-medium transition-colors ${
-                        activeTab === tab.id
-                          ? 'text-primary border-b-2 border-primary'
-                          : 'text-muted-foreground hover:text-foreground'
-                      }`}
+                      className={`pb-3 px-2 font-medium transition-colors ${activeTab === tab.id
+                        ? 'text-primary border-b-2 border-primary'
+                        : 'text-muted-foreground hover:text-foreground'
+                        }`}
                     >
                       {tab.label}
                     </button>
@@ -1326,13 +1264,12 @@ const TraineeManagement: React.FC = () => {
                       <div key={course.id} className="bg-muted/30 p-4 rounded-lg">
                         <div className="flex justify-between items-start mb-2">
                           <h3 className="font-semibold">{course.course_name}</h3>
-                          <span className={`px-2 py-1 text-xs font-medium rounded ${
-                            course.completion_status === 'completed' ? 'bg-green-500/10 text-green-700' :
+                          <span className={`px-2 py-1 text-xs font-medium rounded ${course.completion_status === 'completed' ? 'bg-green-500/10 text-green-700' :
                             course.completion_status === 'in_progress' ? 'bg-blue-100 text-blue-800' :
-                            'bg-gray-100 text-gray-800'
-                          }`}>
+                              'bg-gray-100 text-gray-800'
+                            }`}>
                             {course.completion_status === 'completed' ? '완료' :
-                             course.completion_status === 'in_progress' ? '수강중' : course.completion_status}
+                              course.completion_status === 'in_progress' ? '수강중' : course.completion_status}
                           </span>
                         </div>
                         <p className="text-sm text-muted-foreground">{course.session_code}</p>

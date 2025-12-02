@@ -10,7 +10,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ko">
-      <body>
+      <body className="bg-background text-foreground antialiased">
         <AuthProvider>
           {children}
         </AuthProvider>

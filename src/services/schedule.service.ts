@@ -3,6 +3,7 @@
  */
 
 import { supabase } from './supabase';
+import { ScheduleValidatorService } from './schedule-validator.service';
 import type {
   Schedule,
   ScheduleCreate,
@@ -103,9 +104,27 @@ export const scheduleService = {
   },
 
   /**
-   * 일정 생성
+   * 일정 생성 (검증 포함)
    */
   async create(schedule: ScheduleCreate): Promise<Schedule> {
+    // 충돌 검증
+    const validation = await ScheduleValidatorService.validateSchedule({
+      start_time: schedule.start_time,
+      end_time: schedule.end_time,
+      instructor_id: schedule.instructor_id,
+      classroom_id: schedule.classroom_id,
+      course_round_id: schedule.course_round_id,
+    });
+
+    if (!validation.isValid) {
+      const criticalConflicts = validation.conflicts.filter(
+        c => c.severity === 'critical' || c.severity === 'high'
+      );
+      if (criticalConflicts.length > 0) {
+        throw new Error(`일정 충돌 발견: ${criticalConflicts[0].message}`);
+      }
+    }
+
     const { data, error } = await supabase
       .from('schedules')
       .insert(schedule)
@@ -117,9 +136,34 @@ export const scheduleService = {
   },
 
   /**
-   * 일정 수정
+   * 일정 수정 (검증 포함)
    */
   async update(id: string, schedule: ScheduleUpdate): Promise<Schedule> {
+    // 시간이 변경되는 경우에만 검증
+    if (schedule.start_time || schedule.end_time) {
+      // 기존 일정 조회
+      const existing = await this.getById(id);
+      if (!existing) throw new Error('일정을 찾을 수 없습니다.');
+
+      const validation = await ScheduleValidatorService.validateSchedule({
+        start_time: schedule.start_time || existing.start_time,
+        end_time: schedule.end_time || existing.end_time,
+        instructor_id: schedule.instructor_id || existing.instructor_id,
+        classroom_id: schedule.classroom_id || existing.classroom_id,
+        course_round_id: schedule.course_round_id || existing.course_round_id,
+        exclude_schedule_id: id,
+      });
+
+      if (!validation.isValid) {
+        const criticalConflicts = validation.conflicts.filter(
+          c => c.severity === 'critical' || c.severity === 'high'
+        );
+        if (criticalConflicts.length > 0) {
+          throw new Error(`일정 충돌 발견: ${criticalConflicts[0].message}`);
+        }
+      }
+    }
+
     const { data, error } = await supabase
       .from('schedules')
       .update({ ...schedule, updated_at: new Date().toISOString() })

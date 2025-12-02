@@ -17,6 +17,7 @@ import {
   PauseIcon,
   PlayIcon
 } from '@heroicons/react/24/outline';
+import { PageContainer } from '../common/PageContainer';
 
 interface PerformanceMetric {
   id: string;
@@ -188,7 +189,7 @@ const SystemMonitor: React.FC = () => {
     setMetrics(prev => prev.map(metric => {
       const variance = Math.random() * 10 - 5; // -5 to +5
       let newValue = Math.max(0, Math.min(100, metric.value + variance));
-      
+
       // 특별한 로직 추가
       if (metric.id === 'response_time') {
         newValue = Math.max(50, Math.min(1000, metric.value + variance * 10));
@@ -209,8 +210,8 @@ const SystemMonitor: React.FC = () => {
 
       // 트렌드 계산
       const recentHistory = [...metric.history.slice(-4), newValue];
-      const trend = recentHistory[recentHistory.length - 1] > recentHistory[0] ? 'up' : 
-                   recentHistory[recentHistory.length - 1] < recentHistory[0] ? 'down' : 'stable';
+      const trend = recentHistory[recentHistory.length - 1] > recentHistory[0] ? 'up' :
+        recentHistory[recentHistory.length - 1] < recentHistory[0] ? 'down' : 'stable';
 
       return {
         ...metric,
@@ -233,7 +234,7 @@ const SystemMonitor: React.FC = () => {
 
   const checkForAlerts = () => {
     const currentTime = new Date().toISOString();
-    
+
     // CPU 사용률 체크
     const cpuMetric = metrics.find(m => m.id === 'cpu');
     if (cpuMetric && cpuMetric.value > 90) {
@@ -268,9 +269,9 @@ const SystemMonitor: React.FC = () => {
   };
 
   const resolveAlert = (alertId: string) => {
-    setAlerts(prev => 
-      prev.map(alert => 
-        alert.id === alertId 
+    setAlerts(prev =>
+      prev.map(alert =>
+        alert.id === alertId
           ? { ...alert, resolved: true }
           : alert
       )
@@ -345,209 +346,207 @@ const SystemMonitor: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6">
-      {/* 헤더 */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">📊 시스템 모니터</h1>
-            <p className="text-gray-600">
-              실시간 시스템 성능 및 리소스 사용량을 모니터링합니다.
-            </p>
-          </div>
-          <div className="flex items-center space-x-3">
-            <select
-              value={autoRefresh}
-              onChange={(e) => setAutoRefresh(Number(e.target.value))}
-              className="border border-gray-300 rounded px-3 py-1 text-sm"
-            >
-              <option value={1}>1초마다</option>
-              <option value={5}>5초마다</option>
-              <option value={10}>10초마다</option>
-              <option value={30}>30초마다</option>
-            </select>
-            <button
-              onClick={() => setIsMonitoring(!isMonitoring)}
-              className={`px-4 py-2 rounded-full text-white flex items-center space-x-2 ${
-                isMonitoring ? 'btn-danger' : 'btn-success'
-              }`}
-            >
-              {isMonitoring ? (
-                <>
-                  <PauseIcon className="h-4 w-4" />
-                  <span>일시정지</span>
-                </>
-              ) : (
-                <>
-                  <PlayIcon className="h-4 w-4" />
-                  <span>시작</span>
-                </>
-              )}
-            </button>
+    <PageContainer>
+      <div className="space-y-6">
+        {/* 헤더 */}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900 mb-2">📊 시스템 모니터</h1>
+              <p className="text-gray-600">
+                실시간 시스템 성능 및 리소스 사용량을 모니터링합니다.
+              </p>
+            </div>
+            <div className="flex items-center space-x-3">
+              <select
+                value={autoRefresh}
+                onChange={(e) => setAutoRefresh(Number(e.target.value))}
+                className="border border-gray-300 rounded px-3 py-1 text-sm"
+              >
+                <option value={1}>1초마다</option>
+                <option value={5}>5초마다</option>
+                <option value={10}>10초마다</option>
+                <option value={30}>30초마다</option>
+              </select>
+              <button
+                onClick={() => setIsMonitoring(!isMonitoring)}
+                className={`px-4 py-2 rounded-full text-white flex items-center space-x-2 ${isMonitoring ? 'btn-danger' : 'btn-primary'
+                  }`}
+              >
+                {isMonitoring ? (
+                  <>
+                    <PauseIcon className="h-4 w-4" />
+                    <span>일시정지</span>
+                  </>
+                ) : (
+                  <>
+                    <PlayIcon className="h-4 w-4" />
+                    <span>시작</span>
+                  </>
+                )}
+              </button>
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* 연결 정보 */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-600">활성 사용자</p>
-              <p className="text-2xl font-bold text-blue-600">{connectionInfo.activeUsers}</p>
+        {/* 연결 정보 */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-600">활성 사용자</p>
+                <p className="text-2xl font-bold text-blue-600">{connectionInfo.activeUsers}</p>
+              </div>
+              <UserIcon className="h-8 w-8 text-blue-500" />
             </div>
-            <UserIcon className="h-8 w-8 text-blue-500" />
           </div>
-        </div>
-        
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-600">총 세션</p>
-              <p className="text-2xl font-bold text-green-600">{connectionInfo.totalSessions}</p>
-            </div>
-            <ServerIcon className="h-8 w-8 text-green-500" />
-          </div>
-        </div>
-        
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-600">평균 응답</p>
-              <p className="text-2xl font-bold text-purple-600">{connectionInfo.avgResponseTime}ms</p>
-            </div>
-            <ClockIcon className="h-8 w-8 text-purple-500" />
-          </div>
-        </div>
-        
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-600">요청/분</p>
-              <p className="text-2xl font-bold text-orange-600">{connectionInfo.requestsPerMinute}</p>
-            </div>
-            <BoltIcon className="h-8 w-8 text-orange-500" />
-          </div>
-        </div>
-      </div>
 
-      {/* 성능 메트릭 */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-        <div className="px-6 py-4 border-b border-gray-200">
-          <h3 className="text-lg font-medium text-gray-900">시스템 성능 메트릭</h3>
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-600">총 세션</p>
+                <p className="text-2xl font-bold text-green-600">{connectionInfo.totalSessions}</p>
+              </div>
+              <ServerIcon className="h-8 w-8 text-green-500" />
+            </div>
+          </div>
+
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-600">평균 응답</p>
+                <p className="text-2xl font-bold text-purple-600">{connectionInfo.avgResponseTime}ms</p>
+              </div>
+              <ClockIcon className="h-8 w-8 text-purple-500" />
+            </div>
+          </div>
+
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-600">요청/분</p>
+                <p className="text-2xl font-bold text-orange-600">{connectionInfo.requestsPerMinute}</p>
+              </div>
+              <BoltIcon className="h-8 w-8 text-orange-500" />
+            </div>
+          </div>
         </div>
-        
-        <div className="p-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {metrics.map((metric) => (
-              <div key={metric.id} className="border border-gray-200 rounded-lg p-4">
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center space-x-2">
-                    {getMetricIcon(metric.id)}
-                    <span className="font-medium text-gray-900">{metric.name}</span>
+
+        {/* 성능 메트릭 */}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200">
+          <div className="px-6 py-4 border-b border-gray-200">
+            <h3 className="text-lg font-medium text-gray-900">시스템 성능 메트릭</h3>
+          </div>
+
+          <div className="p-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {metrics.map((metric) => (
+                <div key={metric.id} className="border border-gray-200 rounded-lg p-4">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center space-x-2">
+                      {getMetricIcon(metric.id)}
+                      <span className="font-medium text-gray-900">{metric.name}</span>
+                    </div>
+                    {getTrendIcon(metric.trend)}
                   </div>
-                  {getTrendIcon(metric.trend)}
-                </div>
-                
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-2xl font-bold text-gray-900">
-                    {metric.value}{metric.unit}
-                  </span>
-                  <span className={`inline-flex items-center space-x-1 px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(metric.status)}`}>
-                    {getStatusIcon(metric.status)}
-                    <span>
-                      {metric.status === 'good' ? '양호' :
-                       metric.status === 'warning' ? '주의' : '위험'}
+
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-2xl font-bold text-gray-900">
+                      {metric.value}{metric.unit}
                     </span>
-                  </span>
-                </div>
-                
-                <div className="mb-2">
-                  <div className="flex justify-between text-xs text-gray-500 mb-1">
-                    <span>0</span>
-                    <span>임계값: {metric.threshold}{metric.unit}</span>
+                    <span className={`inline-flex items-center space-x-1 px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(metric.status)}`}>
+                      {getStatusIcon(metric.status)}
+                      <span>
+                        {metric.status === 'good' ? '양호' :
+                          metric.status === 'warning' ? '주의' : '위험'}
+                      </span>
+                    </span>
                   </div>
-                  <div className="w-full bg-gray-200 rounded-lg h-2">
-                    <div
-                      className={`h-2 rounded-full ${
-                        metric.status === 'critical' ? 'bg-red-500' :
-                        metric.status === 'warning' ? 'bg-yellow-500' : 'bg-green-500'
-                      }`}
-                      style={{ 
-                        width: `${Math.min(100, (metric.value / (metric.id === 'response_time' ? 1000 : 100)) * 100)}%` 
-                      }}
-                    />
+
+                  <div className="mb-2">
+                    <div className="flex justify-between text-xs text-gray-500 mb-1">
+                      <span>0</span>
+                      <span>임계값: {metric.threshold}{metric.unit}</span>
+                    </div>
+                    <div className="w-full bg-gray-200 rounded-lg h-2">
+                      <div
+                        className={`h-2 rounded-full ${metric.status === 'critical' ? 'bg-red-500' :
+                            metric.status === 'warning' ? 'bg-yellow-500' : 'bg-green-500'
+                          }`}
+                        style={{
+                          width: `${Math.min(100, (metric.value / (metric.id === 'response_time' ? 1000 : 100)) * 100)}%`
+                        }}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-gray-500">최근 추이</span>
+                    <MiniChart data={metric.history} />
                   </div>
                 </div>
-                
-                <div className="flex items-center justify-between">
-                  <span className="text-xs text-gray-500">최근 추이</span>
-                  <MiniChart data={metric.history} />
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* 시스템 알림 */}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200">
+          <div className="px-6 py-4 border-b border-gray-200">
+            <div className="flex justify-between items-center">
+              <h3 className="text-lg font-medium text-gray-900">
+                시스템 알림 ({alerts.filter(a => !a.resolved).length})
+              </h3>
+              <button
+                onClick={() => setAlerts([])}
+                className="btn-ghost text-sm"
+              >
+                모두 지우기
+              </button>
+            </div>
+          </div>
+
+          <div className="divide-y divide-gray-200">
+            {alerts.slice(0, 5).map((alert) => (
+              <div key={alert.id} className={`p-4 ${alert.resolved ? 'opacity-50' : ''}`}>
+                <div className="flex items-start justify-between">
+                  <div className="flex items-start space-x-3">
+                    <div className={`p-1 rounded-full ${alert.type === 'error' ? 'bg-destructive/10' :
+                        alert.type === 'warning' ? 'bg-yellow-100' : 'bg-blue-100'
+                      }`}>
+                      <ExclamationTriangleIcon className={`h-4 w-4 ${alert.type === 'error' ? 'text-destructive' :
+                          alert.type === 'warning' ? 'text-orange-600' : 'text-blue-600'
+                        }`} />
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="text-sm font-medium text-gray-900">{alert.title}</h4>
+                      <p className="text-sm text-gray-600 mt-1">{alert.message}</p>
+                      <p className="text-xs text-gray-500 mt-2">{formatDate(alert.timestamp)}</p>
+                    </div>
+                  </div>
+                  {!alert.resolved && (
+                    <button
+                      onClick={() => resolveAlert(alert.id)}
+                      className="btn-ghost text-sm text-blue-600 hover:text-blue-900"
+                    >
+                      해결됨
+                    </button>
+                  )}
                 </div>
               </div>
             ))}
-          </div>
-        </div>
-      </div>
 
-      {/* 시스템 알림 */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-        <div className="px-6 py-4 border-b border-gray-200">
-          <div className="flex justify-between items-center">
-            <h3 className="text-lg font-medium text-gray-900">
-              시스템 알림 ({alerts.filter(a => !a.resolved).length})
-            </h3>
-            <button
-              onClick={() => setAlerts([])}
-              className="text-sm text-gray-600 hover:text-gray-900"
-            >
-              모두 지우기
-            </button>
+            {alerts.length === 0 && (
+              <div className="p-8 text-center">
+                <CheckCircleIcon className="h-12 w-12 text-green-500 mx-auto mb-3" />
+                <h4 className="text-lg font-medium text-gray-900 mb-1">모든 시스템이 정상입니다</h4>
+                <p className="text-gray-600">현재 활성화된 알림이 없습니다.</p>
+              </div>
+            )}
           </div>
         </div>
-        
-        <div className="divide-y divide-gray-200">
-          {alerts.slice(0, 5).map((alert) => (
-            <div key={alert.id} className={`p-4 ${alert.resolved ? 'opacity-50' : ''}`}>
-              <div className="flex items-start justify-between">
-                <div className="flex items-start space-x-3">
-                  <div className={`p-1 rounded-full ${
-                    alert.type === 'error' ? 'bg-destructive/10' :
-                    alert.type === 'warning' ? 'bg-yellow-100' : 'bg-blue-100'
-                  }`}>
-                    <ExclamationTriangleIcon className={`h-4 w-4 ${
-                      alert.type === 'error' ? 'text-destructive' :
-                      alert.type === 'warning' ? 'text-orange-600' : 'text-blue-600'
-                    }`} />
-                  </div>
-                  <div className="flex-1">
-                    <h4 className="text-sm font-medium text-gray-900">{alert.title}</h4>
-                    <p className="text-sm text-gray-600 mt-1">{alert.message}</p>
-                    <p className="text-xs text-gray-500 mt-2">{formatDate(alert.timestamp)}</p>
-                  </div>
-                </div>
-                {!alert.resolved && (
-                  <button
-                    onClick={() => resolveAlert(alert.id)}
-                    className="text-sm text-blue-600 hover:text-blue-900"
-                  >
-                    해결됨
-                  </button>
-                )}
-              </div>
-            </div>
-          ))}
-          
-          {alerts.length === 0 && (
-            <div className="p-8 text-center">
-              <CheckCircleIcon className="h-12 w-12 text-green-500 mx-auto mb-3" />
-              <h4 className="text-lg font-medium text-gray-900 mb-1">모든 시스템이 정상입니다</h4>
-              <p className="text-gray-600">현재 활성화된 알림이 없습니다.</p>
-            </div>
-          )}
-        </div>
       </div>
-    </div>
+    </PageContainer>
   );
 };
 

@@ -6,6 +6,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
+import { PageContainer } from '../common/PageContainer';
 import { courseTemplateService } from '../../services/course-template.service';
 import { evaluationTemplateService } from '../../services/evaluation.service';
 import { useAuth } from '../../contexts/AuthContext';
@@ -128,7 +129,7 @@ export default function InstructorEvaluationPage() {
   }
 
   return (
-    <div className="p-6 space-y-6">
+    <PageContainer>
       {/* 과정 회차 선택 */}
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -198,6 +199,6 @@ export default function InstructorEvaluationPage() {
           </div>
         </div>
       )}
-    </div>
+    </PageContainer>
   );
 }

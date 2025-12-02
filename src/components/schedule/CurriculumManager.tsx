@@ -27,6 +27,7 @@ import { supabase } from '../../services/supabase';
 import { useAuth } from '../../contexts/AuthContext';
 import * as XLSX from 'xlsx';
 import { ResourceSelector } from './ResourceSelector';
+import { PageContainer } from '../common/PageContainer';
 
 // 한국 공휴일 (2025년 기준)
 const KOREAN_HOLIDAYS_2025 = [
@@ -202,6 +203,8 @@ export default function CurriculumManager() {
 
   // 폼 상태
   const [roundForm, setRoundForm] = useState({
+    template_id: '',
+    round_number: 1,
     title: '',
     instructor_id: '',
     instructor_name: '',
@@ -212,6 +215,7 @@ export default function CurriculumManager() {
     max_trainees: 20,
     location: '',
     description: '',
+    status: 'planning',
   });
 
   const [sessionForm, setSessionForm] = useState({
@@ -379,6 +383,8 @@ export default function CurriculumManager() {
       setIsEditMode(false);
       setEditingRoundId(null);
       setRoundForm({
+        template_id: '',
+        round_number: 1,
         title: '',
         instructor_id: '',
         instructor_name: '',
@@ -389,6 +395,7 @@ export default function CurriculumManager() {
         max_trainees: 20,
         location: '',
         description: '',
+        status: 'planning',
       });
       await loadData();
     } catch (error: any) {
@@ -785,9 +792,9 @@ export default function CurriculumManager() {
         '강의실': session.classroom,
         '강사': session.instructor_name || '',
         '상태': session.status === 'scheduled' ? '예정' :
-                session.status === 'in_progress' ? '진행중' :
-                session.status === 'completed' ? '완료' :
-                session.status === 'cancelled' ? '취소' : '재조정',
+          session.status === 'in_progress' ? '진행중' :
+            session.status === 'completed' ? '완료' :
+              session.status === 'cancelled' ? '취소' : '재조정',
         '비고': session.notes || ''
       }));
 
@@ -1313,1029 +1320,1031 @@ export default function CurriculumManager() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-96">
-        <div className="text-gray-500">로딩 중...</div>
-      </div>
+      <PageContainer>
+        <div className="flex items-center justify-center h-96">
+          <div className="text-gray-500">로딩 중...</div>
+        </div>
+      </PageContainer>
     );
   }
 
   return (
-    <div className="p-6 space-y-6">
-      {/* 헤더 */}
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">커리큘럼 관리</h1>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-            과정 시간표 생성 및 관리
-          </p>
+    <PageContainer>
+      <div className="space-y-6">
+        {/* 헤더 */}
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">커리큘럼 관리</h1>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+              과정 시간표 생성 및 관리
+            </p>
+          </div>
+          <button
+            onClick={() => {
+              setIsEditMode(false);
+              setEditingRoundId(null);
+              setRoundForm({
+                template_id: '',
+                round_number: 1,
+                title: '',
+                instructor_id: '',
+                instructor_name: '',
+                manager_id: user?.id || '',
+                manager_name: user?.name || '',
+                start_date: '',
+                end_date: '',
+                max_trainees: 20,
+                location: '',
+                description: '',
+                status: 'planning',
+              });
+              setShowCreateModal(true);
+            }}
+            className="btn-primary"
+          >
+            <PlusIcon className="w-5 h-5" />
+            새 과정 만들기
+          </button>
         </div>
-        <button
-          onClick={() => {
-            setIsEditMode(false);
-            setEditingRoundId(null);
-            setRoundForm({
-              title: '',
-              instructor_id: '',
-              instructor_name: '',
-              manager_id: user?.id || '',
-              manager_name: user?.name || '',
-              start_date: '',
-              end_date: '',
-              max_trainees: 20,
-              location: '',
-              description: '',
-            });
-            setShowCreateModal(true);
-          }}
-          className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-full hover:bg-primary/90"
-        >
-          <PlusIcon className="w-5 h-5" />
-          새 과정 만들기
-        </button>
-      </div>
 
-      {error && (
-        <div className="p-4 bg-destructive/10 dark:bg-red-900/20 border border-destructive/50 dark:border-red-800 rounded-lg">
-          <p className="text-sm text-destructive dark:text-red-400">{error}</p>
-        </div>
-      )}
+        {error && (
+          <div className="p-4 bg-destructive/10 dark:bg-red-900/20 border border-destructive/50 dark:border-red-800 rounded-lg">
+            <p className="text-sm text-destructive dark:text-red-400">{error}</p>
+          </div>
+        )}
 
-      <div className="grid grid-cols-12 gap-6">
-        {/* 왼쪽: 과정 목록 */}
-        <div className="col-span-3 bg-white dark:bg-gray-800 rounded-lg shadow p-4">
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">과정 목록</h2>
-          <div className="space-y-2">
-            {courseRounds.map((round) => (
-              <div
-                key={round.id}
-                className={`relative w-full text-left px-4 py-3 rounded-full transition-colors ${
-                  selectedRound?.id === round.id
+        <div className="grid grid-cols-12 gap-6">
+          {/* 왼쪽: 과정 목록 */}
+          <div className="col-span-3 bg-white dark:bg-gray-800 rounded-lg shadow p-4">
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">과정 목록</h2>
+            <div className="space-y-2">
+              {courseRounds.map((round) => (
+                <div
+                  key={round.id}
+                  className={`relative w-full text-left px-4 py-3 rounded-full transition-colors ${selectedRound?.id === round.id
                     ? 'bg-primary/10 text-primary'
                     : 'hover:bg-gray-100 dark:hover:bg-gray-700'
-                }`}
-              >
-                <div
-                  onClick={() => setSelectedRound(round)}
-                  className="cursor-pointer pr-16"
+                    }`}
                 >
-                  <div className="font-medium text-sm">{round.title}</div>
-                  <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                    {new Date(round.start_date).toLocaleDateString('ko-KR')} ~{' '}
-                    {new Date(round.end_date).toLocaleDateString('ko-KR')}
-                  </div>
-                  <div className="flex items-center gap-2 mt-1">
-                    <span
-                      className={`text-xs px-2 py-0.5 rounded ${
-                        round.status === 'completed'
+                  <div
+                    onClick={() => setSelectedRound(round)}
+                    className="cursor-pointer pr-16"
+                  >
+                    <div className="font-medium text-sm">{round.title}</div>
+                    <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                      {new Date(round.start_date).toLocaleDateString('ko-KR')} ~{' '}
+                      {new Date(round.end_date).toLocaleDateString('ko-KR')}
+                    </div>
+                    <div className="flex items-center gap-2 mt-1">
+                      <span
+                        className={`text-xs px-2 py-0.5 rounded ${round.status === 'completed'
                           ? 'bg-green-500/10 text-green-700'
                           : round.status === 'in_progress'
-                          ? 'bg-blue-100 text-blue-700'
-                          : 'bg-gray-100 text-gray-700'
-                      }`}
-                    >
-                      {round.status === 'planning'
-                        ? '계획'
-                        : round.status === 'recruiting'
-                        ? '모집'
-                        : round.status === 'in_progress'
-                        ? '진행중'
-                        : round.status === 'completed'
-                        ? '완료'
-                        : '취소'}
-                    </span>
-                    {round.is_locked && <LockClosedIcon className="w-3 h-3 text-gray-500" />}
-                  </div>
-                </div>
-
-                {/* 편집/삭제 버튼 */}
-                <div className="absolute right-2 top-1/2 -translate-y-1/2 flex gap-1">
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleEditRound(round);
-                    }}
-                    className="p-2 rounded hover:bg-white dark:hover:bg-gray-600 hover:shadow-md transition-all flex items-center justify-center"
-                    title="편집"
-                  >
-                    <PencilIcon className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-                  </button>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleDeleteRound(round.id, round.title);
-                    }}
-                    className="p-2 rounded hover:bg-white dark:hover:bg-gray-600 hover:shadow-md transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
-                    title="삭제"
-                    disabled={round.is_locked}
-                  >
-                    <TrashIcon className={`w-4 h-4 ${round.is_locked ? 'text-gray-300 dark:text-gray-600' : 'text-destructive dark:text-red-400'}`} />
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* 오른쪽: 시간표 그리드 */}
-        <div className="col-span-9">
-          {selectedRound ? (
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow">
-              {/* 과정 정보 헤더 */}
-              <div className="p-6 border-b border-gray-200 dark:border-gray-700">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <h2 className="text-xl font-bold text-gray-900 dark:text-white">
-                      {selectedRound.title}
-                    </h2>
-                    <div className="mt-2 space-y-1 text-sm text-gray-600 dark:text-gray-400">
-                      <div className="flex items-center gap-2">
-                        <CalendarIcon className="w-4 h-4" />
-                        {new Date(selectedRound.start_date).toLocaleDateString('ko-KR')} ~{' '}
-                        {new Date(selectedRound.end_date).toLocaleDateString('ko-KR')}
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <UserIcon className="w-4 h-4" />
-                        강사: {selectedRound.instructor_name}
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <MapPinIcon className="w-4 h-4" />
-                        {selectedRound.location}
-                      </div>
+                            ? 'bg-blue-100 text-blue-700'
+                            : 'bg-gray-100 text-gray-700'
+                          }`}
+                      >
+                        {round.status === 'planning'
+                          ? '계획'
+                          : round.status === 'recruiting'
+                            ? '모집'
+                            : round.status === 'in_progress'
+                              ? '진행중'
+                              : round.status === 'completed'
+                                ? '완료'
+                                : '취소'}
+                      </span>
+                      {round.is_locked && <LockClosedIcon className="w-3 h-3 text-gray-500" />}
                     </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    {!selectedRound.is_locked && (
-                      <>
-                        <button
-                          onClick={() => setShowSessionModal(true)}
-                          className="flex items-center gap-2 px-4 py-2.5 bg-primary text-primary-foreground rounded-full hover:bg-primary/90 transition-colors font-medium shadow-sm"
-                        >
-                          <PlusIcon className="w-5 h-5" />
-                          일정 추가
-                        </button>
-                        <button
-                          onClick={() => handleToggleLock(selectedRound.id, true)}
-                          className="flex items-center gap-2 px-4 py-2.5 border border-border text-foreground rounded-full hover:bg-muted transition-colors font-medium bg-background"
-                          title="과정 확정 및 잠금"
-                        >
-                          <LockClosedIcon className="w-5 h-5" />
-                          확정
-                        </button>
-                      </>
-                    )}
-                    {selectedRound.is_locked && (
-                      <button
-                        onClick={() => handleToggleLock(selectedRound.id, false)}
-                        className="flex items-center gap-2 px-4 py-2.5 border border-border text-foreground rounded-full hover:bg-muted transition-colors font-medium bg-background"
-                        title="잠금 해제"
-                      >
-                        <LockOpenIcon className="w-5 h-5" />
-                        잠금 해제
-                      </button>
-                    )}
+
+                  {/* 편집/삭제 버튼 */}
+                  <div className="absolute right-2 top-1/2 -translate-y-1/2 flex gap-1">
                     <button
-                      onClick={() => handleDuplicateRound(selectedRound.id)}
-                      className="flex items-center gap-2 px-4 py-2.5 border border-border text-foreground rounded-full hover:bg-muted transition-colors font-medium bg-background"
-                      title="과정 복제"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleEditRound(round);
+                      }}
+                      className="p-2 rounded hover:bg-white dark:hover:bg-gray-600 hover:shadow-md transition-all flex items-center justify-center"
+                      title="편집"
                     >
-                      <DocumentArrowDownIcon className="w-5 h-5" />
-                      복제
+                      <PencilIcon className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                     </button>
-                    {!selectedRound.is_locked && sessions.length > 0 && (
-                      <button
-                        onClick={() => handleRecalculateDates(selectedRound.id)}
-                        className="flex items-center gap-2 px-4 py-2.5 border border-border text-foreground rounded-full hover:bg-muted transition-colors font-medium bg-background"
-                        title="날짜 자동 재계산 (주말/공휴일 건너뛰기)"
-                      >
-                        <CalendarIcon className="w-5 h-5" />
-                        날짜 재계산
-                      </button>
-                    )}
-                    {sessions.length > 0 && (
-                      <button
-                        onClick={handleExportToExcel}
-                        className="flex items-center gap-2 px-4 py-2.5 border border-border text-foreground rounded-full hover:bg-muted transition-colors font-medium bg-background"
-                        title="엑셀로 내보내기"
-                      >
-                        <DocumentArrowDownIcon className="w-5 h-5" />
-                        엑셀 내보내기
-                      </button>
-                    )}
-                    {!selectedRound.is_locked && (
-                      <>
-                        <label className="flex items-center gap-2 px-4 py-2.5 border border-border text-foreground rounded-full hover:bg-muted transition-colors font-medium bg-background cursor-pointer" title="엑셀에서 가져오기">
-                          <DocumentArrowUpIcon className="w-5 h-5" />
-                          엑셀 가져오기
-                          <input
-                            type="file"
-                            accept=".xlsx,.xls"
-                            onChange={handleImportFromExcel}
-                            className="hidden"
-                          />
-                        </label>
-                        <button
-                          onClick={() => setShowTemplateModal(true)}
-                          className="flex items-center gap-2 px-4 py-2.5 border border-border text-foreground rounded-full hover:bg-muted transition-colors font-medium bg-background"
-                          title="템플릿에서 불러오기"
-                        >
-                          <DocumentArrowDownIcon className="w-5 h-5" />
-                          템플릿 불러오기
-                        </button>
-                      </>
-                    )}
-                    {sessions.length > 0 && !selectedRound.is_locked && (
-                      <button
-                        onClick={() => setShowSaveTemplateModal(true)}
-                        className="flex items-center gap-2 px-4 py-2.5 border border-border text-foreground rounded-full hover:bg-muted transition-colors font-medium bg-background"
-                        title="현재 시간표를 템플릿으로 저장"
-                      >
-                        <DocumentArrowUpIcon className="w-5 h-5" />
-                        템플릿 저장
-                      </button>
-                    )}
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDeleteRound(round.id, round.title);
+                      }}
+                      className="p-2 rounded hover:bg-white dark:hover:bg-gray-600 hover:shadow-md transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                      title="삭제"
+                      disabled={round.is_locked}
+                    >
+                      <TrashIcon className={`w-4 h-4 ${round.is_locked ? 'text-gray-300 dark:text-gray-600' : 'text-destructive dark:text-red-400'}`} />
+                    </button>
                   </div>
                 </div>
-              </div>
+              ))}
+            </div>
+          </div>
 
-              {/* 시간표 그리드 */}
-              <div className="p-6">
-                {sessions.length === 0 ? (
-                  <div className="text-center py-12 text-gray-500">
-                    아직 일정이 없습니다. '일정 추가' 버튼을 눌러 시간표를 작성하세요.
-                  </div>
-                ) : (
-                  <div className="space-y-2">
-                    {sessions.map((session, index) => (
-                      <div
-                        key={session.id}
-                        draggable={!selectedRound.is_locked}
-                        onDragStart={(e) => handleDragStart(e, session)}
-                        onDragOver={(e) => handleDragOver(e, index)}
-                        onDragLeave={handleDragLeave}
-                        onDrop={(e) => handleDrop(e, session, index)}
-                        onDragEnd={handleDragEnd}
-                        className={`flex items-center justify-between p-4 border border-gray-200 dark:border-gray-700 rounded-full transition-all ${
-                          !selectedRound.is_locked ? 'cursor-move hover:bg-gray-50 dark:hover:bg-gray-700' : ''
-                        } ${
-                          draggedSession?.id === session.id ? 'opacity-50' : ''
-                        } ${
-                          dragOverIndex === index ? 'border-teal-500 bg-teal-50 dark:bg-teal-900/20' : ''
-                        }`}
+          {/* 오른쪽: 시간표 그리드 */}
+          <div className="col-span-9">
+            {selectedRound ? (
+              <div className="bg-white dark:bg-gray-800 rounded-lg shadow">
+                {/* 과정 정보 헤더 */}
+                <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+                        {selectedRound.title}
+                      </h2>
+                      <div className="mt-2 space-y-1 text-sm text-gray-600 dark:text-gray-400">
+                        <div className="flex items-center gap-2">
+                          <CalendarIcon className="w-4 h-4" />
+                          {new Date(selectedRound.start_date).toLocaleDateString('ko-KR')} ~{' '}
+                          {new Date(selectedRound.end_date).toLocaleDateString('ko-KR')}
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <UserIcon className="w-4 h-4" />
+                          강사: {selectedRound.instructor_name}
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <MapPinIcon className="w-4 h-4" />
+                          {selectedRound.location}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {!selectedRound.is_locked && (
+                        <>
+                          <button
+                            onClick={() => setShowSessionModal(true)}
+                            className="btn-primary"
+                          >
+                            <PlusIcon className="w-5 h-5" />
+                            일정 추가
+                          </button>
+                          <button
+                            onClick={() => handleToggleLock(selectedRound.id, true)}
+                            className="btn-outline bg-background"
+                            title="과정 확정 및 잠금"
+                          >
+                            <LockClosedIcon className="w-5 h-5" />
+                            확정
+                          </button>
+                        </>
+                      )}
+                      {selectedRound.is_locked && (
+                        <button
+                          onClick={() => handleToggleLock(selectedRound.id, false)}
+                          className="btn-outline bg-background"
+                          title="잠금 해제"
+                        >
+                          <LockOpenIcon className="w-5 h-5" />
+                          잠금 해제
+                        </button>
+                      )}
+                      <button
+                        onClick={() => handleDuplicateRound(selectedRound.id)}
+                        className="btn-outline bg-background"
+                        title="과정 복제"
                       >
-                        <div className="flex-1">
-                          <div className="flex items-center gap-3">
-                            <div className="flex items-center justify-center w-10 h-10 bg-primary/10 text-primary rounded font-semibold">
-                              {session.day_number}
-                            </div>
-                            <div>
-                              <div className="font-medium text-gray-900 dark:text-white">
-                                {session.title || '제목 없음'}
+                        <DocumentArrowDownIcon className="w-5 h-5" />
+                        복제
+                      </button>
+                      {!selectedRound.is_locked && sessions.length > 0 && (
+                        <button
+                          onClick={() => handleRecalculateDates(selectedRound.id)}
+                          className="btn-outline bg-background"
+                          title="날짜 자동 재계산 (주말/공휴일 건너뛰기)"
+                        >
+                          <CalendarIcon className="w-5 h-5" />
+                          날짜 재계산
+                        </button>
+                      )}
+                      {sessions.length > 0 && (
+                        <button
+                          onClick={handleExportToExcel}
+                          className="btn-outline bg-background"
+                          title="엑셀로 내보내기"
+                        >
+                          <DocumentArrowDownIcon className="w-5 h-5" />
+                          엑셀 내보내기
+                        </button>
+                      )}
+                      {!selectedRound.is_locked && (
+                        <>
+                          <label className="btn-outline bg-background cursor-pointer" title="엑셀에서 가져오기">
+                            <DocumentArrowUpIcon className="w-5 h-5" />
+                            엑셀 가져오기
+                            <input
+                              type="file"
+                              accept=".xlsx,.xls"
+                              onChange={handleImportFromExcel}
+                              className="hidden"
+                            />
+                          </label>
+                          <button
+                            onClick={() => setShowTemplateModal(true)}
+                            className="btn-outline bg-background"
+                            title="템플릿에서 불러오기"
+                          >
+                            <DocumentArrowDownIcon className="w-5 h-5" />
+                            템플릿 불러오기
+                          </button>
+                        </>
+                      )}
+                      {sessions.length > 0 && !selectedRound.is_locked && (
+                        <button
+                          onClick={() => setShowSaveTemplateModal(true)}
+                          className="btn-outline bg-background"
+                          title="현재 시간표를 템플릿으로 저장"
+                        >
+                          <DocumentArrowUpIcon className="w-5 h-5" />
+                          템플릿 저장
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                {/* 시간표 그리드 */}
+                <div className="p-6">
+                  {sessions.length === 0 ? (
+                    <div className="text-center py-12 text-gray-500">
+                      아직 일정이 없습니다. '일정 추가' 버튼을 눌러 시간표를 작성하세요.
+                    </div>
+                  ) : (
+                    <div className="space-y-2">
+                      {sessions.map((session, index) => (
+                        <div
+                          key={session.id}
+                          draggable={!selectedRound.is_locked}
+                          onDragStart={(e) => handleDragStart(e, session)}
+                          onDragOver={(e) => handleDragOver(e, index)}
+                          onDragLeave={handleDragLeave}
+                          onDrop={(e) => handleDrop(e, session, index)}
+                          onDragEnd={handleDragEnd}
+                          className={`flex items-center justify-between p-4 border border-gray-200 dark:border-gray-700 rounded-full transition-all ${!selectedRound.is_locked ? 'cursor-move hover:bg-gray-50 dark:hover:bg-gray-700' : ''
+                            } ${draggedSession?.id === session.id ? 'opacity-50' : ''
+                            } ${dragOverIndex === index ? 'border-teal-500 bg-teal-50 dark:bg-teal-900/20' : ''
+                            }`}
+                        >
+                          <div className="flex-1">
+                            <div className="flex items-center gap-3">
+                              <div className="flex items-center justify-center w-10 h-10 bg-primary/10 text-primary rounded font-semibold">
+                                {session.day_number}
                               </div>
-                              <div className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                                {new Date(session.session_date).toLocaleDateString('ko-KR')} |{' '}
-                                {session.start_time} ~ {session.end_time} | {session.classroom}
-                                {session.instructor_name && ` | ${session.instructor_name}`}
+                              <div>
+                                <div className="font-medium text-gray-900 dark:text-white">
+                                  {session.title || '제목 없음'}
+                                </div>
+                                <div className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                                  {new Date(session.session_date).toLocaleDateString('ko-KR')} |{' '}
+                                  {session.start_time} ~ {session.end_time} | {session.classroom}
+                                  {session.instructor_name && ` | ${session.instructor_name}`}
+                                </div>
                               </div>
                             </div>
                           </div>
+                          <div className="flex items-center gap-2">
+                            {!selectedRound.is_locked && (
+                              <>
+                                <button
+                                  onClick={() => openEditSessionModal(session)}
+                                  className="p-2 text-gray-600 dark:text-gray-400 hover:text-teal-600 dark:hover:text-teal-400"
+                                  title="수정"
+                                >
+                                  <PencilIcon className="w-5 h-5" />
+                                </button>
+                                <button
+                                  onClick={() => handleDeleteSession(session.id)}
+                                  className="p-2 text-gray-600 dark:text-gray-400 hover:text-destructive dark:hover:text-red-400"
+                                  title="삭제"
+                                >
+                                  <TrashIcon className="w-5 h-5" />
+                                </button>
+                              </>
+                            )}
+                            {selectedRound.is_locked && (
+                              <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+                                <LockClosedIcon className="w-4 h-4" />
+                                확정됨
+                              </div>
+                            )}
+                          </div>
                         </div>
-                        <div className="flex items-center gap-2">
-                          {!selectedRound.is_locked && (
-                            <>
-                              <button
-                                onClick={() => openEditSessionModal(session)}
-                                className="p-2 text-gray-600 dark:text-gray-400 hover:text-teal-600 dark:hover:text-teal-400"
-                                title="수정"
-                              >
-                                <PencilIcon className="w-5 h-5" />
-                              </button>
-                              <button
-                                onClick={() => handleDeleteSession(session.id)}
-                                className="p-2 text-gray-600 dark:text-gray-400 hover:text-destructive dark:hover:text-red-400"
-                                title="삭제"
-                              >
-                                <TrashIcon className="w-5 h-5" />
-                              </button>
-                            </>
-                          )}
-                          {selectedRound.is_locked && (
-                            <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
-                              <LockClosedIcon className="w-4 h-4" />
-                              확정됨
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
-          ) : (
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-12 text-center">
-              <CalendarIcon className="w-16 h-16 mx-auto text-gray-400 mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
-                과정을 선택하세요
-              </h3>
-              <p className="text-gray-500 dark:text-gray-400">
-                왼쪽 목록에서 과정을 선택하거나 새 과정을 만들어보세요.
-              </p>
-            </div>
-          )}
+            ) : (
+              <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-12 text-center">
+                <CalendarIcon className="w-16 h-16 mx-auto text-gray-400 mb-4" />
+                <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
+                  과정을 선택하세요
+                </h3>
+                <p className="text-gray-500 dark:text-gray-400">
+                  왼쪽 목록에서 과정을 선택하거나 새 과정을 만들어보세요.
+                </p>
+              </div>
+            )}
+          </div>
         </div>
-      </div>
 
-      {/* 과정 생성/편집 모달 */}
-      {showCreateModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white">
-                {isEditMode ? '과정 편집' : '새 과정 만들기'}
-              </h2>
-              <button
-                onClick={() => {
-                  setShowCreateModal(false);
-                  setIsEditMode(false);
-                  setEditingRoundId(null);
-                }}
-                className="text-gray-400 hover:text-gray-600"
-              >
-                <XMarkIcon className="w-6 h-6" />
-              </button>
-            </div>
-
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  과정명 *
-                </label>
-                <input
-                  type="text"
-                  value={roundForm.title}
-                  onChange={(e) => setRoundForm({ ...roundForm, title: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                  placeholder="예: 2025년 1기 BS 영업 과정"
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    시작일 *
-                  </label>
-                  <input
-                    type="date"
-                    value={roundForm.start_date}
-                    onChange={(e) => setRoundForm({ ...roundForm, start_date: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    종료일 *
-                  </label>
-                  <input
-                    type="date"
-                    value={roundForm.end_date}
-                    onChange={(e) => setRoundForm({ ...roundForm, end_date: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  운영 담당자 *
-                </label>
-                <select
-                  value={roundForm.manager_id}
-                  onChange={(e) => {
-                    const manager = managers.find((m) => m.id === e.target.value);
-                    setRoundForm({
-                      ...roundForm,
-                      manager_id: e.target.value,
-                      manager_name: manager?.name || '',
-                    });
+        {/* 과정 생성/편집 모달 */}
+        {showCreateModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+                  {isEditMode ? '과정 편집' : '새 과정 만들기'}
+                </h2>
+                <button
+                  onClick={() => {
+                    setShowCreateModal(false);
+                    setIsEditMode(false);
+                    setEditingRoundId(null);
                   }}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                  className="text-gray-400 hover:text-gray-600"
                 >
-                  <option value="">선택</option>
-                  {managers.map((manager) => (
-                    <option key={manager.id} value={manager.id}>
-                      {manager.name} ({manager.email})
-                    </option>
-                  ))}
-                </select>
+                  <XMarkIcon className="w-6 h-6" />
+                </button>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    장소 *
+                    과정명 *
+                  </label>
+                  <input
+                    type="text"
+                    value={roundForm.title}
+                    onChange={(e) => setRoundForm({ ...roundForm, title: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                    placeholder="예: 2025년 1기 BS 영업 과정"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                      시작일 *
+                    </label>
+                    <input
+                      type="date"
+                      value={roundForm.start_date}
+                      onChange={(e) => setRoundForm({ ...roundForm, start_date: e.target.value })}
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                      종료일 *
+                    </label>
+                    <input
+                      type="date"
+                      value={roundForm.end_date}
+                      onChange={(e) => setRoundForm({ ...roundForm, end_date: e.target.value })}
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    운영 담당자 *
                   </label>
                   <select
-                    value={roundForm.location}
-                    onChange={(e) => setRoundForm({ ...roundForm, location: e.target.value })}
+                    value={roundForm.manager_id}
+                    onChange={(e) => {
+                      const manager = managers.find((m) => m.id === e.target.value);
+                      setRoundForm({
+                        ...roundForm,
+                        manager_id: e.target.value,
+                        manager_name: manager?.name || '',
+                      });
+                    }}
                     className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                   >
-                    <option value="">강의실을 선택하세요</option>
-                    {classrooms.map((classroom) => (
-                      <option key={classroom.id} value={classroom.name}>
-                        {classroom.name} (위치: {classroom.location || '미지정'}, 수용: {classroom.capacity}명)
+                    <option value="">선택</option>
+                    {managers.map((manager) => (
+                      <option key={manager.id} value={manager.id}>
+                        {manager.name} ({manager.email})
                       </option>
                     ))}
                   </select>
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    입과 인원
-                  </label>
-                  <input
-                    type="number"
-                    value={roundForm.max_trainees}
-                    onChange={(e) =>
-                      setRoundForm({ ...roundForm, max_trainees: parseInt(e.target.value) })
-                    }
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                    min="1"
-                  />
-                </div>
-              </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  설명
-                </label>
-                <textarea
-                  value={roundForm.description}
-                  onChange={(e) => setRoundForm({ ...roundForm, description: e.target.value })}
-                  rows={3}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                  placeholder="과정에 대한 설명을 입력하세요"
-                />
-              </div>
-            </div>
-
-            <div className="mt-6 flex justify-end gap-3">
-              <button
-                onClick={() => {
-                  setShowCreateModal(false);
-                  setIsEditMode(false);
-                  setEditingRoundId(null);
-                }}
-                className="px-4 py-2 text-foreground hover:bg-muted rounded-full"
-              >
-                취소
-              </button>
-              <button
-                onClick={handleCreateRound}
-                disabled={!roundForm.title || !roundForm.start_date || !roundForm.end_date}
-                className="px-4 py-2 bg-primary text-primary-foreground rounded-full hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {isEditMode ? '수정' : '생성'}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* 일정 추가 모달 */}
-      {showSessionModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-3xl max-h-[90vh] overflow-y-auto">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white">일정 추가</h2>
-              <button
-                onClick={() => setShowSessionModal(false)}
-                className="text-gray-400 hover:text-gray-600"
-              >
-                <XMarkIcon className="w-6 h-6" />
-              </button>
-            </div>
-
-            <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    일차
-                  </label>
-                  <input
-                    type="number"
-                    value={sessionForm.day_number}
-                    onChange={(e) =>
-                      setSessionForm({ ...sessionForm, day_number: parseInt(e.target.value) })
-                    }
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                    min="1"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    날짜 *
-                  </label>
-                  <input
-                    type="date"
-                    value={sessionForm.session_date}
-                    onChange={(e) => setSessionForm({ ...sessionForm, session_date: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  제목
-                </label>
-                <input
-                  type="text"
-                  value={sessionForm.title}
-                  onChange={(e) => setSessionForm({ ...sessionForm, title: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                  placeholder="예: BS 영업 기초"
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    시작 시간 *
-                  </label>
-                  <select
-                    value={sessionForm.start_time}
-                    onChange={(e) => setSessionForm({ ...sessionForm, start_time: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                  >
-                    <option value="09:00">오전 09:00</option>
-                    <option value="09:30">오전 09:30</option>
-                    <option value="10:00">오전 10:00</option>
-                    <option value="10:30">오전 10:30</option>
-                    <option value="11:00">오전 11:00</option>
-                    <option value="11:30">오전 11:30</option>
-                    <option value="12:00">오후 12:00</option>
-                    <option value="12:30">오후 12:30</option>
-                    <option value="13:00">오후 01:00</option>
-                    <option value="13:30">오후 01:30</option>
-                    <option value="14:00">오후 02:00</option>
-                    <option value="14:30">오후 02:30</option>
-                    <option value="15:00">오후 03:00</option>
-                    <option value="15:30">오후 03:30</option>
-                    <option value="16:00">오후 04:00</option>
-                    <option value="16:30">오후 04:30</option>
-                    <option value="17:00">오후 05:00</option>
-                    <option value="17:30">오후 05:30</option>
-                    <option value="18:00">오후 06:00</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    종료 시간 *
-                  </label>
-                  <select
-                    value={sessionForm.end_time}
-                    onChange={(e) => setSessionForm({ ...sessionForm, end_time: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                  >
-                    <option value="09:00">오전 09:00</option>
-                    <option value="09:30">오전 09:30</option>
-                    <option value="10:00">오전 10:00</option>
-                    <option value="10:30">오전 10:30</option>
-                    <option value="11:00">오전 11:00</option>
-                    <option value="11:30">오전 11:30</option>
-                    <option value="12:00">오후 12:00</option>
-                    <option value="12:30">오후 12:30</option>
-                    <option value="13:00">오후 01:00</option>
-                    <option value="13:30">오후 01:30</option>
-                    <option value="14:00">오후 02:00</option>
-                    <option value="14:30">오후 02:30</option>
-                    <option value="15:00">오후 03:00</option>
-                    <option value="15:30">오후 03:30</option>
-                    <option value="16:00">오후 04:00</option>
-                    <option value="16:30">오후 04:30</option>
-                    <option value="17:00">오후 05:00</option>
-                    <option value="17:30">오후 05:30</option>
-                    <option value="18:00">오후 06:00</option>
-                  </select>
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  과목 (선택)
-                </label>
-                <select
-                  value={sessionForm.subject_id}
-                  onChange={(e) => setSessionForm({ ...sessionForm, subject_id: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                >
-                  <option value="">선택</option>
-                  {subjects.map((subject) => (
-                    <option key={subject.id} value={subject.id}>
-                      {subject.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              {/* ResourceSelector 통합 */}
-              {/* ResourceSelector 통합 */}
-              <div className="border-t pt-4 mt-4">
-                <h3 className="text-lg font-semibold mb-4">자원 선택</h3>
-                <ResourceSelector
-                  sessionDate={sessionForm.session_date}
-                  startTime={sessionForm.start_time}
-                  endTime={sessionForm.end_time}
-                  subjectId={sessionForm.subject_id}
-                  selectedInstructorId={sessionForm.actual_instructor_id}
-                  selectedClassroomId={sessionForm.classroom_id}
-                  onInstructorChange={(instructorId) =>
-                    setSessionForm({ ...sessionForm, actual_instructor_id: instructorId })
-                  }
-                  onClassroomChange={(classroomId) => {
-                    const classroom = classrooms.find(c => c.id === classroomId);
-                    setSessionForm({
-                      ...sessionForm,
-                      classroom_id: classroomId,
-                      classroom: classroom?.name || ''
-                    });
-                  }}
-                  excludeSessionId={undefined}
-                  showRecommendations={true}
-                />
-              </div>
-            </div>
-
-            <div className="mt-6 flex justify-end gap-3">
-              <button
-                onClick={() => setShowSessionModal(false)}
-                className="px-4 py-2 text-foreground hover:bg-muted rounded-full"
-              >
-                취소
-              </button>
-              <button
-                onClick={handleAddSession}
-                disabled={
-                  !sessionForm.session_date || !sessionForm.start_time || !sessionForm.end_time || !sessionForm.classroom_id
-                }
-                className="px-4 py-2 bg-primary text-primary-foreground rounded-full hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                추가
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* 일정 수정 모달 */}
-      {showEditModal && selectedSession && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-3xl max-h-[90vh] overflow-y-auto">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white">일정 수정</h2>
-              <button
-                onClick={() => {
-                  setShowEditModal(false);
-                  setSelectedSession(null);
-                }}
-                className="text-gray-400 hover:text-gray-600"
-              >
-                <XMarkIcon className="w-6 h-6" />
-              </button>
-            </div>
-
-            <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    일차
-                  </label>
-                  <input
-                    type="number"
-                    value={sessionForm.day_number}
-                    onChange={(e) =>
-                      setSessionForm({ ...sessionForm, day_number: parseInt(e.target.value) })
-                    }
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                    min="1"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    날짜 *
-                  </label>
-                  <input
-                    type="date"
-                    value={sessionForm.session_date}
-                    onChange={(e) => setSessionForm({ ...sessionForm, session_date: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  제목
-                </label>
-                <input
-                  type="text"
-                  value={sessionForm.title}
-                  onChange={(e) => setSessionForm({ ...sessionForm, title: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                  placeholder="예: BS 영업 기초"
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    시작 시간 *
-                  </label>
-                  <select
-                    value={sessionForm.start_time}
-                    onChange={(e) => setSessionForm({ ...sessionForm, start_time: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                  >
-                    <option value="09:00">오전 09:00</option>
-                    <option value="09:30">오전 09:30</option>
-                    <option value="10:00">오전 10:00</option>
-                    <option value="10:30">오전 10:30</option>
-                    <option value="11:00">오전 11:00</option>
-                    <option value="11:30">오전 11:30</option>
-                    <option value="12:00">오후 12:00</option>
-                    <option value="12:30">오후 12:30</option>
-                    <option value="13:00">오후 01:00</option>
-                    <option value="13:30">오후 01:30</option>
-                    <option value="14:00">오후 02:00</option>
-                    <option value="14:30">오후 02:30</option>
-                    <option value="15:00">오후 03:00</option>
-                    <option value="15:30">오후 03:30</option>
-                    <option value="16:00">오후 04:00</option>
-                    <option value="16:30">오후 04:30</option>
-                    <option value="17:00">오후 05:00</option>
-                    <option value="17:30">오후 05:30</option>
-                    <option value="18:00">오후 06:00</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    종료 시간 *
-                  </label>
-                  <select
-                    value={sessionForm.end_time}
-                    onChange={(e) => setSessionForm({ ...sessionForm, end_time: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                  >
-                    <option value="09:00">오전 09:00</option>
-                    <option value="09:30">오전 09:30</option>
-                    <option value="10:00">오전 10:00</option>
-                    <option value="10:30">오전 10:30</option>
-                    <option value="11:00">오전 11:00</option>
-                    <option value="11:30">오전 11:30</option>
-                    <option value="12:00">오후 12:00</option>
-                    <option value="12:30">오후 12:30</option>
-                    <option value="13:00">오후 01:00</option>
-                    <option value="13:30">오후 01:30</option>
-                    <option value="14:00">오후 02:00</option>
-                    <option value="14:30">오후 02:30</option>
-                    <option value="15:00">오후 03:00</option>
-                    <option value="15:30">오후 03:30</option>
-                    <option value="16:00">오후 04:00</option>
-                    <option value="16:30">오후 04:30</option>
-                    <option value="17:00">오후 05:00</option>
-                    <option value="17:30">오후 05:30</option>
-                    <option value="18:00">오후 06:00</option>
-                  </select>
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  과목 (선택)
-                </label>
-                <select
-                  value={sessionForm.subject_id}
-                  onChange={(e) => setSessionForm({ ...sessionForm, subject_id: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                >
-                  <option value="">선택</option>
-                  {subjects.map((subject) => (
-                    <option key={subject.id} value={subject.id}>
-                      {subject.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              {/* ResourceSelector 통합 */}
-              {/* ResourceSelector 통합 */}
-              <div className="border-t pt-4 mt-4">
-                <h3 className="text-lg font-semibold mb-4">자원 선택</h3>
-                <ResourceSelector
-                  sessionDate={sessionForm.session_date}
-                  startTime={sessionForm.start_time}
-                  endTime={sessionForm.end_time}
-                  subjectId={sessionForm.subject_id}
-                  selectedInstructorId={sessionForm.actual_instructor_id}
-                  selectedClassroomId={sessionForm.classroom_id}
-                  onInstructorChange={(instructorId) =>
-                    setSessionForm({ ...sessionForm, actual_instructor_id: instructorId })
-                  }
-                  onClassroomChange={(classroomId) => {
-                    const classroom = classrooms.find(c => c.id === classroomId);
-                    setSessionForm({
-                      ...sessionForm,
-                      classroom_id: classroomId,
-                      classroom: classroom?.name || ''
-                    });
-                  }}
-                  excludeSessionId={selectedSession?.id}
-                  showRecommendations={true}
-                />
-              </div>
-            </div>
-
-            <div className="mt-6 flex justify-end gap-3">
-              <button
-                onClick={() => {
-                  setShowEditModal(false);
-                  setSelectedSession(null);
-                }}
-                className="px-4 py-2 text-foreground hover:bg-muted rounded-full"
-              >
-                취소
-              </button>
-              <button
-                onClick={handleUpdateSession}
-                disabled={
-                  !sessionForm.session_date || !sessionForm.start_time || !sessionForm.end_time || !sessionForm.classroom
-                }
-                className="px-4 py-2 bg-primary text-primary-foreground rounded-full hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                수정
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* 템플릿 저장 모달 */}
-      {showSaveTemplateModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-md">
-            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">템플릿으로 저장</h2>
-
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  템플릿 이름 *
-                </label>
-                <input
-                  type="text"
-                  value={templateForm.name}
-                  onChange={(e) => setTemplateForm({ ...templateForm, name: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                  placeholder="예: 기본 BS 영업 과정"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  카테고리
-                </label>
-                <input
-                  type="text"
-                  value={templateForm.category}
-                  onChange={(e) => setTemplateForm({ ...templateForm, category: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                  placeholder="예: BS 영업"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  설명
-                </label>
-                <textarea
-                  value={templateForm.description}
-                  onChange={(e) => setTemplateForm({ ...templateForm, description: e.target.value })}
-                  rows={3}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                  placeholder="템플릿에 대한 설명을 입력하세요"
-                />
-              </div>
-
-              <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-                <p className="text-sm text-blue-800 dark:text-blue-300">
-                  현재 {sessions.length}개의 일정이 템플릿으로 저장됩니다.
-                </p>
-              </div>
-            </div>
-
-            <div className="mt-6 flex justify-end gap-3">
-              <button
-                onClick={() => {
-                  setShowSaveTemplateModal(false);
-                  setTemplateForm({ name: '', description: '', category: '' });
-                }}
-                className="px-4 py-2 text-foreground hover:bg-muted rounded-full"
-              >
-                취소
-              </button>
-              <button
-                onClick={handleSaveAsTemplate}
-                disabled={!templateForm.name}
-                className="px-4 py-2 bg-pink-600 text-white rounded-full hover:bg-pink-700 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                저장
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* 템플릿 불러오기 모달 */}
-      {showTemplateModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-2xl max-h-[80vh] overflow-y-auto">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white">템플릿 선택</h2>
-              <button
-                onClick={() => setShowTemplateModal(false)}
-                className="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
-              >
-                <XMarkIcon className="w-6 h-6" />
-              </button>
-            </div>
-
-            {templates.length === 0 ? (
-              <div className="text-center py-12 text-gray-500">
-                저장된 템플릿이 없습니다.
-              </div>
-            ) : (
-              <div className="space-y-3">
-                {templates.map((template) => (
-                  <div
-                    key={template.id}
-                    className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:border-indigo-500 dark:hover:border-indigo-400 transition-colors cursor-pointer"
-                    onClick={() => handleLoadFromTemplate(template.id)}
-                  >
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2">
-                          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                            {template.name}
-                          </h3>
-                          {template.is_default && (
-                            <span className="px-2 py-1 text-xs bg-indigo-100 dark:bg-indigo-900 text-indigo-800 dark:text-indigo-300 rounded">
-                              기본
-                            </span>
-                          )}
-                          {template.category && (
-                            <span className="px-2 py-1 text-xs bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded">
-                              {template.category}
-                            </span>
-                          )}
-                        </div>
-                        {template.description && (
-                          <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                            {template.description}
-                          </p>
-                        )}
-                        <div className="mt-2 flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400">
-                          <span>📚 {template.session_count}차시</span>
-                          {template.total_hours && (
-                            <span>⏱️ {template.total_hours.toFixed(1)}시간</span>
-                          )}
-                          <span>🔄 {template.usage_count}회 사용</span>
-                        </div>
-                      </div>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleLoadFromTemplate(template.id);
-                        }}
-                        className="ml-4 px-4 py-2 bg-primary text-primary-foreground rounded-full hover:bg-primary/90 text-sm"
-                      >
-                        불러오기
-                      </button>
-                    </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                      장소 *
+                    </label>
+                    <select
+                      value={roundForm.location}
+                      onChange={(e) => setRoundForm({ ...roundForm, location: e.target.value })}
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                    >
+                      <option value="">강의실을 선택하세요</option>
+                      {classrooms.map((classroom) => (
+                        <option key={classroom.id} value={classroom.name}>
+                          {classroom.name} (위치: {classroom.location || '미지정'}, 수용: {classroom.capacity}명)
+                        </option>
+                      ))}
+                    </select>
                   </div>
-                ))}
-              </div>
-            )}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                      입과 인원
+                    </label>
+                    <input
+                      type="number"
+                      value={roundForm.max_trainees}
+                      onChange={(e) =>
+                        setRoundForm({ ...roundForm, max_trainees: parseInt(e.target.value) })
+                      }
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                      min="1"
+                    />
+                  </div>
+                </div>
 
-            <div className="mt-6 flex justify-end">
-              <button
-                onClick={() => setShowTemplateModal(false)}
-                className="px-4 py-2 text-foreground hover:bg-muted rounded-full"
-              >
-                닫기
-              </button>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    설명
+                  </label>
+                  <textarea
+                    value={roundForm.description}
+                    onChange={(e) => setRoundForm({ ...roundForm, description: e.target.value })}
+                    rows={3}
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                    placeholder="과정에 대한 설명을 입력하세요"
+                  />
+                </div>
+              </div>
+
+              <div className="mt-6 flex justify-end gap-3">
+                <button
+                  onClick={() => {
+                    setShowCreateModal(false);
+                    setIsEditMode(false);
+                    setEditingRoundId(null);
+                  }}
+                  className="px-4 py-2 text-foreground hover:bg-muted rounded-full"
+                >
+                  취소
+                </button>
+                <button
+                  onClick={handleCreateRound}
+                  disabled={!roundForm.title || !roundForm.start_date || !roundForm.end_date}
+                  className="px-4 py-2 bg-primary text-primary-foreground rounded-full hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isEditMode ? '수정' : '생성'}
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
-    </div>
+        )}
+
+        {/* 일정 추가 모달 */}
+        {showSessionModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-3xl max-h-[90vh] overflow-y-auto">
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white">일정 추가</h2>
+                <button
+                  onClick={() => setShowSessionModal(false)}
+                  className="text-gray-400 hover:text-gray-600"
+                >
+                  <XMarkIcon className="w-6 h-6" />
+                </button>
+              </div>
+
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                      일차
+                    </label>
+                    <input
+                      type="number"
+                      value={sessionForm.day_number}
+                      onChange={(e) =>
+                        setSessionForm({ ...sessionForm, day_number: parseInt(e.target.value) })
+                      }
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                      min="1"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                      날짜 *
+                    </label>
+                    <input
+                      type="date"
+                      value={sessionForm.session_date}
+                      onChange={(e) => setSessionForm({ ...sessionForm, session_date: e.target.value })}
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    제목
+                  </label>
+                  <input
+                    type="text"
+                    value={sessionForm.title}
+                    onChange={(e) => setSessionForm({ ...sessionForm, title: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                    placeholder="예: BS 영업 기초"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                      시작 시간 *
+                    </label>
+                    <select
+                      value={sessionForm.start_time}
+                      onChange={(e) => setSessionForm({ ...sessionForm, start_time: e.target.value })}
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                    >
+                      <option value="09:00">오전 09:00</option>
+                      <option value="09:30">오전 09:30</option>
+                      <option value="10:00">오전 10:00</option>
+                      <option value="10:30">오전 10:30</option>
+                      <option value="11:00">오전 11:00</option>
+                      <option value="11:30">오전 11:30</option>
+                      <option value="12:00">오후 12:00</option>
+                      <option value="12:30">오후 12:30</option>
+                      <option value="13:00">오후 01:00</option>
+                      <option value="13:30">오후 01:30</option>
+                      <option value="14:00">오후 02:00</option>
+                      <option value="14:30">오후 02:30</option>
+                      <option value="15:00">오후 03:00</option>
+                      <option value="15:30">오후 03:30</option>
+                      <option value="16:00">오후 04:00</option>
+                      <option value="16:30">오후 04:30</option>
+                      <option value="17:00">오후 05:00</option>
+                      <option value="17:30">오후 05:30</option>
+                      <option value="18:00">오후 06:00</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                      종료 시간 *
+                    </label>
+                    <select
+                      value={sessionForm.end_time}
+                      onChange={(e) => setSessionForm({ ...sessionForm, end_time: e.target.value })}
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                    >
+                      <option value="09:00">오전 09:00</option>
+                      <option value="09:30">오전 09:30</option>
+                      <option value="10:00">오전 10:00</option>
+                      <option value="10:30">오전 10:30</option>
+                      <option value="11:00">오전 11:00</option>
+                      <option value="11:30">오전 11:30</option>
+                      <option value="12:00">오후 12:00</option>
+                      <option value="12:30">오후 12:30</option>
+                      <option value="13:00">오후 01:00</option>
+                      <option value="13:30">오후 01:30</option>
+                      <option value="14:00">오후 02:00</option>
+                      <option value="14:30">오후 02:30</option>
+                      <option value="15:00">오후 03:00</option>
+                      <option value="15:30">오후 03:30</option>
+                      <option value="16:00">오후 04:00</option>
+                      <option value="16:30">오후 04:30</option>
+                      <option value="17:00">오후 05:00</option>
+                      <option value="17:30">오후 05:30</option>
+                      <option value="18:00">오후 06:00</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    과목 (선택)
+                  </label>
+                  <select
+                    value={sessionForm.subject_id}
+                    onChange={(e) => setSessionForm({ ...sessionForm, subject_id: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                  >
+                    <option value="">선택</option>
+                    {subjects.map((subject) => (
+                      <option key={subject.id} value={subject.id}>
+                        {subject.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* ResourceSelector 통합 */}
+                {/* ResourceSelector 통합 */}
+                <div className="border-t pt-4 mt-4">
+                  <h3 className="text-lg font-semibold mb-4">자원 선택</h3>
+                  <ResourceSelector
+                    sessionDate={sessionForm.session_date}
+                    startTime={sessionForm.start_time}
+                    endTime={sessionForm.end_time}
+                    subjectId={sessionForm.subject_id}
+                    selectedInstructorId={sessionForm.actual_instructor_id}
+                    selectedClassroomId={sessionForm.classroom_id}
+                    onInstructorChange={(instructorId) =>
+                      setSessionForm({ ...sessionForm, actual_instructor_id: instructorId })
+                    }
+                    onClassroomChange={(classroomId) => {
+                      const classroom = classrooms.find(c => c.id === classroomId);
+                      setSessionForm({
+                        ...sessionForm,
+                        classroom_id: classroomId,
+                        classroom: classroom?.name || ''
+                      });
+                    }}
+                    excludeSessionId={undefined}
+                    showRecommendations={true}
+                  />
+                </div>
+              </div>
+
+              <div className="mt-6 flex justify-end gap-3">
+                <button
+                  onClick={() => setShowSessionModal(false)}
+                  className="px-4 py-2 text-foreground hover:bg-muted rounded-full"
+                >
+                  취소
+                </button>
+                <button
+                  onClick={handleAddSession}
+                  disabled={
+                    !sessionForm.session_date || !sessionForm.start_time || !sessionForm.end_time || !sessionForm.classroom_id
+                  }
+                  className="px-4 py-2 bg-primary text-primary-foreground rounded-full hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  추가
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* 일정 수정 모달 */}
+        {showEditModal && selectedSession && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-3xl max-h-[90vh] overflow-y-auto">
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white">일정 수정</h2>
+                <button
+                  onClick={() => {
+                    setShowEditModal(false);
+                    setSelectedSession(null);
+                  }}
+                  className="text-gray-400 hover:text-gray-600"
+                >
+                  <XMarkIcon className="w-6 h-6" />
+                </button>
+              </div>
+
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                      일차
+                    </label>
+                    <input
+                      type="number"
+                      value={sessionForm.day_number}
+                      onChange={(e) =>
+                        setSessionForm({ ...sessionForm, day_number: parseInt(e.target.value) })
+                      }
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                      min="1"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                      날짜 *
+                    </label>
+                    <input
+                      type="date"
+                      value={sessionForm.session_date}
+                      onChange={(e) => setSessionForm({ ...sessionForm, session_date: e.target.value })}
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    제목
+                  </label>
+                  <input
+                    type="text"
+                    value={sessionForm.title}
+                    onChange={(e) => setSessionForm({ ...sessionForm, title: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                    placeholder="예: BS 영업 기초"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                      시작 시간 *
+                    </label>
+                    <select
+                      value={sessionForm.start_time}
+                      onChange={(e) => setSessionForm({ ...sessionForm, start_time: e.target.value })}
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                    >
+                      <option value="09:00">오전 09:00</option>
+                      <option value="09:30">오전 09:30</option>
+                      <option value="10:00">오전 10:00</option>
+                      <option value="10:30">오전 10:30</option>
+                      <option value="11:00">오전 11:00</option>
+                      <option value="11:30">오전 11:30</option>
+                      <option value="12:00">오후 12:00</option>
+                      <option value="12:30">오후 12:30</option>
+                      <option value="13:00">오후 01:00</option>
+                      <option value="13:30">오후 01:30</option>
+                      <option value="14:00">오후 02:00</option>
+                      <option value="14:30">오후 02:30</option>
+                      <option value="15:00">오후 03:00</option>
+                      <option value="15:30">오후 03:30</option>
+                      <option value="16:00">오후 04:00</option>
+                      <option value="16:30">오후 04:30</option>
+                      <option value="17:00">오후 05:00</option>
+                      <option value="17:30">오후 05:30</option>
+                      <option value="18:00">오후 06:00</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                      종료 시간 *
+                    </label>
+                    <select
+                      value={sessionForm.end_time}
+                      onChange={(e) => setSessionForm({ ...sessionForm, end_time: e.target.value })}
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                    >
+                      <option value="09:00">오전 09:00</option>
+                      <option value="09:30">오전 09:30</option>
+                      <option value="10:00">오전 10:00</option>
+                      <option value="10:30">오전 10:30</option>
+                      <option value="11:00">오전 11:00</option>
+                      <option value="11:30">오전 11:30</option>
+                      <option value="12:00">오후 12:00</option>
+                      <option value="12:30">오후 12:30</option>
+                      <option value="13:00">오후 01:00</option>
+                      <option value="13:30">오후 01:30</option>
+                      <option value="14:00">오후 02:00</option>
+                      <option value="14:30">오후 02:30</option>
+                      <option value="15:00">오후 03:00</option>
+                      <option value="15:30">오후 03:30</option>
+                      <option value="16:00">오후 04:00</option>
+                      <option value="16:30">오후 04:30</option>
+                      <option value="17:00">오후 05:00</option>
+                      <option value="17:30">오후 05:30</option>
+                      <option value="18:00">오후 06:00</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    과목 (선택)
+                  </label>
+                  <select
+                    value={sessionForm.subject_id}
+                    onChange={(e) => setSessionForm({ ...sessionForm, subject_id: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                  >
+                    <option value="">선택</option>
+                    {subjects.map((subject) => (
+                      <option key={subject.id} value={subject.id}>
+                        {subject.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* ResourceSelector 통합 */}
+                {/* ResourceSelector 통합 */}
+                <div className="border-t pt-4 mt-4">
+                  <h3 className="text-lg font-semibold mb-4">자원 선택</h3>
+                  <ResourceSelector
+                    sessionDate={sessionForm.session_date}
+                    startTime={sessionForm.start_time}
+                    endTime={sessionForm.end_time}
+                    subjectId={sessionForm.subject_id}
+                    selectedInstructorId={sessionForm.actual_instructor_id}
+                    selectedClassroomId={sessionForm.classroom_id}
+                    onInstructorChange={(instructorId) =>
+                      setSessionForm({ ...sessionForm, actual_instructor_id: instructorId })
+                    }
+                    onClassroomChange={(classroomId) => {
+                      const classroom = classrooms.find(c => c.id === classroomId);
+                      setSessionForm({
+                        ...sessionForm,
+                        classroom_id: classroomId,
+                        classroom: classroom?.name || ''
+                      });
+                    }}
+                    excludeSessionId={selectedSession?.id}
+                    showRecommendations={true}
+                  />
+                </div>
+              </div>
+
+              <div className="mt-6 flex justify-end gap-3">
+                <button
+                  onClick={() => {
+                    setShowEditModal(false);
+                    setSelectedSession(null);
+                  }}
+                  className="px-4 py-2 text-foreground hover:bg-muted rounded-full"
+                >
+                  취소
+                </button>
+                <button
+                  onClick={handleUpdateSession}
+                  disabled={
+                    !sessionForm.session_date || !sessionForm.start_time || !sessionForm.end_time || !sessionForm.classroom
+                  }
+                  className="px-4 py-2 bg-primary text-primary-foreground rounded-full hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  수정
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* 템플릿 저장 모달 */}
+        {showSaveTemplateModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-md">
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">템플릿으로 저장</h2>
+
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    템플릿 이름 *
+                  </label>
+                  <input
+                    type="text"
+                    value={templateForm.name}
+                    onChange={(e) => setTemplateForm({ ...templateForm, name: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                    placeholder="예: 기본 BS 영업 과정"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    카테고리
+                  </label>
+                  <input
+                    type="text"
+                    value={templateForm.category}
+                    onChange={(e) => setTemplateForm({ ...templateForm, category: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                    placeholder="예: BS 영업"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    설명
+                  </label>
+                  <textarea
+                    value={templateForm.description}
+                    onChange={(e) => setTemplateForm({ ...templateForm, description: e.target.value })}
+                    rows={3}
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                    placeholder="템플릿에 대한 설명을 입력하세요"
+                  />
+                </div>
+
+                <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                  <p className="text-sm text-blue-800 dark:text-blue-300">
+                    현재 {sessions.length}개의 일정이 템플릿으로 저장됩니다.
+                  </p>
+                </div>
+              </div>
+
+              <div className="mt-6 flex justify-end gap-3">
+                <button
+                  onClick={() => {
+                    setShowSaveTemplateModal(false);
+                    setTemplateForm({ name: '', description: '', category: '' });
+                  }}
+                  className="px-4 py-2 text-foreground hover:bg-muted rounded-full"
+                >
+                  취소
+                </button>
+                <button
+                  onClick={handleSaveAsTemplate}
+                  disabled={!templateForm.name}
+                  className="px-4 py-2 bg-pink-600 text-white rounded-full hover:bg-pink-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  저장
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* 템플릿 불러오기 모달 */}
+        {showTemplateModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-2xl max-h-[80vh] overflow-y-auto">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white">템플릿 선택</h2>
+                <button
+                  onClick={() => setShowTemplateModal(false)}
+                  className="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+                >
+                  <XMarkIcon className="w-6 h-6" />
+                </button>
+              </div>
+
+              {templates.length === 0 ? (
+                <div className="text-center py-12 text-gray-500">
+                  저장된 템플릿이 없습니다.
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {templates.map((template) => (
+                    <div
+                      key={template.id}
+                      className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:border-indigo-500 dark:hover:border-indigo-400 transition-colors cursor-pointer"
+                      onClick={() => handleLoadFromTemplate(template.id)}
+                    >
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2">
+                            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                              {template.name}
+                            </h3>
+                            {template.is_default && (
+                              <span className="px-2 py-1 text-xs bg-indigo-100 dark:bg-indigo-900 text-indigo-800 dark:text-indigo-300 rounded">
+                                기본
+                              </span>
+                            )}
+                            {template.category && (
+                              <span className="px-2 py-1 text-xs bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded">
+                                {template.category}
+                              </span>
+                            )}
+                          </div>
+                          {template.description && (
+                            <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                              {template.description}
+                            </p>
+                          )}
+                          <div className="mt-2 flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400">
+                            <span>📚 {template.session_count}차시</span>
+                            {template.total_hours && (
+                              <span>⏱️ {template.total_hours.toFixed(1)}시간</span>
+                            )}
+                            <span>🔄 {template.usage_count}회 사용</span>
+                          </div>
+                        </div>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleLoadFromTemplate(template.id);
+                          }}
+                          className="ml-4 px-4 py-2 bg-primary text-primary-foreground rounded-full hover:bg-primary/90 text-sm"
+                        >
+                          불러오기
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              <div className="mt-6 flex justify-end">
+                <button
+                  onClick={() => setShowTemplateModal(false)}
+                  className="px-4 py-2 text-foreground hover:bg-muted rounded-full"
+                >
+                  닫기
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </PageContainer>
   );
 }

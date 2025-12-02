@@ -33,6 +33,7 @@ import type {
   CreateTemplateCurriculumRequest
 } from '../../types/unified-course.types';
 import toast from 'react-hot-toast';
+import { PageContainer } from '../common/PageContainer';
 
 interface BSCourseManagementProps {
   viewMode?: 'overview' | 'rounds' | 'templates';
@@ -515,7 +516,7 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
               ✕
             </button>
           </div>
-          
+
           <div className="overflow-y-auto max-h-[calc(90vh-140px)]">
             <form onSubmit={handleSubmit} className="p-6 space-y-6">
               {/* 기본 정보 */}
@@ -640,7 +641,7 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
               ✕
             </button>
           </div>
-          
+
           <div className="overflow-y-auto max-h-[calc(90vh-140px)]">
             <form onSubmit={handleSubmit} className="p-6 space-y-6">
               {/* 기본 정보 */}
@@ -713,9 +714,9 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
                 <label className="block text-sm font-medium text-gray-700 mb-2">학습 목표</label>
                 <textarea
                   value={formData.objectives.join('\n')}
-                  onChange={(e) => setFormData({ 
-                    ...formData, 
-                    objectives: e.target.value.split('\n').filter(o => o.trim()) 
+                  onChange={(e) => setFormData({
+                    ...formData,
+                    objectives: e.target.value.split('\n').filter(o => o.trim())
                   })}
                   className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500"
                   rows={4}
@@ -728,9 +729,9 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
                 <label className="block text-sm font-medium text-gray-700 mb-2">수강 요건</label>
                 <textarea
                   value={formData.requirements.join('\n')}
-                  onChange={(e) => setFormData({ 
-                    ...formData, 
-                    requirements: e.target.value.split('\n').filter(r => r.trim()) 
+                  onChange={(e) => setFormData({
+                    ...formData,
+                    requirements: e.target.value.split('\n').filter(r => r.trim())
                   })}
                   className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500"
                   rows={3}
@@ -742,7 +743,7 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
                 <button
                   type="button"
                   onClick={() => setIsNewTemplateModalOpen(false)}
-                  className="px-4 py-2 text-sm font-medium text-foreground bg-muted rounded-full hover:bg-muted/80"
+                  className="btn-secondary"
                 >
                   취소
                 </button>
@@ -763,24 +764,26 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
   if (isLoading) {
     console.log('⏳ BSCourseManagement 로딩 중...');
     return (
-      <div className="flex items-center justify-center min-h-64 p-8">
-        <div className="flex flex-col items-center space-y-4">
-          <div className="w-8 h-8 border-4 border-blue-200 border-t-blue-600 rounded-lg animate-spin"></div>
-          <p className="text-gray-600 text-sm">BS 과정 데이터 로딩 중...</p>
+      <PageContainer>
+        <div className="flex items-center justify-center min-h-64 p-8">
+          <div className="flex flex-col items-center space-y-4">
+            <div className="w-8 h-8 border-4 border-blue-200 border-t-blue-600 rounded-lg animate-spin"></div>
+            <p className="text-gray-600 text-sm">BS 과정 데이터 로딩 중...</p>
+          </div>
         </div>
-      </div>
+      </PageContainer>
     );
   }
 
-  console.log('🎯 BSCourseManagement 메인 렌더링 시작', { 
-    templates: templates.length, 
-    rounds: rounds.length, 
+  console.log('🎯 BSCourseManagement 메인 렌더링 시작', {
+    templates: templates.length,
+    rounds: rounds.length,
     summary: summary.length,
-    viewMode 
+    viewMode
   });
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto">
+    <PageContainer>
       {/* 필터 - 과정 관리 뷰에서만 표시 */}
       {viewMode === 'rounds' && (
         <div className="bg-white rounded-lg shadow-md border border-gray-100 p-6 mb-6">
@@ -816,11 +819,10 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
               <div key={index} className="bg-card rounded-lg shadow-sm border border-border p-6">
                 <div className="flex items-start justify-between">
                   <div className="flex items-center space-x-3">
-                    <div className={`p-3 rounded-full ${
-                      item.template_name === 'BS Basic' 
-                        ? 'bg-blue-100 text-blue-600' 
-                        : 'bg-purple-100 text-purple-600'
-                    }`}>
+                    <div className={`p-3 rounded-full ${item.template_name === 'BS Basic'
+                      ? 'bg-blue-100 text-blue-600'
+                      : 'bg-purple-100 text-purple-600'
+                      }`}>
                       <AcademicCapIcon className="h-6 w-6" />
                     </div>
                     <div>
@@ -830,7 +832,7 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
                       </p>
                     </div>
                   </div>
-                  
+
                   <div className="text-right">
                     <div className="text-sm text-muted-foreground mb-1">이번 달 수업</div>
                     <div className="text-2xl font-bold text-card-foreground">{item.this_month_sessions}</div>
@@ -873,7 +875,7 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
                         {getStatusLabel(round.status)}
                       </span>
                     </div>
-                    
+
                     <div className="flex items-center justify-between text-sm text-muted-foreground">
                       <div className="flex items-center space-x-4">
                         <div className="flex items-center">
@@ -886,7 +888,7 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
                         </div>
                       </div>
                       <button
-                        onClick={() => {/* Navigate to rounds tab - handled by parent */}}
+                        onClick={() => {/* Navigate to rounds tab - handled by parent */ }}
                         className="text-primary hover:text-primary/80 font-medium"
                       >
                         상세보기
@@ -925,12 +927,12 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
                     <CalendarDaysIcon className="w-4 h-4 mr-2 flex-shrink-0" />
                     <span>{round.start_date} ~ {round.end_date}</span>
                   </div>
-                  
+
                   <div className="flex items-center text-sm text-muted-foreground">
                     <UserGroupIcon className="w-4 h-4 mr-2 flex-shrink-0" />
                     <span>수강생: {round.current_trainees}/{round.max_trainees}명</span>
                   </div>
-                  
+
                   <div className="flex items-center text-sm text-muted-foreground">
                     <MapPinIcon className="w-4 h-4 mr-2 flex-shrink-0" />
                     <span>{round.location}</span>
@@ -1030,11 +1032,10 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
                       <h3 className="text-lg font-semibold text-card-foreground">{template.name}</h3>
                       <p className="text-sm text-muted-foreground mt-1">{template.description}</p>
                     </div>
-                    <span className={`px-2 py-1 text-xs rounded-full ${
-                      template.category === 'basic' 
-                        ? 'bg-blue-100 text-blue-700' 
-                        : 'bg-purple-100 text-purple-700'
-                    }`}>
+                    <span className={`px-2 py-1 text-xs rounded-full ${template.category === 'basic'
+                      ? 'bg-blue-100 text-blue-700'
+                      : 'bg-purple-100 text-purple-700'
+                      }`}>
                       {template.category === 'basic' ? 'Basic' : 'Advanced'}
                     </span>
                   </div>
@@ -1109,13 +1110,13 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
                       <PencilIcon className="w-4 h-4 mr-2" />
                       편집
                     </button>
-                    <button className="btn-neutral px-4 py-2 text-sm font-medium rounded-full">
+                    <button className="btn-secondary">
                       <EyeIcon className="w-4 h-4" />
                     </button>
                     {isAdmin && (
                       <button
                         onClick={() => handleDeleteTemplate(template)}
-                        className="btn-outline border-destructive text-destructive hover:bg-destructive hover:text-destructive-foreground px-4 py-2 text-sm font-medium rounded-full transition-colors"
+                        className="btn-outline border-destructive text-destructive hover:bg-destructive hover:text-destructive-foreground"
                         title="템플릿 삭제 (관리자)"
                       >
                         <TrashIcon className="w-4 h-4" />
@@ -1135,7 +1136,7 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
       {isNewTemplateModalOpen && <NewTemplateModal />}
       {roundDetailModal.isOpen && <RoundDetailModal />}
       {roundEditModal.isOpen && <RoundEditModal />}
-    </div>
+    </PageContainer>
   );
 
   // 차수 상세 보기 모달
@@ -1240,13 +1241,12 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
                               {session.scheduled_date} {session.start_time} ~ {session.end_time}
                             </p>
                           </div>
-                          <span className={`text-xs px-2 py-1 rounded-full ${
-                            session.status === 'completed'
-                              ? 'bg-green-500/10 text-green-700'
-                              : session.status === 'in_progress'
+                          <span className={`text-xs px-2 py-1 rounded-full ${session.status === 'completed'
+                            ? 'bg-green-500/10 text-green-700'
+                            : session.status === 'in_progress'
                               ? 'bg-blue-100 text-blue-700'
                               : 'bg-gray-100 text-gray-700'
-                          }`}>
+                            }`}>
                             {session.status === 'completed' ? '완료' : session.status === 'in_progress' ? '진행중' : '예정'}
                           </span>
                         </div>
@@ -1261,7 +1261,7 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
           <div className="flex justify-end space-x-3 p-6 border-t border-border">
             <button
               onClick={() => setRoundDetailModal({ isOpen: false, round: null })}
-              className="btn-neutral px-4 py-2 text-sm font-medium rounded-full"
+              className="btn-secondary"
             >
               닫기
             </button>
@@ -1270,7 +1270,7 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
                 setRoundDetailModal({ isOpen: false, round: null });
                 handleEditRound(round);
               }}
-              className="btn-primary px-4 py-2 text-sm font-medium rounded-full"
+              className="btn-primary"
             >
               편집
             </button>
@@ -1456,7 +1456,7 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
               <button
                 type="button"
                 onClick={() => handleDeleteRound(formData)}
-                className="btn-outline border-destructive text-destructive hover:bg-destructive hover:text-destructive-foreground px-4 py-2 text-sm font-medium rounded-full"
+                className="btn-outline border-destructive text-destructive hover:bg-destructive hover:text-destructive-foreground"
               >
                 삭제
               </button>
@@ -1464,13 +1464,13 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
                 <button
                   type="button"
                   onClick={() => setRoundEditModal({ isOpen: false, round: null })}
-                  className="btn-neutral px-4 py-2 text-sm font-medium rounded-full"
+                  className="btn-secondary"
                 >
                   취소
                 </button>
                 <button
                   type="submit"
-                  className="btn-primary px-4 py-2 text-sm font-medium rounded-full"
+                  className="btn-primary"
                 >
                   저장
                 </button>
@@ -1503,7 +1503,7 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
       e.preventDefault();
       try {
         console.log('새 차수 생성:', formData);
-        
+
         const selectedTemplate = templates.find(t => t.id === formData.template_id);
         const newRound: Partial<CourseRound> = {
           id: `round-${Date.now()}`,
@@ -1529,7 +1529,7 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
 
         // 실제로는 서비스를 통해 저장
         // await CourseTemplateService.createRound(newRound);
-        
+
         setIsRoundModalOpen(false);
         setFormData({
           template_id: '',
@@ -1545,7 +1545,7 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
           description: '',
           auto_generate_title: true
         });
-        
+
         toast.success('새 차수가 생성되었습니다.');
         await loadData();
       } catch (error) {
@@ -1581,10 +1581,10 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
               ✕
             </button>
           </div>
-          
+
           <form onSubmit={handleSubmit} className="overflow-y-auto max-h-[calc(90vh-140px)]">
             <div className="p-6 space-y-6">
-              
+
               {/* 과정 (프로그램) */}
               <div>
                 <h3 className="text-lg font-semibold text-card-foreground mb-4">과정 (프로그램)</h3>
@@ -1607,11 +1607,10 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
                     {templates.map(template => (
                       <div
                         key={template.id}
-                        className={`border rounded-full p-3 cursor-pointer transition-colors bg-card ${
-                          formData.template_id === template.id
-                            ? 'border-primary bg-primary/5 ring-2 ring-primary/20'
-                            : 'border-border hover:border-primary/50 hover:bg-accent/50'
-                        }`}
+                        className={`border rounded-full p-3 cursor-pointer transition-colors bg-card ${formData.template_id === template.id
+                          ? 'border-primary bg-primary/5 ring-2 ring-primary/20'
+                          : 'border-border hover:border-primary/50 hover:bg-accent/50'
+                          }`}
                         onClick={() => setFormData(prev => ({ ...prev, template_id: template.id }))}
                       >
                         <div className="flex justify-between items-start">

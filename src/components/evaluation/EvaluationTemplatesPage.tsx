@@ -5,11 +5,12 @@
 
 import React from 'react';
 import EvaluationTemplateManagement from './EvaluationTemplateManagement';
+import { PageContainer } from '../common/PageContainer';
 
 export default function EvaluationTemplatesPage() {
   return (
-    <div className="p-6">
+    <PageContainer>
       <EvaluationTemplateManagement />
-    </div>
+    </PageContainer>
   );
 }

@@ -208,7 +208,7 @@ export default function LiveExamDashboard({ exam, onClose }: LiveExamDashboardPr
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg shadow-2xl max-w-7xl w-full max-h-[90vh] overflow-hidden flex flex-col">
+      <div className="bg-white rounded-lg shadow-2xl w-full max-h-[90vh] overflow-hidden flex flex-col">
         {/* 헤더 */}
         <div className="p-6 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-indigo-50">
           <div className="flex items-center justify-between">
@@ -222,14 +222,14 @@ export default function LiveExamDashboard({ exam, onClose }: LiveExamDashboardPr
             <div className="flex items-center gap-3">
               <button
                 onClick={loadAttempts}
-                className="p-2 text-gray-600 hover:text-gray-900 hover:bg-white rounded-full transition-all"
+                className="btn-ghost p-2 rounded-full"
                 title="새로고침"
               >
                 <ArrowPathIcon className="h-5 w-5" />
               </button>
               <button
                 onClick={onClose}
-                className="px-4 py-2 bg-white text-gray-700 rounded-full hover:bg-gray-100 transition-colors"
+                className="btn-secondary"
               >
                 닫기
               </button>
@@ -297,26 +297,24 @@ export default function LiveExamDashboard({ exam, onClose }: LiveExamDashboardPr
               {attempts.map((attempt) => (
                 <div
                   key={attempt.id}
-                  className={`border-2 rounded-lg p-5 transition-all ${
-                    attempt.status === 'in_progress'
-                      ? 'border-blue-300 bg-blue-50'
-                      : attempt.status === 'completed'
+                  className={`border-2 rounded-lg p-5 transition-all ${attempt.status === 'in_progress'
+                    ? 'border-blue-300 bg-blue-50'
+                    : attempt.status === 'completed'
                       ? 'border-green-300 bg-green-500/10'
                       : 'border-gray-300 bg-gray-50'
-                  }`}
+                    }`}
                 >
                   <div className="flex items-center justify-between">
                     {/* 사용자 정보 */}
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-2">
                         <div
-                          className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-white ${
-                            attempt.status === 'in_progress'
-                              ? 'bg-blue-600'
-                              : attempt.status === 'completed'
+                          className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-white ${attempt.status === 'in_progress'
+                            ? 'bg-blue-600'
+                            : attempt.status === 'completed'
                               ? 'bg-green-600'
                               : 'bg-gray-600'
-                          }`}
+                            }`}
                         >
                           {attempt.user_name?.charAt(0) || 'U'}
                         </div>

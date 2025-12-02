@@ -287,8 +287,8 @@ const OrganizationEditor: React.FC<OrganizationEditorProps> = ({ onClose }) => {
   const handleSaveDepartment = (department: Department) => {
     if (departments.find(d => d.id === department.id)) {
       // 수정
-      setDepartments(prev => prev.map(d => 
-        d.id === department.id 
+      setDepartments(prev => prev.map(d =>
+        d.id === department.id
           ? { ...department, updatedAt: new Date().toISOString().split('T')[0] }
           : d
       ));
@@ -334,8 +334,8 @@ const OrganizationEditor: React.FC<OrganizationEditorProps> = ({ onClose }) => {
   const handleSaveCourseSeries = (series: CourseSeries) => {
     if (courseSeries.find(s => s.id === series.id)) {
       // 수정
-      setCourseSeries(prev => prev.map(s => 
-        s.id === series.id 
+      setCourseSeries(prev => prev.map(s =>
+        s.id === series.id
           ? { ...series, updatedAt: new Date().toISOString().split('T')[0] }
           : s
       ));
@@ -353,7 +353,7 @@ const OrganizationEditor: React.FC<OrganizationEditorProps> = ({ onClose }) => {
   };
 
   const toggleSeriesExpansion = (seriesId: string) => {
-    setExpandedSeries(prev => 
+    setExpandedSeries(prev =>
       prev.includes(seriesId)
         ? prev.filter(id => id !== seriesId)
         : [...prev, seriesId]
@@ -363,19 +363,17 @@ const OrganizationEditor: React.FC<OrganizationEditorProps> = ({ onClose }) => {
   // 부서 트리 렌더링
   const renderDepartmentTree = (parentId?: string, level = 0) => {
     const children = departments.filter(d => d.parentId === parentId);
-    
+
     return children.map(department => (
       <div key={department.id} style={{ marginLeft: `${level * 24}px` }}>
         <div className="flex items-center justify-between p-3 border border-gray-200 rounded-lg mb-2 bg-white">
           <div className="flex items-center space-x-3">
-            <div className={`p-2 rounded-full ${
-              department.type === 'division' ? 'bg-blue-100' :
-              department.type === 'team' ? 'bg-green-500/10' : 'bg-yellow-100'
-            }`}>
-              <BuildingOfficeIcon className={`h-4 w-4 ${
-                department.type === 'division' ? 'text-blue-600' :
-                department.type === 'team' ? 'text-green-600' : 'text-orange-600'
-              }`} />
+            <div className={`p-2 rounded-full ${department.type === 'division' ? 'bg-blue-100' :
+                department.type === 'team' ? 'bg-green-500/10' : 'bg-yellow-100'
+              }`}>
+              <BuildingOfficeIcon className={`h-4 w-4 ${department.type === 'division' ? 'text-blue-600' :
+                  department.type === 'team' ? 'text-green-600' : 'text-orange-600'
+                }`} />
             </div>
             <div>
               <div className="font-medium text-gray-900">{department.name}</div>
@@ -385,16 +383,15 @@ const OrganizationEditor: React.FC<OrganizationEditorProps> = ({ onClose }) => {
               )}
             </div>
           </div>
-          
+
           <div className="flex items-center space-x-2">
-            <span className={`px-2 py-1 text-xs font-medium rounded-full ${
-              department.type === 'division' ? 'bg-blue-100 text-blue-700' :
-              department.type === 'team' ? 'bg-green-500/10 text-green-700' : 'bg-yellow-100 text-orange-700'
-            }`}>
-              {department.type === 'division' ? '본부' : 
-               department.type === 'team' ? '팀' : '그룹'}
+            <span className={`px-2 py-1 text-xs font-medium rounded-full ${department.type === 'division' ? 'bg-blue-100 text-blue-700' :
+                department.type === 'team' ? 'bg-green-500/10 text-green-700' : 'bg-yellow-100 text-orange-700'
+              }`}>
+              {department.type === 'division' ? '본부' :
+                department.type === 'team' ? '팀' : '그룹'}
             </span>
-            
+
             <button
               onClick={() => setEditingDepartment(department)}
               className="p-1 text-blue-600 hover:bg-blue-100 rounded"
@@ -402,7 +399,7 @@ const OrganizationEditor: React.FC<OrganizationEditorProps> = ({ onClose }) => {
             >
               <PencilIcon className="h-4 w-4" />
             </button>
-            
+
             <button
               onClick={() => handleDeleteDepartment(department.id)}
               className="p-1 text-destructive hover:bg-destructive/10 rounded"
@@ -412,7 +409,7 @@ const OrganizationEditor: React.FC<OrganizationEditorProps> = ({ onClose }) => {
             </button>
           </div>
         </div>
-        
+
         {/* 하위 부서 렌더링 */}
         {renderDepartmentTree(department.id, level + 1)}
       </div>
@@ -432,7 +429,7 @@ const OrganizationEditor: React.FC<OrganizationEditorProps> = ({ onClose }) => {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-lg max-w-7xl w-full max-h-[95vh] overflow-hidden flex flex-col">
+      <div className="bg-white rounded-lg w-full max-h-[95vh] overflow-hidden flex flex-col">
         {/* 헤더 */}
         <div className="flex items-center justify-between p-6 border-b border-gray-200">
           <div className="flex items-center space-x-3">
@@ -454,22 +451,20 @@ const OrganizationEditor: React.FC<OrganizationEditorProps> = ({ onClose }) => {
         <div className="flex border-b border-gray-200">
           <button
             onClick={() => setActiveTab('departments')}
-            className={`px-6 py-3 text-sm font-medium border-b-2 ${
-              activeTab === 'departments'
+            className={`px-6 py-3 text-sm font-medium border-b-2 ${activeTab === 'departments'
                 ? 'border-blue-500 text-blue-600'
                 : 'border-transparent text-gray-500 hover:text-gray-700'
-            }`}
+              }`}
           >
             <BuildingOfficeIcon className="h-4 w-4 inline mr-2" />
             조직 구조
           </button>
           <button
             onClick={() => setActiveTab('courses')}
-            className={`px-6 py-3 text-sm font-medium border-b-2 ${
-              activeTab === 'courses'
+            className={`px-6 py-3 text-sm font-medium border-b-2 ${activeTab === 'courses'
                 ? 'border-blue-500 text-blue-600'
                 : 'border-transparent text-gray-500 hover:text-gray-700'
-            }`}
+              }`}
           >
             <AcademicCapIcon className="h-4 w-4 inline mr-2" />
             과정 체계
@@ -559,18 +554,18 @@ const OrganizationEditor: React.FC<OrganizationEditorProps> = ({ onClose }) => {
                               <div className="font-medium text-gray-900">{series.name} ({series.code})</div>
                               <div className="text-sm text-gray-600">{series.description}</div>
                               <div className="text-xs text-gray-500">
-                                대상: {series.targetDepartments.map(deptId => 
+                                대상: {series.targetDepartments.map(deptId =>
                                   departments.find(d => d.id === deptId)?.name
                                 ).filter(Boolean).join(', ')}
                               </div>
                             </div>
                           </div>
-                          
+
                           <div className="flex items-center space-x-2">
                             <span className="px-2 py-1 text-xs font-medium rounded-full bg-green-500/10 text-green-700">
                               {series.levels.length}개 레벨
                             </span>
-                            
+
                             <button
                               onClick={() => setEditingSeries(series)}
                               className="p-1 text-blue-600 hover:bg-blue-100 rounded"
@@ -578,7 +573,7 @@ const OrganizationEditor: React.FC<OrganizationEditorProps> = ({ onClose }) => {
                             >
                               <PencilIcon className="h-4 w-4" />
                             </button>
-                            
+
                             <button
                               onClick={() => handleDeleteCourseSeries(series.id)}
                               className="p-1 text-destructive hover:bg-destructive/10 rounded"
@@ -606,19 +601,18 @@ const OrganizationEditor: React.FC<OrganizationEditorProps> = ({ onClose }) => {
                                       <div className="text-sm text-gray-600">{level.description}</div>
                                       <div className="text-xs text-gray-500 mt-1">
                                         {level.defaultSessions}회차 × {Math.floor(level.defaultDuration / 60)}시간
-                                        {level.defaultDuration % 60 > 0 && ` ${level.defaultDuration % 60}분`} 
+                                        {level.defaultDuration % 60 > 0 && ` ${level.defaultDuration % 60}분`}
                                         | 최대 {level.defaultMaxStudents}명
                                         {level.scheduleType === 'biennial' && ' | 2년 주기'}
                                       </div>
                                     </div>
-                                    
-                                    <span className={`px-2 py-1 text-xs font-medium rounded-full ${
-                                      level.scheduleType === 'biennial' ? 'bg-orange-500/10 text-orange-700' :
-                                      level.scheduleType === 'irregular' ? 'bg-yellow-100 text-orange-700' :
-                                      'bg-blue-100 text-blue-700'
-                                    }`}>
+
+                                    <span className={`px-2 py-1 text-xs font-medium rounded-full ${level.scheduleType === 'biennial' ? 'bg-orange-500/10 text-orange-700' :
+                                        level.scheduleType === 'irregular' ? 'bg-yellow-100 text-orange-700' :
+                                          'bg-blue-100 text-blue-700'
+                                      }`}>
                                       {level.scheduleType === 'biennial' ? '2년주기' :
-                                       level.scheduleType === 'irregular' ? '비정기' : '정기'}
+                                        level.scheduleType === 'irregular' ? '비정기' : '정기'}
                                     </span>
                                   </div>
                                 </div>
@@ -683,9 +677,9 @@ const DepartmentEditor: React.FC<DepartmentEditorProps> = ({
     onSave(formData);
   };
 
-  const availableParents = departments.filter(d => 
-    d.id !== formData.id && 
-    d.type !== 'team' && 
+  const availableParents = departments.filter(d =>
+    d.id !== formData.id &&
+    d.type !== 'team' &&
     !isDescendant(d.id, formData.id, departments)
   );
 
@@ -693,10 +687,10 @@ const DepartmentEditor: React.FC<DepartmentEditorProps> = ({
     <div className="fixed inset-0 bg-black bg-opacity-50 z-60 flex items-center justify-center p-4">
       <div className="bg-white rounded-lg max-w-md w-full p-6">
         <h3 className="text-lg font-bold text-gray-900 mb-4">
-          {department.id.startsWith('dept-') && departments.find(d => d.id === department.id) 
+          {department.id.startsWith('dept-') && departments.find(d => d.id === department.id)
             ? '부서 수정' : '부서 추가'}
         </h3>
-        
+
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -878,11 +872,11 @@ const CourseSeriesEditor: React.FC<CourseSeriesEditorProps> = ({
       <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
         <div className="p-6 border-b border-gray-200">
           <h3 className="text-lg font-bold text-gray-900">
-            {series.id.startsWith('series-') && series.name 
+            {series.id.startsWith('series-') && series.name
               ? '과정 시리즈 수정' : '과정 시리즈 추가'}
           </h3>
         </div>
-        
+
         <form onSubmit={handleSubmit} className="p-6 space-y-6">
           {/* 기본 정보 */}
           <div className="grid grid-cols-2 gap-4">
@@ -973,7 +967,7 @@ const CourseSeriesEditor: React.FC<CourseSeriesEditorProps> = ({
                 <span>레벨 추가</span>
               </button>
             </div>
-            
+
             <div className="space-y-2 max-h-64 overflow-y-auto">
               {formData.levels
                 .sort((a, b) => a.order - b.order)
@@ -989,7 +983,7 @@ const CourseSeriesEditor: React.FC<CourseSeriesEditorProps> = ({
                         {level.defaultDuration % 60 > 0 && ` ${level.defaultDuration % 60}분`}
                       </div>
                     </div>
-                    
+
                     <div className="flex items-center space-x-2">
                       <button
                         type="button"
@@ -1107,7 +1101,7 @@ const CourseLevelEditor: React.FC<CourseLevelEditorProps> = ({
             레벨 {level.name ? '수정' : '추가'}
           </h4>
         </div>
-        
+
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div>

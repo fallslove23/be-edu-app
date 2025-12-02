@@ -5,6 +5,7 @@ import DeleteCourseModal from './DeleteCourseModal';
 import CourseEnrollmentDashboard from './CourseEnrollmentDashboard';
 import EnhancedCourseCreation from './EnhancedCourseCreation';
 import type { Course } from '../../services/course.services';
+import { PageContainer } from '../common/PageContainer';
 
 const CourseManagement: React.FC = () => {
   const [selectedCourse, setSelectedCourse] = useState<Course | undefined>(undefined);
@@ -87,68 +88,66 @@ const CourseManagement: React.FC = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-        {/* 과정 목록 */}
-        <CourseList
-          key={refreshTrigger} // 새로고침 트리거
-          onCreateCourse={handleCreateCourse}
-          onEnhancedCreateCourse={handleEnhancedCreateCourse}
-          onEditCourse={handleEditCourse}
-          onDeleteCourse={handleDeleteCourse}
-          onManageTrainees={handleManageTrainees}
-        />
+    <PageContainer>
+      {/* 과정 목록 */}
+      <CourseList
+        key={refreshTrigger} // 새로고침 트리거
+        onCreateCourse={handleCreateCourse}
+        onEnhancedCreateCourse={handleEnhancedCreateCourse}
+        onEditCourse={handleEditCourse}
+        onDeleteCourse={handleDeleteCourse}
+        onManageTrainees={handleManageTrainees}
+      />
 
-        {/* 과정 생성/편집 폼 */}
-        <CourseForm
-          course={selectedCourse}
-          isOpen={isFormOpen}
-          onClose={handleFormClose}
-          onSubmit={handleFormSubmit}
-        />
+      {/* 과정 생성/편집 폼 */}
+      <CourseForm
+        course={selectedCourse}
+        isOpen={isFormOpen}
+        onClose={handleFormClose}
+        onSubmit={handleFormSubmit}
+      />
 
-        {/* 삭제 확인 모달 */}
-        <DeleteCourseModal
-          course={courseToDelete}
-          isOpen={isDeleteModalOpen}
-          onClose={handleDeleteModalClose}
-          onConfirm={handleDeleteConfirm}
-        />
+      {/* 삭제 확인 모달 */}
+      <DeleteCourseModal
+        course={courseToDelete}
+        isOpen={isDeleteModalOpen}
+        onClose={handleDeleteModalClose}
+        onConfirm={handleDeleteConfirm}
+      />
 
-        {/* 향상된 과정 생성 */}
-        <EnhancedCourseCreation
-          isOpen={isEnhancedCreationOpen}
-          onClose={handleEnhancedCreationClose}
-        />
+      {/* 향상된 과정 생성 */}
+      <EnhancedCourseCreation
+        isOpen={isEnhancedCreationOpen}
+        onClose={handleEnhancedCreationClose}
+      />
 
-        {/* 수강생 관리 대시보드 */}
-        {courseForTraineeManagement && isTraineeManagementOpen && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-lg shadow-xl w-full max-w-7xl max-h-[95vh] overflow-hidden">
-              <div className="flex items-center justify-between p-6 border-b border-gray-200">
-                <h2 className="text-xl font-semibold text-gray-900">
-                  수강생 관리 - {courseForTraineeManagement.name}
-                </h2>
-                <button
-                  onClick={handleTraineeManagementClose}
-                  className="text-gray-400 hover:text-gray-600 transition-colors"
-                >
-                  <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              </div>
-              <div className="flex-1 overflow-y-auto">
-                <CourseEnrollmentDashboard
-                  course={courseForTraineeManagement}
-                  onCourseUpdate={handleCourseUpdate}
-                />
-              </div>
+      {/* 수강생 관리 대시보드 */}
+      {courseForTraineeManagement && isTraineeManagementOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg shadow-xl w-full max-w-7xl max-h-[95vh] overflow-hidden">
+            <div className="flex items-center justify-between p-6 border-b border-gray-200">
+              <h2 className="text-xl font-semibold text-gray-900">
+                수강생 관리 - {courseForTraineeManagement.name}
+              </h2>
+              <button
+                onClick={handleTraineeManagementClose}
+                className="text-gray-400 hover:text-gray-600 transition-colors"
+              >
+                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            <div className="flex-1 overflow-y-auto">
+              <CourseEnrollmentDashboard
+                course={courseForTraineeManagement}
+                onCourseUpdate={handleCourseUpdate}
+              />
             </div>
           </div>
-        )}
-      </div>
-    </div>
+        </div>
+      )}
+    </PageContainer>
   );
 };
 

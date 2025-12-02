@@ -54,13 +54,13 @@ export class DashboardService {
         .from('users')
         .select('*', { count: 'exact', head: true })
         .eq('role', 'trainee')
-        .eq('is_active', true);
+        .eq('status', 'active');
 
       const { count: lastMonthTrainees } = await supabase
         .from('users')
         .select('*', { count: 'exact', head: true })
         .eq('role', 'trainee')
-        .eq('is_active', true)
+        .eq('status', 'active')
         .lt('created_at', currentMonth.toISOString());
 
       const traineeGrowth = lastMonthTrainees && lastMonthTrainees > 0
@@ -266,11 +266,7 @@ export class DashboardService {
     try {
       const { data: courses } = await supabase
         .from('courses')
-        .select(`
-          instructor_id,
-          current_trainees,
-          users!courses_instructor_id_fkey(name)
-        `)
+        .select('instructor_id, current_trainees')
         .eq('status', 'active')
         .not('instructor_id', 'is', null);
 
@@ -284,12 +280,24 @@ export class DashboardService {
         ];
       }
 
+      // 강사 정보 조회
+      const instructorIds = [...new Set(courses.map(c => c.instructor_id))];
+      const { data: instructors } = await supabase
+        .from('users')
+        .select('id, name')
+        .in('id', instructorIds);
+
+      const instructorMap = instructors?.reduce((acc, user) => {
+        acc[user.id] = user.name;
+        return acc;
+      }, {} as Record<string, string>) || {};
+
       // 강사별 집계
       const workload: { [key: string]: { count: number; trainees: number; name: string } } = {};
 
       courses.forEach(course => {
         const instructorId = course.instructor_id;
-        const instructorName = course.users?.name || '미배정';
+        const instructorName = instructorMap[instructorId] || '미배정';
 
         if (!workload[instructorId]) {
           workload[instructorId] = { count: 0, trainees: 0, name: instructorName };
@@ -379,7 +387,7 @@ export class DashboardService {
           category,
           current_trainees,
           max_trainees,
-          users!courses_instructor_id_fkey(name)
+          instructor_id
         `)
         .eq('status', 'active')
         .order('current_trainees', { ascending: false })
@@ -389,12 +397,28 @@ export class DashboardService {
         return [];
       }
 
+      // 강사 정보 조회
+      const instructorIds = [...new Set(courses.map(c => c.instructor_id).filter(Boolean))];
+      let instructorMap: Record<string, string> = {};
+
+      if (instructorIds.length > 0) {
+        const { data: instructors } = await supabase
+          .from('users')
+          .select('id, name')
+          .in('id', instructorIds);
+
+        instructorMap = instructors?.reduce((acc, user) => {
+          acc[user.id] = user.name;
+          return acc;
+        }, {} as Record<string, string>) || {};
+      }
+
       return courses.map(course => ({
         name: course.name,
         type: course.category || '기타',
         trainees: course.current_trainees || 0,
         progress: Math.round(((course.current_trainees || 0) / (course.max_trainees || 1)) * 100),
-        instructor: course.users?.name || '미배정',
+        instructor: course.instructor_id ? (instructorMap[course.instructor_id] || '미배정') : '미배정',
       }));
     } catch (error) {
       console.error('활발한 과정 조회 실패:', error);

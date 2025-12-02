@@ -41,6 +41,7 @@ export interface CourseRound {
   template_id: string;
   round_number: number; // 1차, 2차, 3차...
   title: string; // "BS Basic 3차"
+  course_name?: string; // 과정명 (optional)
   instructor_id: string;
   instructor_name: string;
   manager_id?: string; // 운영 담당자 ID

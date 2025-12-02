@@ -108,13 +108,14 @@ export interface Question {
 // ========================================
 
 export type ExamType = 'final' | 'midterm' | 'quiz' | 'daily_test' | 'practice' | 'assignment';
-export type ExamStatus = 'draft' | 'published' | 'active' | 'completed' | 'archived';
+export type ExamStatus = 'draft' | 'published' | 'active' | 'completed' | 'archived' | 'scheduled';
 
 export interface Exam {
   id: string;
   title: string;
   description?: string;
   exam_type: ExamType;
+  course_name?: string; // UI display purpose
 
   // 연결 구조 (course_rounds 기반)
   template_id?: string;
@@ -232,6 +233,16 @@ export interface QuestionResponse {
   question?: Question;
 }
 
+export interface ExamAnswer {
+  id: string;
+  attempt_id: string;
+  question_id: string;
+  answer_text: string;
+  selected_options?: string[];
+  points_awarded: number;
+  feedback: string;
+}
+
 // ========================================
 // 5. 조회용 타입 및 필터
 // ========================================
@@ -262,6 +273,22 @@ export interface ExamStatistics {
   max_score: number;
   pass_count: number;
   pass_rate: number;
+  averageAttempts: number;
+  totalAttempts: number;
+  scoreDistribution: {
+    range: string;
+    count: number;
+    percentage: number;
+  }[];
+}
+
+export interface ExamResult {
+  trainee_id: string;
+  trainee_name: string;
+  score: number;
+  passed: boolean;
+  submitted_at: string;
+  attempts: number;
 }
 
 export interface TraineeExamHistory {
@@ -410,7 +437,8 @@ export const examStatusLabels: Record<ExamStatus, string> = {
   published: '발행됨',
   active: '진행중',
   completed: '완료',
-  archived: '보관됨'
+  archived: '보관됨',
+  scheduled: '예정됨'
 };
 
 export const questionTypeLabels: Record<QuestionType, string> = {

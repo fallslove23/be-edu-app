@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { 
+import {
   ShieldCheckIcon,
   ExclamationTriangleIcon,
   LockClosedIcon,
@@ -18,7 +18,7 @@ try {
     user: null,
     sessionInfo: null,
     getActiveSessions: () => [],
-    invalidateAllSessions: () => {},
+    invalidateAllSessions: () => { },
     refreshToken: async () => false
   });
 }
@@ -46,14 +46,14 @@ export const inputValidator = {
   // 안전한 패스워드 검증
   validatePassword: (password: string): { valid: boolean; errors: string[] } => {
     const errors: string[] = [];
-    
+
     if (password.length < 8) errors.push('최소 8자 이상');
     if (!/[A-Z]/.test(password)) errors.push('대문자 포함');
     if (!/[a-z]/.test(password)) errors.push('소문자 포함');
     if (!/[0-9]/.test(password)) errors.push('숫자 포함');
     if (!/[!@#$%^&*]/.test(password)) errors.push('특수문자 포함');
     if (password.length > 128) errors.push('최대 128자');
-    
+
     return { valid: errors.length === 0, errors };
   },
 
@@ -69,7 +69,7 @@ export const inputValidator = {
 export const permissionManager = {
   // 역할별 권한 매트릭스
   rolePermissions: {
-    app_admin: ['read', 'write', 'delete', 'admin', 'manage_users', 'system_config'],
+    admin: ['read', 'write', 'delete', 'admin', 'manage_users', 'system_config'],
     course_manager: ['read', 'write', 'manage_courses', 'view_reports'],
     instructor: ['read', 'write', 'manage_own_courses', 'grade_students'],
     trainee: ['read', 'view_own_data'],
@@ -79,31 +79,31 @@ export const permissionManager = {
   // 권한 확인
   hasPermission: (userRole: string, permission: string): boolean => {
     const permissions = permissionManager.rolePermissions[userRole as keyof typeof permissionManager.rolePermissions];
-    return permissions?.includes(permission as any) || false;
+    return (permissions as any)?.includes(permission) || false;
   },
 
   // 리소스별 접근 권한 확인
   canAccessResource: (userRole: string, resource: string, action: string): boolean => {
     const resourcePermissions = {
       courses: {
-        read: ['app_admin', 'course_manager', 'instructor', 'trainee'],
-        write: ['app_admin', 'course_manager', 'instructor'],
-        delete: ['app_admin', 'course_manager']
+        read: ['admin', 'course_manager', 'instructor', 'trainee'],
+        write: ['admin', 'course_manager', 'instructor'],
+        delete: ['admin', 'course_manager']
       },
       users: {
-        read: ['app_admin', 'course_manager'],
-        write: ['app_admin'],
-        delete: ['app_admin']
+        read: ['admin', 'course_manager'],
+        write: ['admin'],
+        delete: ['admin']
       },
       exams: {
-        read: ['app_admin', 'course_manager', 'instructor', 'trainee'],
-        write: ['app_admin', 'course_manager', 'instructor'],
-        delete: ['app_admin', 'course_manager']
+        read: ['admin', 'course_manager', 'instructor', 'trainee'],
+        write: ['admin', 'course_manager', 'instructor'],
+        delete: ['admin', 'course_manager']
       }
     } as const;
 
     const allowedRoles = resourcePermissions[resource as keyof typeof resourcePermissions]?.[action as keyof typeof resourcePermissions.courses];
-    return allowedRoles?.includes(userRole) || false;
+    return allowedRoles?.includes(userRole as any) || false;
   }
 };
 
@@ -128,12 +128,12 @@ export const securityAudit = {
     // 로컬 스토리지에 임시 저장 (실제 환경에서는 서버로 전송)
     const existingLogs = JSON.parse(localStorage.getItem('securityLogs') || '[]');
     existingLogs.push(logEntry);
-    
+
     // 최대 1000개 항목만 유지
     if (existingLogs.length > 1000) {
       existingLogs.splice(0, existingLogs.length - 1000);
     }
-    
+
     localStorage.setItem('securityLogs', JSON.stringify(existingLogs));
 
     // 중요도가 높은 이벤트는 즉시 알림
@@ -142,16 +142,16 @@ export const securityAudit = {
     }
   },
 
-  getSecurityLogs: (filters?: { 
-    type?: string; 
-    severity?: string; 
-    startDate?: Date; 
-    endDate?: Date; 
+  getSecurityLogs: (filters?: {
+    type?: string;
+    severity?: string;
+    startDate?: Date;
+    endDate?: Date;
   }) => {
     const logs = JSON.parse(localStorage.getItem('securityLogs') || '[]');
-    
+
     if (!filters) return logs;
-    
+
     return logs.filter((log: any) => {
       if (filters.type && log.type !== filters.type) return false;
       if (filters.severity && log.severity !== filters.severity) return false;
@@ -166,15 +166,15 @@ export const securityAudit = {
 export const sessionManager = {
   // 세션 타임아웃 설정 (30분)
   SESSION_TIMEOUT: 30 * 60 * 1000,
-  
+
   startSession: () => {
     const sessionId = crypto.randomUUID();
     const startTime = Date.now();
-    
+
     sessionStorage.setItem('sessionId', sessionId);
     sessionStorage.setItem('sessionStart', startTime.toString());
     sessionStorage.setItem('lastActivity', startTime.toString());
-    
+
     securityAudit.logSecurityEvent({
       type: 'login',
       details: 'Session started',
@@ -189,7 +189,7 @@ export const sessionManager = {
   checkSession: (): boolean => {
     const lastActivity = sessionStorage.getItem('lastActivity');
     if (!lastActivity) return false;
-    
+
     const timeSinceActivity = Date.now() - parseInt(lastActivity);
     return timeSinceActivity < sessionManager.SESSION_TIMEOUT;
   },
@@ -200,7 +200,7 @@ export const sessionManager = {
       details: 'Session ended',
       severity: 'low'
     });
-    
+
     sessionStorage.removeItem('sessionId');
     sessionStorage.removeItem('sessionStart');
     sessionStorage.removeItem('lastActivity');
@@ -221,14 +221,14 @@ const SecureInput: React.FC<{
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
-    
+
     // 기본 살균화
     const sanitizedValue = inputValidator.sanitizeHTML(newValue);
     onChange(sanitizedValue);
 
     // 검증
     let validationResult = { valid: true, errors: [] };
-    
+
     if (validation === 'email') {
       validationResult.valid = inputValidator.validateEmail(sanitizedValue);
       if (!validationResult.valid) validationResult.errors = ['유효한 이메일 주소를 입력하세요'];
@@ -238,7 +238,7 @@ const SecureInput: React.FC<{
       validationResult.valid = inputValidator.validateFileName(sanitizedValue);
       if (!validationResult.valid) validationResult.errors = ['유효하지 않은 파일명입니다'];
     }
-    
+
     setErrors(validationResult.errors);
   };
 
@@ -250,11 +250,10 @@ const SecureInput: React.FC<{
           value={value}
           onChange={handleChange}
           placeholder={placeholder}
-          className={`mobile-input w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-            errors.length > 0 ? 'border-destructive/50' : 'border-gray-300'
-          } ${className}`}
+          className={`mobile-input w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${errors.length > 0 ? 'border-destructive/50' : 'border-gray-300'
+            } ${className}`}
         />
-        
+
         {type === 'password' && (
           <button
             type="button"
@@ -269,7 +268,7 @@ const SecureInput: React.FC<{
           </button>
         )}
       </div>
-      
+
       {errors.length > 0 && (
         <div className="mt-1 text-sm text-destructive">
           {errors.map((error, index) => (
@@ -297,13 +296,13 @@ const SecurityDashboard: React.FC = () => {
   useEffect(() => {
     // 보안 로그 로드
     setSecurityLogs(securityAudit.getSecurityLogs().slice(-10));
-    
+
     // 세션 정보 업데이트
     const updateSessionInfo = () => {
       const sessionStart = sessionStorage.getItem('sessionStart');
       const lastActivity = sessionStorage.getItem('lastActivity');
       const isActive = sessionManager.checkSession();
-      
+
       if (sessionStart && lastActivity) {
         const remaining = sessionManager.SESSION_TIMEOUT - (Date.now() - parseInt(lastActivity));
         setSessionInfo({
@@ -317,7 +316,7 @@ const SecurityDashboard: React.FC = () => {
 
     updateSessionInfo();
     const interval = setInterval(updateSessionInfo, 1000);
-    
+
     return () => clearInterval(interval);
   }, []);
 
@@ -327,7 +326,7 @@ const SecurityDashboard: React.FC = () => {
         <ShieldCheckIcon className="h-6 w-6 text-green-500" />
         <h2 className="text-xl font-semibold">보안 대시보드</h2>
       </div>
-      
+
       {/* 현재 세션 정보 */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
         <div className="bg-green-500/10 dark:bg-green-900/20 p-4 rounded-lg">
@@ -344,7 +343,7 @@ const SecurityDashboard: React.FC = () => {
             </p>
           )}
         </div>
-        
+
         <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
           <div className="flex items-center space-x-2 mb-2">
             <KeyIcon className="h-5 w-5 text-blue-600" />
@@ -356,7 +355,7 @@ const SecurityDashboard: React.FC = () => {
           </p>
         </div>
       </div>
-      
+
       {/* 최근 보안 이벤트 */}
       <div>
         <h3 className="text-lg font-medium mb-3">최근 보안 이벤트</h3>
@@ -367,12 +366,11 @@ const SecurityDashboard: React.FC = () => {
               <div className="flex-1">
                 <div className="flex items-center space-x-2">
                   <span className="text-sm font-medium capitalize">{log.type.replace('_', ' ')}</span>
-                  <span className={`px-2 py-1 text-xs rounded-full ${
-                    log.severity === 'critical' ? 'bg-destructive/10 text-destructive' :
+                  <span className={`px-2 py-1 text-xs rounded-full ${log.severity === 'critical' ? 'bg-destructive/10 text-destructive' :
                     log.severity === 'high' ? 'bg-orange-500/10 text-orange-700' :
-                    log.severity === 'medium' ? 'bg-yellow-100 text-yellow-800' :
-                    'bg-green-500/10 text-green-700'
-                  }`}>
+                      log.severity === 'medium' ? 'bg-yellow-100 text-yellow-800' :
+                        'bg-green-500/10 text-green-700'
+                    }`}>
                     {log.severity}
                   </span>
                 </div>

@@ -6,6 +6,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
+import { PageContainer } from '../common/PageContainer';
 import { courseTemplateService } from '../../services/course-template.service';
 import ComprehensiveGradesDashboard from './ComprehensiveGradesDashboard';
 import type { CourseRound } from '../../types/course-template.types';
@@ -39,18 +40,18 @@ export default function ComprehensiveGradesPage() {
 
   if (loading) {
     return (
-      <div className="p-6">
+      <PageContainer>
         <div className="text-center py-12">
           <div className="text-4xl mb-4">⏳</div>
           <p className="text-gray-600 dark:text-gray-400">로딩 중...</p>
         </div>
-      </div>
+      </PageContainer>
     );
   }
 
   if (courseRounds.length === 0) {
     return (
-      <div className="p-6">
+      <PageContainer>
         <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-6">
           <div className="flex items-start gap-3">
             <div className="text-2xl">⚠️</div>
@@ -64,12 +65,12 @@ export default function ComprehensiveGradesPage() {
             </div>
           </div>
         </div>
-      </div>
+      </PageContainer>
     );
   }
 
   return (
-    <div className="p-6 space-y-6">
+    <PageContainer>
       {/* 과정 회차 선택 */}
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -92,6 +93,6 @@ export default function ComprehensiveGradesPage() {
 
       {/* 종합 성적표 */}
       {selectedRoundId && <ComprehensiveGradesDashboard courseRoundId={selectedRoundId} />}
-    </div>
+    </PageContainer>
   );
 }

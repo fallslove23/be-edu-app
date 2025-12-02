@@ -13,6 +13,7 @@ import {
   LockClosedIcon,
   LockOpenIcon
 } from '@heroicons/react/24/outline';
+import { PageContainer } from '../common/PageContainer';
 import ValidatedInput from '../common/ValidatedInput';
 import { ValidationResult } from '../../utils/validation';
 
@@ -60,7 +61,7 @@ const UserPermissionManager: React.FC = () => {
 
   const loadData = async () => {
     setLoading(true);
-    
+
     // 모의 데이터 로딩
     setTimeout(() => {
       const mockPermissions: Permission[] = [
@@ -157,9 +158,9 @@ const UserPermissionManager: React.FC = () => {
   };
 
   const handleUserStatusToggle = (userId: string) => {
-    setUsers(prev => 
-      prev.map(user => 
-        user.id === userId 
+    setUsers(prev =>
+      prev.map(user =>
+        user.id === userId
           ? { ...user, isActive: !user.isActive }
           : user
       )
@@ -214,324 +215,398 @@ const UserPermissionManager: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-lg h-8 w-8 border-b-2 border-blue-600"></div>
-        <span className="ml-2">권한 정보를 불러오는 중...</span>
-      </div>
+      <PageContainer>
+        <div className="flex items-center justify-center h-64">
+          <div className="animate-spin rounded-lg h-8 w-8 border-b-2 border-blue-600"></div>
+          <span className="ml-2">권한 정보를 불러오는 중...</span>
+        </div>
+      </PageContainer>
     );
   }
 
   return (
-    <div className="space-y-6">
-      {/* 헤더 */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">🔐 권한 관리 시스템</h1>
-            <p className="text-gray-600">
-              사용자 권한과 역할을 관리하여 시스템 보안을 강화하세요.
-            </p>
-          </div>
-          <div className="flex items-center space-x-3">
-            <button
-              onClick={() => {
-                setSelectedUser(null);
-                setIsEditing(true);
-                setShowModal(true);
-              }}
-              className="btn-primary px-4 py-2 rounded-full flex items-center space-x-2"
-            >
-              <PlusIcon className="h-4 w-4" />
-              <span>새 사용자</span>
-            </button>
+    <PageContainer>
+      <div className="space-y-6">
+        {/* 헤더 */}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900 mb-2">🔐 권한 관리 시스템</h1>
+              <p className="text-gray-600">
+                사용자 권한과 역할을 관리하여 시스템 보안을 강화하세요.
+              </p>
+            </div>
+            <div className="flex items-center space-x-3">
+              <button
+                onClick={() => {
+                  setSelectedUser(null);
+                  setIsEditing(true);
+                  setShowModal(true);
+                }}
+                className="btn-primary"
+              >
+                <PlusIcon className="h-4 w-4" />
+                <span>새 사용자</span>
+              </button>
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* 탭 네비게이션 */}
-      <div className="border-b border-gray-200">
-        <nav className="-mb-px flex space-x-8">
-          {[
-            { key: 'users', label: '사용자 관리', icon: UserGroupIcon },
-            { key: 'roles', label: '역할 관리', icon: ShieldCheckIcon },
-            { key: 'permissions', label: '권한 관리', icon: KeyIcon }
-          ].map(({ key, label, icon: Icon }) => (
-            <button
-              key={key}
-              onClick={() => setActiveTab(key as any)}
-              className={`py-4 px-1 border-b-2 font-medium text-sm flex items-center space-x-2 rounded-full ${
-                activeTab === key
-                  ? 'border-blue-500 text-blue-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-              }`}
-            >
-              <Icon className="h-4 w-4" />
-              <span>{label}</span>
-            </button>
-          ))}
-        </nav>
-      </div>
+        {/* 탭 네비게이션 */}
+        <div className="border-b border-gray-200">
+          <nav className="-mb-px flex space-x-8">
+            {[
+              { key: 'users', label: '사용자 관리', icon: UserGroupIcon },
+              { key: 'roles', label: '역할 관리', icon: ShieldCheckIcon },
+              { key: 'permissions', label: '권한 관리', icon: KeyIcon }
+            ].map(({ key, label, icon: Icon }) => (
+              <button
+                key={key}
+                onClick={() => setActiveTab(key as any)}
+                className={`py-4 px-1 border-b-2 font-medium text-sm flex items-center space-x-2 rounded-full ${activeTab === key
+                    ? 'border-blue-500 text-blue-600'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  }`}
+              >
+                <Icon className="h-4 w-4" />
+                <span>{label}</span>
+              </button>
+            ))}
+          </nav>
+        </div>
 
-      {/* 사용자 관리 탭 */}
-      {activeTab === 'users' && (
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-          <div className="px-6 py-4 border-b border-gray-200">
-            <h3 className="text-lg font-medium text-gray-900">
-              사용자 목록 ({users.length})
-            </h3>
+        {/* 사용자 관리 탭 */}
+        {activeTab === 'users' && (
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200">
+            <div className="px-6 py-4 border-b border-gray-200">
+              <h3 className="text-lg font-medium text-gray-900">
+                사용자 목록 ({users.length})
+              </h3>
+            </div>
+
+            <div className="overflow-x-auto">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      사용자
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      역할
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      상태
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      최근 로그인
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      작업
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {users.map((user) => (
+                    <tr key={user.id} className="hover:bg-gray-50">
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div>
+                          <div className="text-sm font-medium text-gray-900">{user.name}</div>
+                          <div className="text-sm text-gray-500">{user.email}</div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex flex-wrap gap-1">
+                          {user.roles.map((roleId) => (
+                            <span
+                              key={roleId}
+                              className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
+                            >
+                              {getRoleName(roleId)}
+                            </span>
+                          ))}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <button
+                          onClick={() => handleUserStatusToggle(user.id)}
+                          className={`inline-flex items-center space-x-1 px-3 py-1 rounded-full text-xs font-medium ${user.isActive
+                              ? 'bg-green-500/10 text-green-700 hover:bg-green-200'
+                              : 'bg-destructive/10 text-destructive hover:bg-red-200'
+                            }`}
+                        >
+                          {user.isActive ? (
+                            <>
+                              <LockOpenIcon className="h-3 w-3" />
+                              <span>활성</span>
+                            </>
+                          ) : (
+                            <>
+                              <LockClosedIcon className="h-3 w-3" />
+                              <span>비활성</span>
+                            </>
+                          )}
+                        </button>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {user.lastLogin ? formatDate(user.lastLogin) : '로그인 기록 없음'}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <button
+                          onClick={() => {
+                            setSelectedUser(user);
+                            setIsEditing(true);
+                            setShowModal(true);
+                          }}
+                          className="btn-ghost p-2 text-blue-600 hover:text-blue-900 mr-1"
+                          title="편집"
+                        >
+                          <PencilIcon className="h-4 w-4" />
+                        </button>
+                        <button
+                          onClick={() => handleDeleteUser(user.id)}
+                          className="btn-ghost p-2 text-destructive hover:text-destructive"
+                          title="삭제"
+                        >
+                          <TrashIcon className="h-4 w-4" />
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
+        )}
 
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    사용자
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    역할
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    상태
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    최근 로그인
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    작업
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {users.map((user) => (
-                  <tr key={user.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div>
-                        <div className="text-sm font-medium text-gray-900">{user.name}</div>
-                        <div className="text-sm text-gray-500">{user.email}</div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex flex-wrap gap-1">
-                        {user.roles.map((roleId) => (
-                          <span
-                            key={roleId}
-                            className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
-                          >
-                            {getRoleName(roleId)}
-                          </span>
-                        ))}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <button
-                        onClick={() => handleUserStatusToggle(user.id)}
-                        className={`inline-flex items-center space-x-1 px-3 py-1 rounded-full text-xs font-medium ${
-                          user.isActive
-                            ? 'bg-green-500/10 text-green-700 hover:bg-green-200'
-                            : 'bg-destructive/10 text-destructive hover:bg-red-200'
-                        }`}
-                      >
-                        {user.isActive ? (
-                          <>
-                            <LockOpenIcon className="h-3 w-3" />
-                            <span>활성</span>
-                          </>
-                        ) : (
-                          <>
-                            <LockClosedIcon className="h-3 w-3" />
-                            <span>비활성</span>
-                          </>
-                        )}
-                      </button>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {user.lastLogin ? formatDate(user.lastLogin) : '로그인 기록 없음'}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+        {/* 역할 관리 탭 */}
+        {activeTab === 'roles' && (
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200">
+            <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+              <h3 className="text-lg font-medium text-gray-900">
+                역할 목록 ({roles.length})
+              </h3>
+              <button
+                onClick={() => {
+                  setSelectedRole(null);
+                  setIsEditing(true);
+                  setShowModal(true);
+                }}
+                className="btn-primary"
+              >
+                <PlusIcon className="h-4 w-4" />
+                <span>새 역할</span>
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
+              {roles.map((role) => (
+                <div
+                  key={role.id}
+                  className="border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow"
+                >
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center space-x-2">
+                      <ShieldCheckIcon className="h-5 w-5 text-blue-600" />
+                      <h4 className="text-lg font-medium text-gray-900">{role.name}</h4>
+                    </div>
+                    {role.isSystem && (
+                      <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                        시스템
+                      </span>
+                    )}
+                  </div>
+
+                  <p className="text-sm text-gray-600 mb-4">{role.description}</p>
+
+                  <div className="mb-4">
+                    <div className="text-xs font-medium text-gray-500 uppercase mb-2">
+                      권한 ({role.permissions.length})
+                    </div>
+                    <div className="flex flex-wrap gap-1">
+                      {role.permissions.slice(0, 3).map((permId) => (
+                        <span
+                          key={permId}
+                          className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-gray-100 text-gray-800"
+                        >
+                          {getPermissionName(permId)}
+                        </span>
+                      ))}
+                      {role.permissions.length > 3 && (
+                        <span className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-gray-100 text-gray-800">
+                          +{role.permissions.length - 3}개
+                        </span>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-500">
+                      {role.userCount}명 사용 중
+                    </span>
+                    <div className="flex items-center space-x-2">
                       <button
                         onClick={() => {
-                          setSelectedUser(user);
+                          setSelectedRole(role);
                           setIsEditing(true);
                           setShowModal(true);
                         }}
-                        className="text-blue-600 hover:text-blue-900 mr-3"
+                        className="btn-ghost p-2 text-blue-600 hover:text-blue-900"
                         title="편집"
                       >
                         <PencilIcon className="h-4 w-4" />
                       </button>
-                      <button
-                        onClick={() => handleDeleteUser(user.id)}
-                        className="text-destructive hover:text-destructive"
-                        title="삭제"
-                      >
-                        <TrashIcon className="h-4 w-4" />
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      )}
-
-      {/* 역할 관리 탭 */}
-      {activeTab === 'roles' && (
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-          <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
-            <h3 className="text-lg font-medium text-gray-900">
-              역할 목록 ({roles.length})
-            </h3>
-            <button
-              onClick={() => {
-                setSelectedRole(null);
-                setIsEditing(true);
-                setShowModal(true);
-              }}
-              className="btn-success px-4 py-2 rounded-full flex items-center space-x-2"
-            >
-              <PlusIcon className="h-4 w-4" />
-              <span>새 역할</span>
-            </button>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
-            {roles.map((role) => (
-              <div
-                key={role.id}
-                className="border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow"
-              >
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center space-x-2">
-                    <ShieldCheckIcon className="h-5 w-5 text-blue-600" />
-                    <h4 className="text-lg font-medium text-gray-900">{role.name}</h4>
-                  </div>
-                  {role.isSystem && (
-                    <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                      시스템
-                    </span>
-                  )}
-                </div>
-
-                <p className="text-sm text-gray-600 mb-4">{role.description}</p>
-
-                <div className="mb-4">
-                  <div className="text-xs font-medium text-gray-500 uppercase mb-2">
-                    권한 ({role.permissions.length})
-                  </div>
-                  <div className="flex flex-wrap gap-1">
-                    {role.permissions.slice(0, 3).map((permId) => (
-                      <span
-                        key={permId}
-                        className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-gray-100 text-gray-800"
-                      >
-                        {getPermissionName(permId)}
-                      </span>
-                    ))}
-                    {role.permissions.length > 3 && (
-                      <span className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-gray-100 text-gray-800">
-                        +{role.permissions.length - 3}개
-                      </span>
-                    )}
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-500">
-                    {role.userCount}명 사용 중
-                  </span>
-                  <div className="flex items-center space-x-2">
-                    <button
-                      onClick={() => {
-                        setSelectedRole(role);
-                        setIsEditing(true);
-                        setShowModal(true);
-                      }}
-                      className="text-blue-600 hover:text-blue-900"
-                      title="편집"
-                    >
-                      <PencilIcon className="h-4 w-4" />
-                    </button>
-                    {!role.isSystem && (
-                      <button
-                        onClick={() => {
-                          if (window.confirm('정말로 이 역할을 삭제하시겠습니까?')) {
-                            setRoles(prev => prev.filter(r => r.id !== role.id));
-                          }
-                        }}
-                        className="text-destructive hover:text-destructive"
-                        title="삭제"
-                      >
-                        <TrashIcon className="h-4 w-4" />
-                      </button>
-                    )}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* 권한 관리 탭 */}
-      {activeTab === 'permissions' && (
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-          <div className="px-6 py-4 border-b border-gray-200">
-            <h3 className="text-lg font-medium text-gray-900">
-              권한 목록 ({permissions.length})
-            </h3>
-          </div>
-
-          <div className="p-6">
-            <div className="grid grid-cols-1 gap-6">
-              {['read', 'write', 'delete', 'admin'].map((category) => {
-                const categoryPermissions = permissions.filter(p => p.category === category);
-                
-                return (
-                  <div key={category} className="border border-gray-200 rounded-lg p-4">
-                    <h4 className="text-lg font-medium text-gray-900 mb-4 capitalize">
-                      {category === 'read' && '조회 권한'}
-                      {category === 'write' && '편집 권한'}
-                      {category === 'delete' && '삭제 권한'}
-                      {category === 'admin' && '관리자 권한'}
-                    </h4>
-                    
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                      {categoryPermissions.map((permission) => (
-                        <div
-                          key={permission.id}
-                          className="border border-gray-100 rounded-lg p-4 hover:shadow-sm transition-shadow"
+                      {!role.isSystem && (
+                        <button
+                          onClick={() => {
+                            if (window.confirm('정말로 이 역할을 삭제하시겠습니까?')) {
+                              setRoles(prev => prev.filter(r => r.id !== role.id));
+                            }
+                          }}
+                          className="btn-ghost p-2 text-destructive hover:text-destructive"
+                          title="삭제"
                         >
-                          <div className="flex items-center justify-between mb-2">
-                            <span className="text-sm font-medium text-gray-900">
-                              {permission.name}
-                            </span>
-                            <span className={`px-2 py-1 rounded-full text-xs font-medium ${getCategoryColor(permission.category)}`}>
-                              {permission.resource}
-                            </span>
-                          </div>
-                          <p className="text-xs text-gray-600">{permission.description}</p>
-                        </div>
-                      ))}
+                          <TrashIcon className="h-4 w-4" />
+                        </button>
+                      )}
                     </div>
                   </div>
-                );
-              })}
+                </div>
+              ))}
             </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {/* 편집 모달 (사용자/역할) */}
-      {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+        {/* 권한 관리 탭 */}
+        {activeTab === 'permissions' && (
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200">
             <div className="px-6 py-4 border-b border-gray-200">
-              <div className="flex items-center justify-between">
-                <h3 className="text-lg font-medium text-gray-900">
-                  {selectedUser ? (isEditing ? '사용자 편집' : '사용자 상세') : '새 사용자 추가'}
-                </h3>
+              <h3 className="text-lg font-medium text-gray-900">
+                권한 목록 ({permissions.length})
+              </h3>
+            </div>
+
+            <div className="p-6">
+              <div className="grid grid-cols-1 gap-6">
+                {['read', 'write', 'delete', 'admin'].map((category) => {
+                  const categoryPermissions = permissions.filter(p => p.category === category);
+
+                  return (
+                    <div key={category} className="border border-gray-200 rounded-lg p-4">
+                      <h4 className="text-lg font-medium text-gray-900 mb-4 capitalize">
+                        {category === 'read' && '조회 권한'}
+                        {category === 'write' && '편집 권한'}
+                        {category === 'delete' && '삭제 권한'}
+                        {category === 'admin' && '관리자 권한'}
+                      </h4>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {categoryPermissions.map((permission) => (
+                          <div
+                            key={permission.id}
+                            className="border border-gray-100 rounded-lg p-4 hover:shadow-sm transition-shadow"
+                          >
+                            <div className="flex items-center justify-between mb-2">
+                              <span className="text-sm font-medium text-gray-900">
+                                {permission.name}
+                              </span>
+                              <span className={`px-2 py-1 rounded-full text-xs font-medium ${getCategoryColor(permission.category)}`}>
+                                {permission.resource}
+                              </span>
+                            </div>
+                            <p className="text-xs text-gray-600">{permission.description}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* 편집 모달 (사용자/역할) */}
+        {showModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+            <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+              <div className="px-6 py-4 border-b border-gray-200">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-lg font-medium text-gray-900">
+                    {selectedUser ? (isEditing ? '사용자 편집' : '사용자 상세') : '새 사용자 추가'}
+                  </h3>
+                  <button
+                    onClick={() => {
+                      setShowModal(false);
+                      setSelectedUser(null);
+                      setSelectedRole(null);
+                      setIsEditing(false);
+                    }}
+                    className="text-gray-400 hover:text-gray-600"
+                  >
+                    <XMarkIcon className="h-6 w-6" />
+                  </button>
+                </div>
+              </div>
+
+              <div className="p-6 space-y-6">
+                {/* 사용자 편집 폼 */}
+                {(selectedUser || !selectedRole) && (
+                  <div className="space-y-4">
+                    <ValidatedInput
+                      type="studentName"
+                      value={selectedUser?.name || ''}
+                      onChange={(value, validation) => {
+                        // Handle user name change
+                      }}
+                      label="사용자 이름"
+                      placeholder="이름을 입력하세요"
+                      required
+                    />
+
+                    <ValidatedInput
+                      type="email"
+                      value={selectedUser?.email || ''}
+                      onChange={(value, validation) => {
+                        // Handle email change
+                      }}
+                      label="이메일"
+                      placeholder="email@example.com"
+                      required
+                    />
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        역할 할당
+                      </label>
+                      <div className="space-y-2">
+                        {roles.map((role) => (
+                          <label key={role.id} className="flex items-center">
+                            <input
+                              type="checkbox"
+                              checked={selectedUser?.roles.includes(role.id) || false}
+                              onChange={(e) => {
+                                if (selectedUser) {
+                                  const newRoles = e.target.checked
+                                    ? [...selectedUser.roles, role.id]
+                                    : selectedUser.roles.filter(r => r !== role.id);
+                                  handleRoleChange(selectedUser.id, newRoles);
+                                }
+                              }}
+                              className="h-4 w-4 text-blue-600 border-gray-300 rounded"
+                            />
+                            <div className="ml-3">
+                              <span className="text-sm font-medium text-gray-900">{role.name}</span>
+                              <p className="text-xs text-gray-500">{role.description}</p>
+                            </div>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <div className="px-6 py-4 border-t border-gray-200 flex justify-end space-x-3">
                 <button
                   onClick={() => {
                     setShowModal(false);
@@ -539,100 +614,28 @@ const UserPermissionManager: React.FC = () => {
                     setSelectedRole(null);
                     setIsEditing(false);
                   }}
-                  className="text-gray-400 hover:text-gray-600"
+                  className="btn-outline"
                 >
-                  <XMarkIcon className="h-6 w-6" />
+                  취소
+                </button>
+                <button
+                  onClick={() => {
+                    // 저장 로직
+                    setShowModal(false);
+                    setSelectedUser(null);
+                    setSelectedRole(null);
+                    setIsEditing(false);
+                  }}
+                  className="btn-primary"
+                >
+                  저장
                 </button>
               </div>
             </div>
-
-            <div className="p-6 space-y-6">
-              {/* 사용자 편집 폼 */}
-              {(selectedUser || !selectedRole) && (
-                <div className="space-y-4">
-                  <ValidatedInput
-                    type="studentName"
-                    value={selectedUser?.name || ''}
-                    onChange={(value, validation) => {
-                      // Handle user name change
-                    }}
-                    label="사용자 이름"
-                    placeholder="이름을 입력하세요"
-                    required
-                  />
-
-                  <ValidatedInput
-                    type="email"
-                    value={selectedUser?.email || ''}
-                    onChange={(value, validation) => {
-                      // Handle email change
-                    }}
-                    label="이메일"
-                    placeholder="email@example.com"
-                    required
-                  />
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      역할 할당
-                    </label>
-                    <div className="space-y-2">
-                      {roles.map((role) => (
-                        <label key={role.id} className="flex items-center">
-                          <input
-                            type="checkbox"
-                            checked={selectedUser?.roles.includes(role.id) || false}
-                            onChange={(e) => {
-                              if (selectedUser) {
-                                const newRoles = e.target.checked
-                                  ? [...selectedUser.roles, role.id]
-                                  : selectedUser.roles.filter(r => r !== role.id);
-                                handleRoleChange(selectedUser.id, newRoles);
-                              }
-                            }}
-                            className="h-4 w-4 text-blue-600 border-gray-300 rounded"
-                          />
-                          <div className="ml-3">
-                            <span className="text-sm font-medium text-gray-900">{role.name}</span>
-                            <p className="text-xs text-gray-500">{role.description}</p>
-                          </div>
-                        </label>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            <div className="px-6 py-4 border-t border-gray-200 flex justify-end space-x-3">
-              <button
-                onClick={() => {
-                  setShowModal(false);
-                  setSelectedUser(null);
-                  setSelectedRole(null);
-                  setIsEditing(false);
-                }}
-                className="px-4 py-2 border border-gray-300 rounded-full text-gray-700 hover:bg-gray-50"
-              >
-                취소
-              </button>
-              <button
-                onClick={() => {
-                  // 저장 로직
-                  setShowModal(false);
-                  setSelectedUser(null);
-                  setSelectedRole(null);
-                  setIsEditing(false);
-                }}
-                className="btn-primary"
-              >
-                저장
-              </button>
-            </div>
           </div>
-        </div>
-      )}
-    </div>
+        )}
+      </div>
+    </PageContainer>
   );
 };
 

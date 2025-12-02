@@ -26,6 +26,7 @@ import {
   type AttendanceStatus,
 } from '../../services/attendance.service';
 import { supabase } from '../../services/supabase';
+import { PageContainer } from '../common/PageContainer';
 
 type ViewMode = 'check' | 'trainee' | 'statistics';
 
@@ -376,21 +377,21 @@ const IntegratedAttendanceManagement: React.FC = () => {
           <div className="flex gap-2 flex-wrap">
             <button
               onClick={() => handleBulkAttendanceCheck('present')}
-              className="btn-base btn-success flex items-center gap-2"
+              className="btn-primary flex items-center gap-2"
             >
               <CheckCircleIcon className="w-5 h-5" />
               전체 출석 처리
             </button>
             <button
               onClick={() => handleBulkAttendanceCheck('absent')}
-              className="btn-base btn-danger flex items-center gap-2"
+              className="btn-danger flex items-center gap-2"
             >
               <XCircleIcon className="w-5 h-5" />
               미체크자 결석 처리
             </button>
             <button
               onClick={exportToExcel}
-              className="btn-base btn-secondary flex items-center gap-2"
+              className="btn-secondary flex items-center gap-2"
             >
               <DocumentArrowDownIcon className="w-5 h-5" />
               Excel 내보내기
@@ -401,41 +402,37 @@ const IntegratedAttendanceManagement: React.FC = () => {
           <div className="flex gap-2">
             <button
               onClick={() => setStatusFilter('all')}
-              className={`px-3 py-1 rounded-lg text-sm font-medium transition-colors ${
-                statusFilter === 'all'
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'
-              }`}
+              className={`px-3 py-1 rounded-lg text-sm font-medium transition-colors ${statusFilter === 'all'
+                ? 'bg-blue-600 text-white'
+                : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'
+                }`}
             >
               전체 ({summary.total})
             </button>
             <button
               onClick={() => setStatusFilter('unchecked')}
-              className={`px-3 py-1 rounded-lg text-sm font-medium transition-colors ${
-                statusFilter === 'unchecked'
-                  ? 'bg-gray-600 text-white'
-                  : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'
-              }`}
+              className={`px-3 py-1 rounded-lg text-sm font-medium transition-colors ${statusFilter === 'unchecked'
+                ? 'bg-gray-600 text-white'
+                : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'
+                }`}
             >
               미체크 ({summary.unchecked})
             </button>
             <button
               onClick={() => setStatusFilter('present')}
-              className={`px-3 py-1 rounded-lg text-sm font-medium transition-colors ${
-                statusFilter === 'present'
-                  ? 'bg-emerald-600 text-white'
-                  : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'
-              }`}
+              className={`px-3 py-1 rounded-lg text-sm font-medium transition-colors ${statusFilter === 'present'
+                ? 'bg-emerald-600 text-white'
+                : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'
+                }`}
             >
               출석 ({summary.present})
             </button>
             <button
               onClick={() => setStatusFilter('absent')}
-              className={`px-3 py-1 rounded-lg text-sm font-medium transition-colors ${
-                statusFilter === 'absent'
-                  ? 'bg-red-600 text-white'
-                  : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'
-              }`}
+              className={`px-3 py-1 rounded-lg text-sm font-medium transition-colors ${statusFilter === 'absent'
+                ? 'bg-red-600 text-white'
+                : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'
+                }`}
             >
               결석 ({summary.absent})
             </button>
@@ -472,44 +469,40 @@ const IntegratedAttendanceManagement: React.FC = () => {
                     <div className="flex gap-1">
                       <button
                         onClick={() => handleAttendanceCheck(target.id, 'present')}
-                        className={`p-2 rounded-lg transition-colors ${
-                          target.attendance_status === 'present'
-                            ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-300'
-                            : 'text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/20'
-                        }`}
+                        className={`p-2 rounded-lg transition-colors ${target.attendance_status === 'present'
+                          ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-300'
+                          : 'text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/20'
+                          }`}
                         title="출석"
                       >
                         <CheckCircleIcon className="w-5 h-5" />
                       </button>
                       <button
                         onClick={() => handleAttendanceCheck(target.id, 'late')}
-                        className={`p-2 rounded-lg transition-colors ${
-                          target.attendance_status === 'late'
-                            ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300'
-                            : 'text-yellow-600 hover:bg-yellow-50 dark:hover:bg-yellow-900/20'
-                        }`}
+                        className={`p-2 rounded-lg transition-colors ${target.attendance_status === 'late'
+                          ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300'
+                          : 'text-yellow-600 hover:bg-yellow-50 dark:hover:bg-yellow-900/20'
+                          }`}
                         title="지각"
                       >
                         <ClockIcon className="w-5 h-5" />
                       </button>
                       <button
                         onClick={() => handleAttendanceCheck(target.id, 'absent')}
-                        className={`p-2 rounded-lg transition-colors ${
-                          target.attendance_status === 'absent'
-                            ? 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300'
-                            : 'text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20'
-                        }`}
+                        className={`p-2 rounded-lg transition-colors ${target.attendance_status === 'absent'
+                          ? 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300'
+                          : 'text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20'
+                          }`}
                         title="결석"
                       >
                         <XCircleIcon className="w-5 h-5" />
                       </button>
                       <button
                         onClick={() => handleAttendanceCheck(target.id, 'excused')}
-                        className={`p-2 rounded-lg transition-colors ${
-                          target.attendance_status === 'excused'
-                            ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300'
-                            : 'text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20'
-                        }`}
+                        className={`p-2 rounded-lg transition-colors ${target.attendance_status === 'excused'
+                          ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300'
+                          : 'text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20'
+                          }`}
                         title="사유결석"
                       >
                         <ExclamationTriangleIcon className="w-5 h-5" />
@@ -691,9 +684,9 @@ const IntegratedAttendanceManagement: React.FC = () => {
   };
 
   return (
-    <div className="p-6">
+    <PageContainer>
       {/* 헤더 */}
-      <div className="mb-6">
+      <div>
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
           📋 통합 출석 관리
         </h1>
@@ -703,7 +696,7 @@ const IntegratedAttendanceManagement: React.FC = () => {
       </div>
 
       {/* 차수 및 날짜 선택 */}
-      <div className="mb-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
             과정 차수
@@ -739,36 +732,33 @@ const IntegratedAttendanceManagement: React.FC = () => {
       </div>
 
       {/* 뷰 모드 탭 */}
-      <div className="mb-6 flex gap-2 border-b border-gray-200 dark:border-gray-700">
+      <div className="flex gap-2 border-b border-gray-200 dark:border-gray-700">
         <button
           onClick={() => setViewMode('check')}
-          className={`px-4 py-2 font-medium ${
-            viewMode === 'check'
-              ? 'text-blue-600 border-b-2 border-blue-600'
-              : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
-          }`}
+          className={`px-4 py-2 font-medium ${viewMode === 'check'
+            ? 'text-blue-600 border-b-2 border-blue-600'
+            : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
+            }`}
         >
           <CheckCircleIcon className="w-5 h-5 inline mr-2" />
           출석 체크
         </button>
         <button
           onClick={() => setViewMode('trainee')}
-          className={`px-4 py-2 font-medium ${
-            viewMode === 'trainee'
-              ? 'text-blue-600 border-b-2 border-blue-600'
-              : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
-          }`}
+          className={`px-4 py-2 font-medium ${viewMode === 'trainee'
+            ? 'text-blue-600 border-b-2 border-blue-600'
+            : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
+            }`}
         >
           <UserGroupIcon className="w-5 h-5 inline mr-2" />
           교육생별 통계
         </button>
         <button
           onClick={() => setViewMode('statistics')}
-          className={`px-4 py-2 font-medium ${
-            viewMode === 'statistics'
-              ? 'text-blue-600 border-b-2 border-blue-600'
-              : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
-          }`}
+          className={`px-4 py-2 font-medium ${viewMode === 'statistics'
+            ? 'text-blue-600 border-b-2 border-blue-600'
+            : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
+            }`}
         >
           <ChartBarIcon className="w-5 h-5 inline mr-2" />
           통계
@@ -788,7 +778,7 @@ const IntegratedAttendanceManagement: React.FC = () => {
           {viewMode === 'statistics' && renderStatisticsView()}
         </>
       )}
-    </div>
+    </PageContainer>
   );
 };
 

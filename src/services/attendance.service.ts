@@ -4,7 +4,7 @@ import { supabase } from './supabase';
 // 타입 정의
 // =====================================================
 
-export type AttendanceStatus = 'present' | 'absent' | 'late' | 'excused';
+export type AttendanceStatus = 'present' | 'absent' | 'late' | 'excused' | 'early_leave';
 
 export interface AttendanceRecord {
   id: string;
@@ -133,10 +133,14 @@ export class AttendanceService {
         existingRecords?.map(r => [r.trainee_id, r.status]) || []
       );
 
-      return (enrollments || []).map(e => ({
-        ...e.trainee,
-        attendance_status: recordMap.get(e.trainee.id) || null,
-      }));
+      return (enrollments || []).map(e => {
+        const trainee = Array.isArray(e.trainee) ? e.trainee[0] : e.trainee;
+        if (!trainee) return null;
+        return {
+          ...trainee,
+          attendance_status: recordMap.get(trainee.id) || null,
+        } as AttendanceTarget;
+      }).filter((item): item is AttendanceTarget => item !== null);
     } catch (error: any) {
       console.error('[AttendanceService] Error getting attendance targets:', error);
       throw error;
@@ -291,7 +295,7 @@ export class AttendanceService {
       query = query.eq('session_id', sessionId);
     }
 
-    const { data, error} = await query.order('date', { ascending: false });
+    const { data, error } = await query.order('date', { ascending: false });
 
     if (error) throw error;
     return data || [];

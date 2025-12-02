@@ -18,6 +18,7 @@ import {
   StopIcon
 } from '@heroicons/react/24/outline';
 import { useAuth } from '../../contexts/AuthContext';
+import { PageContainer } from '../common/PageContainer';
 import type { Course, CourseStatus, CourseFilters } from '../../types/course.types';
 import CourseForm from './CourseForm';
 
@@ -318,7 +319,7 @@ const CourseManagement: React.FC = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <PageContainer>
       {/* 헤더 */}
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
@@ -696,7 +697,7 @@ const CourseManagement: React.FC = () => {
           </div>
         )}
       </div>
-    </div>
+    </PageContainer>
   );
 };
 

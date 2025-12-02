@@ -13,6 +13,7 @@ import {
   DocumentDuplicateIcon,
   TvIcon
 } from '@heroicons/react/24/outline';
+import { PageContainer } from '../common/PageContainer';
 import { CourseTemplateService } from '../../services/course-template.service';
 import type { CourseRound } from '../../types/course-template.types';
 import { ExamService } from '../../services/exam.services';
@@ -166,7 +167,7 @@ const ExamManagement: React.FC = () => {
   const filteredExams = exams.filter(exam => {
     if (!searchTerm) return true;
     return exam.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-           exam.course_name.toLowerCase().includes(searchTerm.toLowerCase());
+      (exam.course_name?.toLowerCase() || '').includes(searchTerm.toLowerCase());
   });
 
   // 시험 통계 요약
@@ -219,7 +220,7 @@ const ExamManagement: React.FC = () => {
 
       alert('시험이 복제되었습니다!');
       setCloningExam(null);
-      await fetchExams();
+      await loadExams();
     } catch (error) {
       console.error('❌ 시험 복제 실패:', error);
       alert('시험 복제에 실패했습니다.');
@@ -239,8 +240,8 @@ const ExamManagement: React.FC = () => {
   };
 
   const handleTargetToggle = (targetId: string) => {
-    setSelectedTargets(prev => 
-      prev.includes(targetId) 
+    setSelectedTargets(prev =>
+      prev.includes(targetId)
         ? prev.filter(id => id !== targetId)
         : [...prev, targetId]
     );
@@ -248,7 +249,7 @@ const ExamManagement: React.FC = () => {
 
   const handleCreateExamFromBank = () => {
     if (!selectedQuestionBank || selectedTargets.length === 0) return;
-    
+
     // 문제은행에서 시험 생성 폼으로 이동
     setCurrentView('form');
   };
@@ -287,11 +288,10 @@ const ExamManagement: React.FC = () => {
             <button
               onClick={handleCreateExamFromBank}
               disabled={selectedTargets.length === 0}
-              className={`px-4 py-2 rounded-full flex items-center transition-colors ${
-                selectedTargets.length === 0
-                  ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                  : 'bg-gray-700 text-white hover:bg-gray-800'
-              }`}
+              className={`px-4 py-2 rounded-full flex items-center transition-colors ${selectedTargets.length === 0
+                ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                : 'bg-gray-700 text-white hover:bg-gray-800'
+                }`}
             >
               <ClipboardDocumentListIcon className="h-5 w-5 mr-2" />
               시험 생성 ({selectedTargets.length}개 차수)
@@ -325,11 +325,10 @@ const ExamManagement: React.FC = () => {
             {examTargets.map((target) => (
               <label
                 key={target.id}
-                className={`flex items-center p-4 border rounded-full cursor-pointer transition-colors ${
-                  selectedTargets.includes(target.id)
-                    ? 'border-gray-600 bg-gray-50'
-                    : 'border-gray-200 hover:border-gray-300'
-                }`}
+                className={`flex items-center p-4 border rounded-full cursor-pointer transition-colors ${selectedTargets.includes(target.id)
+                  ? 'border-gray-600 bg-gray-50'
+                  : 'border-gray-200 hover:border-gray-300'
+                  }`}
               >
                 <input
                   type="checkbox"
@@ -407,213 +406,214 @@ const ExamManagement: React.FC = () => {
 
   // 기본 목록 뷰
   return (
-    <div className="space-y-6">
-      {/* 헤더 */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900 flex items-center">
-              <AcademicCapIcon className="h-8 w-8 mr-3 text-blue-600" />
-              이론 평가 관리
-            </h1>
-            <p className="mt-2 text-gray-600">
-              수강생들의 이론 시험을 생성하고 관리하세요.
-            </p>
-          </div>
-          <div className="flex space-x-3">
-            <button
-              onClick={() => setCurrentView('question-bank')}
-              className="bg-gray-600 text-white px-4 py-2 rounded-full hover:bg-gray-700 transition-colors flex items-center"
-            >
-              <BookOpenIcon className="h-5 w-5 mr-2" />
-              문제은행 관리
-            </button>
-            <button
-              onClick={() => setCurrentView('form')}
-              className="bg-gray-700 text-white px-4 py-2 rounded-full hover:bg-gray-800 transition-colors flex items-center"
-            >
-              <PlusIcon className="h-5 w-5 mr-2" />
-              새 시험 생성
-            </button>
-          </div>
-        </div>
-
-        {/* 통계 요약 */}
-        <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 mt-6">
-          <div className="bg-gray-50 rounded-lg p-4">
-            <div className="text-2xl font-bold text-gray-900">{examStats.total}</div>
-            <div className="text-sm text-gray-600">전체 시험</div>
-          </div>
-          <div className="bg-gray-100 rounded-lg p-4">
-            <div className="text-2xl font-bold text-gray-700">{examStats.active}</div>
-            <div className="text-sm text-gray-600">진행중</div>
-          </div>
-          <div className="bg-gray-100 rounded-lg p-4">
-            <div className="text-2xl font-bold text-gray-700">{examStats.scheduled}</div>
-            <div className="text-sm text-gray-600">예정됨</div>
-          </div>
-          <div className="bg-gray-100 rounded-lg p-4">
-            <div className="text-2xl font-bold text-gray-700">{examStats.completed}</div>
-            <div className="text-sm text-gray-600">완료됨</div>
-          </div>
-          <div className="bg-gray-50 rounded-lg p-4">
-            <div className="text-2xl font-bold text-gray-900">{questionBanks.length}</div>
-            <div className="text-sm text-gray-600">문제은행</div>
-          </div>
-        </div>
-      </div>
-
-      {/* 검색 및 필터 */}
-      <div className="bg-card rounded-lg shadow-sm border border-border p-6">
-        <div className="flex flex-col md:flex-row gap-3">
-          {/* 검색 입력 */}
-          <div className="flex-1 relative">
-            <MagnifyingGlassIcon className="h-5 w-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
-            <input
-              type="text"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="시험명, 과정명으로 검색..."
-              className="pl-10 pr-4 py-2.5 w-full border border-border rounded-lg bg-card text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all shadow-sm"
-            />
-          </div>
-
-          {/* 결과 카운트 */}
-          <div className="flex items-center px-4 py-2.5 bg-secondary/30 rounded-full border border-border">
-            <FunnelIcon className="h-4 w-4 mr-2 text-muted-foreground" />
-            <span className="text-sm font-medium text-foreground whitespace-nowrap">
-              총 <span className="text-primary font-semibold">{filteredExams.length}</span>개 시험
-            </span>
-          </div>
-        </div>
-      </div>
-
-      {/* 시험 목록 */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-        <h2 className="text-lg font-medium text-gray-900 mb-4">시험 목록</h2>
-        
-        {loading ? (
-          <div className="flex items-center justify-center py-12">
-            <div className="animate-spin rounded-lg h-8 w-8 border-b-2 border-blue-600"></div>
-            <span className="ml-3 text-gray-600">시험 목록을 불러오는 중...</span>
-          </div>
-        ) : (
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {filteredExams.map((exam) => (
-              <div
-                key={exam.id}
-                className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
+    <PageContainer>
+      <div className="space-y-6">
+        {/* 헤더 */}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900 flex items-center">
+                <AcademicCapIcon className="h-8 w-8 mr-3 text-blue-600" />
+                이론 평가 관리
+              </h1>
+              <p className="mt-2 text-gray-600">
+                수강생들의 이론 시험을 생성하고 관리하세요.
+              </p>
+            </div>
+            <div className="flex space-x-3">
+              <button
+                onClick={() => setCurrentView('question-bank')}
+                className="btn-secondary"
               >
-                <div className="flex items-start justify-between mb-3">
-                  <div className="flex-1">
-                    <h3 className="font-medium text-gray-900 line-clamp-1">
-                      {exam.title}
-                    </h3>
-                    <p className="text-sm text-gray-600 mt-1">{exam.course_name}</p>
-                  </div>
-                  <div className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border ${
-                    exam.status === 'active' ? 'bg-primary text-primary-foreground border-border' :
-                    exam.status === 'scheduled' ? 'bg-accent text-accent-foreground border-border' :
-                    exam.status === 'completed' ? 'bg-muted text-muted-foreground border-border' :
-                    'bg-secondary text-secondary-foreground border-border'
-                  }`}>
-                    {exam.status === 'active' ? '진행중' :
-                     exam.status === 'scheduled' ? '예정' :
-                     exam.status === 'completed' ? '완료' : '준비중'}
-                  </div>
-                </div>
-
-                <div className="space-y-2 mb-4">
-                  <div className="flex items-center text-sm text-gray-600">
-                    <span>⏱️ {exam.duration_minutes}분</span>
-                    <span className="mx-2">•</span>
-                    <span>📝 {exam.total_questions}문항</span>
-                  </div>
-                  <div className="text-sm text-gray-600">
-                    🎯 합격점: {exam.passing_score}점
-                  </div>
-                </div>
-
-                {exam.description && (
-                  <p className="text-sm text-gray-600 mb-4 line-clamp-2">
-                    {exam.description}
-                  </p>
-                )}
-
-                <div className="flex items-center space-x-2">
-                  <button
-                    onClick={() => handleExamTake(exam)}
-                    className="flex-1 bg-gray-600 text-white px-3 py-2 rounded text-sm hover:bg-gray-700 transition-colors"
-                  >
-                    시험 응시
-                  </button>
-                  <button
-                    onClick={() => handleExamEdit(exam)}
-                    className="px-3 py-2 border border-gray-300 text-gray-700 rounded text-sm hover:bg-gray-50 transition-colors"
-                  >
-                    편집
-                  </button>
-                  {exam.status === 'active' && (
-                    <button
-                      onClick={() => setLiveExam(exam)}
-                      className="px-3 py-2 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded text-sm hover:from-green-600 hover:to-emerald-600 transition-all shadow-md"
-                      title="실시간 현황"
-                    >
-                      <TvIcon className="h-4 w-4" />
-                    </button>
-                  )}
-                  <button
-                    onClick={() => setCloningExam(exam)}
-                    className="px-3 py-2 border border-gray-300 text-gray-700 rounded text-sm hover:bg-gray-50 transition-colors"
-                    title="시험 복제"
-                  >
-                    <DocumentDuplicateIcon className="h-4 w-4" />
-                  </button>
-                  <button
-                    onClick={() => handleExamResults(exam)}
-                    className="px-3 py-2 border border-gray-300 text-gray-700 rounded text-sm hover:bg-gray-50 transition-colors"
-                  >
-                    결과
-                  </button>
-                  <button
-                    onClick={() => setAnalyticsExam(exam)}
-                    className="px-3 py-2 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded text-sm hover:from-blue-600 hover:to-cyan-600 transition-all shadow-md"
-                    title="인터랙티브 분석"
-                  >
-                    <ChartBarIcon className="h-4 w-4" />
-                  </button>
-                </div>
-              </div>
-            ))}
+                <BookOpenIcon className="h-5 w-5 mr-2" />
+                문제은행 관리
+              </button>
+              <button
+                onClick={() => setCurrentView('form')}
+                className="btn-primary"
+              >
+                <PlusIcon className="h-5 w-5 mr-2" />
+                새 시험 생성
+              </button>
+            </div>
           </div>
+
+          {/* 통계 요약 */}
+          <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 mt-6">
+            <div className="bg-gray-50 rounded-lg p-4">
+              <div className="text-2xl font-bold text-gray-900">{examStats.total}</div>
+              <div className="text-sm text-gray-600">전체 시험</div>
+            </div>
+            <div className="bg-gray-100 rounded-lg p-4">
+              <div className="text-2xl font-bold text-gray-700">{examStats.active}</div>
+              <div className="text-sm text-gray-600">진행중</div>
+            </div>
+            <div className="bg-gray-100 rounded-lg p-4">
+              <div className="text-2xl font-bold text-gray-700">{examStats.scheduled}</div>
+              <div className="text-sm text-gray-600">예정됨</div>
+            </div>
+            <div className="bg-gray-100 rounded-lg p-4">
+              <div className="text-2xl font-bold text-gray-700">{examStats.completed}</div>
+              <div className="text-sm text-gray-600">완료됨</div>
+            </div>
+            <div className="bg-gray-50 rounded-lg p-4">
+              <div className="text-2xl font-bold text-gray-900">{questionBanks.length}</div>
+              <div className="text-sm text-gray-600">문제은행</div>
+            </div>
+          </div>
+        </div>
+
+        {/* 검색 및 필터 */}
+        <div className="bg-card rounded-lg shadow-sm border border-border p-6">
+          <div className="flex flex-col md:flex-row gap-3">
+            {/* 검색 입력 */}
+            <div className="flex-1 relative">
+              <MagnifyingGlassIcon className="h-5 w-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
+              <input
+                type="text"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                placeholder="시험명, 과정명으로 검색..."
+                className="pl-10 pr-4 py-2.5 w-full border border-border rounded-lg bg-card text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all shadow-sm"
+              />
+            </div>
+
+            {/* 결과 카운트 */}
+            <div className="flex items-center px-4 py-2.5 bg-secondary/30 rounded-full border border-border">
+              <FunnelIcon className="h-4 w-4 mr-2 text-muted-foreground" />
+              <span className="text-sm font-medium text-foreground whitespace-nowrap">
+                총 <span className="text-primary font-semibold">{filteredExams.length}</span>개 시험
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* 시험 목록 */}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <h2 className="text-lg font-medium text-gray-900 mb-4">시험 목록</h2>
+
+          {loading ? (
+            <div className="flex items-center justify-center py-12">
+              <div className="animate-spin rounded-lg h-8 w-8 border-b-2 border-blue-600"></div>
+              <span className="ml-3 text-gray-600">시험 목록을 불러오는 중...</span>
+            </div>
+          ) : (
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {filteredExams.map((exam) => (
+                <div
+                  key={exam.id}
+                  className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
+                >
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex-1">
+                      <h3 className="font-medium text-gray-900 line-clamp-1">
+                        {exam.title}
+                      </h3>
+                      <p className="text-sm text-gray-600 mt-1">{exam.course_name || '과정 정보 없음'}</p>
+                    </div>
+                    <div className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border ${exam.status === 'active' ? 'bg-primary text-primary-foreground border-border' :
+                      exam.status === 'scheduled' ? 'bg-accent text-accent-foreground border-border' :
+                        exam.status === 'completed' ? 'bg-muted text-muted-foreground border-border' :
+                          'bg-secondary text-secondary-foreground border-border'
+                      }`}>
+                      {exam.status === 'active' ? '진행중' :
+                        exam.status === 'scheduled' ? '예정' :
+                          exam.status === 'completed' ? '완료' : '준비중'}
+                    </div>
+                  </div>
+
+                  <div className="space-y-2 mb-4">
+                    <div className="flex items-center text-sm text-gray-600">
+                      <span>⏱️ {exam.duration_minutes}분</span>
+                      <span className="mx-2">•</span>
+                      <span>📝 {exam.question_count || 0}문항</span>
+                    </div>
+                    <div className="text-sm text-gray-600">
+                      🎯 합격점: {exam.passing_score}점
+                    </div>
+                  </div>
+
+                  {exam.description && (
+                    <p className="text-sm text-gray-600 mb-4 line-clamp-2">
+                      {exam.description}
+                    </p>
+                  )}
+
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => handleExamTake(exam)}
+                      className="btn-primary btn-sm flex-1 inline-flex items-center justify-center !py-1.5"
+                    >
+                      <span>시험응시</span>
+                    </button>
+                    <button
+                      onClick={() => handleExamEdit(exam)}
+                      className="btn-outline btn-sm inline-flex items-center justify-center !py-1.5"
+                    >
+                      <span>편집</span>
+                    </button>
+                    {exam.status === 'active' && (
+                      <button
+                        onClick={() => setLiveExam(exam)}
+                        className="btn-secondary btn-sm inline-flex items-center justify-center !p-2"
+                        title="실시간 현황"
+                      >
+                        <TvIcon className="h-4 w-4" />
+                      </button>
+                    )}
+                    <button
+                      onClick={() => setCloningExam(exam)}
+                      className="btn-outline btn-sm inline-flex items-center justify-center !p-2"
+                      title="시험 복제"
+                    >
+                      <DocumentDuplicateIcon className="h-4 w-4" />
+                    </button>
+                    <button
+                      onClick={() => handleExamResults(exam)}
+                      className="btn-outline btn-sm inline-flex items-center justify-center !py-1.5"
+                    >
+                      <span>결과</span>
+                    </button>
+                    <button
+                      onClick={() => setAnalyticsExam(exam)}
+                      className="btn-secondary py-1 h-auto text-sm"
+                      title="인터랙티브 분석"
+                    >
+                      <ChartBarIcon className="h-4 w-4" />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* 시험 복제 마법사 */}
+        {cloningExam && (
+          <ExamCloneWizard
+            exam={cloningExam}
+            onClone={handleExamClone}
+            onClose={() => setCloningExam(null)}
+          />
+        )}
+
+        {/* 실시간 응시 대시보드 */}
+        {liveExam && (
+          <LiveExamDashboard
+            exam={liveExam}
+            onClose={() => setLiveExam(null)}
+          />
+        )}
+
+        {/* 인터랙티브 분석 대시보드 */}
+        {analyticsExam && (
+          <InteractiveExamAnalytics
+            exam={analyticsExam}
+            onClose={() => setAnalyticsExam(null)}
+          />
         )}
       </div>
-
-      {/* 시험 복제 마법사 */}
-      {cloningExam && (
-        <ExamCloneWizard
-          exam={cloningExam}
-          onClone={handleExamClone}
-          onClose={() => setCloningExam(null)}
-        />
-      )}
-
-      {/* 실시간 응시 대시보드 */}
-      {liveExam && (
-        <LiveExamDashboard
-          exam={liveExam}
-          onClose={() => setLiveExam(null)}
-        />
-      )}
-
-      {/* 인터랙티브 분석 대시보드 */}
-      {analyticsExam && (
-        <InteractiveExamAnalytics
-          exam={analyticsExam}
-          onClose={() => setAnalyticsExam(null)}
-        />
-      )}
-    </div>
+    </PageContainer>
   );
 };
 

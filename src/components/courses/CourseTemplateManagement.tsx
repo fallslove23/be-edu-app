@@ -18,6 +18,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import CourseWizard from './CourseWizard';
 import EducationTargetManager from './EducationTargetManager';
 import OfflineCourseWizard from './OfflineCourseWizard';
+import { PageContainer } from '../common/PageContainer';
 
 // 과정 템플릿 (정책에 따른 고정 과정)
 interface CourseTemplate {
@@ -468,7 +469,7 @@ const CourseTemplateManagement: React.FC = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <PageContainer>
       {/* 헤더 */}
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
@@ -785,7 +786,7 @@ const CourseTemplateManagement: React.FC = () => {
           existingCourses={existingCourses}
         />
       )}
-    </div>
+    </PageContainer>
   );
 };
 

@@ -7,6 +7,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
+import { PageContainer } from '../common/PageContainer';
 import { courseTemplateService } from '../../services/course-template.service';
 import { useAuth } from '../../contexts/AuthContext';
 import EvaluationTemplateManagement from './EvaluationTemplateManagement';
@@ -82,7 +83,7 @@ export default function EvaluationManagementComplete() {
   }
 
   return (
-    <div className="space-y-6">
+    <PageContainer>
       {/* 과정 회차 선택 */}
       {(activeTab === 'instructor' || activeTab === 'grades') && (
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow border border-gray-200 dark:border-gray-700 p-4">
@@ -223,6 +224,6 @@ export default function EvaluationManagementComplete() {
           </>
         )}
       </div>
-    </div>
+    </PageContainer>
   );
 }

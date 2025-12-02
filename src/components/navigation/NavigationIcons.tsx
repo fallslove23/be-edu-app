@@ -2,6 +2,7 @@ import React from 'react';
 import {
   // Dashboard
   ChartBarIcon,
+  Squares2X2Icon,
   // Course Management
   AcademicCapIcon,
   PlusCircleIcon,
@@ -13,12 +14,17 @@ import {
   UsersIcon,
   UserIcon,
   UserPlusIcon,
+  UserCircleIcon,
+  UserGroupIcon,
+  IdentificationIcon,
   // Course Operation
   CogIcon,
   ClipboardDocumentCheckIcon,
+  ClipboardDocumentListIcon,
   ArrowTrendingUpIcon,
   // Assessment
   DocumentTextIcon,
+  DocumentDuplicateIcon,
   BeakerIcon,
   // Completion
   TrophyIcon,
@@ -33,6 +39,7 @@ import {
   ComputerDesktopIcon,
   // Student Specific
   BookOpenIcon,
+  BookmarkIcon,
   CalendarDaysIcon,
   PencilSquareIcon,
   MicrophoneIcon,
@@ -51,13 +58,17 @@ import {
   PaperAirplaneIcon,
   LinkIcon,
   StarIcon,
+  TagIcon,
+  ArchiveBoxIcon,
+  SquaresPlusIcon,
 } from '@heroicons/react/24/outline';
 
 // Heroicon component mapping
 export const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   // Dashboard
   'chart-bar': ChartBarIcon,
-  
+  'squares-2x2': Squares2X2Icon,
+
   // Course Management
   'academic-cap': AcademicCapIcon,
   'plus-circle': PlusCircleIcon,
@@ -65,40 +76,47 @@ export const iconMap: Record<string, React.ComponentType<{ className?: string }>
   'folder': FolderIcon,
   'cloud-arrow-up': CloudArrowUpIcon,
   'cloud-arrow-down': CloudArrowDownIcon,
-  
+
   // Student Management
   'users': UsersIcon,
   'user': UserIcon,
   'user-plus': UserPlusIcon,
-  
+  'user-circle': UserCircleIcon,
+  'user-group': UserGroupIcon,
+  'identification': IdentificationIcon,
+
   // Course Operation
   'cog': CogIcon,
   'clipboard-check': ClipboardDocumentCheckIcon,
+  'clipboard-document-check': ClipboardDocumentCheckIcon,
+  'clipboard-document-list': ClipboardDocumentListIcon,
   'trending-up': ArrowTrendingUpIcon,
-  
+
   // Assessment
   'target': ChartBarIcon, // Using chart-bar for target
   'pencil-alt': PencilIcon,
   'beaker': BeakerIcon,
-  
+  'document-duplicate': DocumentDuplicateIcon,
+
   // Completion
   'trophy': TrophyIcon,
   'document-text': DocumentTextIcon,
-  
+
   // Analytics
   'magnifying-glass': MagnifyingGlassIcon,
   'document': DocumentIcon,
   'chart-bar-square': ChartBarIcon, // Survey management icon
-  
+
   // System Management
   'wrench-screwdriver': WrenchScrewdriverIcon,
   'lock-closed': LockClosedIcon,
   'megaphone': MegaphoneIcon,
   'server-stack': ServerStackIcon,
   'computer-desktop': ComputerDesktopIcon,
-  
+
   // Student Specific
   'book-open': BookOpenIcon,
+  'bookmark': BookmarkIcon,
   'calendar-days': CalendarDaysIcon,
   'pencil-square': PencilSquareIcon,
   'microphone': MicrophoneIcon,
@@ -111,6 +129,7 @@ export const iconMap: Record<string, React.ComponentType<{ className?: string }>
   'building-office': BuildingOfficeIcon,
   'building-office-2': BuildingOffice2Icon,
   'currency-dollar': CurrencyDollarIcon,
+  'tag': TagIcon,
 
   // System & Files
   'cog-6-tooth': Cog6ToothIcon,
@@ -118,6 +137,8 @@ export const iconMap: Record<string, React.ComponentType<{ className?: string }>
   'folder-open': FolderOpenIcon,
   'arrow-up-tray': ArrowUpTrayIcon,
   'paper-airplane': PaperAirplaneIcon,
+  'archive-box': ArchiveBoxIcon,
+  'squares-plus': SquaresPlusIcon,
 
   // External Links
   'link': LinkIcon,

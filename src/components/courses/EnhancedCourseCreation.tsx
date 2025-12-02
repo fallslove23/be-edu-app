@@ -70,7 +70,14 @@ interface Instructor {
   };
 }
 
-const EnhancedCourseCreation: React.FC = () => {
+interface EnhancedCourseCreationProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+const EnhancedCourseCreation: React.FC<EnhancedCourseCreationProps> = ({ isOpen, onClose }) => {
+  if (!isOpen) return null;
+
   const { user } = useAuth();
   const [currentStep, setCurrentStep] = useState(1);
   const [courseData, setCourseData] = useState({
@@ -228,7 +235,7 @@ const EnhancedCourseCreation: React.FC = () => {
     for (let day = 0; day < template.defaultDuration; day++) {
       const currentDate = new Date(startDate);
       currentDate.setDate(startDate.getDate() + day);
-      
+
       // 주말 제외
       if (currentDate.getDay() === 0 || currentDate.getDay() === 6) {
         continue;
@@ -265,7 +272,7 @@ const EnhancedCourseCreation: React.FC = () => {
         };
 
         // 과목에 따른 추천 강사 자동 배정
-        const recommendedInstructor = instructors.find(inst => 
+        const recommendedInstructor = instructors.find(inst =>
           inst.specialties.some(spec => slot.defaultSubject.includes(spec.split(' ')[0]))
         );
 
@@ -340,10 +347,10 @@ const EnhancedCourseCreation: React.FC = () => {
         ...courseData,
         schedules
       };
-      
+
       console.log('과정 저장:', coursePayload);
       // 실제로는 API 호출
-      
+
       alert('과정이 성공적으로 생성되었습니다!');
     } catch (error) {
       console.error('과정 생성 실패:', error);
@@ -354,7 +361,7 @@ const EnhancedCourseCreation: React.FC = () => {
   const renderStep1 = () => (
     <div className="space-y-6">
       <h3 className="text-lg font-semibold text-card-foreground">기본 정보</h3>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
           <label className="block text-sm font-medium text-foreground mb-2">
@@ -589,67 +596,82 @@ const EnhancedCourseCreation: React.FC = () => {
   );
 
   return (
-    <div className="max-w-6xl mx-auto bg-card rounded-lg shadow-sm border border-border">
-      {/* 헤더 */}
-      <div className="px-6 py-4 border-b border-border">
-        <h2 className="text-xl font-semibold text-card-foreground">새 과정 생성</h2>
-        <p className="text-sm text-muted-foreground">실제 운영에 맞는 상세한 과정을 생성합니다</p>
-      </div>
-
-      {/* 스텝 표시 */}
-      <div className="px-6 py-4 border-b border-border">
-        <div className="flex items-center space-x-4">
-          <div className={`flex items-center space-x-2 ${currentStep >= 1 ? 'text-primary' : 'text-muted-foreground'}`}>
-            <div className={`w-8 h-8 rounded-full flex items-center justify-center ${currentStep >= 1 ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground'}`}>
-              1
-            </div>
-            <span className="font-medium">기본 정보</span>
-          </div>
-          <div className="flex-1 h-px bg-border"></div>
-          <div className={`flex items-center space-x-2 ${currentStep >= 2 ? 'text-primary' : 'text-muted-foreground'}`}>
-            <div className={`w-8 h-8 rounded-full flex items-center justify-center ${currentStep >= 2 ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground'}`}>
-              2
-            </div>
-            <span className="font-medium">시간표 구성</span>
-          </div>
-        </div>
-      </div>
-
-      {/* 내용 */}
-      <div className="px-6 py-6">
-        {currentStep === 1 && renderStep1()}
-        {currentStep === 2 && renderStep2()}
-      </div>
-
-      {/* 하단 버튼 */}
-      <div className="px-6 py-4 border-t border-border flex justify-between">
+    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+      <div className="max-w-6xl w-full max-h-[90vh] overflow-y-auto bg-card rounded-lg shadow-xl border border-border relative">
         <button
-          onClick={() => setCurrentStep(Math.max(1, currentStep - 1))}
-          disabled={currentStep === 1}
-          className="btn-outline disabled:opacity-50 disabled:cursor-not-allowed"
+          onClick={onClose}
+          className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 z-10"
         >
-          이전
+          <XMarkIcon className="h-6 w-6" />
         </button>
 
-        <div className="flex space-x-3">
-          {currentStep === 1 && (
-            <button
-              onClick={() => setCurrentStep(2)}
-              disabled={!courseData.title || !courseData.startDate}
-              className="btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              다음
-            </button>
-          )}
+        {/* 헤더 */}
+        <div className="px-6 py-4 border-b border-border">
+          <h2 className="text-xl font-semibold text-card-foreground">새 과정 생성</h2>
+          <p className="text-sm text-muted-foreground">실제 운영에 맞는 상세한 과정을 생성합니다</p>
+        </div>
 
-          {currentStep === 2 && (
+        {/* 스텝 표시 */}
+        <div className="px-6 py-4 border-b border-border">
+          <div className="flex items-center space-x-4">
+            <div className={`flex items-center space-x-2 ${currentStep >= 1 ? 'text-primary' : 'text-muted-foreground'}`}>
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${currentStep >= 1 ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground'}`}>
+                1
+              </div>
+              <span className="font-medium">기본 정보</span>
+            </div>
+            <div className="flex-1 h-px bg-border"></div>
+            <div className={`flex items-center space-x-2 ${currentStep >= 2 ? 'text-primary' : 'text-muted-foreground'}`}>
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${currentStep >= 2 ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground'}`}>
+                2
+              </div>
+              <span className="font-medium">시간표 구성</span>
+            </div>
+          </div>
+        </div>
+
+        {/* 내용 */}
+        <div className="px-6 py-6">
+          {currentStep === 1 && renderStep1()}
+          {currentStep === 2 && renderStep2()}
+        </div>
+
+        {/* 하단 버튼 */}
+        <div className="px-6 py-4 border-t border-border flex justify-between bg-gray-50 rounded-b-lg">
+          <button
+            onClick={() => setCurrentStep(Math.max(1, currentStep - 1))}
+            disabled={currentStep === 1}
+            className="btn-outline disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            이전
+          </button>
+
+          <div className="flex space-x-3">
             <button
-              onClick={handleSaveCourse}
-              className="btn-primary"
+              onClick={onClose}
+              className="btn-ghost"
             >
-              과정 생성
+              취소
             </button>
-          )}
+            {currentStep === 1 && (
+              <button
+                onClick={() => setCurrentStep(2)}
+                disabled={!courseData.title || !courseData.startDate}
+                className="btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                다음
+              </button>
+            )}
+
+            {currentStep === 2 && (
+              <button
+                onClick={handleSaveCourse}
+                className="btn-primary"
+              >
+                과정 생성
+              </button>
+            )}
+          </div>
         </div>
       </div>
     </div>

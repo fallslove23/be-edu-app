@@ -223,7 +223,7 @@ export default function AIQuestionRecommender({
             </div>
             <button
               onClick={onClose}
-              className="p-2 hover:bg-white/20 rounded-full transition-colors"
+              className="btn-ghost p-2 rounded-full text-white hover:bg-white/20"
             >
               <XMarkIcon className="h-6 w-6" />
             </button>
@@ -349,28 +349,25 @@ export default function AIQuestionRecommender({
             {recommendations.slice(0, 30).map((rec) => (
               <div
                 key={rec.question.id}
-                className={`relative border-2 rounded-lg p-4 transition-all cursor-pointer ${
-                  selectedQuestions.has(rec.question.id)
+                className={`relative border-2 rounded-lg p-4 transition-all cursor-pointer ${selectedQuestions.has(rec.question.id)
                     ? 'border-purple-500 bg-purple-50 shadow-md'
                     : 'border-gray-200 bg-white hover:border-gray-300 hover:shadow'
-                }`}
+                  }`}
                 onClick={() => toggleQuestion(rec.question.id)}
               >
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
                     <div className="flex items-center space-x-2 mb-2">
-                      <span className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${
-                        rec.priority === 'high' ? 'bg-destructive/10 text-destructive' :
-                        rec.priority === 'medium' ? 'bg-yellow-100 text-yellow-800' :
-                        'bg-gray-100 text-gray-800'
-                      }`}>
+                      <span className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${rec.priority === 'high' ? 'bg-destructive/10 text-destructive' :
+                          rec.priority === 'medium' ? 'bg-yellow-100 text-yellow-800' :
+                            'bg-gray-100 text-gray-800'
+                        }`}>
                         {rec.priority === 'high' ? '🔥 높음' : rec.priority === 'medium' ? '⚡ 보통' : '💡 낮음'}
                       </span>
-                      <span className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${
-                        rec.question.difficulty === 'easy' ? 'bg-green-500/10 text-green-700' :
-                        rec.question.difficulty === 'medium' ? 'bg-yellow-100 text-yellow-800' :
-                        'bg-destructive/10 text-destructive'
-                      }`}>
+                      <span className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${rec.question.difficulty === 'easy' ? 'bg-green-500/10 text-green-700' :
+                          rec.question.difficulty === 'medium' ? 'bg-yellow-100 text-yellow-800' :
+                            'bg-destructive/10 text-destructive'
+                        }`}>
                         {rec.question.difficulty === 'easy' ? '쉬움' : rec.question.difficulty === 'medium' ? '보통' : '어려움'}
                       </span>
                       <span className="text-xs text-gray-600">{rec.question.category}</span>
@@ -403,18 +400,14 @@ export default function AIQuestionRecommender({
           <div className="flex space-x-3">
             <button
               onClick={onClose}
-              className="px-4 py-2 border border-gray-300 text-gray-700 rounded-full hover:bg-gray-100 transition-colors"
+              className="btn-outline"
             >
               취소
             </button>
             <button
               onClick={handleApply}
               disabled={stats.total === 0}
-              className={`px-6 py-2 rounded-full font-medium transition-colors ${
-                stats.total === 0
-                  ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                  : 'bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:from-purple-700 hover:to-pink-700 shadow-md'
-              }`}
+              className="btn-primary"
             >
               ✨ 선택한 문제 적용
             </button>

@@ -358,6 +358,7 @@ const UnifiedTemplateManagement: React.FC = () => {
           name: '',
           description: '',
           category: 'basic',
+          category_id: '',
           duration_days: 3,
           total_hours: 21,
           curriculum: [],
@@ -514,7 +515,7 @@ const UnifiedTemplateManagement: React.FC = () => {
   }
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto">
+    <div className="space-y-6 w-full">
       {/* 검색 및 액션 바 */}
       <div className="bg-card rounded-lg shadow-sm border border-border p-4">
         <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between">
@@ -587,11 +588,10 @@ const UnifiedTemplateManagement: React.FC = () => {
               <div className="flex justify-between items-start mb-2">
                 <div className="flex-1">
                   <div className="flex items-center space-x-2 mb-2">
-                    <span className={`px-2 py-1 text-xs rounded-full ${
-                      template.category === 'basic'
-                        ? 'bg-blue-100 text-blue-700'
-                        : 'bg-purple-100 text-purple-700'
-                    }`}>
+                    <span className={`px-2 py-1 text-xs rounded-full ${template.category === 'basic'
+                      ? 'bg-blue-100 text-blue-700'
+                      : 'bg-purple-100 text-purple-700'
+                      }`}>
                       {template.category === 'basic' ? 'Basic' : 'Advanced'}
                     </span>
                     {templateUsageCount[template.id] !== undefined && templateUsageCount[template.id] > 0 && (

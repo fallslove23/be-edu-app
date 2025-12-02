@@ -12,6 +12,7 @@ import {
   ClockIcon,
   UserIcon
 } from '@heroicons/react/24/outline';
+import { PageContainer } from '../common/PageContainer';
 
 interface Notice {
   id: string;
@@ -145,7 +146,7 @@ const NoticeManagement: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <PageContainer>
       {/* 헤더 */}
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
@@ -320,7 +321,7 @@ const NoticeManagement: React.FC = () => {
           )}
         </div>
       </div>
-    </div>
+    </PageContainer>
   );
 };
 

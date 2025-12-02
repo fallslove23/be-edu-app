@@ -24,6 +24,7 @@ import { instructorProfileService } from '../../services/instructor-profile.serv
 import { subjectService, instructorSubjectService } from '../../services/subject.service';
 import type { CalendarEvent, Schedule, PersonalEvent, Classroom, InstructorProfile, Subject, InstructorSubject } from '../../types/integrated-schedule.types';
 import GoogleCalendarSync from './GoogleCalendarSync';
+import { PageContainer } from '../common/PageContainer';
 
 type ViewMode = 'month' | 'week' | 'day';
 
@@ -382,6 +383,7 @@ export default function IntegratedScheduleManager() {
       setShowEditModal(false);
       setEditingScheduleId('');
       setScheduleForm({
+        course_round_id: '',
         title: '',
         subject: '',
         description: '',
@@ -749,13 +751,12 @@ export default function IntegratedScheduleManager() {
           {['일', '월', '화', '수', '목', '금', '토'].map((day, index) => (
             <div
               key={day}
-              className={`p-3 text-center font-medium text-sm ${
-                index === 0
-                  ? 'text-destructive dark:text-red-400'
-                  : index === 6
+              className={`p-3 text-center font-medium text-sm ${index === 0
+                ? 'text-destructive dark:text-red-400'
+                : index === 6
                   ? 'text-blue-600 dark:text-blue-400'
                   : 'text-gray-700 dark:text-gray-300'
-              }`}
+                }`}
             >
               {day}
             </div>
@@ -775,9 +776,8 @@ export default function IntegratedScheduleManager() {
               return (
                 <div
                   key={dayIndex}
-                  className={`min-h-[120px] p-2 border-r border-gray-200 dark:border-gray-700 last:border-r-0 transition-colors cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-900/50 ${
-                    !isCurrentMonth ? 'bg-gray-50 dark:bg-gray-900' : ''
-                  } ${isDragOver ? 'bg-teal-50 dark:bg-teal-900/20 ring-2 ring-teal-500' : ''}`}
+                  className={`min-h-[120px] p-2 border-r border-gray-200 dark:border-gray-700 last:border-r-0 transition-colors cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-900/50 ${!isCurrentMonth ? 'bg-gray-50 dark:bg-gray-900' : ''
+                    } ${isDragOver ? 'bg-teal-50 dark:bg-teal-900/20 ring-2 ring-teal-500' : ''}`}
                   onClick={(e) => {
                     // 이벤트 버튼 클릭이 아닌 경우에만 날짜 클릭으로 처리
                     if (e.target === e.currentTarget || (e.target as HTMLElement).closest('.day-number')) {
@@ -789,17 +789,16 @@ export default function IntegratedScheduleManager() {
                   onDrop={(e) => handleDrop(e, day)}
                 >
                   <div
-                    className={`text-sm font-medium mb-1 day-number ${
-                      isToday
-                        ? 'inline-flex items-center justify-center w-7 h-7 bg-teal-600 text-white rounded-full'
-                        : dayIndex === 0
+                    className={`text-sm font-medium mb-1 day-number ${isToday
+                      ? 'inline-flex items-center justify-center w-7 h-7 bg-teal-600 text-white rounded-full'
+                      : dayIndex === 0
                         ? 'text-destructive dark:text-red-400'
                         : dayIndex === 6
-                        ? 'text-blue-600 dark:text-blue-400'
-                        : isCurrentMonth
-                        ? 'text-gray-900 dark:text-gray-100'
-                        : 'text-gray-400 dark:text-gray-600'
-                    }`}
+                          ? 'text-blue-600 dark:text-blue-400'
+                          : isCurrentMonth
+                            ? 'text-gray-900 dark:text-gray-100'
+                            : 'text-gray-400 dark:text-gray-600'
+                      }`}
                   >
                     {day.getDate()}
                   </div>
@@ -816,9 +815,8 @@ export default function IntegratedScheduleManager() {
                           setSelectedEvent(event);
                           setShowEventModal(true);
                         }}
-                        className={`w-full text-left px-2 py-1 rounded text-xs truncate transition-all ${
-                          event.type === 'schedule' ? 'cursor-move hover:opacity-80 hover:shadow-md' : 'hover:opacity-80'
-                        } ${draggedEvent?.id === event.id ? 'opacity-50' : ''}`}
+                        className={`w-full text-left px-2 py-1 rounded text-xs truncate transition-all ${event.type === 'schedule' ? 'cursor-move hover:opacity-80 hover:shadow-md' : 'hover:opacity-80'
+                          } ${draggedEvent?.id === event.id ? 'opacity-50' : ''}`}
                         style={{ backgroundColor: event.color || '#6366F1', color: 'white' }}
                       >
                         {event.title}
@@ -868,18 +866,16 @@ export default function IntegratedScheduleManager() {
             const dayNames = ['일', '월', '화', '수', '목', '금', '토'];
             return (
               <div key={index} className="p-4 text-center border-r border-gray-200 dark:border-gray-700 last:border-r-0">
-                <div className={`text-xs font-medium mb-1 ${
-                  index === 0 ? 'text-destructive dark:text-red-400' :
+                <div className={`text-xs font-medium mb-1 ${index === 0 ? 'text-destructive dark:text-red-400' :
                   index === 6 ? 'text-blue-600 dark:text-blue-400' :
-                  'text-gray-600 dark:text-gray-400'
-                }`}>
+                    'text-gray-600 dark:text-gray-400'
+                  }`}>
                   {dayNames[day.getDay()]}
                 </div>
-                <div className={`text-lg font-bold ${
-                  isToday
-                    ? 'inline-flex items-center justify-center w-8 h-8 bg-teal-600 text-white rounded-full'
-                    : 'text-gray-900 dark:text-gray-100'
-                }`}>
+                <div className={`text-lg font-bold ${isToday
+                  ? 'inline-flex items-center justify-center w-8 h-8 bg-teal-600 text-white rounded-full'
+                  : 'text-gray-900 dark:text-gray-100'
+                  }`}>
                   {day.getDate()}
                 </div>
               </div>
@@ -915,9 +911,8 @@ export default function IntegratedScheduleManager() {
                   return (
                     <div
                       key={dayIndex}
-                      className={`p-2 border-r border-gray-200 dark:border-gray-700 last:border-r-0 min-h-[70px] relative transition-colors cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-900/50 ${
-                        isDragOver ? 'bg-teal-50 dark:bg-teal-900/20 ring-2 ring-inset ring-teal-500' : ''
-                      }`}
+                      className={`p-2 border-r border-gray-200 dark:border-gray-700 last:border-r-0 min-h-[70px] relative transition-colors cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-900/50 ${isDragOver ? 'bg-teal-50 dark:bg-teal-900/20 ring-2 ring-inset ring-teal-500' : ''
+                        }`}
                       onClick={(e) => {
                         // 이벤트 버튼 클릭이 아닌 경우에만 시간 셀 클릭으로 처리
                         if (e.target === e.currentTarget || !(e.target as HTMLElement).closest('button')) {
@@ -938,9 +933,8 @@ export default function IntegratedScheduleManager() {
                             setSelectedEvent(event);
                             setShowEventModal(true);
                           }}
-                          className={`w-full text-left px-2 py-1 rounded text-xs mb-1 truncate transition-all shadow-sm ${
-                            event.type === 'schedule' ? 'cursor-move hover:opacity-80 hover:shadow-md' : 'hover:opacity-80'
-                          } ${draggedEvent?.id === event.id ? 'opacity-50' : ''}`}
+                          className={`w-full text-left px-2 py-1 rounded text-xs mb-1 truncate transition-all shadow-sm ${event.type === 'schedule' ? 'cursor-move hover:opacity-80 hover:shadow-md' : 'hover:opacity-80'
+                            } ${draggedEvent?.id === event.id ? 'opacity-50' : ''}`}
                           style={{ backgroundColor: event.color || '#6366F1', color: 'white' }}
                         >
                           <div className="font-medium">{event.title}</div>
@@ -998,9 +992,8 @@ export default function IntegratedScheduleManager() {
                   {hour.toString().padStart(2, '0')}:00
                 </div>
                 <div
-                  className={`flex-1 p-4 min-h-[80px] transition-colors cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-900/50 ${
-                    isDragOver ? 'bg-teal-50 dark:bg-teal-900/20 ring-2 ring-inset ring-teal-500' : ''
-                  }`}
+                  className={`flex-1 p-4 min-h-[80px] transition-colors cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-900/50 ${isDragOver ? 'bg-teal-50 dark:bg-teal-900/20 ring-2 ring-inset ring-teal-500' : ''
+                    }`}
                   onClick={(e) => {
                     // 이벤트 버튼 클릭이 아닌 경우에만 시간 셀 클릭으로 처리
                     if (e.target === e.currentTarget || !(e.target as HTMLElement).closest('button')) {
@@ -1023,9 +1016,8 @@ export default function IntegratedScheduleManager() {
                             setSelectedEvent(event);
                             setShowEventModal(true);
                           }}
-                          className={`w-full text-left p-3 rounded-full transition-all shadow-sm ${
-                            event.type === 'schedule' ? 'cursor-move hover:opacity-90 hover:shadow-md' : 'hover:opacity-90'
-                          } ${draggedEvent?.id === event.id ? 'opacity-50' : ''}`}
+                          className={`w-full text-left p-3 rounded-full transition-all shadow-sm ${event.type === 'schedule' ? 'cursor-move hover:opacity-90 hover:shadow-md' : 'hover:opacity-90'
+                            } ${draggedEvent?.id === event.id ? 'opacity-50' : ''}`}
                           style={{ backgroundColor: event.color || '#6366F1', color: 'white' }}
                         >
                           <div className="font-semibold text-sm mb-1">{event.title}</div>
@@ -1069,7 +1061,7 @@ export default function IntegratedScheduleManager() {
   };
 
   return (
-    <div className="p-6 space-y-6">
+    <PageContainer>
       {/* 헤더 */}
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
@@ -1085,11 +1077,11 @@ export default function IntegratedScheduleManager() {
             <ExclamationTriangleIcon className="w-5 h-5" />
             충돌 점검
           </button>
-          <button onClick={() => setShowCreateModal(true)} className="px-4 py-2 bg-primary text-primary-foreground text-sm font-medium rounded-full hover:bg-primary/90 flex items-center gap-2">
+          <button onClick={() => setShowCreateModal(true)} className="btn-primary flex items-center gap-2">
             <PlusIcon className="w-5 h-5" />
             과정 일정 추가
           </button>
-          <button onClick={() => setShowPersonalEventModal(true)} className="px-4 py-2 bg-gray-600 dark:bg-gray-500 text-white text-sm font-medium rounded-full hover:bg-gray-700 dark:hover:bg-gray-600 flex items-center gap-2">
+          <button onClick={() => setShowPersonalEventModal(true)} className="btn-secondary flex items-center gap-2">
             <PlusIcon className="w-5 h-5" />
             개인 일정 추가
           </button>
@@ -1100,7 +1092,7 @@ export default function IntegratedScheduleManager() {
       <div className="flex justify-between items-center bg-white dark:bg-gray-800 rounded-lg shadow p-4">
         {/* 날짜 네비게이션 */}
         <div className="flex items-center gap-3">
-          <button onClick={navigateToday} className="px-4 py-2 text-sm font-medium text-foreground hover:bg-muted rounded-full">
+          <button onClick={navigateToday} className="btn-ghost">
             오늘
           </button>
           <button onClick={navigatePrevious} className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full">
@@ -1120,11 +1112,10 @@ export default function IntegratedScheduleManager() {
             <button
               key={mode}
               onClick={() => setViewMode(mode)}
-              className={`px-4 py-2 text-sm font-medium rounded-full ${
-                viewMode === mode
-                  ? 'bg-teal-600 text-white'
-                  : 'text-foreground hover:bg-muted'
-              }`}
+              className={`px-4 py-2 text-sm font-medium rounded-full ${viewMode === mode
+                ? 'bg-teal-600 text-white'
+                : 'text-foreground hover:bg-muted'
+                }`}
             >
               {mode === 'month' ? '월간' : mode === 'week' ? '주간' : '일간'}
             </button>
@@ -1273,9 +1264,8 @@ export default function IntegratedScheduleManager() {
                     <button
                       key={color}
                       onClick={() => setPersonalEventForm({ ...personalEventForm, color })}
-                      className={`w-8 h-8 rounded-full border-2 ${
-                        personalEventForm.color === color ? 'border-gray-900 dark:border-white' : 'border-gray-300'
-                      }`}
+                      className={`w-8 h-8 rounded-full border-2 ${personalEventForm.color === color ? 'border-gray-900 dark:border-white' : 'border-gray-300'
+                        }`}
                       style={{ backgroundColor: color }}
                     />
                   ))}
@@ -1300,7 +1290,7 @@ export default function IntegratedScheduleManager() {
               <button onClick={() => setShowPersonalEventModal(false)} className="btn-secondary rounded-full">
                 취소
               </button>
-              <button onClick={handleCreatePersonalEvent} className="px-4 py-2 bg-gray-600 dark:bg-gray-500 text-white rounded-full hover:bg-gray-700 dark:hover:bg-gray-600">
+              <button onClick={handleCreatePersonalEvent} className="btn-primary">
                 생성
               </button>
             </div>
@@ -1322,17 +1312,16 @@ export default function IntegratedScheduleManager() {
               <div className="grid grid-cols-2 gap-3">
                 <button
                   onClick={() => setScheduleForm({ ...scheduleForm, course_round_id: '' })}
-                  className={`p-3 rounded-lg border-2 transition-all text-left ${
-                    scheduleForm.course_round_id === ''
-                      ? 'border-blue-600 bg-blue-100 dark:bg-blue-900/30'
-                      : 'border-gray-300 dark:border-gray-600 hover:border-blue-400'
-                  }`}
+                  className={`p-3 rounded-lg border-2 transition-all text-left ${scheduleForm.course_round_id === ''
+                    ? 'border-blue-600 bg-blue-100 dark:bg-blue-900/30'
+                    : 'border-gray-300 dark:border-gray-600 hover:border-blue-400'
+                    }`}
                 >
                   <div className="font-medium text-sm text-gray-900 dark:text-white mb-1">
                     📝 빠른 세션 입력
                   </div>
                   <div className="text-xs text-gray-600 dark:text-gray-400">
-                    개별 세션만 먼저 입력<br/>
+                    개별 세션만 먼저 입력<br />
                     (나중에 과정으로 그룹화)
                   </div>
                 </button>
@@ -1342,17 +1331,16 @@ export default function IntegratedScheduleManager() {
                       setScheduleForm({ ...scheduleForm, course_round_id: courseRounds[0].id });
                     }
                   }}
-                  className={`p-3 rounded-lg border-2 transition-all text-left ${
-                    scheduleForm.course_round_id !== ''
-                      ? 'border-blue-600 bg-blue-100 dark:bg-blue-900/30'
-                      : 'border-gray-300 dark:border-gray-600 hover:border-blue-400'
-                  }`}
+                  className={`p-3 rounded-lg border-2 transition-all text-left ${scheduleForm.course_round_id !== ''
+                    ? 'border-blue-600 bg-blue-100 dark:bg-blue-900/30'
+                    : 'border-gray-300 dark:border-gray-600 hover:border-blue-400'
+                    }`}
                 >
                   <div className="font-medium text-sm text-gray-900 dark:text-white mb-1">
                     🎯 과정 기반 입력
                   </div>
                   <div className="text-xs text-gray-600 dark:text-gray-400">
-                    기존 과정에 세션 추가<br/>
+                    기존 과정에 세션 추가<br />
                     (체계적인 관리)
                   </div>
                 </button>
@@ -1868,13 +1856,13 @@ export default function IntegratedScheduleManager() {
                 <div className="flex gap-2">
                   <button
                     onClick={() => openEditModal(selectedEvent)}
-                    className="px-4 py-2 bg-primary text-primary-foreground rounded-full hover:bg-primary/90"
+                    className="btn-primary"
                   >
                     수정
                   </button>
                   <button
                     onClick={() => handleDeleteSchedule(selectedEvent.id.replace('schedule-', ''))}
-                    className="px-4 py-2 bg-destructive text-destructive-foreground rounded-full hover:bg-destructive/90"
+                    className="btn-danger"
                   >
                     삭제
                   </button>
@@ -1906,11 +1894,10 @@ export default function IntegratedScheduleManager() {
               {conflicts.map((conflict, idx) => (
                 <div
                   key={idx}
-                  className={`p-4 rounded-full border-2 ${
-                    conflict.severity === 'high'
-                      ? 'bg-destructive/10 dark:bg-red-900/20 border-destructive/50 dark:border-red-800'
-                      : 'bg-yellow-50 dark:bg-yellow-900/20 border-yellow-300 dark:border-yellow-800'
-                  }`}
+                  className={`p-4 rounded-full border-2 ${conflict.severity === 'high'
+                    ? 'bg-destructive/10 dark:bg-red-900/20 border-destructive/50 dark:border-red-800'
+                    : 'bg-yellow-50 dark:bg-yellow-900/20 border-yellow-300 dark:border-yellow-800'
+                    }`}
                 >
                   <div className="flex items-start justify-between mb-2">
                     <div className="flex items-center gap-2">
@@ -1923,11 +1910,10 @@ export default function IntegratedScheduleManager() {
                         {conflict.conflict_type === 'instructor' ? '강사' : '교실'}: {conflict.resource_name}
                       </span>
                     </div>
-                    <span className={`px-2 py-1 text-xs font-medium rounded ${
-                      conflict.severity === 'high'
-                        ? 'bg-destructive/10 dark:bg-red-800 text-destructive dark:text-red-200'
-                        : 'bg-yellow-100 dark:bg-yellow-800 text-yellow-800 dark:text-yellow-200'
-                    }`}>
+                    <span className={`px-2 py-1 text-xs font-medium rounded ${conflict.severity === 'high'
+                      ? 'bg-destructive/10 dark:bg-red-800 text-destructive dark:text-red-200'
+                      : 'bg-yellow-100 dark:bg-yellow-800 text-yellow-800 dark:text-yellow-200'
+                      }`}>
                       {conflict.severity === 'high' ? '높음' : '보통'}
                     </span>
                   </div>
@@ -1974,7 +1960,7 @@ export default function IntegratedScheduleManager() {
             <div className="flex justify-end gap-3">
               <button
                 onClick={handleConflictCancel}
-                className="px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-full hover:bg-gray-50 dark:hover:bg-gray-700"
+                className="btn-secondary"
               >
                 취소
               </button>
@@ -1988,6 +1974,6 @@ export default function IntegratedScheduleManager() {
           </div>
         </div>
       )}
-    </div>
+    </PageContainer>
   );
 }

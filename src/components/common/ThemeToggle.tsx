@@ -42,9 +42,9 @@ const ThemeToggle: React.FC = () => {
         onClick={toggleTheme}
         className={`
           p-2 rounded-full transition-colors duration-200 
-          ${actualTheme === 'dark' 
-            ? 'bg-gray-700 text-yellow-400 hover:bg-gray-600' 
-            : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+          ${actualTheme === 'dark'
+            ? 'bg-secondary text-yellow-400 hover:bg-secondary/80'
+            : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
           }
         `}
         title={`현재: ${getThemeLabel(theme)} (${actualTheme === 'dark' ? '다크' : '라이트'})`}
@@ -60,13 +60,13 @@ export const ThemeSelector: React.FC = () => {
 
   return (
     <div className={`
-      bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 
+      bg-popover border border-border 
       rounded-full shadow-lg p-4 space-y-3
     `}>
-      <h3 className="text-sm font-medium text-gray-900 dark:text-white mb-3">
+      <h3 className="text-sm font-medium text-foreground mb-3">
         테마 설정
       </h3>
-      
+
       <div className="space-y-2">
         {[
           { key: 'light', label: '라이트 모드', icon: SunIcon },
@@ -79,14 +79,8 @@ export const ThemeSelector: React.FC = () => {
             className={`
               w-full flex items-center space-x-3 p-2 rounded-full text-left transition-colors
               ${theme === key
-                ? `${actualTheme === 'dark' 
-                    ? 'bg-blue-600 text-white' 
-                    : 'bg-blue-100 text-blue-900 border border-blue-300'
-                  }`
-                : `${actualTheme === 'dark'
-                    ? 'text-gray-300 hover:bg-gray-700'
-                    : 'text-gray-700 hover:bg-gray-100'
-                  }`
+                ? 'bg-primary text-primary-foreground'
+                : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
               }
             `}
           >
@@ -95,10 +89,7 @@ export const ThemeSelector: React.FC = () => {
             {theme === key && (
               <span className={`
                 ml-auto text-xs px-2 py-1 rounded-full
-                ${actualTheme === 'dark' 
-                  ? 'bg-blue-500 text-white' 
-                  : 'bg-blue-200 text-blue-800'
-                }
+                ml-auto text-xs px-2 py-1 rounded-full bg-primary-foreground/20 text-primary-foreground
               `}>
                 활성
               </span>
@@ -109,10 +100,7 @@ export const ThemeSelector: React.FC = () => {
 
       <div className={`
         mt-3 pt-3 border-t text-xs 
-        ${actualTheme === 'dark' 
-          ? 'border-gray-700 text-gray-400' 
-          : 'border-gray-200 text-gray-500'
-        }
+        mt-3 pt-3 border-t border-border text-xs text-muted-foreground
       `}>
         현재 적용된 테마: <span className="font-medium">
           {actualTheme === 'dark' ? '다크' : '라이트'}

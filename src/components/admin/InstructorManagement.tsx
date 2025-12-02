@@ -16,7 +16,9 @@ import {
   AcademicCapIcon,
   StarIcon,
   PhoneIcon,
+  ChartBarIcon,
 } from '@heroicons/react/24/outline';
+import { PageContainer } from '../common/PageContainer';
 import { instructorProfileService } from '../../services/instructor-profile.service';
 import { subjectService, instructorSubjectService } from '../../services/subject.service';
 import { supabase } from '../../services/supabase';
@@ -353,14 +355,16 @@ export function InstructorManagement() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="text-gray-500">로딩 중...</div>
-      </div>
+      <PageContainer>
+        <div className="flex items-center justify-center h-64">
+          <div className="text-gray-500">로딩 중...</div>
+        </div>
+      </PageContainer>
     );
   }
 
   return (
-    <div className="p-6">
+    <PageContainer>
       <div className="mb-6 flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">강사 관리</h1>
@@ -370,7 +374,7 @@ export function InstructorManagement() {
         </div>
         <button
           onClick={openCreateModal}
-          className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90"
+          className="btn-primary"
         >
           <PlusIcon className="w-5 h-5" />
           강사 추가
@@ -490,21 +494,21 @@ export function InstructorManagement() {
                         setSelectedInstructor(instructor);
                         setShowDetailModal(true);
                       }}
-                      className="px-3 py-1 text-sm bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100"
+                      className="btn-outline py-1 h-auto text-sm"
                       title="상세 정보"
                     >
                       상세보기
                     </button>
                     <button
                       onClick={() => openEditModal(instructor)}
-                      className="p-2 text-gray-600 dark:text-gray-400 hover:text-teal-600 dark:hover:text-teal-400"
+                      className="btn-ghost p-2 h-auto"
                       title="계정 수정"
                     >
                       <PencilIcon className="w-5 h-5" />
                     </button>
                     <button
                       onClick={() => openProfileModal(instructor)}
-                      className="px-3 py-1 text-sm bg-primary/10 text-primary rounded-lg hover:bg-primary/20"
+                      className="btn-secondary py-1 h-auto text-sm"
                     >
                       {instructor.profile ? '프로필 수정' : '프로필 생성'}
                     </button>
@@ -588,13 +592,13 @@ export function InstructorManagement() {
             <div className="mt-6 flex justify-end gap-3">
               <button
                 onClick={() => setShowCreateModal(false)}
-                className="px-4 py-2 text-foreground hover:bg-muted rounded-lg"
+                className="btn-outline"
               >
                 취소
               </button>
               <button
                 onClick={handleCreateAccount}
-                className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90"
+                className="btn-primary"
               >
                 생성
               </button>
@@ -653,13 +657,13 @@ export function InstructorManagement() {
                   setShowEditModal(false);
                   setSelectedInstructor(null);
                 }}
-                className="px-4 py-2 text-foreground hover:bg-muted rounded-lg"
+                className="btn-outline"
               >
                 취소
               </button>
               <button
                 onClick={handleUpdateAccount}
-                className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90"
+                className="btn-primary"
               >
                 수정
               </button>
@@ -730,11 +734,10 @@ export function InstructorManagement() {
                   <div className="flex flex-wrap gap-2">
                     <button
                       onClick={() => setSelectedCategory('all')}
-                      className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
-                        selectedCategory === 'all'
+                      className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${selectedCategory === 'all'
                           ? 'bg-teal-600 text-white'
                           : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
-                      }`}
+                        }`}
                     >
                       전체 ({subjects.length})
                     </button>
@@ -742,11 +745,10 @@ export function InstructorManagement() {
                       <button
                         key={category}
                         onClick={() => setSelectedCategory(category!)}
-                        className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
-                          selectedCategory === category
+                        className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${selectedCategory === category
                             ? 'bg-teal-600 text-white'
                             : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
-                        }`}
+                          }`}
                       >
                         {category} ({subjects.filter(s => s.category === category).length})
                       </button>
@@ -834,9 +836,9 @@ export function InstructorManagement() {
                 </div>
 
                 <p className="mt-3 text-xs text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-900/50 p-3 rounded-lg">
-                  💡 <strong>사용 방법:</strong><br/>
-                  • 검색창이나 카테고리로 과목을 필터링하세요<br/>
-                  • 과목을 클릭하여 선택하고 숙련도를 설정하세요<br/>
+                  💡 <strong>사용 방법:</strong><br />
+                  • 검색창이나 카테고리로 과목을 필터링하세요<br />
+                  • 과목을 클릭하여 선택하고 숙련도를 설정하세요<br />
                   • 선택된 과목은 상단에 표시되며 X 버튼으로 제거할 수 있습니다
                 </p>
               </div>
@@ -892,14 +894,14 @@ export function InstructorManagement() {
                     setSelectedInstructor(null);
                     setSelectedSubjects(new Map());
                   }}
-                  className="px-4 py-2 text-foreground hover:bg-muted rounded-lg transition-colors"
+                  className="btn-outline"
                 >
                   취소
                 </button>
                 <button
                   onClick={handleSaveProfile}
                   disabled={selectedSubjects.size === 0}
-                  className="px-6 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
+                  className="btn-primary"
                 >
                   저장
                 </button>
@@ -1010,11 +1012,10 @@ export function InstructorManagement() {
                           <div className="font-medium text-gray-900 dark:text-white">
                             {is.subject.name}
                           </div>
-                          <span className={`px-2 py-1 text-xs rounded-full ${
-                            is.proficiency_level === 'expert' ? 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200' :
-                            is.proficiency_level === 'intermediate' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200' :
-                            'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
-                          }`}>
+                          <span className={`px-2 py-1 text-xs rounded-full ${is.proficiency_level === 'expert' ? 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200' :
+                              is.proficiency_level === 'intermediate' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200' :
+                                'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
+                            }`}>
                             {proficiencyLevelLabels[is.proficiency_level]}
                           </span>
                         </div>
@@ -1088,7 +1089,7 @@ export function InstructorManagement() {
                     setShowDetailModal(false);
                     openEditModal(selectedInstructor);
                   }}
-                  className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 border border-gray-300 dark:border-gray-600"
+                  className="btn-outline"
                 >
                   <PencilIcon className="w-4 h-4" />
                   계정 수정
@@ -1098,7 +1099,7 @@ export function InstructorManagement() {
                     setShowDetailModal(false);
                     openProfileModal(selectedInstructor);
                   }}
-                  className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90"
+                  className="btn-primary"
                 >
                   <UserIcon className="w-4 h-4" />
                   {selectedInstructor.profile ? '프로필 수정' : '프로필 생성'}
@@ -1106,7 +1107,7 @@ export function InstructorManagement() {
               </div>
               <button
                 onClick={() => setShowDetailModal(false)}
-                className="flex items-center gap-2 px-4 py-2 bg-gray-300 dark:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-400 dark:hover:bg-gray-500"
+                className="btn-outline"
               >
                 <XCircleIcon className="w-4 h-4" />
                 닫기
@@ -1115,7 +1116,7 @@ export function InstructorManagement() {
           </div>
         </div>
       )}
-    </div>
+    </PageContainer>
   );
 }
 

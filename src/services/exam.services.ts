@@ -71,19 +71,42 @@ export class ExamService {
    * 시험 상세 조회 (문제 포함)
    */
   static async getExamById(examId: string): Promise<Exam | null> {
-    // 임시: PostgREST 캐시 문제로 인해 조인 제거
-    const { data, error } = await supabase
-      .from('exams')
-      .select('*')
-      .eq('id', examId)
-      .single();
+    try {
+      const { data, error } = await supabase
+        .from('exams')
+        .select(`
+          *,
+          exam_questions(
+            id,
+            exam_id,
+            question_id,
+            points,
+            order_index,
+            question:questions(
+              id,
+              type,
+              question_text,
+              options,
+              correct_answer,
+              explanation,
+              difficulty,
+              tags
+            )
+          )
+        `)
+        .eq('id', examId)
+        .single();
 
-    if (error) {
-      console.error('시험 상세 조회 실패:', error);
+      if (error) {
+        console.error('[ExamService] 시험 상세 조회 실패:', error);
+        return null;
+      }
+
+      return data;
+    } catch (error) {
+      console.error('[ExamService] getExamById 오류:', error);
       return null;
     }
-
-    return data;
   }
 
   /**

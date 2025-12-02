@@ -62,7 +62,7 @@ const UserDetail: React.FC<UserDetailProps> = ({ user, onBack, onEdit }) => {
       {/* 기본 정보 */}
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
         <h2 className="text-lg font-medium text-gray-900 mb-4">기본 정보</h2>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-4">
             <div className="flex items-center space-x-3">
@@ -76,7 +76,7 @@ const UserDetail: React.FC<UserDetailProps> = ({ user, onBack, onEdit }) => {
                 <div className="text-sm text-gray-500">사번: {user.employee_id}</div>
               </div>
             </div>
-            
+
             <div className="space-y-3">
               <div className="flex items-center text-gray-700">
                 <EnvelopeIcon className="h-4 w-4 mr-3 text-gray-400" />
@@ -92,25 +92,23 @@ const UserDetail: React.FC<UserDetailProps> = ({ user, onBack, onEdit }) => {
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-500 mb-1">상태</label>
-              <span className={`inline-flex px-3 py-1 text-sm font-semibold rounded-full ${
-                user.status === 'active' ? 'bg-green-500/10 text-green-700' :
-                user.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                user.status === 'suspended' ? 'bg-destructive/10 text-destructive' :
-                'bg-gray-100 text-gray-800'
-              }`}>
+              <span className={`inline-flex px-3 py-1 text-sm font-semibold rounded-full ${user.status === 'active' ? 'bg-green-500/10 text-green-700' :
+                  user.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                    user.status === 'suspended' ? 'bg-destructive/10 text-destructive' :
+                      'bg-gray-100 text-gray-800'
+                }`}>
                 {userStatusLabels[user.status]}
               </span>
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-500 mb-1">역할</label>
-              <span className={`inline-flex px-3 py-1 text-sm font-semibold rounded-full ${
-                user.role === 'admin' ? 'bg-destructive/10 text-destructive' :
-                user.role === 'manager' ? 'bg-purple-100 text-purple-800' :
-                user.role === 'operator' ? 'bg-yellow-100 text-yellow-800' :
-                user.role === 'instructor' ? 'bg-green-500/10 text-green-700' :
-                'bg-blue-100 text-blue-800'
-              }`}>
+              <span className={`inline-flex px-3 py-1 text-sm font-semibold rounded-full ${user.role === 'admin' ? 'bg-destructive/10 text-destructive' :
+                  user.role === 'manager' ? 'bg-purple-100 text-purple-800' :
+                    user.role === 'operator' ? 'bg-yellow-100 text-yellow-800' :
+                      user.role === 'instructor' ? 'bg-green-500/10 text-green-700' :
+                        'bg-blue-100 text-blue-800'
+                }`}>
                 {roleLabels[user.role]}
               </span>
             </div>
@@ -129,7 +127,7 @@ const UserDetail: React.FC<UserDetailProps> = ({ user, onBack, onEdit }) => {
       {/* 회사 정보 */}
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
         <h2 className="text-lg font-medium text-gray-900 mb-4">회사 정보</h2>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <label className="block text-sm font-medium text-gray-500 mb-1">부서</label>
@@ -176,7 +174,7 @@ const UserDetail: React.FC<UserDetailProps> = ({ user, onBack, onEdit }) => {
             <ExclamationCircleIcon className="h-5 w-5 mr-2 text-orange-500" />
             비상 연락처
           </h2>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div>
               <label className="block text-sm font-medium text-gray-500 mb-1">이름</label>
@@ -202,7 +200,7 @@ const UserDetail: React.FC<UserDetailProps> = ({ user, onBack, onEdit }) => {
       {/* 시스템 정보 */}
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
         <h2 className="text-lg font-medium text-gray-900 mb-4">시스템 정보</h2>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
           <div>
             <label className="block text-sm font-medium text-gray-500 mb-1">등록일</label>
@@ -222,7 +220,7 @@ const UserDetail: React.FC<UserDetailProps> = ({ user, onBack, onEdit }) => {
           <div>
             <label className="block text-sm font-medium text-gray-500 mb-1">권한</label>
             <div className="text-gray-700">
-              {user.permissions && user.permissions.length > 0 
+              {user.permissions && user.permissions.length > 0
                 ? user.permissions.join(', ')
                 : '기본 권한'
               }
@@ -236,7 +234,7 @@ const UserDetail: React.FC<UserDetailProps> = ({ user, onBack, onEdit }) => {
         <div className="flex items-center justify-between">
           <button
             onClick={onBack}
-            className="px-6 py-2 border border-gray-300 text-gray-700 rounded-full hover:bg-gray-50 transition-colors"
+            className="btn-secondary"
           >
             목록으로
           </button>

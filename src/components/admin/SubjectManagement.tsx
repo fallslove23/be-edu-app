@@ -14,6 +14,7 @@ import {
   TrashIcon,
   MagnifyingGlassIcon,
 } from '@heroicons/react/24/outline';
+import { PageContainer } from '../common/PageContainer';
 import { subjectService, instructorSubjectService } from '../../services/subject.service';
 import type { Subject, SubjectCreate } from '../../types/integrated-schedule.types';
 
@@ -148,14 +149,16 @@ export function SubjectManagement() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="text-gray-500">로딩 중...</div>
-      </div>
+      <PageContainer>
+        <div className="flex items-center justify-center h-64">
+          <div className="text-gray-500">로딩 중...</div>
+        </div>
+      </PageContainer>
     );
   }
 
   return (
-    <div className="p-6">
+    <PageContainer>
       <div className="mb-6 flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">과목 관리</h1>
@@ -165,7 +168,7 @@ export function SubjectManagement() {
         </div>
         <button
           onClick={openCreateModal}
-          className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-full hover:bg-primary/90"
+          className="btn-primary"
         >
           <PlusIcon className="w-5 h-5" />
           과목 추가
@@ -245,14 +248,14 @@ export function SubjectManagement() {
                   <div className="flex items-center gap-2 ml-4">
                     <button
                       onClick={() => openEditModal(subject)}
-                      className="p-2 text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 rounded-full"
+                      className="btn-ghost p-2 rounded-full"
                       title="수정"
                     >
                       <PencilIcon className="w-5 h-5" />
                     </button>
                     <button
                       onClick={() => handleDelete(subject.id, subject.name)}
-                      className="p-2 text-gray-600 dark:text-gray-400 hover:text-destructive dark:hover:text-red-400 rounded-full"
+                      className="btn-ghost p-2 rounded-full hover:text-destructive dark:hover:text-red-400"
                       title="삭제"
                     >
                       <TrashIcon className="w-5 h-5" />
@@ -333,14 +336,14 @@ export function SubjectManagement() {
             <div className="mt-6 flex justify-end gap-3">
               <button
                 onClick={() => setShowCreateModal(false)}
-                className="px-4 py-2 text-foreground hover:bg-muted rounded-full"
+                className="btn-outline"
               >
                 취소
               </button>
               <button
                 onClick={handleCreate}
                 disabled={!form.name}
-                className="px-4 py-2 bg-primary text-primary-foreground rounded-full hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="btn-primary"
               >
                 생성
               </button>
@@ -406,14 +409,14 @@ export function SubjectManagement() {
                   setShowEditModal(false);
                   setSelectedSubject(null);
                 }}
-                className="px-4 py-2 text-foreground hover:bg-muted rounded-full"
+                className="btn-outline"
               >
                 취소
               </button>
               <button
                 onClick={handleUpdate}
                 disabled={!form.name}
-                className="px-4 py-2 bg-primary text-primary-foreground rounded-full hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="btn-primary"
               >
                 수정
               </button>
@@ -421,7 +424,7 @@ export function SubjectManagement() {
           </div>
         </div>
       )}
-    </div>
+    </PageContainer>
   );
 }
 

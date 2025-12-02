@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { CategoryService } from '../../services/resource.services';
 import type { Category, CreateCategoryData, UpdateCategoryData } from '../../types/resource.types';
 import { CATEGORY_COLORS, CATEGORY_ICONS } from '../../types/resource.types';
+import { PageContainer } from '../common/PageContainer';
 
 export const CategoryManagement: React.FC = () => {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -161,13 +162,13 @@ export const CategoryManagement: React.FC = () => {
           <div className="flex items-center gap-2">
             <button
               onClick={() => startEdit(category)}
-              className="px-3 py-1.5 text-sm bg-primary text-primary-foreground rounded-full hover:bg-primary/90 transition-colors"
+              className="btn-outline py-1 h-auto text-sm"
             >
               수정
             </button>
             <button
               onClick={() => setDeleteConfirmId(category.id)}
-              className="px-3 py-1.5 text-sm bg-destructive text-destructive-foreground rounded-full hover:bg-destructive/90 transition-colors"
+              className="btn-danger py-1 h-auto text-sm"
             >
               삭제
             </button>
@@ -197,13 +198,13 @@ export const CategoryManagement: React.FC = () => {
               <div className="flex justify-end gap-2">
                 <button
                   onClick={() => setDeleteConfirmId(null)}
-                  className="px-4 py-2 bg-secondary text-secondary-foreground rounded-full hover:bg-secondary/80 transition-colors"
+                  className="btn-outline"
                 >
                   취소
                 </button>
                 <button
                   onClick={() => handleDelete(category.id)}
-                  className="px-4 py-2 bg-destructive text-destructive-foreground rounded-full hover:bg-destructive/90 transition-colors"
+                  className="btn-danger"
                 >
                   삭제
                 </button>
@@ -220,190 +221,193 @@ export const CategoryManagement: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center p-8">
-        <div className="text-muted-foreground">로딩 중...</div>
-      </div>
+      <PageContainer>
+        <div className="flex items-center justify-center p-8">
+          <div className="text-muted-foreground">로딩 중...</div>
+        </div>
+      </PageContainer>
     );
   }
 
   return (
-    <div className="space-y-6 p-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl font-bold text-card-foreground">카테고리 관리</h2>
-          <p className="text-muted-foreground mt-1">
-            과정 카테고리를 추가, 수정, 삭제할 수 있습니다.
-          </p>
-        </div>
-        <button
-          onClick={() => setIsFormOpen(true)}
-          className="px-4 py-2 bg-primary text-primary-foreground rounded-full hover:bg-primary/90 transition-colors"
-        >
-          + 카테고리 추가
-        </button>
-      </div>
-
-      {/* Error message */}
-      {error && (
-        <div className="p-4 bg-destructive/10 border border-destructive/20 rounded-lg">
-          <p className="text-destructive">{error}</p>
-        </div>
-      )}
-
-      {/* Category list */}
-      <div className="space-y-2">
-        {rootCategories.length === 0 ? (
-          <div className="text-center p-8 bg-card rounded-lg">
-            <p className="text-muted-foreground">등록된 카테고리가 없습니다.</p>
+    <PageContainer>
+      <div className="space-y-6">
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-2xl font-bold text-card-foreground">카테고리 관리</h2>
+            <p className="text-muted-foreground mt-1">
+              과정 카테고리를 추가, 수정, 삭제할 수 있습니다.
+            </p>
           </div>
-        ) : (
-          renderCategoryTree(rootCategories)
+          <button
+            onClick={() => setIsFormOpen(true)}
+            className="btn-primary"
+          >
+            + 카테고리 추가
+          </button>
+        </div>
+
+        {/* Error message */}
+        {error && (
+          <div className="p-4 bg-destructive/10 border border-destructive/20 rounded-lg">
+            <p className="text-destructive">{error}</p>
+          </div>
         )}
-      </div>
 
-      {/* Form modal */}
-      {isFormOpen && (
-        <div className="fixed inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center z-50">
-          <div className="bg-card p-6 rounded-lg shadow-lg max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
-            <h3 className="text-xl font-semibold text-card-foreground mb-4">
-              {editingCategory ? '카테고리 수정' : '카테고리 추가'}
-            </h3>
+        {/* Category list */}
+        <div className="space-y-2">
+          {rootCategories.length === 0 ? (
+            <div className="text-center p-8 bg-card rounded-lg">
+              <p className="text-muted-foreground">등록된 카테고리가 없습니다.</p>
+            </div>
+          ) : (
+            renderCategoryTree(rootCategories)
+          )}
+        </div>
 
-            <div className="space-y-4">
-              {/* Name */}
-              <div>
-                <label className="block text-sm font-medium text-card-foreground mb-1">
-                  카테고리 이름 <span className="text-destructive">*</span>
-                </label>
-                <input
-                  type="text"
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full px-3 py-2 bg-background border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
-                  placeholder="예: BS 영업"
-                />
-              </div>
+        {/* Form modal */}
+        {isFormOpen && (
+          <div className="fixed inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center z-50">
+            <div className="bg-card p-6 rounded-lg shadow-lg max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+              <h3 className="text-xl font-semibold text-card-foreground mb-4">
+                {editingCategory ? '카테고리 수정' : '카테고리 추가'}
+              </h3>
 
-              {/* Parent Category */}
-              <div>
-                <label className="block text-sm font-medium text-card-foreground mb-1">
-                  상위 카테고리
-                </label>
-                <select
-                  value={formData.parent_id || ''}
-                  onChange={(e) => setFormData({ ...formData, parent_id: e.target.value || null })}
-                  className="w-full px-3 py-2 bg-background border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
-                >
-                  <option value="">없음 (최상위 카테고리)</option>
-                  {rootCategories.map((cat) => (
-                    <option key={cat.id} value={cat.id} disabled={cat.id === editingCategory?.id}>
-                      {cat.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
+              <div className="space-y-4">
+                {/* Name */}
+                <div>
+                  <label className="block text-sm font-medium text-card-foreground mb-1">
+                    카테고리 이름 <span className="text-destructive">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    className="w-full px-3 py-2 bg-background border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
+                    placeholder="예: BS 영업"
+                  />
+                </div>
 
-              {/* Description */}
-              <div>
-                <label className="block text-sm font-medium text-card-foreground mb-1">
-                  설명
-                </label>
-                <textarea
-                  value={formData.description}
-                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  className="w-full px-3 py-2 bg-background border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
-                  rows={3}
-                  placeholder="카테고리에 대한 설명을 입력하세요"
-                />
-              </div>
+                {/* Parent Category */}
+                <div>
+                  <label className="block text-sm font-medium text-card-foreground mb-1">
+                    상위 카테고리
+                  </label>
+                  <select
+                    value={formData.parent_id || ''}
+                    onChange={(e) => setFormData({ ...formData, parent_id: e.target.value || null })}
+                    className="w-full px-3 py-2 bg-background border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
+                  >
+                    <option value="">없음 (최상위 카테고리)</option>
+                    {rootCategories.map((cat) => (
+                      <option key={cat.id} value={cat.id} disabled={cat.id === editingCategory?.id}>
+                        {cat.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
 
-              {/* Color picker */}
-              <div>
-                <label className="block text-sm font-medium text-card-foreground mb-1">
-                  색상
-                </label>
-                <div className="flex gap-2 flex-wrap">
-                  {CATEGORY_COLORS.map((color) => (
-                    <button
-                      key={color}
-                      onClick={() => setFormData({ ...formData, color })}
-                      className={`w-10 h-10 rounded-full border-2 transition-all ${
-                        formData.color === color ? 'border-primary scale-110' : 'border-border'
-                      }`}
-                      style={{ backgroundColor: color }}
-                    />
-                  ))}
+                {/* Description */}
+                <div>
+                  <label className="block text-sm font-medium text-card-foreground mb-1">
+                    설명
+                  </label>
+                  <textarea
+                    value={formData.description}
+                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                    className="w-full px-3 py-2 bg-background border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
+                    rows={3}
+                    placeholder="카테고리에 대한 설명을 입력하세요"
+                  />
+                </div>
+
+                {/* Color picker */}
+                <div>
+                  <label className="block text-sm font-medium text-card-foreground mb-1">
+                    색상
+                  </label>
+                  <div className="flex gap-2 flex-wrap">
+                    {CATEGORY_COLORS.map((color) => (
+                      <button
+                        key={color}
+                        onClick={() => setFormData({ ...formData, color })}
+                        className={`w-10 h-10 rounded-full border-2 transition-all ${formData.color === color ? 'border-primary scale-110' : 'border-border'
+                          }`}
+                        style={{ backgroundColor: color }}
+                      />
+                    ))}
+                  </div>
+                </div>
+
+                {/* Icon picker */}
+                <div>
+                  <label className="block text-sm font-medium text-card-foreground mb-1">
+                    아이콘
+                  </label>
+                  <select
+                    value={formData.icon}
+                    onChange={(e) => setFormData({ ...formData, icon: e.target.value })}
+                    className="w-full px-3 py-2 bg-background border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
+                  >
+                    {CATEGORY_ICONS.map((icon) => (
+                      <option key={icon} value={icon}>
+                        {icon}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Display order */}
+                <div>
+                  <label className="block text-sm font-medium text-card-foreground mb-1">
+                    표시 순서
+                  </label>
+                  <input
+                    type="number"
+                    value={formData.display_order}
+                    onChange={(e) => setFormData({ ...formData, display_order: parseInt(e.target.value) || 0 })}
+                    className="w-full px-3 py-2 bg-background border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
+                    min={0}
+                  />
+                </div>
+
+                {/* Active status */}
+                <div className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    id="is_active"
+                    checked={formData.is_active}
+                    onChange={(e) => setFormData({ ...formData, is_active: e.target.checked })}
+                    className="w-4 h-4 rounded border-input"
+                  />
+                  <label htmlFor="is_active" className="text-sm font-medium text-card-foreground">
+                    활성화
+                  </label>
                 </div>
               </div>
 
-              {/* Icon picker */}
-              <div>
-                <label className="block text-sm font-medium text-card-foreground mb-1">
-                  아이콘
-                </label>
-                <select
-                  value={formData.icon}
-                  onChange={(e) => setFormData({ ...formData, icon: e.target.value })}
-                  className="w-full px-3 py-2 bg-background border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
+              {/* Form actions */}
+              <div className="flex justify-end gap-2 mt-6">
+                <button
+                  onClick={resetForm}
+                  className="btn-outline"
                 >
-                  {CATEGORY_ICONS.map((icon) => (
-                    <option key={icon} value={icon}>
-                      {icon}
-                    </option>
-                  ))}
-                </select>
+                  취소
+                </button>
+                <button
+                  onClick={editingCategory ? handleUpdate : handleCreate}
+                  disabled={!formData.name.trim()}
+                  className="btn-primary"
+                >
+                  {editingCategory ? '수정' : '추가'}
+                </button>
               </div>
-
-              {/* Display order */}
-              <div>
-                <label className="block text-sm font-medium text-card-foreground mb-1">
-                  표시 순서
-                </label>
-                <input
-                  type="number"
-                  value={formData.display_order}
-                  onChange={(e) => setFormData({ ...formData, display_order: parseInt(e.target.value) || 0 })}
-                  className="w-full px-3 py-2 bg-background border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
-                  min={0}
-                />
-              </div>
-
-              {/* Active status */}
-              <div className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  id="is_active"
-                  checked={formData.is_active}
-                  onChange={(e) => setFormData({ ...formData, is_active: e.target.checked })}
-                  className="w-4 h-4 rounded border-input"
-                />
-                <label htmlFor="is_active" className="text-sm font-medium text-card-foreground">
-                  활성화
-                </label>
-              </div>
-            </div>
-
-            {/* Form actions */}
-            <div className="flex justify-end gap-2 mt-6">
-              <button
-                onClick={resetForm}
-                className="px-4 py-2 bg-secondary text-secondary-foreground rounded-full hover:bg-secondary/80 transition-colors"
-              >
-                취소
-              </button>
-              <button
-                onClick={editingCategory ? handleUpdate : handleCreate}
-                disabled={!formData.name.trim()}
-                className="px-4 py-2 bg-primary text-primary-foreground rounded-full hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {editingCategory ? '수정' : '추가'}
-              </button>
             </div>
           </div>
-        </div>
-      )}
-    </div>
+        )}
+      </div>
+    </PageContainer>
   );
 };
 

@@ -154,20 +154,20 @@ const ExamList: React.FC<ExamListProps> = ({
                   {getExamTypeIcon(exam.exam_type)}
                   <span className="ml-2">{examTypeLabels[exam.exam_type]}</span>
                 </div>
-                
+
                 <div className="flex items-center text-sm text-gray-600">
                   <ClockIcon className="h-4 w-4" />
                   <span className="ml-2">{exam.duration_minutes}분</span>
                 </div>
-                
+
                 <div className="flex items-center text-sm text-gray-600">
                   <UsersIcon className="h-4 w-4" />
-                  <span className="ml-2">{exam.total_questions}문항</span>
+                  <span className="ml-2">{exam.question_count || 0}문항</span>
                 </div>
-                
+
                 <div className="flex items-center text-sm text-gray-600">
                   <CalendarDaysIcon className="h-4 w-4" />
-                  <span className="ml-2 text-xs">{formatSchedule(exam.scheduled_start, exam.scheduled_end)}</span>
+                  <span className="ml-2 text-xs">{formatSchedule(exam.available_from || '', exam.available_until || '')}</span>
                 </div>
               </div>
 
@@ -185,19 +185,19 @@ const ExamList: React.FC<ExamListProps> = ({
               </div>
 
               {/* 액션 버튼 */}
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center gap-2">
                 <button
                   onClick={() => onExamSelect(exam, 'edit')}
-                  className="flex-1 btn-secondary btn-sm"
+                  className="flex-1 btn-secondary btn-sm inline-flex items-center justify-center"
                 >
-                  <PencilIcon className="h-4 w-4 mr-1" />
-                  편집
+                  <PencilIcon className="h-4 w-4" />
+                  <span className="ml-1">편집</span>
                 </button>
 
                 {onClone && (
                   <button
                     onClick={() => onClone(exam)}
-                    className="btn-secondary btn-sm"
+                    className="btn-secondary btn-sm !p-2"
                     title="시험 복제"
                   >
                     <DocumentDuplicateIcon className="h-4 w-4" />
@@ -207,17 +207,18 @@ const ExamList: React.FC<ExamListProps> = ({
                 {exam.status === 'active' && (
                   <button
                     onClick={() => onExamSelect(exam, 'take')}
-                    className="flex-1 btn-primary btn-sm"
+                    className="flex-1 btn-primary btn-sm inline-flex items-center justify-center"
                   >
-                    <PlayIcon className="h-4 w-4 mr-1" />
-                    시험 응시
+                    <PlayIcon className="h-4 w-4" />
+                    <span className="ml-1">시험응시</span>
                   </button>
                 )}
 
                 {(exam.status === 'completed' || exam.status === 'active') && (
                   <button
                     onClick={() => onExamSelect(exam, 'results')}
-                    className="btn-secondary btn-sm"
+                    className="btn-secondary btn-sm !p-2"
+                    title="결과"
                   >
                     <ChartBarIcon className="h-4 w-4" />
                   </button>
@@ -227,13 +228,13 @@ const ExamList: React.FC<ExamListProps> = ({
               {/* 특별 표시 */}
               <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-100">
                 <div className="flex items-center space-x-3 text-xs text-gray-500">
-                  {exam.is_randomized && (
+                  {exam.randomize_questions && (
                     <span className="flex items-center">
                       <div className="w-2 h-2 bg-blue-400 rounded-lg mr-1"></div>
                       문제 랜덤
                     </span>
                   )}
-                  {exam.show_results_immediately && (
+                  {exam.show_correct_answers && (
                     <span className="flex items-center">
                       <div className="w-2 h-2 bg-green-400 rounded-lg mr-1"></div>
                       즉시 결과

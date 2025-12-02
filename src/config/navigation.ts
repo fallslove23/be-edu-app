@@ -28,7 +28,7 @@ export const navigationItems: MenuItem[] = [
   {
     id: 'dashboard',
     label: '대시보드',
-    icon: 'chart-bar',
+    icon: 'squares-2x2',
     description: '전체 현황 및 요약 정보',
     roles: ['admin', 'manager', 'operator', 'instructor', 'trainee'],
     section: 'dashboard',
@@ -60,21 +60,21 @@ export const navigationItems: MenuItem[] = [
       {
         id: 'users',
         label: '사용자 관리',
-        icon: 'user',
+        icon: 'user-circle',
         description: '시스템 사용자 계정 관리',
         route: 'users'
       },
       {
         id: 'trainees',
         label: '교육생 관리',
-        icon: 'academic-cap',
+        icon: 'user-group',
         description: '교육생 등록 및 관리',
         route: 'trainees'
       },
       {
         id: 'instructor-management',
         label: '강사 관리',
-        icon: 'user',
+        icon: 'identification',
         description: '강사 계정 및 프로필 통합 관리',
         route: 'instructor-management'
       }
@@ -128,7 +128,7 @@ export const navigationItems: MenuItem[] = [
       {
         id: 'exams',
         label: '시험 관리',
-        icon: 'clipboard-check',
+        icon: 'clipboard-document-list',
         description: '시험 출제 및 채점',
         route: 'exams'
       },
@@ -142,21 +142,21 @@ export const navigationItems: MenuItem[] = [
       {
         id: 'evaluation-templates',
         label: '평가 템플릿',
-        icon: 'cog',
+        icon: 'document-duplicate',
         description: '평가 기준 설정',
         route: 'evaluation-templates'
       },
       {
         id: 'instructor-evaluation',
         label: '강사 평가',
-        icon: 'pencil-alt',
+        icon: 'pencil-square',
         description: '학생 평가 입력',
         route: 'instructor-evaluation'
       },
       {
         id: 'comprehensive-grades',
         label: '종합 성적',
-        icon: 'chart-bar',
+        icon: 'trophy',
         description: '최종 성적표',
         route: 'comprehensive-grades'
       }
@@ -167,7 +167,7 @@ export const navigationItems: MenuItem[] = [
   {
     id: 'analytics',
     label: '분석 및 보고서',
-    icon: 'chart-bar',
+    icon: 'chart-pie',
     description: '통합 대시보드, 교육생 리포트, 성과 분석 통합 관리',
     roles: ['admin', 'manager', 'operator', 'instructor'],
     section: 'analytics',
@@ -188,7 +188,7 @@ export const navigationItems: MenuItem[] = [
       {
         id: 'curriculum-management',
         label: '커리큘럼 관리',
-        icon: 'book-open',
+        icon: 'clipboard-document-list',
         description: '과정 시간표 생성 및 관리 (관리자 전용)',
         route: 'curriculum-management'
       },
@@ -216,14 +216,14 @@ export const navigationItems: MenuItem[] = [
       {
         id: 'category-management',
         label: '카테고리 관리',
-        icon: 'folder',
+        icon: 'tag',
         description: '과정 카테고리 관리',
         route: 'category-management'
       },
       {
         id: 'subject-management',
         label: '과목 관리',
-        icon: 'book-open',
+        icon: 'bookmark',
         description: '강의 과목 관리',
         route: 'subject-management'
       },
@@ -290,7 +290,7 @@ export const navigationItems: MenuItem[] = [
   {
     id: 'educational-materials',
     label: '교육 자료 관리',
-    icon: 'book-open',
+    icon: 'document-text',
     description: '교육 자료 업로드, 분류, 배포 관리',
     roles: ['admin', 'manager', 'operator', 'instructor'],
     section: 'materials',
@@ -300,7 +300,7 @@ export const navigationItems: MenuItem[] = [
       {
         id: 'materials-library',
         label: '자료 라이브러리',
-        icon: 'library',
+        icon: 'archive-box',
         description: '교육 자료 저장소',
         route: 'materials-library'
       },
@@ -314,7 +314,7 @@ export const navigationItems: MenuItem[] = [
       {
         id: 'materials-categories',
         label: '자료 분류',
-        icon: 'folder',
+        icon: 'squares-plus',
         description: '교육 자료 카테고리 관리',
         route: 'materials-categories'
       },
@@ -360,7 +360,7 @@ export const navigationItems: MenuItem[] = [
       {
         id: 'course-planner',
         label: '과정 플래너',
-        icon: 'calendar',
+        icon: 'clipboard-document-check',
         description: '외부 과정 기획 시스템',
         route: process.env.NEXT_PUBLIC_FIREBASE_PLANNER_URL || 'https://studio--eduscheduler-nrx9o.us-central1.hosted.app',
         isExternal: true

@@ -17,6 +17,7 @@ import {
   InstructorPaymentHistory
 } from '../../services/instructor-payment.service';
 import { useAuth } from '../../contexts/AuthContext';
+import { PageContainer } from '../common/PageContainer';
 
 interface CourseRound {
   id: string;
@@ -213,360 +214,358 @@ const InstructorPaymentManagement: React.FC = () => {
   };
 
   return (
-    <div className="p-6 bg-white rounded-lg shadow-md">
-      <h2 className="text-2xl font-bold mb-6">강사료 계산 및 관리</h2>
+    <PageContainer>
+      <div className="p-6 bg-white rounded-lg shadow-md">
+        <h2 className="text-2xl font-bold mb-6">강사료 계산 및 관리</h2>
 
-      {/* 과정 선택 */}
-      <div className="mb-6">
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          과정 선택
-        </label>
-        <div className="flex gap-2">
-          <select
-            value={selectedCourse}
-            onChange={(e) => setSelectedCourse(e.target.value)}
-            className="flex-1 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="">과정을 선택하세요</option>
-            {courses.map((course) => (
-              <option key={course.id} value={course.id}>
-                {course.title} ({course.start_date} ~ {course.end_date})
-              </option>
-            ))}
-          </select>
-          <button
-            onClick={handleUpdateSummaries}
-            disabled={!selectedCourse || loading}
-            className="px-4 py-2 bg-primary text-primary-foreground rounded-full hover:bg-primary/90 disabled:bg-gray-300 disabled:cursor-not-allowed"
-          >
-            집계 업데이트
-          </button>
-        </div>
-      </div>
-
-      {/* 탭 */}
-      <div className="mb-6 border-b border-gray-200">
-        <nav className="flex gap-4">
-          <button
-            onClick={() => setActiveTab('summary')}
-            className={`pb-2 px-1 ${
-              activeTab === 'summary'
-                ? 'border-b-2 border-blue-500 text-blue-600 font-medium'
-                : 'text-gray-500 hover:text-gray-700'
-            }`}
-          >
-            강사 집계
-          </button>
-          <button
-            onClick={() => setActiveTab('history')}
-            className={`pb-2 px-1 ${
-              activeTab === 'history'
-                ? 'border-b-2 border-blue-500 text-blue-600 font-medium'
-                : 'text-gray-500 hover:text-gray-700'
-            }`}
-          >
-            지급 이력
-          </button>
-        </nav>
-      </div>
-
-      {/* 강사 집계 탭 */}
-      {activeTab === 'summary' && (
-        <div>
-          {loading ? (
-            <div className="text-center py-8">
-              <div className="inline-block animate-spin rounded-lg h-8 w-8 border-b-2 border-blue-500"></div>
-              <p className="mt-2 text-gray-600">로딩 중...</p>
-            </div>
-          ) : summaries.length === 0 ? (
-            <div className="text-center py-8 text-gray-500">
-              집계 데이터가 없습니다. 과정을 선택하고 "집계 업데이트" 버튼을 클릭하세요.
-            </div>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      강사
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      구분
-                    </th>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      이론 시간
-                    </th>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      실기 시간
-                    </th>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      총 시간
-                    </th>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      세션 수
-                    </th>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      시간당 단가
-                    </th>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      총 강사료
-                    </th>
-                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      상태
-                    </th>
-                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      작업
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {summaries.map((summary) => (
-                    <tr key={summary.id} className="hover:bg-gray-50">
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {summary.instructor_id}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        <span
-                          className={`px-2 py-1 rounded-full text-xs font-medium ${
-                            summary.instructor_type === 'primary'
-                              ? 'bg-blue-100 text-blue-800'
-                              : 'bg-green-500/10 text-green-700'
-                          }`}
-                        >
-                          {getInstructorTypeLabel(summary.instructor_type)}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-900">
-                        {formatHours(summary.total_lecture_hours)}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-900">
-                        {formatHours(summary.total_practice_hours)}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-right font-medium text-gray-900">
-                        {formatHours(summary.total_hours)}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-900">
-                        {summary.session_count}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-900">
-                        {formatCurrency(summary.hourly_rate)}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-right font-bold text-blue-600">
-                        {formatCurrency(summary.total_payment)}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-center">
-                        {summary.is_finalized ? (
-                          <span className="px-2 py-1 bg-green-500/10 text-green-700 rounded-full text-xs font-medium">
-                            확정
-                          </span>
-                        ) : (
-                          <span className="px-2 py-1 bg-yellow-100 text-yellow-800 rounded-full text-xs font-medium">
-                            미확정
-                          </span>
-                        )}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-center text-sm">
-                        <div className="flex gap-2 justify-center">
-                          <button
-                            onClick={() =>
-                              handleFinalizeSummary(summary.id, summary.is_finalized)
-                            }
-                            className={`px-3 py-1 rounded-md text-white text-xs ${
-                              summary.is_finalized
-                                ? 'bg-yellow-500 hover:bg-yellow-600'
-                                : 'bg-green-500 hover:bg-green-600'
-                            }`}
-                          >
-                            {summary.is_finalized ? '확정 취소' : '확정'}
-                          </button>
-                          {summary.is_finalized && (
-                            <button
-                              onClick={() => handleCreatePayment(summary)}
-                              className="px-3 py-1 bg-primary text-primary-foreground rounded-full hover:bg-primary/90 text-xs"
-                            >
-                              지급 등록
-                            </button>
-                          )}
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* 지급 이력 탭 */}
-      {activeTab === 'history' && (
-        <div>
-          {paymentHistory.length === 0 ? (
-            <div className="text-center py-8 text-gray-500">지급 이력이 없습니다.</div>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      지급일
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      강사
-                    </th>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      이론 시간
-                    </th>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      실기 시간
-                    </th>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      총 시간
-                    </th>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      시간당 단가
-                    </th>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      지급 금액
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      지급 방법
-                    </th>
-                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      상태
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      비고
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {paymentHistory.map((payment) => (
-                    <tr key={payment.id} className="hover:bg-gray-50">
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {payment.payment_date}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {payment.instructor_id}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-900">
-                        {payment.lecture_hours ? formatHours(payment.lecture_hours) : '-'}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-900">
-                        {payment.practice_hours ? formatHours(payment.practice_hours) : '-'}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-right font-medium text-gray-900">
-                        {payment.total_hours ? formatHours(payment.total_hours) : '-'}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-900">
-                        {payment.hourly_rate ? formatCurrency(payment.hourly_rate) : '-'}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-right font-bold text-blue-600">
-                        {formatCurrency(payment.payment_amount)}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {payment.payment_method || '-'}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-center">
-                        <span
-                          className={`px-2 py-1 rounded-full text-xs font-medium ${getPaymentStatusColor(
-                            payment.payment_status
-                          )}`}
-                        >
-                          {getPaymentStatusLabel(payment.payment_status)}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 text-sm text-gray-900">
-                        {payment.notes || '-'}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* 지급 등록 모달 */}
-      {showPaymentModal && selectedSummary && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
-            <h3 className="text-xl font-bold mb-4">강사료 지급 등록</h3>
-            <form onSubmit={handleSubmitPayment}>
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    지급일 *
-                  </label>
-                  <input
-                    type="date"
-                    name="payment_date"
-                    required
-                    className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    지급 방법
-                  </label>
-                  <select
-                    name="payment_method"
-                    className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  >
-                    <option value="">선택</option>
-                    <option value="계좌이체">계좌이체</option>
-                    <option value="현금">현금</option>
-                    <option value="기타">기타</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    지급 금액
-                  </label>
-                  <input
-                    type="text"
-                    value={formatCurrency(selectedSummary.total_payment)}
-                    disabled
-                    className="w-full p-2 border border-gray-300 rounded-md bg-gray-100"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">비고</label>
-                  <textarea
-                    name="notes"
-                    rows={3}
-                    className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-              </div>
-
-              <div className="mt-6 flex gap-2 justify-end">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setShowPaymentModal(false);
-                    setSelectedSummary(null);
-                  }}
-                  className="px-4 py-2 border border-gray-300 rounded-full hover:bg-gray-50"
-                >
-                  취소
-                </button>
-                <button
-                  type="submit"
-                  className="px-4 py-2 bg-primary text-primary-foreground rounded-full hover:bg-primary/90"
-                >
-                  등록
-                </button>
-              </div>
-            </form>
+        {/* 과정 선택 */}
+        <div className="mb-6">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            과정 선택
+          </label>
+          <div className="flex gap-2">
+            <select
+              value={selectedCourse}
+              onChange={(e) => setSelectedCourse(e.target.value)}
+              className="flex-1 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="">과정을 선택하세요</option>
+              {courses.map((course) => (
+                <option key={course.id} value={course.id}>
+                  {course.title} ({course.start_date} ~ {course.end_date})
+                </option>
+              ))}
+            </select>
+            <button
+              onClick={handleUpdateSummaries}
+              disabled={!selectedCourse || loading}
+              className="btn-primary"
+            >
+              집계 업데이트
+            </button>
           </div>
         </div>
-      )}
-    </div>
+
+        {/* 탭 */}
+        <div className="mb-6 border-b border-gray-200">
+          <nav className="flex gap-4">
+            <button
+              onClick={() => setActiveTab('summary')}
+              className={`pb-2 px-1 ${activeTab === 'summary'
+                  ? 'border-b-2 border-blue-500 text-blue-600 font-medium'
+                  : 'text-gray-500 hover:text-gray-700'
+                }`}
+            >
+              강사 집계
+            </button>
+            <button
+              onClick={() => setActiveTab('history')}
+              className={`pb-2 px-1 ${activeTab === 'history'
+                  ? 'border-b-2 border-blue-500 text-blue-600 font-medium'
+                  : 'text-gray-500 hover:text-gray-700'
+                }`}
+            >
+              지급 이력
+            </button>
+          </nav>
+        </div>
+
+        {/* 강사 집계 탭 */}
+        {activeTab === 'summary' && (
+          <div>
+            {loading ? (
+              <div className="text-center py-8">
+                <div className="inline-block animate-spin rounded-lg h-8 w-8 border-b-2 border-blue-500"></div>
+                <p className="mt-2 text-gray-600">로딩 중...</p>
+              </div>
+            ) : summaries.length === 0 ? (
+              <div className="text-center py-8 text-gray-500">
+                집계 데이터가 없습니다. 과정을 선택하고 "집계 업데이트" 버튼을 클릭하세요.
+              </div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="min-w-full divide-y divide-gray-200">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        강사
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        구분
+                      </th>
+                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        이론 시간
+                      </th>
+                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        실기 시간
+                      </th>
+                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        총 시간
+                      </th>
+                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        세션 수
+                      </th>
+                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        시간당 단가
+                      </th>
+                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        총 강사료
+                      </th>
+                      <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        상태
+                      </th>
+                      <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        작업
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {summaries.map((summary) => (
+                      <tr key={summary.id} className="hover:bg-gray-50">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          {summary.instructor_id}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          <span
+                            className={`px-2 py-1 rounded-full text-xs font-medium ${summary.instructor_type === 'primary'
+                                ? 'bg-blue-100 text-blue-800'
+                                : 'bg-green-500/10 text-green-700'
+                              }`}
+                          >
+                            {getInstructorTypeLabel(summary.instructor_type)}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-900">
+                          {formatHours(summary.total_lecture_hours)}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-900">
+                          {formatHours(summary.total_practice_hours)}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-right font-medium text-gray-900">
+                          {formatHours(summary.total_hours)}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-900">
+                          {summary.session_count}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-900">
+                          {formatCurrency(summary.hourly_rate)}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-right font-bold text-blue-600">
+                          {formatCurrency(summary.total_payment)}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-center">
+                          {summary.is_finalized ? (
+                            <span className="px-2 py-1 bg-green-500/10 text-green-700 rounded-full text-xs font-medium">
+                              확정
+                            </span>
+                          ) : (
+                            <span className="px-2 py-1 bg-yellow-100 text-yellow-800 rounded-full text-xs font-medium">
+                              미확정
+                            </span>
+                          )}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-center text-sm">
+                          <div className="flex gap-2 justify-center">
+                            <button
+                              onClick={() =>
+                                handleFinalizeSummary(summary.id, summary.is_finalized)
+                              }
+                              className={`btn-primary py-1 px-3 text-xs ${summary.is_finalized
+                                  ? 'bg-yellow-500 hover:bg-yellow-600 border-none'
+                                  : 'bg-green-500 hover:bg-green-600 border-none'
+                                }`}
+                            >
+                              {summary.is_finalized ? '확정 취소' : '확정'}
+                            </button>
+                            {summary.is_finalized && (
+                              <button
+                                onClick={() => handleCreatePayment(summary)}
+                                className="btn-primary py-1 px-3 text-xs"
+                              >
+                                지급 등록
+                              </button>
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* 지급 이력 탭 */}
+        {activeTab === 'history' && (
+          <div>
+            {paymentHistory.length === 0 ? (
+              <div className="text-center py-8 text-gray-500">지급 이력이 없습니다.</div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="min-w-full divide-y divide-gray-200">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        지급일
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        강사
+                      </th>
+                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        이론 시간
+                      </th>
+                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        실기 시간
+                      </th>
+                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        총 시간
+                      </th>
+                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        시간당 단가
+                      </th>
+                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        지급 금액
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        지급 방법
+                      </th>
+                      <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        상태
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        비고
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {paymentHistory.map((payment) => (
+                      <tr key={payment.id} className="hover:bg-gray-50">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          {payment.payment_date}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          {payment.instructor_id}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-900">
+                          {payment.lecture_hours ? formatHours(payment.lecture_hours) : '-'}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-900">
+                          {payment.practice_hours ? formatHours(payment.practice_hours) : '-'}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-right font-medium text-gray-900">
+                          {payment.total_hours ? formatHours(payment.total_hours) : '-'}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-900">
+                          {payment.hourly_rate ? formatCurrency(payment.hourly_rate) : '-'}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-right font-bold text-blue-600">
+                          {formatCurrency(payment.payment_amount)}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          {payment.payment_method || '-'}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-center">
+                          <span
+                            className={`px-2 py-1 rounded-full text-xs font-medium ${getPaymentStatusColor(
+                              payment.payment_status
+                            )}`}
+                          >
+                            {getPaymentStatusLabel(payment.payment_status)}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 text-sm text-gray-900">
+                          {payment.notes || '-'}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* 지급 등록 모달 */}
+        {showPaymentModal && selectedSummary && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+              <h3 className="text-xl font-bold mb-4">강사료 지급 등록</h3>
+              <form onSubmit={handleSubmitPayment}>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      지급일 *
+                    </label>
+                    <input
+                      type="date"
+                      name="payment_date"
+                      required
+                      className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      지급 방법
+                    </label>
+                    <select
+                      name="payment_method"
+                      className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                      <option value="">선택</option>
+                      <option value="계좌이체">계좌이체</option>
+                      <option value="현금">현금</option>
+                      <option value="기타">기타</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      지급 금액
+                    </label>
+                    <input
+                      type="text"
+                      value={formatCurrency(selectedSummary.total_payment)}
+                      disabled
+                      className="w-full p-2 border border-gray-300 rounded-md bg-gray-100"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">비고</label>
+                    <textarea
+                      name="notes"
+                      rows={3}
+                      className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+                </div>
+
+                <div className="mt-6 flex gap-2 justify-end">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowPaymentModal(false);
+                      setSelectedSummary(null);
+                    }}
+                    className="btn-outline"
+                  >
+                    취소
+                  </button>
+                  <button
+                    type="submit"
+                    className="btn-primary"
+                  >
+                    등록
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+      </div>
+    </PageContainer>
   );
 };
 

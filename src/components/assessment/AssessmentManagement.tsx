@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import TabNavigation from '../common/TabNavigation';
 import { ExamManagement } from '../exam';
 import { PracticeEvaluation } from '../practice';
+import { PageContainer } from '../common/PageContainer';
 
 const AssessmentManagement: React.FC = () => {
   const [activeTab, setActiveTab] = useState('theory-exams');
@@ -39,7 +40,7 @@ const AssessmentManagement: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <PageContainer>
       <div className="bg-white p-6 rounded-lg shadow-sm">
         <h1 className="text-2xl font-bold text-gray-900 mb-2">📝 평가 및 활동 관리</h1>
         <p className="text-gray-600">BS 활동부터 시험, 실습평가까지 통합 관리</p>
@@ -52,7 +53,7 @@ const AssessmentManagement: React.FC = () => {
       />
 
       {renderTabContent()}
-    </div>
+    </PageContainer>
   );
 };
 

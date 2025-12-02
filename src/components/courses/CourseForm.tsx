@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { 
+import {
   XMarkIcon,
   UserIcon,
   CalendarDaysIcon,
@@ -45,10 +45,10 @@ const CourseForm: React.FC<CourseFormProps> = ({
   const [managers, setManagers] = useState<User[]>([]);
   const isEdit = !!course;
 
-  const { 
-    register, 
-    handleSubmit, 
-    formState: { errors }, 
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
     reset,
     setValue,
     watch
@@ -93,12 +93,12 @@ const CourseForm: React.FC<CourseFormProps> = ({
   const loadUsers = async () => {
     try {
       const [adminList, courseManagerList] = await Promise.all([
-        UserService.getUsersByRole('app_admin'),
+        UserService.getUsersByRole('admin'),
         UserService.getUsersByRole('course_manager')
       ]);
-      
+
       const managerList = [...adminList, ...courseManagerList];
-      
+
       setManagers(managerList);
     } catch (error) {
       console.error('Failed to load users:', error);
@@ -113,7 +113,7 @@ const CourseForm: React.FC<CourseFormProps> = ({
       // 날짜 유효성 검사
       const startDate = new Date(data.start_date);
       const endDate = new Date(data.end_date);
-      
+
       if (startDate >= endDate) {
         toast.error('종료일은 시작일보다 늦어야 합니다.');
         return;
@@ -140,7 +140,7 @@ const CourseForm: React.FC<CourseFormProps> = ({
       }
 
       let result: Course;
-      
+
       if (isEdit && course) {
         result = await CourseService.updateCourse(course.id, courseData);
         toast.success('과정이 성공적으로 수정되었습니다.');
@@ -197,7 +197,7 @@ const CourseForm: React.FC<CourseFormProps> = ({
               </div>
               <input
                 type="text"
-                {...register('name', { 
+                {...register('name', {
                   required: '과정명을 입력해주세요.',
                   maxLength: { value: 100, message: '과정명은 100자 이하로 입력해주세요.' }
                 })}
@@ -216,7 +216,7 @@ const CourseForm: React.FC<CourseFormProps> = ({
               <AcademicCapIcon className="h-5 w-5 mr-2" />
               교육 기본 정보
             </h3>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {/* 교육 연도 */}
               <div>
@@ -229,7 +229,7 @@ const CourseForm: React.FC<CourseFormProps> = ({
                   </div>
                   <input
                     type="number"
-                    {...register('education_year', { 
+                    {...register('education_year', {
                       required: '교육 연도를 입력해주세요.',
                       min: { value: 2020, message: '2020년 이후로 입력해주세요.' },
                       max: { value: 2030, message: '2030년 이전으로 입력해주세요.' }
@@ -256,7 +256,7 @@ const CourseForm: React.FC<CourseFormProps> = ({
                   </div>
                   <input
                     type="number"
-                    {...register('cohort', { 
+                    {...register('cohort', {
                       required: '차수를 입력해주세요.',
                       min: { value: 1, message: '1차 이상이어야 합니다.' },
                       max: { value: 20, message: '20차 이하로 입력해주세요.' }
@@ -286,7 +286,7 @@ const CourseForm: React.FC<CourseFormProps> = ({
                   </div>
                   <input
                     type="number"
-                    {...register('enrollment_count', { 
+                    {...register('enrollment_count', {
                       required: '입과생 수를 입력해주세요.',
                       min: { value: 0, message: '0명 이상이어야 합니다.' },
                       max: { value: 100, message: '100명 이하로 입력해주세요.' }
@@ -361,7 +361,7 @@ const CourseForm: React.FC<CourseFormProps> = ({
                 </div>
                 <input
                   type="date"
-                  {...register('start_date', { 
+                  {...register('start_date', {
                     required: '시작일을 선택해주세요.',
                     validate: (value) => {
                       const today = new Date();
@@ -392,7 +392,7 @@ const CourseForm: React.FC<CourseFormProps> = ({
                 </div>
                 <input
                   type="date"
-                  {...register('end_date', { 
+                  {...register('end_date', {
                     required: '종료일을 선택해주세요.',
                     validate: (value) => {
                       if (startDate && value && new Date(value) <= new Date(startDate)) {
@@ -422,7 +422,7 @@ const CourseForm: React.FC<CourseFormProps> = ({
               </div>
               <input
                 type="number"
-                {...register('max_trainees', { 
+                {...register('max_trainees', {
                   required: '최대 수강 인원을 입력해주세요.',
                   min: { value: 1, message: '최소 1명 이상이어야 합니다.' },
                   max: { value: 100, message: '최대 100명까지 가능합니다.' }
@@ -446,7 +446,7 @@ const CourseForm: React.FC<CourseFormProps> = ({
             <button
               type="button"
               onClick={handleClose}
-              className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-full hover:bg-gray-50 transition-colors"
+              className="btn-outline"
               disabled={loading}
             >
               취소

@@ -43,7 +43,7 @@ export default function QuestionEditModal({
             </h2>
             <button
               onClick={onClose}
-              className="text-gray-400 hover:text-gray-600 transition-colors"
+              className="btn-ghost p-2 rounded-full"
             >
               <XMarkIcon className="h-6 w-6" />
             </button>
@@ -180,13 +180,13 @@ export default function QuestionEditModal({
         <div className="p-6 border-t border-gray-200 bg-gray-50 flex items-center justify-end gap-3">
           <button
             onClick={onClose}
-            className="px-6 py-2 border border-gray-300 text-gray-700 rounded-full hover:bg-gray-100 transition-colors"
+            className="btn-outline"
           >
             취소
           </button>
           <button
             onClick={handleSave}
-            className="px-6 py-2 bg-primary text-primary-foreground rounded-full hover:bg-primary/90 transition-colors"
+            className="btn-primary"
           >
             저장
           </button>

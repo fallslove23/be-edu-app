@@ -97,7 +97,7 @@ export default function ExamCloneWizard({
             </div>
             <button
               onClick={onClose}
-              className="text-gray-400 hover:text-gray-600 transition-colors"
+              className="btn-ghost p-2 rounded-full"
             >
               <XMarkIcon className="h-6 w-6" />
             </button>
@@ -109,13 +109,12 @@ export default function ExamCloneWizard({
               <React.Fragment key={s}>
                 <div className="flex items-center gap-2">
                   <div
-                    className={`flex items-center justify-center w-10 h-10 rounded-full font-bold transition-all ${
-                      step === s
+                    className={`flex items-center justify-center w-10 h-10 rounded-full font-bold transition-all ${step === s
                         ? 'bg-purple-600 text-white shadow-lg'
                         : step > s
-                        ? 'bg-green-500 text-white'
-                        : 'bg-gray-200 text-gray-500'
-                    }`}
+                          ? 'bg-green-500 text-white'
+                          : 'bg-gray-200 text-gray-500'
+                      }`}
                   >
                     {step > s ? <CheckCircleIcon className="h-6 w-6" /> : s}
                   </div>
@@ -127,9 +126,8 @@ export default function ExamCloneWizard({
                 </div>
                 {s < 3 && (
                   <div
-                    className={`flex-1 h-0.5 mx-2 ${
-                      step > s ? 'bg-green-500' : 'bg-gray-200'
-                    }`}
+                    className={`flex-1 h-0.5 mx-2 ${step > s ? 'bg-green-500' : 'bg-gray-200'
+                      }`}
                   />
                 )}
               </React.Fragment>
@@ -252,11 +250,10 @@ export default function ExamCloneWizard({
                       <button
                         key={level}
                         onClick={() => updateOption('adjustDifficulty', level)}
-                        className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
-                          options.adjustDifficulty === level
+                        className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${options.adjustDifficulty === level
                             ? 'bg-purple-600 text-white shadow-md'
                             : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                        }`}
+                          }`}
                       >
                         {level === 'easier' && '쉽게'}
                         {level === 'same' && '동일'}
@@ -387,7 +384,7 @@ export default function ExamCloneWizard({
         <div className="p-6 border-t border-gray-200 bg-gray-50 flex items-center justify-between">
           <button
             onClick={onClose}
-            className="px-6 py-2 border border-gray-300 text-gray-700 rounded-full hover:bg-gray-100 transition-colors"
+            className="btn-outline"
           >
             취소
           </button>
@@ -395,7 +392,7 @@ export default function ExamCloneWizard({
             {step > 1 && (
               <button
                 onClick={handleBack}
-                className="px-6 py-2 border border-gray-300 text-gray-700 rounded-full hover:bg-gray-100 transition-colors"
+                className="btn-outline"
               >
                 이전
               </button>
@@ -403,14 +400,14 @@ export default function ExamCloneWizard({
             {step < 3 ? (
               <button
                 onClick={handleNext}
-                className="px-6 py-2 bg-purple-600 text-white rounded-full hover:bg-purple-700 transition-colors"
+                className="btn-primary"
               >
                 다음
               </button>
             ) : (
               <button
                 onClick={handleClone}
-                className="px-6 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-full hover:from-purple-700 hover:to-pink-700 transition-colors shadow-lg"
+                className="btn-primary"
               >
                 복제 완료
               </button>

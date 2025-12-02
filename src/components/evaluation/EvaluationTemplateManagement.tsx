@@ -8,6 +8,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { PlusIcon, PencilIcon, TrashIcon, ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/outline';
+import { PageContainer } from '../common/PageContainer';
 import {
   evaluationTemplateService,
   evaluationComponentService,
@@ -257,22 +258,26 @@ export default function EvaluationTemplateManagement() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="text-gray-500 dark:text-gray-400">로딩 중...</div>
-      </div>
+      <PageContainer>
+        <div className="flex items-center justify-center h-64">
+          <div className="text-gray-500 dark:text-gray-400">로딩 중...</div>
+        </div>
+      </PageContainer>
     );
   }
 
   if (error) {
     return (
-      <div className="bg-destructive/10 dark:bg-red-900/20 border border-destructive/50 dark:border-red-800 rounded-lg p-4">
-        <p className="text-destructive dark:text-red-200">{error}</p>
-      </div>
+      <PageContainer>
+        <div className="bg-destructive/10 dark:bg-red-900/20 border border-destructive/50 dark:border-red-800 rounded-lg p-4">
+          <p className="text-destructive dark:text-red-200">{error}</p>
+        </div>
+      </PageContainer>
     );
   }
 
   return (
-    <div className="space-y-6">
+    <PageContainer>
       {/* 헤더 */}
       <div className="flex justify-between items-center">
         <div>
@@ -739,6 +744,6 @@ export default function EvaluationTemplateManagement() {
           </div>
         </div>
       )}
-    </div>
+    </PageContainer>
   );
 }

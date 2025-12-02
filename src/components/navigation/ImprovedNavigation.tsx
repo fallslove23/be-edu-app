@@ -1,9 +1,11 @@
+'use client';
+
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
-import { getMenuItemsForRole, MenuItem } from '../../config/navigation';
+import { getMenuItemsForRole, MenuItem, SubMenuItem } from '../../config/navigation';
 import { NavigationIcon } from './NavigationIcons';
-import { 
-  ChevronRightIcon, 
+import {
+  ChevronRightIcon,
   ChevronDownIcon,
   MagnifyingGlassIcon,
   XMarkIcon
@@ -50,16 +52,18 @@ const ImprovedNavigation: React.FC<ImprovedNavigationProps> = ({
   if (!user) return null;
 
   const menuItems = getMenuItemsForRole(user.role);
-  
-  
+
+  type NavigationItem = MenuItem | SubMenuItem;
+
   // Flatten all menu items for search
-  const allMenuItems: MenuItem[] = [];
-  const flattenItems = (items: MenuItem[]) => {
+  const allMenuItems: NavigationItem[] = [];
+  const flattenItems = (items: NavigationItem[]) => {
     items.forEach(item => {
-      if (!item.isCategory) {
+      const isCategory = 'isCategory' in item ? item.isCategory : false;
+      if (!isCategory) {
         allMenuItems.push(item);
       }
-      if (item.subItems) {
+      if ('subItems' in item && item.subItems) {
         flattenItems(item.subItems);
       }
     });
@@ -68,10 +72,10 @@ const ImprovedNavigation: React.FC<ImprovedNavigationProps> = ({
 
   // Filter items based on search
   const filteredItems = searchTerm
-    ? allMenuItems.filter(item => 
-        item.label.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (item.description && item.description.toLowerCase().includes(searchTerm.toLowerCase()))
-      )
+    ? allMenuItems.filter(item =>
+      item.label.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (item.description && item.description.toLowerCase().includes(searchTerm.toLowerCase()))
+    )
     : menuItems;
 
   const toggleCategory = (categoryId: string) => {
@@ -98,23 +102,23 @@ const ImprovedNavigation: React.FC<ImprovedNavigationProps> = ({
   };
 
   const getRecentItems = () => {
-    return recentViews.map(viewId => 
+    return recentViews.map(viewId =>
       allMenuItems.find(item => item.id === viewId)
     ).filter(Boolean) as MenuItem[];
   };
 
   return (
-    <div className="h-full flex flex-col bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700">
+    <div className="h-full flex flex-col bg-sidebar/80 backdrop-blur-xl border-r border-white/10 shadow-2xl">
       {/* Header */}
-      <div className={`p-4 border-b border-gray-200 dark:border-gray-700 ${isCollapsed ? 'flex flex-col items-center' : ''}`}>
+      <div className={`p-4 border-b border-white/10 ${isCollapsed ? 'flex flex-col items-center' : ''}`}>
         <div className={`flex items-center ${isCollapsed ? 'justify-center mb-0' : 'space-x-3 mb-4'}`}>
-          <div className={`${isCollapsed ? 'w-10 h-10' : 'w-8 h-8'} bg-blue-600 rounded-lg flex items-center justify-center`}>
+          <div className={`${isCollapsed ? 'w-10 h-10' : 'w-8 h-8'} bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl shadow-lg shadow-indigo-500/30 flex items-center justify-center`}>
             <span className="text-white font-bold text-sm">BS</span>
           </div>
           {!isCollapsed && (
             <div>
-              <h2 className="font-semibold text-gray-900 dark:text-white text-sm">학습 관리</h2>
-              <p className="text-xs text-gray-500 dark:text-gray-400">{user.name}</p>
+              <h2 className="font-semibold text-sidebar-foreground text-sm">학습 관리</h2>
+              <p className="text-xs text-muted-foreground">{user.name}</p>
             </div>
           )}
         </div>
@@ -122,18 +126,18 @@ const ImprovedNavigation: React.FC<ImprovedNavigationProps> = ({
         {/* Search */}
         {!isCollapsed && (
           <div className="relative">
-            <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <input
               type="text"
               placeholder="메뉴 검색..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-8 py-2 text-sm border border-gray-200 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+              className="w-full pl-10 pr-8 py-2 text-sm border border-white/10 rounded-xl focus:ring-2 focus:ring-primary/50 focus:border-transparent bg-white/5 text-foreground placeholder:text-muted-foreground transition-all duration-300"
             />
             {searchTerm && (
               <button
                 onClick={clearSearch}
-                className="absolute right-2 top-1/2 transform -translate-y-1/2 p-1 text-gray-400 hover:text-gray-600"
+                className="absolute right-2 top-1/2 transform -translate-y-1/2 p-1 text-muted-foreground hover:text-foreground"
               >
                 <XMarkIcon className="h-3 w-3" />
               </button>
@@ -146,27 +150,35 @@ const ImprovedNavigation: React.FC<ImprovedNavigationProps> = ({
       <div className={`flex-1 overflow-y-auto space-y-2 ${isCollapsed ? 'px-2 py-4' : 'p-4'}`}>
         {/* Recent Views - only show if no search and there are recent items */}
         {!searchTerm && !isCollapsed && getRecentItems().length > 0 && (
-          <div className="mb-4">
-            <h3 className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">
-              최근 사용
-            </h3>
-            <div className="space-y-1">
+          <div className="mb-6 pb-4 border-b border-border/50">
+            <div className="flex items-center gap-2 mb-3">
+              <div className="flex-shrink-0 w-1 h-4 bg-gradient-to-b from-indigo-500 to-purple-600 rounded-full"></div>
+              <h3 className="text-xs font-semibold text-foreground uppercase tracking-wider">
+                최근 사용
+              </h3>
+              <div className="flex-1 h-px bg-gradient-to-r from-border/50 to-transparent"></div>
+            </div>
+            <div className="space-y-1 bg-muted/30 rounded-xl p-2">
               {getRecentItems().slice(0, 3).map((item) => (
                 <button
                   key={`recent-${item.id}`}
                   onClick={() => handleItemClick(item.id)}
-                  className={`w-full text-left px-3 py-2 rounded-full text-sm transition-colors flex items-center space-x-3 ${
-                    activeView === item.id
-                      ? 'bg-blue-600 text-white'
-                      : 'text-foreground hover:bg-muted'
-                  }`}
+                  className={`w-full text-left px-3 py-2.5 rounded-lg text-sm transition-all duration-200 flex items-center space-x-3 ${activeView === item.id
+                    ? 'bg-gradient-to-r from-indigo-500/20 to-purple-500/20 text-primary border border-primary/30 shadow-sm'
+                    : 'text-sidebar-foreground hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground border border-transparent'
+                    }`}
                   title={item.description}
                 >
-                  <NavigationIcon 
-                    iconName={item.icon} 
-                    className={`h-4 w-4 ${activeView === item.id ? 'text-white' : 'text-gray-400'}`} 
-                  />
-                  <span className="truncate">{item.label}</span>
+                  <div className={`flex-shrink-0 p-1.5 rounded-lg ${activeView === item.id ? 'bg-primary/10' : 'bg-muted/50'}`}>
+                    <NavigationIcon
+                      iconName={item.icon}
+                      className={`h-4 w-4 ${activeView === item.id ? 'text-primary' : 'text-muted-foreground'}`}
+                    />
+                  </div>
+                  <span className="truncate font-medium">{item.label}</span>
+                  {activeView === item.id && (
+                    <div className="ml-auto flex-shrink-0 w-1.5 h-1.5 bg-primary rounded-full animate-pulse"></div>
+                  )}
                 </button>
               ))}
             </div>
@@ -176,28 +188,39 @@ const ImprovedNavigation: React.FC<ImprovedNavigationProps> = ({
         {/* Search Results */}
         {searchTerm && (
           <div>
-            <h3 className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">
-              검색 결과 ({filteredItems.length})
-            </h3>
+            <div className="flex items-center gap-2 mb-3">
+              <div className="flex-shrink-0 w-1 h-4 bg-gradient-to-b from-green-500 to-emerald-600 rounded-full"></div>
+              <h3 className="text-xs font-semibold text-foreground uppercase tracking-wider">
+                검색 결과 ({filteredItems.length})
+              </h3>
+              <div className="flex-1 h-px bg-gradient-to-r from-border/50 to-transparent"></div>
+            </div>
             <div className="space-y-1">
-              {filteredItems.map((item) => (
-                <button
-                  key={`search-${item.id}`}
-                  onClick={() => handleItemClick(item.id)}
-                  className={`w-full text-left px-3 py-2 rounded-full text-sm transition-colors flex items-center space-x-3 ${
-                    activeView === item.id
-                      ? 'bg-blue-600 text-white'
-                      : 'text-foreground hover:bg-muted'
-                  }`}
-                  title={item.description}
-                >
-                  <NavigationIcon 
-                    iconName={item.icon} 
-                    className={`h-4 w-4 ${activeView === item.id ? 'text-white' : 'text-gray-400'}`} 
-                  />
-                  <span className="truncate">{item.label}</span>
-                </button>
-              ))}
+              {filteredItems.length > 0 ? (
+                filteredItems.map((item) => (
+                  <button
+                    key={`search-${item.id}`}
+                    onClick={() => handleItemClick(item.id)}
+                    className={`w-full text-left px-3 py-2.5 rounded-lg text-sm transition-all duration-200 flex items-center space-x-3 ${activeView === item.id
+                      ? 'bg-gradient-to-r from-green-500/20 to-emerald-500/20 text-primary border border-primary/30 shadow-sm'
+                      : 'text-sidebar-foreground hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground border border-transparent'
+                      }`}
+                    title={item.description}
+                  >
+                    <div className={`flex-shrink-0 p-1.5 rounded-lg ${activeView === item.id ? 'bg-primary/10' : 'bg-muted/50'}`}>
+                      <NavigationIcon
+                        iconName={item.icon}
+                        className={`h-4 w-4 ${activeView === item.id ? 'text-primary' : 'text-muted-foreground'}`}
+                      />
+                    </div>
+                    <span className="truncate font-medium">{item.label}</span>
+                  </button>
+                ))
+              ) : (
+                <div className="text-center py-8 text-muted-foreground">
+                  <p className="text-sm">검색 결과가 없습니다</p>
+                </div>
+              )}
             </div>
           </div>
         )}
@@ -205,6 +228,15 @@ const ImprovedNavigation: React.FC<ImprovedNavigationProps> = ({
         {/* Regular Menu */}
         {!searchTerm && (
           <div className="space-y-2">
+            {!isCollapsed && (
+              <div className="flex items-center gap-2 mb-3 mt-2">
+                <div className="flex-shrink-0 w-1 h-4 bg-gradient-to-b from-blue-500 to-cyan-600 rounded-full"></div>
+                <h3 className="text-xs font-semibold text-foreground uppercase tracking-wider">
+                  전체 메뉴
+                </h3>
+                <div className="flex-1 h-px bg-gradient-to-r from-border/50 to-transparent"></div>
+              </div>
+            )}
             {menuItems.map((item) => (
               <div key={item.id}>
                 {item.isCategory && item.subItems ? (
@@ -212,11 +244,11 @@ const ImprovedNavigation: React.FC<ImprovedNavigationProps> = ({
                   <div>
                     <button
                       onClick={() => !isCollapsed && toggleCategory(item.id)}
-                      className={`w-full ${isCollapsed ? 'px-0 py-3' : 'px-3 py-2'} rounded-lg text-sm font-medium transition-colors flex items-center ${isCollapsed ? 'justify-center' : 'justify-between'} text-foreground hover:bg-muted relative group`}
+                      className={`w-full ${isCollapsed ? 'px-0 py-3' : 'px-3 py-2'} rounded-xl text-sm font-medium transition-all duration-300 flex items-center ${isCollapsed ? 'justify-center' : 'justify-between'} text-muted-foreground hover:bg-white/5 hover:text-foreground relative group hover:translate-x-1`}
                       title={item.description}
                     >
                       <div className={`flex items-center ${isCollapsed ? '' : 'space-x-3'}`}>
-                        <NavigationIcon iconName={item.icon} className="h-5 w-5 text-gray-500" />
+                        <NavigationIcon iconName={item.icon} className="h-5 w-5 text-muted-foreground" />
                         {!isCollapsed && <span>{item.label}</span>}
                       </div>
                       {!isCollapsed && (
@@ -226,11 +258,11 @@ const ImprovedNavigation: React.FC<ImprovedNavigationProps> = ({
                       )}
                       {/* Tooltip for collapsed state */}
                       {isCollapsed && (
-                        <div className="absolute left-full ml-2 px-3 py-2 bg-gray-900 dark:bg-gray-700 text-white text-xs rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 min-w-max">
-                          <div className="font-semibold mb-2 border-b border-gray-600 pb-1">{item.label}</div>
+                        <div className="absolute left-full ml-2 px-3 py-2 bg-popover text-popover-foreground text-xs rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 min-w-max border border-border">
+                          <div className="font-semibold mb-2 border-b border-border pb-1">{item.label}</div>
                           <div className="space-y-1">
                             {item.subItems.map((subItem) => (
-                              <div key={subItem.id} className="text-gray-300 hover:text-white whitespace-nowrap">
+                              <div key={subItem.id} className="text-muted-foreground hover:text-popover-foreground whitespace-nowrap">
                                 {subItem.label}
                               </div>
                             ))}
@@ -238,23 +270,22 @@ const ImprovedNavigation: React.FC<ImprovedNavigationProps> = ({
                         </div>
                       )}
                     </button>
-                    
+
                     {(!isCollapsed && expandedCategories.has(item.id)) && (
-                      <div className="ml-6 mt-1 space-y-1 border-l-2 border-gray-200 dark:border-gray-600 pl-3">
+                      <div className="ml-6 mt-1 space-y-1 border-l-2 border-sidebar-border pl-3">
                         {item.subItems.map((subItem) => (
                           <button
                             key={subItem.id}
                             onClick={() => handleItemClick(subItem.id, subItem.route, subItem.isExternal)}
-                            className={`w-full text-left px-3 py-2 rounded-full text-sm transition-colors flex items-center space-x-3 ${
-                              activeView === subItem.id
-                                ? 'bg-blue-600 text-white'
-                                : 'text-foreground hover:bg-muted'
-                            }`}
+                            className={`w-full text-left px-3 py-2 rounded-xl text-sm transition-all duration-300 flex items-center space-x-3 ${activeView === subItem.id
+                              ? 'bg-gradient-to-r from-indigo-500/20 to-purple-500/20 text-indigo-300 border border-indigo-500/30 shadow-lg shadow-indigo-500/10'
+                              : 'text-muted-foreground hover:bg-white/5 hover:text-foreground hover:translate-x-1'
+                              }`}
                             title={subItem.description}
                           >
                             <NavigationIcon
                               iconName={subItem.icon}
-                              className={`h-4 w-4 ${activeView === subItem.id ? 'text-white' : 'text-gray-400'}`}
+                              className={`h-4 w-4 ${activeView === subItem.id ? 'text-sidebar-primary-foreground' : 'text-muted-foreground'}`}
                             />
                             <span className="truncate">{subItem.label}</span>
                             {subItem.isExternal && (
@@ -271,21 +302,20 @@ const ImprovedNavigation: React.FC<ImprovedNavigationProps> = ({
                   // Regular menu item
                   <button
                     onClick={() => handleItemClick(item.id)}
-                    className={`w-full ${isCollapsed ? 'px-0 py-3' : 'px-3 py-2'} rounded-lg text-sm font-medium transition-colors flex items-center ${isCollapsed ? 'justify-center' : 'space-x-3'} ${
-                      activeView === item.id
-                        ? 'bg-blue-600 text-white'
-                        : 'text-foreground hover:bg-muted'
-                    } relative group`}
+                    className={`w-full ${isCollapsed ? 'px-0 py-3' : 'px-3 py-2'} rounded-xl text-sm font-medium transition-all duration-300 flex items-center ${isCollapsed ? 'justify-center' : 'space-x-3'} ${activeView === item.id
+                      ? 'bg-gradient-to-r from-indigo-500/20 to-purple-500/20 text-indigo-300 border border-indigo-500/30 shadow-lg shadow-indigo-500/10'
+                      : 'text-muted-foreground hover:bg-white/5 hover:text-foreground hover:translate-x-1'
+                      } relative group`}
                     title={item.description}
                   >
                     <NavigationIcon
                       iconName={item.icon}
-                      className={`h-5 w-5 ${activeView === item.id ? 'text-white' : 'text-gray-500'}`}
+                      className={`h-5 w-5 ${activeView === item.id ? 'text-sidebar-primary-foreground' : 'text-muted-foreground'}`}
                     />
                     {!isCollapsed && <span>{item.label}</span>}
                     {/* Tooltip for collapsed state */}
                     {isCollapsed && (
-                      <div className="absolute left-full ml-2 px-2 py-1 bg-gray-900 dark:bg-gray-700 text-white text-xs rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 shadow-lg">
+                      <div className="absolute left-full ml-2 px-2 py-1 bg-popover text-popover-foreground text-xs rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 shadow-lg border border-border">
                         {item.label}
                       </div>
                     )}
@@ -299,8 +329,8 @@ const ImprovedNavigation: React.FC<ImprovedNavigationProps> = ({
 
       {/* Footer */}
       {!isCollapsed && (
-        <div className="p-4 border-t border-gray-200 dark:border-gray-700">
-          <div className="text-xs text-gray-500 dark:text-gray-400 space-y-1">
+        <div className="p-4 border-t border-white/10">
+          <div className="text-xs text-muted-foreground space-y-1">
             <div className="flex justify-between">
               <span>사용자: {user.role}</span>
               <span className="icon-success-muted">●</span>

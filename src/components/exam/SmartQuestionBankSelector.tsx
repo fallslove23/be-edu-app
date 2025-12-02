@@ -163,7 +163,7 @@ const SmartQuestionBankSelector: React.FC<SmartQuestionBankSelectorProps> = ({
             </div>
             <button
               onClick={onClose}
-              className="text-gray-400 hover:text-gray-600 transition-colors"
+              className="btn-ghost p-2 rounded-full"
             >
               <XMarkIcon className="h-6 w-6" />
             </button>
@@ -181,7 +181,7 @@ const SmartQuestionBankSelector: React.FC<SmartQuestionBankSelectorProps> = ({
                   </p>
                   <button
                     onClick={() => onSelect(recommendedBank)}
-                    className="px-3 py-1.5 bg-purple-600 text-white text-sm rounded-full hover:bg-purple-700 transition-colors"
+                    className="btn-primary text-sm py-1.5"
                   >
                     바로 사용하기
                   </button>
@@ -222,11 +222,10 @@ const SmartQuestionBankSelector: React.FC<SmartQuestionBankSelectorProps> = ({
               <button
                 key={tag.id}
                 onClick={() => toggleTag(tag.id)}
-                className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all ${
-                  selectedTags.includes(tag.id)
+                className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all ${selectedTags.includes(tag.id)
                     ? 'bg-blue-600 text-white shadow-md'
                     : getTagColor(tag.color)
-                }`}
+                  }`}
               >
                 {tag.label}
               </button>
@@ -276,11 +275,10 @@ const SmartQuestionBankSelector: React.FC<SmartQuestionBankSelectorProps> = ({
                 return (
                   <div
                     key={bank.id}
-                    className={`relative group border-2 rounded-lg p-5 transition-all cursor-pointer ${
-                      isRecommended
+                    className={`relative group border-2 rounded-lg p-5 transition-all cursor-pointer ${isRecommended
                         ? 'border-purple-300 bg-purple-50 hover:shadow-lg hover:border-purple-400'
                         : 'border-gray-200 bg-white hover:shadow-lg hover:border-blue-300'
-                    }`}
+                      }`}
                     onClick={() => {
                       if (window.confirm(`"${bank.name}" 문제은행의 문제를 가져오시겠습니까?\n\n기존 문제는 모두 교체됩니다.`)) {
                         onSelect(bank);
@@ -331,11 +329,7 @@ const SmartQuestionBankSelector: React.FC<SmartQuestionBankSelectorProps> = ({
                             onSelect(bank);
                           }
                         }}
-                        className={`px-4 py-2 text-sm rounded-full font-medium transition-all ${
-                          isRecommended
-                            ? 'bg-purple-600 text-white hover:bg-purple-700'
-                            : 'bg-primary text-primary-foreground hover:bg-primary/90'
-                        }`}
+                        className="btn-primary text-sm py-2"
                       >
                         선택
                       </button>

@@ -32,6 +32,7 @@ export interface CreateCategoryData {
   color?: string;
   icon?: string;
   display_order?: number;
+  is_active?: boolean;
 }
 
 export interface UpdateCategoryData {
@@ -77,6 +78,7 @@ export interface CreateClassroomData {
   equipment?: string[];
   description?: string;
   photo_url?: string;
+  is_available?: boolean;
 }
 
 export interface UpdateClassroomData {
