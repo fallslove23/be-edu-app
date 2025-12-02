@@ -208,7 +208,7 @@ const UserForm: React.FC<UserFormProps> = ({ user, onBack, onSave }) => {
   return (
     <div className="max-w-4xl mx-auto space-y-6">
       {/* 헤더 */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
         <div className="flex items-center">
           <button
             onClick={onBack}
@@ -229,7 +229,7 @@ const UserForm: React.FC<UserFormProps> = ({ user, onBack, onSave }) => {
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         {/* 기본 정보 */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
           <h2 className="text-lg font-medium text-gray-900 mb-4">기본 정보</h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -308,7 +308,7 @@ const UserForm: React.FC<UserFormProps> = ({ user, onBack, onSave }) => {
         </div>
 
         {/* 회사 정보 */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
           <h2 className="text-lg font-medium text-gray-900 mb-4">회사 정보</h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -427,7 +427,7 @@ const UserForm: React.FC<UserFormProps> = ({ user, onBack, onSave }) => {
 
         {/* 비상 연락처 (교육생만) */}
         {selectedRole === 'trainee' && (
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
             <h2 className="text-lg font-medium text-gray-900 mb-4">비상 연락처</h2>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -477,7 +477,7 @@ const UserForm: React.FC<UserFormProps> = ({ user, onBack, onSave }) => {
         )}
 
         {/* 액션 버튼 */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
           <div className="flex items-center justify-between">
             <button
               type="button"

@@ -503,8 +503,8 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
 
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-        <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-hidden">
-          <div className="flex justify-between items-center p-6 border-b border-gray-200">
+        <div className="bg-white rounded-lg w-full max-w-4xl max-h-[90vh] overflow-hidden">
+          <div className="flex justify-between items-center p-4 sm:p-6 border-b border-gray-200">
             <h2 className="text-xl font-bold text-gray-900">템플릿 편집: {editingTemplate.name}</h2>
             <button
               onClick={() => {
@@ -518,7 +518,7 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
           </div>
 
           <div className="overflow-y-auto max-h-[calc(90vh-140px)]">
-            <form onSubmit={handleSubmit} className="p-6 space-y-6">
+            <form onSubmit={handleSubmit} className="p-4 sm:p-6 space-y-6">
               {/* 기본 정보 */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
@@ -631,8 +631,8 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
 
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-        <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-hidden">
-          <div className="flex justify-between items-center p-6 border-b border-gray-200">
+        <div className="bg-white rounded-lg w-full max-w-2xl max-h-[90vh] overflow-hidden">
+          <div className="flex justify-between items-center p-4 sm:p-6 border-b border-gray-200">
             <h2 className="text-xl font-bold text-gray-900">새 과정 템플릿 생성</h2>
             <button
               onClick={() => setIsNewTemplateModalOpen(false)}
@@ -643,7 +643,7 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
           </div>
 
           <div className="overflow-y-auto max-h-[calc(90vh-140px)]">
-            <form onSubmit={handleSubmit} className="p-6 space-y-6">
+            <form onSubmit={handleSubmit} className="p-4 sm:p-6 space-y-6">
               {/* 기본 정보 */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
@@ -871,7 +871,7 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
                         <h3 className="font-semibold text-card-foreground">{round.title}</h3>
                         <p className="text-sm text-muted-foreground">강사: {round.instructor_name}</p>
                       </div>
-                      <span className={`px-2 py-1 text-xs font-medium rounded-full border ${getStatusColor(round.status)}`}>
+                      <span className={`px-2 py-1 text-xs font-medium rounded-full border whitespace-nowrap ${getStatusColor(round.status)}`}>
                         {getStatusLabel(round.status)}
                       </span>
                     </div>
@@ -912,7 +912,7 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
                 <div className="p-6 border-b border-border">
                   <div className="flex justify-between items-start mb-2">
                     <h3 className="text-lg font-bold text-card-foreground">{round.title}</h3>
-                    <span className={`px-2 py-1 text-xs font-medium rounded-full border ${getStatusColor(round.status)}`}>
+                    <span className={`px-2 py-1 text-xs font-medium rounded-full border whitespace-nowrap ${getStatusColor(round.status)}`}>
                       {getStatusLabel(round.status)}
                     </span>
                   </div>
@@ -1147,8 +1147,8 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
 
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-        <div className="bg-card rounded-lg max-w-3xl w-full max-h-[90vh] overflow-hidden border border-border">
-          <div className="flex justify-between items-center p-6 border-b border-border">
+        <div className="bg-card rounded-lg w-full max-w-3xl max-h-[90vh] overflow-hidden border border-border">
+          <div className="flex justify-between items-center p-4 sm:p-6 border-b border-border">
             <div>
               <h2 className="text-xl font-bold text-card-foreground">{round.title}</h2>
               <p className="text-sm text-muted-foreground mt-1">차수 상세 정보</p>
@@ -1161,7 +1161,7 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
             </button>
           </div>
 
-          <div className="overflow-y-auto max-h-[calc(90vh-140px)] p-6">
+          <div className="overflow-y-auto max-h-[calc(90vh-140px)] p-4 sm:p-6">
             <div className="space-y-6">
               {/* 상태 */}
               <div>
@@ -1258,7 +1258,7 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
             </div>
           </div>
 
-          <div className="flex justify-end space-x-3 p-6 border-t border-border">
+          <div className="flex justify-end space-x-3 p-4 sm:p-6 border-t border-border">
             <button
               onClick={() => setRoundDetailModal({ isOpen: false, round: null })}
               className="btn-secondary"
@@ -1301,8 +1301,8 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
 
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-        <div className="bg-card rounded-lg max-w-2xl w-full max-h-[90vh] overflow-hidden border border-border">
-          <div className="flex justify-between items-center p-6 border-b border-border">
+        <div className="bg-card rounded-lg w-full max-w-2xl max-h-[90vh] overflow-hidden border border-border">
+          <div className="flex justify-between items-center p-4 sm:p-6 border-b border-border">
             <h2 className="text-xl font-bold text-card-foreground">차수 편집</h2>
             <button
               onClick={() => setRoundEditModal({ isOpen: false, round: null })}
@@ -1313,7 +1313,7 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
           </div>
 
           <form onSubmit={handleSubmit} className="overflow-y-auto max-h-[calc(90vh-140px)]">
-            <div className="p-6 space-y-6">
+            <div className="p-4 sm:p-6 space-y-6">
               {/* 제목 */}
               <div>
                 <label className="block text-sm font-medium text-card-foreground mb-2">제목</label>
@@ -1452,7 +1452,7 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
               </div>
             </div>
 
-            <div className="flex justify-between items-center p-6 border-t border-border">
+            <div className="flex justify-between items-center p-4 sm:p-6 border-t border-border">
               <button
                 type="button"
                 onClick={() => handleDeleteRound(formData)}
@@ -1571,8 +1571,8 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
 
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-        <div className="bg-card rounded-lg max-w-2xl w-full border border-border max-h-[90vh] overflow-hidden">
-          <div className="flex justify-between items-center p-6 border-b border-border">
+        <div className="bg-card rounded-lg w-full max-w-2xl border border-border max-h-[90vh] overflow-hidden">
+          <div className="flex justify-between items-center p-4 sm:p-6 border-b border-border">
             <h2 className="text-xl font-bold text-card-foreground">새 과정 생성</h2>
             <button
               onClick={() => setIsRoundModalOpen(false)}
@@ -1583,7 +1583,7 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
           </div>
 
           <form onSubmit={handleSubmit} className="overflow-y-auto max-h-[calc(90vh-140px)]">
-            <div className="p-6 space-y-6">
+            <div className="p-4 sm:p-6 space-y-6">
 
               {/* 과정 (프로그램) */}
               <div>

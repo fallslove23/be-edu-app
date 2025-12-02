@@ -43,7 +43,7 @@
     --ring: 263.4 70% 50.4%;
 
     /* Radius */
-    --radius: 1.5rem;
+    --radius: 0.75rem;
 
     /* Chart Colors */
     --chart-1: 263 70% 50%;
@@ -123,8 +123,16 @@
   }
 
   /* 한글 텍스트 최적화 */
-  h1, h2, h3, h4, h5, h6,
-  button, input, select, textarea {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  button,
+  input,
+  select,
+  textarea {
     font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -173,7 +181,7 @@
   }
 
   .bento-item {
-    @apply glass-card rounded-[1.5rem] p-6 flex flex-col justify-between overflow-hidden relative;
+    @apply glass-card rounded-xl p-6 flex flex-col justify-between overflow-hidden relative;
   }
 
   /* Buttons Overhaul */

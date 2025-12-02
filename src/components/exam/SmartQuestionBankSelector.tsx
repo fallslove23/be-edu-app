@@ -151,9 +151,9 @@ const SmartQuestionBankSelector: React.FC<SmartQuestionBankSelectorProps> = ({
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg shadow-2xl max-w-6xl w-full max-h-[90vh] overflow-hidden flex flex-col">
+      <div className="bg-white rounded-lg shadow-2xl w-full max-w-6xl max-h-[90vh] overflow-hidden flex flex-col">
         {/* 헤더 */}
-        <div className="p-6 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-indigo-50">
+        <div className="p-4 sm:p-6 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-indigo-50">
           <div className="flex items-center justify-between mb-4">
             <div>
               <h2 className="text-2xl font-bold text-gray-900">문제은행 선택</h2>
@@ -204,7 +204,7 @@ const SmartQuestionBankSelector: React.FC<SmartQuestionBankSelectorProps> = ({
         </div>
 
         {/* 필터 태그 */}
-        <div className="px-6 py-4 bg-gray-50 border-b border-gray-200">
+        <div className="px-4 py-3 sm:px-6 sm:py-4 bg-gray-50 border-b border-gray-200">
           <div className="flex items-center gap-3 mb-3">
             <FunnelIcon className="h-5 w-5 text-gray-500" />
             <span className="text-sm font-medium text-gray-700">빠른 필터</span>
@@ -223,8 +223,8 @@ const SmartQuestionBankSelector: React.FC<SmartQuestionBankSelectorProps> = ({
                 key={tag.id}
                 onClick={() => toggleTag(tag.id)}
                 className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all ${selectedTags.includes(tag.id)
-                    ? 'bg-blue-600 text-white shadow-md'
-                    : getTagColor(tag.color)
+                  ? 'bg-blue-600 text-white shadow-md'
+                  : getTagColor(tag.color)
                   }`}
               >
                 {tag.label}
@@ -234,7 +234,7 @@ const SmartQuestionBankSelector: React.FC<SmartQuestionBankSelectorProps> = ({
         </div>
 
         {/* 정렬 */}
-        <div className="px-6 py-3 bg-white border-b border-gray-200 flex items-center justify-between">
+        <div className="px-4 py-3 sm:px-6 bg-white border-b border-gray-200 flex items-center justify-between">
           <span className="text-sm text-gray-600">
             {filteredBanks.length}개 문제은행
           </span>
@@ -253,7 +253,7 @@ const SmartQuestionBankSelector: React.FC<SmartQuestionBankSelectorProps> = ({
         </div>
 
         {/* 카드 목록 */}
-        <div className="flex-1 overflow-y-auto p-6">
+        <div className="flex-1 overflow-y-auto p-4 sm:p-6">
           {filteredBanks.length === 0 ? (
             <div className="text-center py-12">
               <MagnifyingGlassIcon className="h-12 w-12 text-gray-400 mx-auto mb-4" />
@@ -276,8 +276,8 @@ const SmartQuestionBankSelector: React.FC<SmartQuestionBankSelectorProps> = ({
                   <div
                     key={bank.id}
                     className={`relative group border-2 rounded-lg p-5 transition-all cursor-pointer ${isRecommended
-                        ? 'border-purple-300 bg-purple-50 hover:shadow-lg hover:border-purple-400'
-                        : 'border-gray-200 bg-white hover:shadow-lg hover:border-blue-300'
+                      ? 'border-purple-300 bg-purple-50 hover:shadow-lg hover:border-purple-400'
+                      : 'border-gray-200 bg-white hover:shadow-lg hover:border-blue-300'
                       }`}
                     onClick={() => {
                       if (window.confirm(`"${bank.name}" 문제은행의 문제를 가져오시겠습니까?\n\n기존 문제는 모두 교체됩니다.`)) {

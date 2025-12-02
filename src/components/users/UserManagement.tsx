@@ -368,7 +368,7 @@ const UserManagement: React.FC = () => {
           )}
 
           {/* 헤더 */}
-          <div className="bg-card rounded-lg shadow-sm border border-border p-6">
+          <div className="bg-card rounded-lg shadow-sm border border-border p-4 sm:p-6">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
               <div>
                 <h1 className="text-2xl font-bold text-foreground flex items-center">
@@ -423,7 +423,7 @@ const UserManagement: React.FC = () => {
           </div>
 
           {/* 검색 및 필터 */}
-          <div className="bg-card rounded-lg shadow-sm border border-border p-6">
+          <div className="bg-card rounded-lg shadow-sm border border-border p-4 sm:p-6">
             <div className="flex flex-col md:flex-row gap-3">
               {/* 검색 입력 */}
               <div className="flex-1 relative">

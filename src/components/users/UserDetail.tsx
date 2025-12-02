@@ -35,7 +35,7 @@ const UserDetail: React.FC<UserDetailProps> = ({ user, onBack, onEdit }) => {
   return (
     <div className="max-w-4xl mx-auto space-y-6">
       {/* 헤더 */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center">
             <button
@@ -60,7 +60,7 @@ const UserDetail: React.FC<UserDetailProps> = ({ user, onBack, onEdit }) => {
       </div>
 
       {/* 기본 정보 */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
         <h2 className="text-lg font-medium text-gray-900 mb-4">기본 정보</h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -93,9 +93,9 @@ const UserDetail: React.FC<UserDetailProps> = ({ user, onBack, onEdit }) => {
             <div>
               <label className="block text-sm font-medium text-gray-500 mb-1">상태</label>
               <span className={`inline-flex px-3 py-1 text-sm font-semibold rounded-full ${user.status === 'active' ? 'bg-green-500/10 text-green-700' :
-                  user.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                    user.status === 'suspended' ? 'bg-destructive/10 text-destructive' :
-                      'bg-gray-100 text-gray-800'
+                user.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                  user.status === 'suspended' ? 'bg-destructive/10 text-destructive' :
+                    'bg-gray-100 text-gray-800'
                 }`}>
                 {userStatusLabels[user.status]}
               </span>
@@ -104,10 +104,10 @@ const UserDetail: React.FC<UserDetailProps> = ({ user, onBack, onEdit }) => {
             <div>
               <label className="block text-sm font-medium text-gray-500 mb-1">역할</label>
               <span className={`inline-flex px-3 py-1 text-sm font-semibold rounded-full ${user.role === 'admin' ? 'bg-destructive/10 text-destructive' :
-                  user.role === 'manager' ? 'bg-purple-100 text-purple-800' :
-                    user.role === 'operator' ? 'bg-yellow-100 text-yellow-800' :
-                      user.role === 'instructor' ? 'bg-green-500/10 text-green-700' :
-                        'bg-blue-100 text-blue-800'
+                user.role === 'manager' ? 'bg-purple-100 text-purple-800' :
+                  user.role === 'operator' ? 'bg-yellow-100 text-yellow-800' :
+                    user.role === 'instructor' ? 'bg-green-500/10 text-green-700' :
+                      'bg-blue-100 text-blue-800'
                 }`}>
                 {roleLabels[user.role]}
               </span>
@@ -125,7 +125,7 @@ const UserDetail: React.FC<UserDetailProps> = ({ user, onBack, onEdit }) => {
       </div>
 
       {/* 회사 정보 */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
         <h2 className="text-lg font-medium text-gray-900 mb-4">회사 정보</h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -169,7 +169,7 @@ const UserDetail: React.FC<UserDetailProps> = ({ user, onBack, onEdit }) => {
 
       {/* 비상 연락처 (교육생만) */}
       {user.role === 'trainee' && user.emergency_contact && (
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
           <h2 className="text-lg font-medium text-gray-900 mb-4 flex items-center">
             <ExclamationCircleIcon className="h-5 w-5 mr-2 text-orange-500" />
             비상 연락처
@@ -198,7 +198,7 @@ const UserDetail: React.FC<UserDetailProps> = ({ user, onBack, onEdit }) => {
       )}
 
       {/* 시스템 정보 */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
         <h2 className="text-lg font-medium text-gray-900 mb-4">시스템 정보</h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
@@ -230,7 +230,7 @@ const UserDetail: React.FC<UserDetailProps> = ({ user, onBack, onEdit }) => {
       </div>
 
       {/* 액션 영역 */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
         <div className="flex items-center justify-between">
           <button
             onClick={onBack}

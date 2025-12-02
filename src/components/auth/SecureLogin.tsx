@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  EyeIcon, 
-  EyeSlashIcon, 
-  ShieldCheckIcon, 
+import {
+  EyeIcon,
+  EyeSlashIcon,
+  ShieldCheckIcon,
   ExclamationCircleIcon,
-  LockClosedIcon 
+  LockClosedIcon
 } from '@heroicons/react/24/outline';
 import { useAuth } from '../../contexts/AuthContext';
 
@@ -65,13 +65,7 @@ const SecureLogin: React.FC = () => {
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
-  // 테스트 계정 정보 (사번 기반)
-  const testAccounts = [
-    { employeeId: '30121212', password: 'osstem', role: '관리자', name: '홍길동' },
-    { employeeId: '30121213', password: 'osstem', role: '강사', name: '김강사' },
-    { employeeId: 'A30121214', password: 'osstem', role: '매니저', name: 'John Smith (해외)' },
-    { employeeId: '30121215', password: 'osstem', role: '교육생', name: '이교육' }
-  ];
+
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
@@ -211,30 +205,7 @@ const SecureLogin: React.FC = () => {
             </div>
           </form>
 
-          {/* 테스트 계정 정보 */}
-          <div className="mt-8 bg-gray-50 dark:bg-gray-800 p-4 rounded-lg">
-            <h3 className="text-sm font-medium text-gray-900 dark:text-white mb-3">테스트 계정</h3>
-            <div className="space-y-2">
-              {testAccounts.map((account, index) => (
-                <div key={index} className="flex justify-between items-center text-xs">
-                  <span className="text-gray-600 dark:text-gray-400">{account.role} - {account.name}</span>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setEmployeeId(account.employeeId);
-                      setPassword(account.password);
-                    }}
-                    className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300"
-                  >
-                    {account.employeeId}
-                  </button>
-                </div>
-              ))}
-            </div>
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-3">
-              초기 비밀번호: osstem (로그인 후 변경 필요)
-            </p>
-          </div>
+
         </div>
       </div>
     </div>
