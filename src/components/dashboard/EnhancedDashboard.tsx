@@ -332,25 +332,26 @@ const EnhancedDashboard: React.FC = () => {
     <PageContainer>
       <div className="space-y-6">
         {/* 통계 카드 그리드 */}
-        <StaggerContainer className="flex gap-4 overflow-x-auto pb-2 md:grid md:grid-cols-2 lg:grid-cols-4 md:overflow-x-visible md:pb-0 snap-x snap-mandatory">
+        {/* 통계 카드 그리드 */}
+        <StaggerContainer className="flex gap-4 overflow-x-auto pb-4 -mx-4 px-4 md:mx-0 md:px-0 md:grid md:grid-cols-2 lg:grid-cols-4 md:overflow-x-visible md:pb-0 snap-x snap-mandatory scroll-touch hide-scrollbar">
           {statCards.map((stat, index) => (
             <div
               key={index}
-              className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex flex-col justify-between relative overflow-hidden hover:shadow-md transition-shadow min-w-[280px] md:min-w-0 snap-start flex-shrink-0"
+              className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-700 flex flex-col justify-between relative overflow-hidden hover:shadow-lg hover:shadow-indigo-500/5 transition-all duration-300 min-w-[260px] md:min-w-0 snap-start flex-shrink-0 group"
             >
               {/* 헤더 */}
               <div className="flex items-start justify-between mb-4">
                 <div>
-                  <p className="text-sm text-gray-500 mb-1 font-medium">{stat.label}</p>
-                  <h3 className="text-3xl font-bold text-gray-900">{stat.value}</h3>
+                  <p className="text-sm text-gray-500 dark:text-gray-400 mb-1 font-medium">{stat.label}</p>
+                  <h3 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{stat.value}</h3>
                 </div>
                 <div className="flex flex-col items-end space-y-2">
-                  <div className="p-2 rounded-xl bg-indigo-50 text-indigo-600">
+                  <div className="p-2.5 rounded-xl bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 group-hover:scale-110 transition-transform duration-300">
                     <stat.icon className="w-5 h-5" />
                   </div>
-                  <div className={`flex items-center space-x-1 px-2 py-1 rounded-md text-xs font-medium ${stat.trend === 'up'
-                    ? 'bg-green-50 text-green-700'
-                    : 'bg-red-50 text-red-700'
+                  <div className={`flex items-center space-x-1 px-2 py-1 rounded-lg text-xs font-semibold ${stat.trend === 'up'
+                    ? 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400'
+                    : 'bg-rose-50 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400'
                     }`}>
                     {stat.trend === 'up' ? (
                       <ArrowTrendingUpIcon className="w-3 h-3" />
@@ -363,7 +364,7 @@ const EnhancedDashboard: React.FC = () => {
               </div>
 
               {/* 서브타이틀 */}
-              <p className="text-sm text-gray-400">{stat.subtitle}</p>
+              <p className="text-sm text-gray-400 dark:text-gray-500">{stat.subtitle}</p>
             </div>
           ))}
         </StaggerContainer>

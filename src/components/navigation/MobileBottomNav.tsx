@@ -90,36 +90,41 @@ const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
               key={item.id}
               onClick={() => handleItemClick(item)}
               className={`
-                flex flex-col items-center justify-center py-3 px-1 min-h-touch
-                transition-all duration-200 touch-manipulation
+                flex flex-col items-center justify-center py-2 px-1 min-h-touch
+                transition-all duration-300 touch-manipulation relative group
                 ${isActive
                   ? 'text-primary'
-                  : 'text-muted-foreground hover:text-foreground active:text-primary'
+                  : 'text-muted-foreground hover:text-foreground'
                 }
               `}
               title={item.label}
             >
               <div className={`
-                relative mb-1.5 p-2.5 rounded-xl transition-all duration-200
+                relative mb-1 p-2 rounded-xl transition-all duration-300
                 ${isActive
-                  ? 'bg-primary/10 scale-110'
-                  : 'hover:bg-muted active:scale-95'
+                  ? 'bg-primary/10 scale-100 shadow-sm shadow-primary/10'
+                  : 'hover:bg-muted/50 active:scale-95'
                 }
               `}>
                 <NavigationIcon
                   iconName={item.icon}
-                  className={`w-6 h-6 ${isActive ? 'text-primary' : ''}`}
+                  className={`w-5 h-5 transition-colors duration-300 ${isActive ? 'text-primary' : 'text-muted-foreground group-hover:text-foreground'}`}
                 />
                 {isActive && (
-                  <div className="absolute -top-1 -right-1 w-2 h-2 bg-primary rounded-full animate-pulse" />
+                  <span className="absolute inset-0 rounded-xl bg-primary/5 animate-pulse-slow"></span>
                 )}
               </div>
               <span className={`
-                text-xs font-medium truncate w-full text-center leading-tight
-                ${isActive ? 'text-primary' : ''}
+                text-[10px] font-medium truncate w-full text-center leading-tight transition-colors duration-300
+                ${isActive ? 'text-primary font-semibold' : 'text-muted-foreground/80 group-hover:text-foreground'}
               `}>
                 {item.label}
               </span>
+
+              {/* Active Indicator Bar */}
+              {isActive && (
+                <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-8 h-0.5 bg-primary rounded-b-full shadow-[0_0_8px_rgba(var(--primary),0.5)]"></div>
+              )}
             </button>
           );
         })}

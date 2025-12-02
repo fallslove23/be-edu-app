@@ -65,7 +65,7 @@ const PerformanceTracking: React.FC = () => {
   const [selectedPeriod, setSelectedPeriod] = useState('this_month');
   const [selectedCourse, setSelectedCourse] = useState<string>('all');
   const [courseProgressData, setCourseProgressData] = useState<CourseProgress[]>([]);
-  
+
   // 목업 진도 추적 데이터
   useEffect(() => {
     const mockCourseProgress: CourseProgress[] = [
@@ -238,7 +238,7 @@ const PerformanceTracking: React.FC = () => {
     <div className="space-y-6">
       {/* 탭 메뉴 */}
       <div className="bg-card rounded-lg shadow-sm border border-border">
-        <div className="border-b border-gray-200 overflow-x-auto">
+        <div className="border-b border-gray-200 dark:border-gray-700 overflow-x-auto scroll-touch">
           <nav className="-mb-px flex">
             {[
               { key: 'daily-progress', label: '일차별 진도', icon: CalendarDaysIcon },
@@ -249,13 +249,12 @@ const PerformanceTracking: React.FC = () => {
               <button
                 key={tab.key}
                 onClick={() => setActiveTab(tab.key as any)}
-                className={`px-4 sm:px-6 py-3 text-sm font-medium border-b-2 transition-colors flex items-center whitespace-nowrap min-w-[120px] justify-center ${
-                  activeTab === tab.key
-                    ? 'border-gray-600 text-gray-700'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                }`}
+                className={`px-4 sm:px-6 py-4 text-sm font-medium border-b-2 transition-all duration-200 flex items-center whitespace-nowrap min-w-[120px] justify-center ${activeTab === tab.key
+                    ? 'border-indigo-600 dark:border-indigo-400 text-indigo-600 dark:text-indigo-400'
+                    : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:border-gray-300 dark:hover:border-gray-600'
+                  }`}
               >
-                <tab.icon className="h-4 w-4 mr-1.5 sm:mr-2 flex-shrink-0" />
+                <tab.icon className={`h-5 w-5 mr-2 flex-shrink-0 transition-colors ${activeTab === tab.key ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-400 group-hover:text-gray-500'}`} />
                 <span className="text-xs sm:text-sm">{tab.label}</span>
               </button>
             ))}
@@ -287,7 +286,7 @@ const PerformanceTracking: React.FC = () => {
                       <span className="text-sm text-gray-600">{course.overall_completion}%</span>
                     </div>
                     <div className="w-full bg-gray-200 rounded-lg h-2">
-                      <div 
+                      <div
                         className="bg-gray-600 h-2 rounded-lg transition-all duration-300"
                         style={{ width: `${course.overall_completion}%` }}
                       />
@@ -301,42 +300,39 @@ const PerformanceTracking: React.FC = () => {
                       const isCurrentDay = day.day === course.current_day;
                       const isCompleted = day.completion_rate === 100;
                       const isBehind = day.completion_rate < 80 && day.day < course.current_day;
-                      
+
                       return (
                         <div
                           key={day.day}
-                          className={`border rounded-md p-4 transition-all shadow-sm ${
-                            isCurrentDay ? 'border-gray-500 bg-gray-50' :
-                            isCompleted ? 'border-gray-300 bg-white' :
-                            isBehind ? 'border-red-200 bg-red-50' :
-                            'border-gray-200 bg-white'
-                          }`}
+                          className={`border rounded-md p-4 transition-all shadow-sm ${isCurrentDay ? 'border-gray-500 bg-gray-50' :
+                              isCompleted ? 'border-gray-300 bg-white' :
+                                isBehind ? 'border-red-200 bg-red-50' :
+                                  'border-gray-200 bg-white'
+                            }`}
                         >
                           <div className="flex items-center justify-between mb-2">
                             <div className="flex items-center space-x-2">
-                              <span className={`text-sm font-semibold ${
-                                isCurrentDay ? 'text-gray-700' :
-                                isCompleted ? 'text-gray-600' :
-                                isBehind ? 'text-destructive' :
-                                'text-gray-500'
-                              }`}>
+                              <span className={`text-sm font-semibold ${isCurrentDay ? 'text-gray-700' :
+                                  isCompleted ? 'text-gray-600' :
+                                    isBehind ? 'text-destructive' :
+                                      'text-gray-500'
+                                }`}>
                                 {day.day}일차
                               </span>
                               {isCurrentDay && <ClockIcon className="h-4 w-4 text-gray-600" />}
                               {isCompleted && <CheckCircleIcon className="h-4 w-4 text-gray-600" />}
                               {isBehind && <ExclamationTriangleIcon className="h-4 w-4 text-destructive" />}
                             </div>
-                            <span className={`text-xs px-2 py-1 rounded-full ${
-                              day.completion_rate >= 80 ? 'bg-gray-100 text-gray-700' :
-                              day.completion_rate >= 50 ? 'bg-yellow-100 text-orange-700' :
-                              'bg-destructive/10 text-destructive'
-                            }`}>
+                            <span className={`text-xs px-2 py-1 rounded-full ${day.completion_rate >= 80 ? 'bg-gray-100 text-gray-700' :
+                                day.completion_rate >= 50 ? 'bg-yellow-100 text-orange-700' :
+                                  'bg-destructive/10 text-destructive'
+                              }`}>
                               {day.completion_rate}%
                             </span>
                           </div>
-                          
+
                           <div className="text-xs text-gray-600 mb-2">{day.date}</div>
-                          
+
                           <div className="space-y-2">
                             <div>
                               <div className="text-xs text-gray-500 mb-1">계획된 주제 ({day.planned_topics.length}개)</div>
@@ -345,7 +341,7 @@ const PerformanceTracking: React.FC = () => {
                                 {day.planned_topics.length > 2 && ` 외 ${day.planned_topics.length - 2}개`}
                               </div>
                             </div>
-                            
+
                             <div>
                               <div className="text-xs text-gray-500 mb-1">완료된 주제 ({day.completed_topics.length}개)</div>
                               <div className="text-xs text-gray-700">
@@ -353,18 +349,17 @@ const PerformanceTracking: React.FC = () => {
                                 {day.completed_topics.length > 2 && ` 외 ${day.completed_topics.length - 2}개`}
                               </div>
                             </div>
-                            
+
                             <div className="flex items-center justify-between text-xs">
                               <span className="text-gray-500">출석률</span>
-                              <span className={`font-medium ${
-                                attendanceRate >= 90 ? 'text-gray-700' :
-                                attendanceRate >= 80 ? 'text-foreground' :
-                                'text-destructive'
-                              }`}>
+                              <span className={`font-medium ${attendanceRate >= 90 ? 'text-gray-700' :
+                                  attendanceRate >= 80 ? 'text-foreground' :
+                                    'text-destructive'
+                                }`}>
                                 {day.attendance_count}/{day.total_students} ({attendanceRate}%)
                               </span>
                             </div>
-                            
+
                             {day.notes && (
                               <div className="mt-2 text-xs text-gray-600 bg-gray-100 p-2 rounded">
                                 📝 {day.notes}
@@ -374,7 +369,7 @@ const PerformanceTracking: React.FC = () => {
                         </div>
                       );
                     })}
-                    
+
                     {/* 예정된 일차들 */}
                     {Array.from({ length: course.total_days - course.daily_progress.length }, (_, i) => {
                       const dayNumber = course.daily_progress.length + i + 1;
@@ -390,37 +385,35 @@ const PerformanceTracking: React.FC = () => {
                       );
                     })}
                   </div>
-                  
+
                   {/* 학생별 진도 요약 */}
                   <div className="mt-6">
                     <h4 className="text-sm font-medium text-gray-900 mb-3">학생별 진도 현황</h4>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                       {course.students.slice(0, 6).map((student) => {
                         const attendanceRate = Math.round((student.daily_attendance.filter(Boolean).length / student.daily_attendance.length) * 100);
-                        
+
                         return (
                           <div key={student.id} className="bg-gray-50 rounded p-3">
                             <div className="flex items-center justify-between mb-1">
                               <span className="text-sm font-medium text-gray-900">{student.name}</span>
-                              <span className={`text-xs px-2 py-1 rounded-full ${
-                                student.status === 'ahead' ? 'bg-gray-100 text-gray-700' :
-                                student.status === 'on_track' ? 'bg-gray-100 text-gray-600' :
-                                student.status === 'behind' ? 'bg-yellow-100 text-orange-700' :
-                                'bg-destructive/10 text-destructive'
-                              }`}>
+                              <span className={`text-xs px-2 py-1 rounded-full ${student.status === 'ahead' ? 'bg-gray-100 text-gray-700' :
+                                  student.status === 'on_track' ? 'bg-gray-100 text-gray-600' :
+                                    student.status === 'behind' ? 'bg-yellow-100 text-orange-700' :
+                                      'bg-destructive/10 text-destructive'
+                                }`}>
                                 {student.status === 'ahead' ? '앞서감' :
-                                 student.status === 'on_track' ? '정상' :
-                                 student.status === 'behind' ? '지연' : '위험'}
+                                  student.status === 'on_track' ? '정상' :
+                                    student.status === 'behind' ? '지연' : '위험'}
                               </span>
                             </div>
                             <div className="text-xs text-gray-600 mb-2">진도 {student.overall_progress}% • 출석 {attendanceRate}%</div>
                             <div className="w-full bg-gray-200 rounded-lg h-1.5">
-                              <div 
-                                className={`h-1.5 rounded-full ${
-                                  student.overall_progress >= 80 ? 'bg-gray-600' :
-                                  student.overall_progress >= 60 ? 'bg-yellow-500' :
-                                  'bg-red-500'
-                                }`}
+                              <div
+                                className={`h-1.5 rounded-full ${student.overall_progress >= 80 ? 'bg-gray-600' :
+                                    student.overall_progress >= 60 ? 'bg-yellow-500' :
+                                      'bg-red-500'
+                                  }`}
                                 style={{ width: `${student.overall_progress}%` }}
                               />
                             </div>
@@ -487,10 +480,10 @@ const PerformanceTracking: React.FC = () => {
                   <div className="space-y-3">
                     {['BS 영업 기초과정', 'BS 고급 영업 전략', 'BS 고객 관리 시스템'].map((course) => {
                       const courseStudents = performanceData.filter(p => p.course === course);
-                      const avgScore = courseStudents.length > 0 
+                      const avgScore = courseStudents.length > 0
                         ? Math.round(courseStudents.reduce((sum, p) => sum + p.exam_average, 0) / courseStudents.length)
                         : 0;
-                      
+
                       return (
                         <div key={course} className="p-3 bg-gray-50 rounded-lg">
                           <div className="flex items-center justify-between mb-2">
@@ -498,7 +491,7 @@ const PerformanceTracking: React.FC = () => {
                             <span className="text-gray-600">{avgScore}점</span>
                           </div>
                           <div className="w-full bg-gray-200 rounded-lg h-2">
-                            <div 
+                            <div
                               className="bg-gray-600 h-2 rounded-lg"
                               style={{ width: `${avgScore}%` }}
                             />
@@ -528,9 +521,9 @@ const PerformanceTracking: React.FC = () => {
               <div className="flex items-center justify-between">
                 <h3 className="text-lg font-medium text-gray-900">개별 수강생 성과</h3>
                 <div className="flex items-center space-x-3">
-                  <input 
-                    type="text" 
-                    placeholder="수강생 검색..." 
+                  <input
+                    type="text"
+                    placeholder="수강생 검색..."
                     className="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
                   />
                   <select className="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-gray-500 focus:border-gray-500">
@@ -593,7 +586,7 @@ const PerformanceTracking: React.FC = () => {
           {activeTab === 'reports' && (
             <div className="space-y-6">
               <h3 className="text-lg font-medium text-gray-900">상세 성과 리포트</h3>
-              
+
               {/* 리포트 템플릿 */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="border border-gray-200 rounded-lg p-4 hover:shadow-sm transition-shadow">
@@ -603,7 +596,7 @@ const PerformanceTracking: React.FC = () => {
                     리포트 생성
                   </button>
                 </div>
-                
+
                 <div className="border border-gray-200 rounded-lg p-4 hover:shadow-sm transition-shadow">
                   <h4 className="font-medium text-gray-900 mb-2">📈 개별 수강생 리포트</h4>
                   <p className="text-sm text-gray-600 mb-4">특정 수강생의 상세한 학습 성과 분석 리포트</p>
@@ -611,7 +604,7 @@ const PerformanceTracking: React.FC = () => {
                     리포트 생성
                   </button>
                 </div>
-                
+
                 <div className="border border-gray-200 rounded-lg p-4 hover:shadow-sm transition-shadow">
                   <h4 className="font-medium text-gray-900 mb-2">📚 과정별 분석 리포트</h4>
                   <p className="text-sm text-gray-600 mb-4">과정별 수강생 성과 비교 및 분석 리포트</p>
@@ -619,7 +612,7 @@ const PerformanceTracking: React.FC = () => {
                     리포트 생성
                   </button>
                 </div>
-                
+
                 <div className="border border-gray-200 rounded-lg p-4 hover:shadow-sm transition-shadow">
                   <h4 className="font-medium text-gray-900 mb-2">⚠️ 개선 필요 수강생 리포트</h4>
                   <p className="text-sm text-gray-600 mb-4">추가 지원이 필요한 수강생 현황 및 권장사항</p>

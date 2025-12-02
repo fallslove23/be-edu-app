@@ -28,61 +28,89 @@ const DashboardWrapper: React.FC<DashboardWrapperProps> = ({ onNavigate }) => {
         <div className="bg-card rounded-lg shadow-sm border border-border">
           <div className="p-4 sm:p-6">
             <h3 className="text-base sm:text-lg font-semibold text-card-foreground mb-4 sm:mb-6">빠른 작업</h3>
-            <div className="flex gap-3 overflow-x-auto pb-2 sm:grid sm:grid-cols-2 sm:overflow-x-visible sm:pb-0 snap-x snap-mandatory">
+            <div className="flex gap-4 overflow-x-auto pb-4 -mx-4 px-4 sm:mx-0 sm:px-0 sm:grid sm:grid-cols-2 lg:grid-cols-4 sm:overflow-x-visible sm:pb-0 snap-x snap-mandatory scroll-touch hide-scrollbar">
               {/* 새 과정 개설 */}
               <button
                 onClick={() => onNavigate?.('course-management')}
-                className="group relative p-3 sm:p-5 bg-card hover:bg-muted rounded-lg transition-all duration-200 text-left border border-border hover:border-primary hover:shadow-lg mobile-button touch-manipulation min-w-[160px] sm:min-w-0 snap-start flex-shrink-0"
+                className="group relative p-5 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded-2xl transition-all duration-300 text-left border border-gray-100 dark:border-gray-700 hover:border-indigo-200 dark:hover:border-indigo-800 hover:shadow-lg hover:shadow-indigo-500/10 min-w-[200px] sm:min-w-0 snap-start flex-shrink-0"
               >
-                <div className="flex items-start justify-between mb-2 sm:mb-3">
-                  <div className="w-9 h-9 sm:w-11 sm:h-11 bg-primary rounded-lg flex items-center justify-center group-hover:bg-primary/90 group-hover:scale-105 transition-all shadow-sm">
-                    <AcademicCapIcon className="w-5 h-5 sm:w-6 sm:h-6 text-primary-foreground" />
+                <div className="flex items-start justify-between mb-4">
+                  <div className="w-12 h-12 bg-indigo-50 dark:bg-indigo-900/30 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                    <AcademicCapIcon className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
+                  </div>
+                  <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <div className="w-8 h-8 rounded-full bg-indigo-50 dark:bg-indigo-900/30 flex items-center justify-center">
+                      <svg className="w-4 h-4 text-indigo-600 dark:text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </div>
                   </div>
                 </div>
-                <h4 className="font-semibold text-card-foreground mb-1 text-sm sm:text-base">새 과정 개설</h4>
-                <p className="text-xs sm:text-sm text-muted-foreground">BS 과정 차수 생성</p>
+                <h4 className="font-bold text-gray-900 dark:text-white mb-1 text-base">새 과정 개설</h4>
+                <p className="text-sm text-gray-500 dark:text-gray-400">BS 과정 차수 생성</p>
               </button>
 
               {/* 교육생 등록 */}
               <button
                 onClick={() => onNavigate?.('trainees')}
-                className="group relative p-3 sm:p-5 bg-card hover:bg-muted rounded-lg transition-all duration-200 text-left border border-border hover:border-primary hover:shadow-lg mobile-button touch-manipulation min-w-[160px] sm:min-w-0 snap-start flex-shrink-0"
+                className="group relative p-5 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded-2xl transition-all duration-300 text-left border border-gray-100 dark:border-gray-700 hover:border-blue-200 dark:hover:border-blue-800 hover:shadow-lg hover:shadow-blue-500/10 min-w-[200px] sm:min-w-0 snap-start flex-shrink-0"
               >
-                <div className="flex items-start justify-between mb-2 sm:mb-3">
-                  <div className="w-9 h-9 sm:w-11 sm:h-11 bg-primary rounded-lg flex items-center justify-center group-hover:bg-primary/90 group-hover:scale-105 transition-all shadow-sm">
-                    <UserGroupIcon className="w-5 h-5 sm:w-6 sm:h-6 text-primary-foreground" />
+                <div className="flex items-start justify-between mb-4">
+                  <div className="w-12 h-12 bg-blue-50 dark:bg-blue-900/30 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                    <UserGroupIcon className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                  </div>
+                  <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <div className="w-8 h-8 rounded-full bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center">
+                      <svg className="w-4 h-4 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </div>
                   </div>
                 </div>
-                <h4 className="font-semibold text-card-foreground mb-1 text-sm sm:text-base">교육생 등록</h4>
-                <p className="text-xs sm:text-sm text-muted-foreground">새 교육생 추가</p>
+                <h4 className="font-bold text-gray-900 dark:text-white mb-1 text-base">교육생 등록</h4>
+                <p className="text-sm text-gray-500 dark:text-gray-400">새 교육생 추가</p>
               </button>
 
               {/* 출석 체크 */}
               <button
                 onClick={() => onNavigate?.('course-management')}
-                className="group relative p-3 sm:p-5 bg-card hover:bg-muted rounded-lg transition-all duration-200 text-left border border-border hover:border-primary hover:shadow-lg mobile-button touch-manipulation min-w-[160px] sm:min-w-0 snap-start flex-shrink-0"
+                className="group relative p-5 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded-2xl transition-all duration-300 text-left border border-gray-100 dark:border-gray-700 hover:border-emerald-200 dark:hover:border-emerald-800 hover:shadow-lg hover:shadow-emerald-500/10 min-w-[200px] sm:min-w-0 snap-start flex-shrink-0"
               >
-                <div className="flex items-start justify-between mb-2 sm:mb-3">
-                  <div className="w-9 h-9 sm:w-11 sm:h-11 bg-primary rounded-lg flex items-center justify-center group-hover:bg-primary/90 group-hover:scale-105 transition-all shadow-sm">
-                    <ChartBarIcon className="w-5 h-5 sm:w-6 sm:h-6 text-primary-foreground" />
+                <div className="flex items-start justify-between mb-4">
+                  <div className="w-12 h-12 bg-emerald-50 dark:bg-emerald-900/30 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                    <ChartBarIcon className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
+                  </div>
+                  <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <div className="w-8 h-8 rounded-full bg-emerald-50 dark:bg-emerald-900/30 flex items-center justify-center">
+                      <svg className="w-4 h-4 text-emerald-600 dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </div>
                   </div>
                 </div>
-                <h4 className="font-semibold text-card-foreground mb-1 text-sm sm:text-base">출석 체크</h4>
-                <p className="text-xs sm:text-sm text-muted-foreground">오늘 출석 현황</p>
+                <h4 className="font-bold text-gray-900 dark:text-white mb-1 text-base">출석 체크</h4>
+                <p className="text-sm text-gray-500 dark:text-gray-400">오늘 출석 현황</p>
               </button>
 
               {/* 일정 관리 */}
               <button
                 onClick={() => onNavigate?.('schedule-management')}
-                className="group relative p-3 sm:p-5 bg-card hover:bg-muted rounded-lg transition-all duration-200 text-left border border-border hover:border-primary hover:shadow-lg mobile-button touch-manipulation min-w-[160px] sm:min-w-0 snap-start flex-shrink-0"
+                className="group relative p-5 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded-2xl transition-all duration-300 text-left border border-gray-100 dark:border-gray-700 hover:border-purple-200 dark:hover:border-purple-800 hover:shadow-lg hover:shadow-purple-500/10 min-w-[200px] sm:min-w-0 snap-start flex-shrink-0"
               >
-                <div className="flex items-start justify-between mb-2 sm:mb-3">
-                  <div className="w-9 h-9 sm:w-11 sm:h-11 bg-primary rounded-lg flex items-center justify-center group-hover:bg-primary/90 group-hover:scale-105 transition-all shadow-sm">
-                    <CalendarDaysIcon className="w-5 h-5 sm:w-6 sm:h-6 text-primary-foreground" />
+                <div className="flex items-start justify-between mb-4">
+                  <div className="w-12 h-12 bg-purple-50 dark:bg-purple-900/30 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                    <CalendarDaysIcon className="w-6 h-6 text-purple-600 dark:text-purple-400" />
+                  </div>
+                  <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <div className="w-8 h-8 rounded-full bg-purple-50 dark:bg-purple-900/30 flex items-center justify-center">
+                      <svg className="w-4 h-4 text-purple-600 dark:text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </div>
                   </div>
                 </div>
-                <h4 className="font-semibold text-card-foreground mb-1 text-sm sm:text-base">일정 관리</h4>
-                <p className="text-xs sm:text-sm text-muted-foreground">과정 스케줄 확인</p>
+                <h4 className="font-bold text-gray-900 dark:text-white mb-1 text-base">일정 관리</h4>
+                <p className="text-sm text-gray-500 dark:text-gray-400">과정 스케줄 확인</p>
               </button>
             </div>
           </div>
