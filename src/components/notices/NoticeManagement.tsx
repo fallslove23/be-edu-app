@@ -250,22 +250,22 @@ const NoticeManagement: React.FC = () => {
               {filteredNotices.map((notice) => (
                 <div
                   key={notice.id}
-                  className={`border rounded-xl p-4 hover:shadow-md transition-shadow ${notice.is_pinned ? 'border-primary bg-accent/10' : 'border-border bg-card'
+                  className={`border rounded-lg p-4 hover:shadow-md transition-shadow ${notice.is_pinned ? 'border-primary bg-accent/10' : 'border-border bg-card'
                     }`}
                 >
                   <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-4">
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-2">
                         {notice.is_pinned && (
-                          <span className="bg-primary text-primary-foreground text-xs px-2 py-1 rounded-full">
+                          <span className="bg-primary text-primary-foreground text-xs px-2 py-1 rounded-md">
                             📌 고정
                           </span>
                         )}
-                        <span className={`text-xs px-2 py-1 rounded-full border ${getPriorityColor(notice.priority)}`}>
+                        <span className={`text-xs px-2 py-1 rounded-md border ${getPriorityColor(notice.priority)}`}>
                           {notice.priority === 'high' ? '긴급' :
                             notice.priority === 'medium' ? '보통' : '낮음'}
                         </span>
-                        <span className={`text-xs px-2 py-1 rounded-full ${getStatusColor(notice.status)}`}>
+                        <span className={`text-xs px-2 py-1 rounded-md ${getStatusColor(notice.status)}`}>
                           {notice.status === 'published' ? '게시중' :
                             notice.status === 'draft' ? '임시저장' : '보관됨'}
                         </span>

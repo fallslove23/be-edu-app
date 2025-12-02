@@ -47,7 +47,21 @@ const ImprovedNavigation: React.FC<ImprovedNavigationProps> = ({
       setRecentViews(newRecent);
       localStorage.setItem('recentViews', JSON.stringify(newRecent));
     }
-  }, [activeView]);
+
+    // Automatically expand the category containing the active view
+    const menuItems = getMenuItemsForRole(user?.role || 'trainee');
+    const parentCategory = menuItems.find(item =>
+      item.isCategory && item.subItems?.some(sub => sub.id === activeView)
+    );
+
+    if (parentCategory) {
+      setExpandedCategories(prev => {
+        const newSet = new Set(prev);
+        newSet.add(parentCategory.id);
+        return newSet;
+      });
+    }
+  }, [activeView, user]);
 
   if (!user) return null;
 
