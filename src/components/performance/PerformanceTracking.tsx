@@ -300,7 +300,7 @@ const PerformanceTracking: React.FC = () => {
 
       {/* 탭 메뉴 */}
       <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-        <div className="border-b border-gray-200">
+        <div className="border-b border-gray-200 overflow-x-auto">
           <nav className="-mb-px flex">
             {[
               { key: 'daily-progress', label: '일차별 진도', icon: CalendarDaysIcon },
@@ -311,14 +311,14 @@ const PerformanceTracking: React.FC = () => {
               <button
                 key={tab.key}
                 onClick={() => setActiveTab(tab.key as any)}
-                className={`px-6 py-3 text-sm font-medium border-b-2 transition-colors flex items-center ${
+                className={`px-4 sm:px-6 py-3 text-sm font-medium border-b-2 transition-colors flex items-center whitespace-nowrap min-w-[120px] justify-center ${
                   activeTab === tab.key
                     ? 'border-gray-600 text-gray-700'
                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                 }`}
               >
-                <tab.icon className="h-4 w-4 mr-2" />
-                {tab.label}
+                <tab.icon className="h-4 w-4 mr-1.5 sm:mr-2 flex-shrink-0" />
+                <span className="text-xs sm:text-sm">{tab.label}</span>
               </button>
             ))}
           </nav>
