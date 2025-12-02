@@ -296,13 +296,32 @@ const NoticeManagement: React.FC = () => {
                     </div>
 
                     <div className="flex items-center gap-2 flex-shrink-0">
-                      <button className="btn-ghost p-2 rounded-full">
+                      <button
+                        onClick={() => setSelectedNotice(notice)}
+                        className="btn-ghost p-2 rounded-full"
+                        title="보기"
+                      >
                         <EyeIcon className="h-4 w-4" />
                       </button>
-                      <button className="btn-ghost p-2 rounded-full">
+                      <button
+                        onClick={() => {
+                          setSelectedNotice(notice);
+                          setShowForm(true);
+                        }}
+                        className="btn-ghost p-2 rounded-full"
+                        title="수정"
+                      >
                         <PencilIcon className="h-4 w-4" />
                       </button>
-                      <button className="btn-ghost p-2 text-destructive hover:bg-destructive hover:text-destructive-foreground rounded-full">
+                      <button
+                        onClick={() => {
+                          if (confirm('이 공지사항을 삭제하시겠습니까?')) {
+                            setNotices(notices.filter(n => n.id !== notice.id));
+                          }
+                        }}
+                        className="btn-ghost p-2 text-destructive hover:bg-destructive hover:text-destructive-foreground rounded-full"
+                        title="삭제"
+                      >
                         <TrashIcon className="h-4 w-4" />
                       </button>
                     </div>
@@ -320,6 +339,214 @@ const NoticeManagement: React.FC = () => {
           )}
         </div>
       </div>
+
+      {/* 공지사항 상세보기 모달 */}
+      {selectedNotice && !showForm && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
+              <h2 className="text-xl font-bold text-gray-900">공지사항 상세</h2>
+              <button
+                onClick={() => setSelectedNotice(null)}
+                className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+              >
+                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            <div className="p-6">
+              {/* 헤더 정보 */}
+              <div className="mb-6">
+                <div className="flex items-center gap-2 mb-3">
+                  {selectedNotice.is_pinned && (
+                    <span className="bg-primary text-primary-foreground text-xs px-2 py-1 rounded-md">
+                      📌 고정
+                    </span>
+                  )}
+                  <span className={`text-xs px-2 py-1 rounded-md border ${getPriorityColor(selectedNotice.priority)}`}>
+                    {selectedNotice.priority === 'high' ? '긴급' :
+                      selectedNotice.priority === 'medium' ? '보통' : '낮음'}
+                  </span>
+                  <span className={`text-xs px-2 py-1 rounded-md ${getStatusColor(selectedNotice.status)}`}>
+                    {selectedNotice.status === 'published' ? '게시중' :
+                      selectedNotice.status === 'draft' ? '임시저장' : '보관됨'}
+                  </span>
+                </div>
+
+                <h3 className="text-2xl font-bold text-gray-900 mb-4">
+                  {selectedNotice.title}
+                </h3>
+
+                <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500 pb-4 border-b border-gray-200">
+                  <div className="flex items-center">
+                    <UserIcon className="h-4 w-4 mr-1" />
+                    {selectedNotice.created_by}
+                  </div>
+                  <div className="flex items-center">
+                    <ClockIcon className="h-4 w-4 mr-1" />
+                    {formatDate(selectedNotice.created_at)}
+                  </div>
+                  <div className="flex items-center">
+                    <EyeIcon className="h-4 w-4 mr-1" />
+                    {selectedNotice.views.toLocaleString()}회 조회
+                  </div>
+                </div>
+              </div>
+
+              {/* 본문 */}
+              <div className="prose max-w-none">
+                <p className="text-gray-700 whitespace-pre-wrap leading-relaxed">
+                  {selectedNotice.content}
+                </p>
+              </div>
+
+              {/* 액션 버튼 */}
+              <div className="mt-8 flex items-center justify-end gap-3 pt-6 border-t border-gray-200">
+                <button
+                  onClick={() => setSelectedNotice(null)}
+                  className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                >
+                  닫기
+                </button>
+                <button
+                  onClick={() => {
+                    setShowForm(true);
+                  }}
+                  className="btn-primary px-4 py-2 rounded-lg"
+                >
+                  수정하기
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 공지사항 작성/수정 폼 모달 */}
+      {showForm && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
+              <h2 className="text-xl font-bold text-gray-900">
+                {selectedNotice ? '공지사항 수정' : '새 공지 작성'}
+              </h2>
+              <button
+                onClick={() => {
+                  setShowForm(false);
+                  setSelectedNotice(null);
+                }}
+                className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+              >
+                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            <div className="p-6">
+              <form className="space-y-6">
+                {/* 제목 */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    제목 *
+                  </label>
+                  <input
+                    type="text"
+                    defaultValue={selectedNotice?.title}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                    placeholder="공지사항 제목을 입력하세요"
+                  />
+                </div>
+
+                {/* 내용 */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    내용 *
+                  </label>
+                  <textarea
+                    defaultValue={selectedNotice?.content}
+                    rows={10}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                    placeholder="공지사항 내용을 입력하세요"
+                  />
+                </div>
+
+                {/* 우선순위 */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    우선순위 *
+                  </label>
+                  <select
+                    defaultValue={selectedNotice?.priority || 'medium'}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                  >
+                    <option value="high">긴급</option>
+                    <option value="medium">보통</option>
+                    <option value="low">낮음</option>
+                  </select>
+                </div>
+
+                {/* 상태 */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    상태 *
+                  </label>
+                  <select
+                    defaultValue={selectedNotice?.status || 'draft'}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                  >
+                    <option value="published">게시중</option>
+                    <option value="draft">임시저장</option>
+                    <option value="archived">보관됨</option>
+                  </select>
+                </div>
+
+                {/* 고정 여부 */}
+                <div className="flex items-center">
+                  <input
+                    type="checkbox"
+                    id="is_pinned"
+                    defaultChecked={selectedNotice?.is_pinned}
+                    className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary"
+                  />
+                  <label htmlFor="is_pinned" className="ml-2 text-sm text-gray-700">
+                    상단 고정
+                  </label>
+                </div>
+
+                {/* 액션 버튼 */}
+                <div className="flex items-center justify-end gap-3 pt-6 border-t border-gray-200">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowForm(false);
+                      setSelectedNotice(null);
+                    }}
+                    className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                  >
+                    취소
+                  </button>
+                  <button
+                    type="submit"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      alert('공지사항이 저장되었습니다!');
+                      setShowForm(false);
+                      setSelectedNotice(null);
+                      loadNotices();
+                    }}
+                    className="btn-primary px-4 py-2 rounded-lg"
+                  >
+                    {selectedNotice ? '수정하기' : '작성하기'}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
     </PageContainer>
   );
 };
