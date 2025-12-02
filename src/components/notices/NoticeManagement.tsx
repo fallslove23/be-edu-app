@@ -110,7 +110,7 @@ const NoticeManagement: React.FC = () => {
   // 필터링된 공지사항
   const filteredNotices = notices.filter(notice => {
     const matchesSearch = notice.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         notice.content.toLowerCase().includes(searchTerm.toLowerCase());
+      notice.content.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = filterStatus === 'all' || notice.status === filterStatus;
     return matchesSearch && matchesStatus;
   });
@@ -239,7 +239,7 @@ const NoticeManagement: React.FC = () => {
       <div className="bg-white rounded-lg shadow-sm border border-gray-200">
         <div className="p-6">
           <h2 className="text-lg font-medium text-gray-900 mb-4">공지사항 목록</h2>
-          
+
           {loading ? (
             <div className="flex items-center justify-center py-12">
               <div className="animate-spin rounded-lg h-8 w-8 border-b-2 border-blue-600"></div>
@@ -250,9 +250,8 @@ const NoticeManagement: React.FC = () => {
               {filteredNotices.map((notice) => (
                 <div
                   key={notice.id}
-                  className={`border rounded-full p-4 hover:shadow-md transition-shadow ${
-                    notice.is_pinned ? 'border-primary bg-accent/10' : 'border-border bg-card'
-                  }`}
+                  className={`border rounded-xl p-4 hover:shadow-md transition-shadow ${notice.is_pinned ? 'border-primary bg-accent/10' : 'border-border bg-card'
+                    }`}
                 >
                   <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-4">
                     <div className="flex-1 min-w-0">
@@ -264,22 +263,22 @@ const NoticeManagement: React.FC = () => {
                         )}
                         <span className={`text-xs px-2 py-1 rounded-full border ${getPriorityColor(notice.priority)}`}>
                           {notice.priority === 'high' ? '긴급' :
-                           notice.priority === 'medium' ? '보통' : '낮음'}
+                            notice.priority === 'medium' ? '보통' : '낮음'}
                         </span>
                         <span className={`text-xs px-2 py-1 rounded-full ${getStatusColor(notice.status)}`}>
                           {notice.status === 'published' ? '게시중' :
-                           notice.status === 'draft' ? '임시저장' : '보관됨'}
+                            notice.status === 'draft' ? '임시저장' : '보관됨'}
                         </span>
                       </div>
-                      
+
                       <h3 className="text-lg font-medium text-gray-900 mb-2 break-words">
                         {notice.title}
                       </h3>
-                      
+
                       <p className="text-gray-600 text-sm mb-3 line-clamp-2 break-words">
                         {notice.content}
                       </p>
-                      
+
                       <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500">
                         <div className="flex items-center">
                           <UserIcon className="h-4 w-4 mr-1" />
@@ -295,7 +294,7 @@ const NoticeManagement: React.FC = () => {
                         </div>
                       </div>
                     </div>
-                    
+
                     <div className="flex items-center gap-2 flex-shrink-0">
                       <button className="btn-ghost p-2 rounded-full">
                         <EyeIcon className="h-4 w-4" />
@@ -310,7 +309,7 @@ const NoticeManagement: React.FC = () => {
                   </div>
                 </div>
               ))}
-              
+
               {filteredNotices.length === 0 && (
                 <div className="text-center py-12">
                   <MegaphoneIcon className="h-12 w-12 mx-auto text-gray-300 mb-4" />
