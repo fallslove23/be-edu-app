@@ -257,7 +257,7 @@ const ImprovedNavigation: React.FC<ImprovedNavigationProps> = ({
                   // Category with sub-items
                   <div>
                     <button
-                      onClick={() => !isCollapsed && toggleCategory(item.id)}
+                      onClick={() => toggleCategory(item.id)}
                       className={`w-full ${isCollapsed ? 'px-0 py-3' : 'px-3 py-2'} rounded-xl text-sm font-medium transition-all duration-300 flex items-center ${isCollapsed ? 'justify-center' : 'justify-between'} text-muted-foreground hover:bg-white/5 hover:text-foreground relative group hover:translate-x-1`}
                       title={item.description}
                     >
@@ -272,13 +272,20 @@ const ImprovedNavigation: React.FC<ImprovedNavigationProps> = ({
                       )}
                       {/* Tooltip for collapsed state */}
                       {isCollapsed && (
-                        <div className="absolute left-full ml-2 px-3 py-2 bg-popover text-popover-foreground text-xs rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 min-w-max border border-border">
+                        <div className="absolute left-full ml-2 px-3 py-2 bg-popover text-popover-foreground text-xs rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity z-50 min-w-max border border-border pointer-events-auto">
                           <div className="font-semibold mb-2 border-b border-border pb-1">{item.label}</div>
                           <div className="space-y-1">
                             {item.subItems.map((subItem) => (
-                              <div key={subItem.id} className="text-muted-foreground hover:text-popover-foreground whitespace-nowrap">
+                              <button
+                                key={subItem.id}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleItemClick(subItem.id, subItem.route, subItem.isExternal);
+                                }}
+                                className="w-full text-left text-muted-foreground hover:text-popover-foreground whitespace-nowrap px-2 py-1 rounded hover:bg-white/5 transition-colors"
+                              >
                                 {subItem.label}
-                              </div>
+                              </button>
                             ))}
                           </div>
                         </div>

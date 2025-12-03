@@ -6,6 +6,7 @@ import { supabase } from './supabase';
 import { CourseService } from './course.services';
 import { UserService } from './user.services';
 import { User } from './user.services';
+import { instructorPaymentService } from './instructor-payment.service';
 import {
   InstructorDashboardData,
   TeachingOverview,
@@ -259,43 +260,91 @@ export class InstructorDashboardService {
 
   // 급여 요약 조회
   static async getPaymentSummary(instructorId: string): Promise<PaymentSummary> {
-    // TODO: 실제 급여 시스템 구현 시 연동
-    const currentMonth = {
-      totalAmount: 3000000,
-      paidAmount: 1500000,
-      pendingAmount: 1500000,
-      completedClasses: 12,
-      totalClasses: 24
-    };
+    try {
+      const now = new Date();
+      const currentMonthStart = startOfMonth(now);
+      const currentMonthEnd = endOfMonth(now);
 
-    const upcomingPayment = {
-      amount: 1500000,
-      paymentDate: format(endOfMonth(new Date()), 'yyyy-MM-dd'),
-      status: 'pending' as const
-    };
+      // 이번 달 강사료 이력 조회
+      const currentMonthPayments = await instructorPaymentService.getPaymentHistory(
+        instructorId
+      );
 
-    const paymentHistory: PaymentHistory[] = [
-      {
-        id: 'pay_1',
-        month: '2024-11',
-        amount: 3000000,
-        paidDate: '2024-11-30',
-        status: 'paid'
-      },
-      {
-        id: 'pay_2',
-        month: '2024-10',
-        amount: 2800000,
-        paidDate: '2024-10-31',
-        status: 'paid'
-      }
-    ];
+      // 이번 달 데이터 필터링
+      const thisMonthPayments = currentMonthPayments.filter(payment => {
+        const paymentDate = new Date(payment.payment_date);
+        return paymentDate >= currentMonthStart && paymentDate <= currentMonthEnd;
+      });
 
-    return {
-      currentMonth,
-      upcomingPayment,
-      paymentHistory
-    };
+      // 이번 달 통계 계산
+      const totalAmount = thisMonthPayments.reduce((sum, p) => sum + p.payment_amount, 0);
+      const paidAmount = thisMonthPayments
+        .filter(p => p.payment_status === 'completed')
+        .reduce((sum, p) => sum + p.payment_amount, 0);
+      const pendingAmount = thisMonthPayments
+        .filter(p => p.payment_status === 'pending')
+        .reduce((sum, p) => sum + p.payment_amount, 0);
+
+      // 이번 달 강의 시간 계산
+      const completedHours = thisMonthPayments
+        .filter(p => p.payment_status === 'completed')
+        .reduce((sum, p) => sum + (p.total_hours || 0), 0);
+      const totalHours = thisMonthPayments.reduce((sum, p) => sum + (p.total_hours || 0), 0);
+
+      // 다음 지급 예정 찾기
+      const pendingPayments = currentMonthPayments.filter(p => p.payment_status === 'pending');
+      const upcomingPayment = pendingPayments.length > 0 ? {
+        amount: pendingPayments[0].payment_amount,
+        paymentDate: pendingPayments[0].payment_date,
+        status: 'pending' as const
+      } : {
+        amount: 0,
+        paymentDate: format(currentMonthEnd, 'yyyy-MM-dd'),
+        status: 'pending' as const
+      };
+
+      // 최근 3개월 강사료 이력
+      const paymentHistory: PaymentHistory[] = currentMonthPayments
+        .filter(p => p.payment_status === 'completed')
+        .slice(0, 5)
+        .map(payment => ({
+          id: payment.id,
+          month: format(new Date(payment.payment_date), 'yyyy-MM', { locale: ko }),
+          amount: payment.payment_amount,
+          paidDate: payment.payment_date,
+          status: 'paid' as const
+        }));
+
+      return {
+        currentMonth: {
+          totalAmount,
+          paidAmount,
+          pendingAmount,
+          completedClasses: Math.round(completedHours),
+          totalClasses: Math.round(totalHours)
+        },
+        upcomingPayment,
+        paymentHistory
+      };
+    } catch (error) {
+      console.error('PaymentSummary 조회 실패:', error);
+      // 에러 발생 시 기본값 반환
+      return {
+        currentMonth: {
+          totalAmount: 0,
+          paidAmount: 0,
+          pendingAmount: 0,
+          completedClasses: 0,
+          totalClasses: 0
+        },
+        upcomingPayment: {
+          amount: 0,
+          paymentDate: format(endOfMonth(new Date()), 'yyyy-MM-dd'),
+          status: 'pending' as const
+        },
+        paymentHistory: []
+      };
+    }
   }
 
   // 알림 조회

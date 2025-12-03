@@ -198,12 +198,12 @@ const InstructorDashboard: React.FC<InstructorDashboardProps> = ({ instructorId 
               <CurrencyDollarIcon className="h-6 w-6 text-amber-600 dark:text-amber-400" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">이번 달 급여</p>
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">이번달 강사료</p>
               <p className="text-2xl font-semibold text-gray-900 dark:text-white">
                 {formatCurrency(paymentSummary.currentMonth.totalAmount)}
               </p>
               <p className="text-xs text-gray-500 dark:text-gray-500">
-                {paymentSummary.currentMonth.completedClasses}/{paymentSummary.currentMonth.totalClasses} 완료
+                {paymentSummary.currentMonth.completedClasses}/{paymentSummary.currentMonth.totalClasses} 시간
               </p>
             </div>
           </div>
