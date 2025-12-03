@@ -15,6 +15,10 @@ import {
   Utensils,
   Plane,
   Wallet,
+  CheckCircle,
+  ClipboardCheck,
+  TrendingUp,
+  FolderOpen,
 } from 'lucide-react';
 import EnhancedDashboard from './EnhancedDashboard';
 import RolePreviewSelector from '../admin/RolePreviewSelector';
@@ -37,10 +41,10 @@ const DashboardWrapper: React.FC<DashboardWrapperProps> = ({ onNavigate }) => {
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center space-x-2">
             <div className="w-8 h-8 bg-indigo-600 rounded-full flex items-center justify-center text-white font-bold text-sm">
-              P
+              {user?.name?.[0] || 'A'}
             </div>
             <h1 className="text-xl font-bold text-gray-900">
-              {user?.name || '최효동'}님
+              {user?.name || '관리자'}님
             </h1>
           </div>
           <div className="flex items-center space-x-4">
@@ -53,31 +57,34 @@ const DashboardWrapper: React.FC<DashboardWrapperProps> = ({ onNavigate }) => {
           </div>
         </div>
 
-        {/* Banner */}
-        <div className="flex items-center justify-between bg-white p-4 rounded-2xl shadow-sm cursor-pointer hover:bg-gray-50 transition-colors">
+        {/* Banner - Notice */}
+        <div
+          onClick={() => onNavigate?.('notices')}
+          className="flex items-center justify-between bg-white p-4 rounded-2xl shadow-sm cursor-pointer hover:bg-gray-50 transition-colors"
+        >
           <div>
-            <p className="text-xs text-gray-500 mb-1">커플 모임통장이 드리는 데이트 지원금♥</p>
-            <p className="text-sm font-bold text-gray-900">선착순 200명! 5만원 받으러 가기 <span className="inline-block ml-1">&gt;</span></p>
+            <p className="text-xs text-gray-500 mb-1">새로운 공지사항이 있습니다</p>
+            <p className="text-sm font-bold text-gray-900">12월 정기 시스템 점검 안내 <span className="inline-block ml-1">&gt;</span></p>
           </div>
-          <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-            <span className="text-2xl">💌</span>
+          <div className="w-12 h-12 bg-indigo-50 rounded-lg flex items-center justify-center">
+            <span className="text-2xl">📢</span>
           </div>
         </div>
 
-        {/* Main Card (Account Style) */}
+        {/* Main Card (LMS Status Style) */}
         <div className="bg-white rounded-[2rem] p-6 shadow-sm relative overflow-hidden">
           <div className="flex justify-between items-start mb-6">
             <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white">
-                <LayoutGrid className="w-5 h-5" />
+              <div className="w-8 h-8 bg-indigo-600 rounded-full flex items-center justify-center text-white">
+                <GraduationCap className="w-5 h-5" />
               </div>
               <div>
                 <div className="flex items-center space-x-1">
-                  <span className="font-bold text-gray-900">입출금</span>
-                  <span className="text-sm text-gray-500 underline decoration-gray-300 underline-offset-2">쏠편한 입출금통장(저축예금)</span>
+                  <span className="font-bold text-gray-900">교육 현황</span>
+                  <span className="text-sm text-gray-500 underline decoration-gray-300 underline-offset-2">2024년 하반기</span>
                 </div>
                 <div className="text-xs text-gray-400 mt-0.5 flex items-center">
-                  신한 110-580-623839 <Copy className="w-3 h-3 ml-1 cursor-pointer" />
+                  BS Education Center
                 </div>
               </div>
             </div>
@@ -88,43 +95,43 @@ const DashboardWrapper: React.FC<DashboardWrapperProps> = ({ onNavigate }) => {
 
           <div className="text-center py-4">
             <h2 className="text-4xl font-bold text-gray-900 tracking-tight">
-              43,759<span className="text-2xl font-normal ml-1">원</span>
+              8<span className="text-2xl font-normal ml-1">개 과정 진행중</span>
             </h2>
           </div>
 
           <div className="grid grid-cols-2 gap-3 mt-6">
             <button
-              onClick={() => onNavigate?.('attendance')}
-              className="py-3.5 rounded-xl bg-blue-50 text-blue-600 font-semibold hover:bg-blue-100 transition-colors text-center"
+              onClick={() => onNavigate?.('course-management')}
+              className="py-3.5 rounded-xl bg-indigo-50 text-indigo-600 font-semibold hover:bg-indigo-100 transition-colors text-center"
             >
-              이체
+              과정 관리
             </button>
             <button
-              onClick={() => onNavigate?.('course-management')}
-              className="py-3.5 rounded-xl bg-blue-50 text-blue-600 font-semibold hover:bg-blue-100 transition-colors text-center"
+              onClick={() => onNavigate?.('trainees')}
+              className="py-3.5 rounded-xl bg-indigo-50 text-indigo-600 font-semibold hover:bg-indigo-100 transition-colors text-center"
             >
-              급여클럽+
+              교육생 관리
             </button>
           </div>
 
-          {/* Sub Accounts / Info */}
+          {/* Sub Info (Attendance / New Students) */}
           <div className="flex space-x-3 mt-6 overflow-x-auto pb-2 hide-scrollbar">
             <div className="flex-shrink-0 bg-gray-50 rounded-2xl p-3 flex items-center space-x-3 min-w-[160px]">
-              <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white text-xs">
-                S
+              <div className="w-8 h-8 bg-emerald-500 rounded-full flex items-center justify-center text-white">
+                <CheckCircle className="w-4 h-4" />
               </div>
               <div>
-                <div className="text-xs text-gray-500">강서구50버4141최영철</div>
-                <div className="text-sm font-bold text-gray-900">32,000</div>
+                <div className="text-xs text-gray-500">오늘 출석률</div>
+                <div className="text-sm font-bold text-gray-900">98.5%</div>
               </div>
             </div>
             <div className="flex-shrink-0 bg-gray-50 rounded-2xl p-3 flex items-center space-x-3 min-w-[160px]">
-              <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white text-xs">
-                S
+              <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white">
+                <Users className="w-4 h-4" />
               </div>
               <div>
-                <div className="text-xs text-gray-500">김아영</div>
-                <div className="text-sm font-bold text-gray-900">1,300,000</div>
+                <div className="text-xs text-gray-500">총 교육생</div>
+                <div className="text-sm font-bold text-gray-900">156명</div>
               </div>
             </div>
           </div>
@@ -139,13 +146,16 @@ const DashboardWrapper: React.FC<DashboardWrapperProps> = ({ onNavigate }) => {
         {/* Middle Action Bar */}
         <div className="bg-white rounded-2xl p-4 shadow-sm flex items-center justify-between">
           <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 bg-blue-900 rounded-lg flex items-center justify-center">
-              <CreditCard className="w-5 h-5 text-white" />
+            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+              <ClipboardCheck className="w-5 h-5 text-white" />
             </div>
-            <span className="font-bold text-gray-900">신한 SOL Pay</span>
+            <span className="font-bold text-gray-900">빠른 출석 체크</span>
           </div>
-          <button className="px-4 py-1.5 bg-blue-50 text-blue-600 text-sm font-bold rounded-full hover:bg-blue-100 transition-colors">
-            결제
+          <button
+            onClick={() => onNavigate?.('attendance')}
+            className="px-4 py-1.5 bg-blue-50 text-blue-600 text-sm font-bold rounded-full hover:bg-blue-100 transition-colors"
+          >
+            바로가기
           </button>
         </div>
 
@@ -165,43 +175,43 @@ const DashboardWrapper: React.FC<DashboardWrapperProps> = ({ onNavigate }) => {
 
         {/* Bottom Grid (Colorful Cards) */}
         <div className="grid grid-cols-3 gap-4">
-          {/* Orange Card */}
+          {/* Orange Card - Schedule */}
           <button
-            onClick={() => onNavigate?.('notices')}
+            onClick={() => onNavigate?.('schedule-management')}
             className="bg-[#FF8800] rounded-3xl p-5 h-40 relative overflow-hidden text-left hover:opacity-90 transition-opacity shadow-sm group"
           >
-            <h3 className="text-white font-bold text-lg relative z-10">땡겨요</h3>
+            <h3 className="text-white font-bold text-lg relative z-10">일정 관리</h3>
             <div className="absolute bottom-[-10px] right-[-10px] opacity-90 group-hover:scale-110 transition-transform duration-300">
-              <Utensils className="w-20 h-20 text-white/30" />
+              <CalendarDays className="w-20 h-20 text-white/30" />
               <div className="absolute bottom-4 right-4 w-12 h-12 bg-white/20 rounded-full blur-xl"></div>
             </div>
             <div className="absolute bottom-4 right-4">
-              <img src="https://cdn-icons-png.flaticon.com/512/1046/1046771.png" alt="chicken" className="w-12 h-12 object-contain opacity-90 drop-shadow-lg" style={{ filter: 'brightness(0) invert(1)' }} />
+              <CalendarDays className="w-10 h-10 text-white" />
             </div>
           </button>
 
-          {/* Blue Card */}
+          {/* Blue Card - Analytics */}
           <button
-            onClick={() => onNavigate?.('schedule-management')}
+            onClick={() => onNavigate?.('analytics')}
             className="bg-[#28C2FF] rounded-3xl p-5 h-40 relative overflow-hidden text-left hover:opacity-90 transition-opacity shadow-sm group"
           >
-            <h3 className="text-white font-bold text-lg relative z-10">SOL트래블</h3>
+            <h3 className="text-white font-bold text-lg relative z-10">성과 분석</h3>
             <div className="absolute bottom-2 right-2 group-hover:scale-110 transition-transform duration-300">
-              <Plane className="w-16 h-16 text-white/90" />
+              <BarChart2 className="w-16 h-16 text-white/90" />
             </div>
             <div className="absolute bottom-4 left-4">
-              <CreditCard className="w-10 h-10 text-white/50" />
+              <TrendingUp className="w-8 h-8 text-white/50" />
             </div>
           </button>
 
-          {/* White Card */}
+          {/* White Card - Resources */}
           <button
-            onClick={() => onNavigate?.('trainees')}
+            onClick={() => onNavigate?.('materials-library')}
             className="bg-white rounded-3xl p-5 h-40 relative overflow-hidden text-left hover:bg-gray-50 transition-colors shadow-sm border border-gray-100 group"
           >
-            <h3 className="text-gray-900 font-bold text-lg relative z-10">쏠지갑</h3>
+            <h3 className="text-gray-900 font-bold text-lg relative z-10">자료실</h3>
             <div className="absolute bottom-4 right-4 group-hover:scale-110 transition-transform duration-300">
-              <Wallet className="w-14 h-14 text-blue-500" />
+              <FolderOpen className="w-14 h-14 text-indigo-500" />
             </div>
           </button>
         </div>
