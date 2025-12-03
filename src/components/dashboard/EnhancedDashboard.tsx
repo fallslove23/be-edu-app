@@ -144,28 +144,13 @@ const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({ embedded = false 
     },
   ] : [];
 
-  // Premium Chart Colors
-  const chartColors = {
-    primary: {
-      solid: '#6366f1', // Indigo 500
-      light: 'rgba(99, 102, 241, 0.1)',
-    },
-    secondary: {
-      solid: '#8b5cf6', // Violet 500
-      light: 'rgba(139, 92, 246, 0.1)',
-    },
-    success: {
-      solid: '#10b981', // Emerald 500
-      light: 'rgba(16, 185, 129, 0.1)',
-    },
-    palette: [
-      '#6366f1', // Indigo
-      '#ec4899', // Pink
-      '#8b5cf6', // Violet
-      '#14b8a6', // Teal
-      '#f59e0b', // Amber
-      '#3b82f6', // Blue
-    ]
+  // Clean Minimalist Theme (inspired by screenshot)
+  const cleanTheme = {
+    primary: '#0f172a', // Slate 900 (Main Line/Bar)
+    secondary: '#94a3b8', // Slate 400 (Secondary Bar)
+    grid: '#f1f5f9', // Slate 100 (Grid lines)
+    text: '#64748b', // Slate 500 (Labels)
+    background: '#ffffff',
   };
 
   // 출석률 추이 차트 데이터
@@ -175,21 +160,18 @@ const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({ embedded = false 
       {
         label: '출석률 (%)',
         data: attendanceTrend.map(d => d.rate),
-        borderColor: chartColors.success.solid,
-        backgroundColor: (context: any) => {
-          const ctx = context.chart.ctx;
-          const gradient = ctx.createLinearGradient(0, 0, 0, 300);
-          gradient.addColorStop(0, 'rgba(16, 185, 129, 0.2)');
-          gradient.addColorStop(1, 'rgba(16, 185, 129, 0)');
-          return gradient;
-        },
-        fill: true,
-        tension: 0.4,
+        borderColor: cleanTheme.primary,
+        backgroundColor: 'transparent', // No fill for clean look
+        borderWidth: 2.5,
+        tension: 0.4, // Smooth bezier curve
         pointBackgroundColor: '#ffffff',
-        pointBorderColor: chartColors.success.solid,
+        pointBorderColor: cleanTheme.primary,
         pointBorderWidth: 2,
         pointRadius: 4,
         pointHoverRadius: 6,
+        pointHoverBackgroundColor: cleanTheme.primary,
+        pointHoverBorderColor: '#ffffff',
+        pointHoverBorderWidth: 2,
       },
     ],
   };
@@ -202,7 +184,7 @@ const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({ embedded = false 
         display: false,
       },
       tooltip: {
-        backgroundColor: 'rgba(17, 24, 39, 0.9)',
+        backgroundColor: '#1e293b',
         padding: 12,
         titleFont: { size: 13, family: 'Pretendard' },
         bodyFont: { size: 13, family: 'Pretendard' },
@@ -217,18 +199,26 @@ const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({ embedded = false 
       x: {
         grid: {
           display: false,
+          drawBorder: false,
+        },
+        border: {
+          display: false,
         },
         ticks: {
           font: { size: 11, family: 'Pretendard' },
-          color: '#9ca3af',
+          color: cleanTheme.text,
+          maxRotation: 0,
+          autoSkip: true,
+          maxTicksLimit: 7,
         }
       },
       y: {
         beginAtZero: true,
         max: 100,
         grid: {
-          color: 'rgba(243, 244, 246, 0.6)',
+          color: cleanTheme.grid,
           borderDash: [4, 4],
+          drawBorder: false,
         },
         border: {
           display: false,
@@ -236,8 +226,9 @@ const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({ embedded = false 
         ticks: {
           callback: (value: any) => `${value}%`,
           font: { size: 11, family: 'Pretendard' },
-          color: '#9ca3af',
-          stepSize: 20,
+          color: cleanTheme.text,
+          stepSize: 25,
+          padding: 10,
         },
       },
     },
@@ -253,7 +244,14 @@ const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({ embedded = false 
     datasets: [
       {
         data: courseDistribution.map(d => d.count),
-        backgroundColor: chartColors.palette,
+        backgroundColor: [
+          '#0f172a', // Slate 900
+          '#334155', // Slate 700
+          '#64748b', // Slate 500
+          '#94a3b8', // Slate 400
+          '#cbd5e1', // Slate 300
+          '#e2e8f0', // Slate 200
+        ],
         borderColor: '#ffffff',
         borderWidth: 2,
         hoverOffset: 4,
@@ -302,16 +300,18 @@ const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({ embedded = false 
       {
         label: '담당 교육생 수',
         data: instructorWorkload.map(w => w.totalTrainees),
-        backgroundColor: chartColors.primary.solid,
-        borderRadius: 6,
-        barThickness: 20,
+        backgroundColor: cleanTheme.primary,
+        borderRadius: 4,
+        barThickness: 24,
+        borderSkipped: false,
       },
       {
         label: '진행 과정 수',
         data: instructorWorkload.map(w => w.activeCourses),
-        backgroundColor: chartColors.secondary.solid,
-        borderRadius: 6,
-        barThickness: 20,
+        backgroundColor: cleanTheme.secondary,
+        borderRadius: 4,
+        barThickness: 24,
+        borderSkipped: false,
       },
     ],
   };
@@ -327,12 +327,12 @@ const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({ embedded = false 
           usePointStyle: true,
           pointStyle: 'circle',
           font: { size: 12, family: 'Pretendard' },
-          color: '#4b5563',
-          boxWidth: 8,
+          color: cleanTheme.text,
+          boxWidth: 6,
         },
       },
       tooltip: {
-        backgroundColor: 'rgba(17, 24, 39, 0.9)',
+        backgroundColor: '#1e293b',
         padding: 12,
         cornerRadius: 8,
         titleFont: { family: 'Pretendard' },
@@ -343,25 +343,31 @@ const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({ embedded = false 
       x: {
         grid: {
           display: false,
-        },
-        ticks: {
-          font: { size: 11, family: 'Pretendard' },
-          color: '#6b7280',
-        }
-      },
-      y: {
-        beginAtZero: true,
-        grid: {
-          color: 'rgba(243, 244, 246, 0.6)',
-          borderDash: [4, 4],
+          drawBorder: false,
         },
         border: {
           display: false,
         },
         ticks: {
           font: { size: 11, family: 'Pretendard' },
-          color: '#6b7280',
+          color: cleanTheme.text,
+        }
+      },
+      y: {
+        beginAtZero: true,
+        grid: {
+          color: cleanTheme.grid,
+          borderDash: [4, 4],
+          drawBorder: false,
+        },
+        border: {
+          display: false,
+        },
+        ticks: {
+          font: { size: 11, family: 'Pretendard' },
+          color: cleanTheme.text,
           stepSize: 5,
+          padding: 10,
         }
       },
     },
