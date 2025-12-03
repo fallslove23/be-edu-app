@@ -255,10 +255,10 @@ const ImprovedNavigation: React.FC<ImprovedNavigationProps> = ({
               <div key={item.id}>
                 {item.isCategory && item.subItems ? (
                   // Category with sub-items
-                  <div>
+                  <div className={isCollapsed ? 'group/menu relative' : ''}>
                     <button
                       onClick={() => toggleCategory(item.id)}
-                      className={`w-full ${isCollapsed ? 'px-0 py-3' : 'px-3 py-2'} rounded-xl text-sm font-medium transition-all duration-300 flex items-center ${isCollapsed ? 'justify-center' : 'justify-between'} text-muted-foreground hover:bg-white/5 hover:text-foreground relative group hover:translate-x-1`}
+                      className={`w-full ${isCollapsed ? 'px-0 py-3' : 'px-3 py-2'} rounded-xl text-sm font-medium transition-all duration-300 flex items-center ${isCollapsed ? 'justify-center' : 'justify-between'} text-muted-foreground hover:bg-white/5 hover:text-foreground ${!isCollapsed && 'hover:translate-x-1'}`}
                       title={item.description}
                     >
                       <div className={`flex items-center ${isCollapsed ? '' : 'space-x-3'}`}>
@@ -270,27 +270,27 @@ const ImprovedNavigation: React.FC<ImprovedNavigationProps> = ({
                           ? <ChevronDownIcon className="h-4 w-4" />
                           : <ChevronRightIcon className="h-4 w-4" />
                       )}
-                      {/* Tooltip for collapsed state */}
-                      {isCollapsed && (
-                        <div className="absolute left-full ml-2 px-3 py-2 bg-popover text-popover-foreground text-xs rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity z-50 min-w-max border border-border pointer-events-auto">
-                          <div className="font-semibold mb-2 border-b border-border pb-1">{item.label}</div>
-                          <div className="space-y-1">
-                            {item.subItems.map((subItem) => (
-                              <button
-                                key={subItem.id}
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleItemClick(subItem.id, subItem.route, subItem.isExternal);
-                                }}
-                                className="w-full text-left text-muted-foreground hover:text-popover-foreground whitespace-nowrap px-2 py-1 rounded hover:bg-white/5 transition-colors"
-                              >
-                                {subItem.label}
-                              </button>
-                            ))}
-                          </div>
-                        </div>
-                      )}
                     </button>
+                    {/* Tooltip for collapsed state */}
+                    {isCollapsed && (
+                      <div className="absolute left-full ml-2 top-0 px-3 py-2 bg-popover text-popover-foreground text-xs rounded-lg shadow-xl invisible group-hover/menu:visible opacity-0 group-hover/menu:opacity-100 transition-all z-[100] min-w-max border border-border">
+                        <div className="font-semibold mb-2 border-b border-border pb-1">{item.label}</div>
+                        <div className="space-y-1">
+                          {item.subItems.map((subItem) => (
+                            <button
+                              key={subItem.id}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleItemClick(subItem.id, subItem.route, subItem.isExternal);
+                              }}
+                              className="w-full text-left text-muted-foreground hover:text-popover-foreground whitespace-nowrap px-2 py-1 rounded hover:bg-accent transition-colors"
+                            >
+                              {subItem.label}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
 
                     {(!isCollapsed && expandedCategories.has(item.id)) && (
                       <div className="ml-6 mt-1 space-y-1 border-l-2 border-sidebar-border pl-3">
