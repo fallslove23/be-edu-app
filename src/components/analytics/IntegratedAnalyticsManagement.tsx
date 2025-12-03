@@ -103,19 +103,19 @@ const IntegratedAnalyticsManagement: React.FC<IntegratedAnalyticsManagementProps
   };
 
   return (
-    <div className="min-h-screen bg-[#F2F4F6] p-4 sm:p-6 pb-24">
+    <div className="min-h-screen bg-[#F2F4F6] dark:bg-gray-900 p-4 sm:p-6 pb-24 transition-colors duration-200">
       <div className="max-w-5xl mx-auto space-y-6">
         {/* 헤더 */}
-        <div className="bg-white rounded-[2rem] p-6 shadow-sm border border-gray-100">
+        <div className="bg-white dark:bg-gray-800 rounded-[2rem] p-6 shadow-sm border border-gray-100 dark:border-gray-700">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div>
-              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2 flex items-center">
-                <div className="p-3 bg-indigo-50 rounded-xl mr-4">
-                  <PieChart className="w-8 h-8 text-indigo-600" />
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-2 flex items-center">
+                <div className="p-3 bg-indigo-50 dark:bg-indigo-900/30 rounded-xl mr-4">
+                  <PieChart className="w-8 h-8 text-indigo-600 dark:text-indigo-400" />
                 </div>
                 분석 및 보고서
               </h1>
-              <p className="text-gray-500">{getActiveTabConfig()?.description}</p>
+              <p className="text-gray-500 dark:text-gray-400">{getActiveTabConfig()?.description}</p>
             </div>
 
             {/* 모바일 최적화된 필터 */}
@@ -124,7 +124,7 @@ const IntegratedAnalyticsManagement: React.FC<IntegratedAnalyticsManagementProps
                 <select
                   value={dateRange}
                   onChange={(e) => setDateRange(e.target.value)}
-                  className="w-full sm:w-40 appearance-none bg-gray-50 border border-gray-200 text-gray-700 py-2.5 px-4 pr-8 rounded-xl leading-tight focus:outline-none focus:bg-white focus:border-indigo-500 transition-colors"
+                  className="w-full sm:w-40 appearance-none bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-200 py-2.5 px-4 pr-8 rounded-xl leading-tight focus:outline-none focus:bg-white dark:focus:bg-gray-600 focus:border-indigo-500 transition-colors"
                 >
                   <option value="7days">최근 7일</option>
                   <option value="30days">최근 30일</option>
@@ -138,7 +138,7 @@ const IntegratedAnalyticsManagement: React.FC<IntegratedAnalyticsManagementProps
               </div>
 
               <button
-                className="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-xl text-sm font-semibold whitespace-nowrap shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/30 transition-all flex items-center justify-center"
+                className="bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 text-white px-5 py-2.5 rounded-xl text-sm font-semibold whitespace-nowrap shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/30 transition-all flex items-center justify-center"
               >
                 <Download className="h-5 w-5 inline mr-2" />
                 리포트 생성
@@ -148,8 +148,8 @@ const IntegratedAnalyticsManagement: React.FC<IntegratedAnalyticsManagementProps
         </div>
 
         {/* 탭 네비게이션 */}
-        <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 overflow-hidden">
-          <div className="border-b border-gray-100 overflow-x-auto scroll-touch">
+        <div className="bg-white dark:bg-gray-800 rounded-[2rem] shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
+          <div className="border-b border-gray-100 dark:border-gray-700 overflow-x-auto scroll-touch">
             <nav className="flex px-2 sm:px-6" aria-label="탭">
               {availableTabs.map((tab) => {
                 const Icon = tab.icon;
@@ -160,11 +160,11 @@ const IntegratedAnalyticsManagement: React.FC<IntegratedAnalyticsManagementProps
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
                     className={`flex items-center space-x-2 py-4 px-4 sm:px-6 border-b-2 font-medium text-sm transition-all duration-200 whitespace-nowrap ${isActive
-                      ? 'border-indigo-500 text-indigo-600'
-                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                      ? 'border-indigo-500 text-indigo-600 dark:text-indigo-400'
+                      : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:border-gray-300 dark:hover:border-gray-600'
                       }`}
                   >
-                    <Icon className={`h-5 w-5 flex-shrink-0 transition-colors ${isActive ? 'text-indigo-600' : 'text-gray-400 group-hover:text-gray-500'}`} />
+                    <Icon className={`h-5 w-5 flex-shrink-0 transition-colors ${isActive ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-400 dark:text-gray-500 group-hover:text-gray-500 dark:group-hover:text-gray-300'}`} />
                     <span>{tab.label}</span>
                   </button>
                 );

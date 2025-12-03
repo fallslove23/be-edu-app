@@ -57,7 +57,11 @@ interface StatCard {
   icon: React.ComponentType<{ className?: string }>;
 }
 
-const EnhancedDashboard: React.FC = () => {
+interface EnhancedDashboardProps {
+  embedded?: boolean;
+}
+
+const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({ embedded = false }) => {
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [attendanceTrend, setAttendanceTrend] = useState<AttendanceTrendData[]>([]);
   const [courseDistribution, setCourseDistribution] = useState<CourseDistribution[]>([]);
@@ -319,174 +323,179 @@ const EnhancedDashboard: React.FC = () => {
 
   if (loading) {
     return (
-      <PageContainer className="bg-transparent">
-        <div className="flex items-center justify-center h-64">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
-            <p className="mt-4 text-muted-foreground">대시보드 로딩 중...</p>
+      <div className="flex items-center justify-center h-64">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+          <p className="mt-4 text-muted-foreground">대시보드 로딩 중...</p>
+        </div>
+      </div>
+    );
+  }
+
+  const content = (
+    <div className={embedded ? "" : "space-y-6"}>
+      {/* 통계 카드 그리드 */}
+      <StaggerContainer className="flex gap-4 overflow-x-auto pb-4 -mx-4 px-4 md:mx-0 md:px-0 md:grid md:grid-cols-2 lg:grid-cols-4 md:overflow-x-visible md:pb-0 snap-x snap-mandatory scroll-touch">
+        {statCards.map((stat, index) => (
+          <div
+            key={index}
+            className="bg-white dark:bg-gray-800 rounded-[2rem] p-6 shadow-sm border border-gray-100 dark:border-gray-700 flex flex-col justify-between relative overflow-hidden hover:shadow-lg hover:shadow-indigo-500/5 transition-all duration-300 min-w-[260px] md:min-w-0 snap-start flex-shrink-0 group"
+          >
+            {/* 헤더 */}
+            <div className="flex items-start justify-between mb-4">
+              <div>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mb-1 font-medium">{stat.label}</p>
+                <h3 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{stat.value}</h3>
+              </div>
+              <div className="flex flex-col items-end space-y-2">
+                <div className="p-2.5 rounded-xl bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 group-hover:scale-110 transition-transform duration-300">
+                  <stat.icon className="w-5 h-5" />
+                </div>
+                <div className={`flex items-center space-x-1 px-2 py-1 rounded-lg text-xs font-semibold ${stat.trend === 'up'
+                  ? 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400'
+                  : 'bg-rose-50 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400'
+                  }`}>
+                  {stat.trend === 'up' ? (
+                    <TrendingUp className="w-3 h-3" />
+                  ) : (
+                    <TrendingDown className="w-3 h-3" />
+                  )}
+                  <span>{stat.change}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* 서브타이틀 */}
+            <p className="text-sm text-gray-400 dark:text-gray-500">{stat.subtitle}</p>
+          </div>
+        ))}
+      </StaggerContainer>
+
+      {/* 차트 그리드 */}
+      <FadeInUp delay={0.2} className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* 출석률 추이 차트 */}
+        <div className="bg-white dark:bg-gray-800 rounded-[2rem] p-6 shadow-sm border border-gray-100 dark:border-gray-700 lg:col-span-2">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-1">출석률 추이</h2>
+              <p className="text-sm text-gray-500 dark:text-gray-400">최근 30일 출석률 변화</p>
+            </div>
+          </div>
+          <div className="h-72">
+            <Line data={attendanceChartData} options={attendanceChartOptions} />
           </div>
         </div>
-      </PageContainer>
-    );
+
+        {/* 과정별 분포 도넛 차트 */}
+        <div className="bg-white dark:bg-gray-800 rounded-[2rem] p-6 shadow-sm border border-gray-100 dark:border-gray-700">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-1">과정 분포</h2>
+              <p className="text-sm text-gray-500 dark:text-gray-400">진행 중인 과정 유형별 현황</p>
+            </div>
+          </div>
+          <div className="h-64 flex items-center justify-center">
+            <Doughnut data={distributionChartData} options={distributionChartOptions} />
+          </div>
+        </div>
+
+        {/* 강사별 부하 바 차트 */}
+        <div className="bg-white dark:bg-gray-800 rounded-[2rem] p-6 shadow-sm border border-gray-100 dark:border-gray-700 lg:col-span-3">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-1">강사별 강의 부하</h2>
+              <p className="text-sm text-gray-500 dark:text-gray-400">담당 교육생 및 과정 수</p>
+            </div>
+          </div>
+          <div className="h-72">
+            <Bar data={workloadChartData} options={workloadChartOptions} />
+          </div>
+        </div>
+      </FadeInUp>
+
+      {/* 활발한 과정 테이블 */}
+      <FadeInUp delay={0.4} className="bg-white dark:bg-gray-800 rounded-[2rem] shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
+        <div className="border-b border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800 p-4">
+          <div className="flex items-center space-x-4 px-2">
+            <h2 className="text-lg font-bold text-gray-900 dark:text-white">활발한 과정</h2>
+            <span className="px-2.5 py-0.5 text-xs bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 rounded-full font-medium">
+              {activeCourses.length}개 과정
+            </span>
+          </div>
+        </div>
+
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead className="bg-gray-50/50 dark:bg-gray-900/50">
+              <tr>
+                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                  과정명
+                </th>
+                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                  과정 유형
+                </th>
+                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                  교육생 수
+                </th>
+                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                  진행률
+                </th>
+                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                  담당 강사
+                </th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-100 dark:divide-gray-700 bg-white dark:bg-gray-800">
+              {activeCourses.map((course, index) => (
+                <tr key={index} className="hover:bg-gray-50/50 dark:hover:bg-gray-700/30 transition-colors">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
+                    {course.name}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 border border-blue-100 dark:border-blue-800">
+                      {course.type}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">
+                    {course.trainees}명
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="flex items-center">
+                      <span className="text-sm text-gray-900 dark:text-white font-medium w-12">{course.progress}%</span>
+                      <div className="w-24 h-2 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden ml-2">
+                        <div
+                          className="h-full bg-indigo-500 dark:bg-indigo-600 rounded-full"
+                          style={{ width: `${course.progress}%` }}
+                        />
+                      </div>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+                    {course.instructor}
+                  </td>
+                </tr>
+              ))}
+              {activeCourses.length === 0 && (
+                <tr>
+                  <td colSpan={5} className="px-6 py-12 text-center text-gray-500">
+                    진행 중인 과정이 없습니다.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </FadeInUp>
+    </div>
+  );
+
+  if (embedded) {
+    return content;
   }
 
   return (
     <PageContainer>
-      <div className="space-y-6">
-        {/* 통계 카드 그리드 */}
-        {/* 통계 카드 그리드 */}
-        <StaggerContainer className="flex gap-4 overflow-x-auto pb-4 -mx-4 px-4 md:mx-0 md:px-0 md:grid md:grid-cols-2 lg:grid-cols-4 md:overflow-x-visible md:pb-0 snap-x snap-mandatory scroll-touch hide-scrollbar">
-          {statCards.map((stat, index) => (
-            <div
-              key={index}
-              className="bg-white dark:bg-gray-800 rounded-[2rem] p-6 shadow-sm border border-gray-100 dark:border-gray-700 flex flex-col justify-between relative overflow-hidden hover:shadow-lg hover:shadow-indigo-500/5 transition-all duration-300 min-w-[260px] md:min-w-0 snap-start flex-shrink-0 group"
-            >
-              {/* 헤더 */}
-              <div className="flex items-start justify-between mb-4">
-                <div>
-                  <p className="text-sm text-gray-500 dark:text-gray-400 mb-1 font-medium">{stat.label}</p>
-                  <h3 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{stat.value}</h3>
-                </div>
-                <div className="flex flex-col items-end space-y-2">
-                  <div className="p-2.5 rounded-xl bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 group-hover:scale-110 transition-transform duration-300">
-                    <stat.icon className="w-5 h-5" />
-                  </div>
-                  <div className={`flex items-center space-x-1 px-2 py-1 rounded-lg text-xs font-semibold ${stat.trend === 'up'
-                    ? 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400'
-                    : 'bg-rose-50 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400'
-                    }`}>
-                    {stat.trend === 'up' ? (
-                      <TrendingUp className="w-3 h-3" />
-                    ) : (
-                      <TrendingDown className="w-3 h-3" />
-                    )}
-                    <span>{stat.change}</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* 서브타이틀 */}
-              <p className="text-sm text-gray-400 dark:text-gray-500">{stat.subtitle}</p>
-            </div>
-          ))}
-        </StaggerContainer>
-
-        {/* 차트 그리드 */}
-        <FadeInUp delay={0.2} className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* 출석률 추이 차트 */}
-          <div className="bg-white dark:bg-gray-800 rounded-[2rem] p-6 shadow-sm border border-gray-100 dark:border-gray-700 lg:col-span-2">
-            <div className="flex items-center justify-between mb-6">
-              <div>
-                <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-1">출석률 추이</h2>
-                <p className="text-sm text-gray-500 dark:text-gray-400">최근 30일 출석률 변화</p>
-              </div>
-            </div>
-            <div className="h-72">
-              <Line data={attendanceChartData} options={attendanceChartOptions} />
-            </div>
-          </div>
-
-          {/* 과정별 분포 도넛 차트 */}
-          <div className="bg-white dark:bg-gray-800 rounded-[2rem] p-6 shadow-sm border border-gray-100 dark:border-gray-700">
-            <div className="flex items-center justify-between mb-6">
-              <div>
-                <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-1">과정 분포</h2>
-                <p className="text-sm text-gray-500 dark:text-gray-400">진행 중인 과정 유형별 현황</p>
-              </div>
-            </div>
-            <div className="h-64 flex items-center justify-center">
-              <Doughnut data={distributionChartData} options={distributionChartOptions} />
-            </div>
-          </div>
-
-          {/* 강사별 부하 바 차트 */}
-          <div className="bg-white dark:bg-gray-800 rounded-[2rem] p-6 shadow-sm border border-gray-100 dark:border-gray-700 lg:col-span-3">
-            <div className="flex items-center justify-between mb-6">
-              <div>
-                <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-1">강사별 강의 부하</h2>
-                <p className="text-sm text-gray-500 dark:text-gray-400">담당 교육생 및 과정 수</p>
-              </div>
-            </div>
-            <div className="h-72">
-              <Bar data={workloadChartData} options={workloadChartOptions} />
-            </div>
-          </div>
-        </FadeInUp>
-
-        {/* 활발한 과정 테이블 */}
-        <FadeInUp delay={0.4} className="bg-white dark:bg-gray-800 rounded-[2rem] shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
-          <div className="border-b border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800 p-4">
-            <div className="flex items-center space-x-4 px-2">
-              <h2 className="text-lg font-bold text-gray-900 dark:text-white">활발한 과정</h2>
-              <span className="px-2.5 py-0.5 text-xs bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 rounded-full font-medium">
-                {activeCourses.length}개 과정
-              </span>
-            </div>
-          </div>
-
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-gray-50/50 dark:bg-gray-900/50">
-                <tr>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                    과정명
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                    과정 유형
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                    교육생 수
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                    진행률
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                    담당 강사
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-100 dark:divide-gray-700 bg-white dark:bg-gray-800">
-                {activeCourses.map((course, index) => (
-                  <tr key={index} className="hover:bg-gray-50/50 dark:hover:bg-gray-700/30 transition-colors">
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
-                      {course.name}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 border border-blue-100 dark:border-blue-800">
-                        {course.type}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">
-                      {course.trainees}명
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center">
-                        <span className="text-sm text-gray-900 dark:text-white font-medium w-12">{course.progress}%</span>
-                        <div className="w-24 h-2 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden ml-2">
-                          <div
-                            className="h-full bg-indigo-500 dark:bg-indigo-600 rounded-full"
-                            style={{ width: `${course.progress}%` }}
-                          />
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
-                      {course.instructor}
-                    </td>
-                  </tr>
-                ))}
-                {activeCourses.length === 0 && (
-                  <tr>
-                    <td colSpan={5} className="px-6 py-12 text-center text-gray-500">
-                      진행 중인 과정이 없습니다.
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-        </FadeInUp>
-      </div>
+      {content}
     </PageContainer>
   );
 };

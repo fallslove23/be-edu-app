@@ -321,26 +321,26 @@ const ReportGenerator: React.FC = () => {
     if (!section.enabled) return null;
 
     return (
-      <div key={section.id} className="mb-8 bg-white rounded-lg border border-gray-200 p-6">
-        <h3 className="text-lg font-medium text-gray-900 mb-4">{section.title}</h3>
+      <div key={section.id} className="mb-8 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
+        <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">{section.title}</h3>
 
         {section.type === 'overview' && (
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="text-center">
-              <div className="text-2xl font-bold text-blue-600">85%</div>
-              <div className="text-sm text-gray-600">평균 성취도</div>
+              <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">85%</div>
+              <div className="text-sm text-gray-600 dark:text-gray-400">평균 성취도</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-green-600">42</div>
-              <div className="text-sm text-gray-600">완료한 학습자</div>
+              <div className="text-2xl font-bold text-green-600 dark:text-green-400">42</div>
+              <div className="text-sm text-gray-600 dark:text-gray-400">완료한 학습자</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-orange-600">8</div>
-              <div className="text-sm text-gray-600">진행 중</div>
+              <div className="text-2xl font-bold text-orange-600 dark:text-orange-400">8</div>
+              <div className="text-sm text-gray-600 dark:text-gray-400">진행 중</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-purple-600">95%</div>
-              <div className="text-sm text-gray-600">출석률</div>
+              <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">95%</div>
+              <div className="text-sm text-gray-600 dark:text-gray-400">출석률</div>
             </div>
           </div>
         )}
@@ -349,29 +349,29 @@ const ReportGenerator: React.FC = () => {
 
         {section.type === 'table' && (
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+            <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+              <thead className="bg-gray-50 dark:bg-gray-900/50">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">이름</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">점수</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">등급</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">상태</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">이름</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">점수</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">등급</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">상태</th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                 {Array.from({ length: 5 }).map((_, i) => (
                   <tr key={i}>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
                       학생{i + 1}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                       {Math.floor(Math.random() * 20) + 80}점
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                       {['A', 'B', 'C'][Math.floor(Math.random() * 3)]}등급
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-lg bg-green-500/10 text-green-700">
+                      <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-lg bg-green-500/10 text-green-700 dark:text-green-400">
                         완료
                       </span>
                     </td>
@@ -387,7 +387,7 @@ const ReportGenerator: React.FC = () => {
             <textarea
               value={section.content || ''}
               onChange={(e) => updateCustomSection(section.id, { content: e.target.value })}
-              className="w-full h-32 p-3 border border-gray-300 rounded-lg resize-vertical"
+              className="w-full h-32 p-3 border border-gray-300 dark:border-gray-600 rounded-lg resize-vertical bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
               placeholder="내용을 입력하세요..."
             />
           </div>
@@ -397,48 +397,48 @@ const ReportGenerator: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#F2F4F6] p-4 sm:p-6 pb-24">
+    <div className="min-h-screen bg-[#F2F4F6] dark:bg-gray-900 p-4 sm:p-6 pb-24 transition-colors duration-200">
       <div className="max-w-5xl mx-auto space-y-6">
         {/* 헤더 */}
-        <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 p-6">
-          <h1 className="text-2xl font-bold text-gray-900 mb-2 flex items-center">
-            <div className="p-3 bg-blue-50 rounded-xl mr-4">
-              <FileText className="h-8 w-8 text-blue-600" />
+        <div className="bg-white dark:bg-gray-800 rounded-[2rem] shadow-sm border border-gray-100 dark:border-gray-700 p-6">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2 flex items-center">
+            <div className="p-3 bg-blue-50 dark:bg-blue-900/30 rounded-xl mr-4">
+              <FileText className="h-8 w-8 text-blue-600 dark:text-blue-400" />
             </div>
             커스텀 리포트 생성기
           </h1>
-          <p className="text-gray-600">원하는 데이터와 차트를 조합하여 맞춤형 리포트를 생성하세요.</p>
+          <p className="text-gray-600 dark:text-gray-400">원하는 데이터와 차트를 조합하여 맞춤형 리포트를 생성하세요.</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* 설정 패널 */}
           <div className="lg:col-span-1 space-y-6">
             {/* 템플릿 선택 */}
-            <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 p-6">
-              <h3 className="text-lg font-bold text-gray-900 mb-4">리포트 템플릿</h3>
+            <div className="bg-white dark:bg-gray-800 rounded-[2rem] shadow-sm border border-gray-100 dark:border-gray-700 p-6">
+              <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">리포트 템플릿</h3>
               <div className="space-y-3">
                 {reportTemplates.map((template) => (
                   <div
                     key={template.id}
                     className={`p-4 rounded-xl border cursor-pointer transition-all ${selectedTemplate?.id === template.id
-                      ? 'border-blue-500 bg-blue-50 ring-1 ring-blue-500'
-                      : 'border-gray-200 hover:border-blue-300 hover:bg-gray-50'
+                      ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/30 ring-1 ring-blue-500'
+                      : 'border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-500 hover:bg-gray-50 dark:hover:bg-gray-700'
                       }`}
                     onClick={() => setSelectedTemplate(template)}
                   >
-                    <div className="font-bold text-gray-900">{template.name}</div>
-                    <div className="text-sm text-gray-500 mt-1">{template.description}</div>
+                    <div className="font-bold text-gray-900 dark:text-white">{template.name}</div>
+                    <div className="text-sm text-gray-500 dark:text-gray-400 mt-1">{template.description}</div>
                   </div>
                 ))}
               </div>
             </div>
 
             {/* 필터 설정 */}
-            <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 p-6">
-              <h3 className="text-lg font-bold text-gray-900 mb-4">데이터 필터</h3>
+            <div className="bg-white dark:bg-gray-800 rounded-[2rem] shadow-sm border border-gray-100 dark:border-gray-700 p-6">
+              <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">데이터 필터</h3>
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-bold text-gray-700 mb-2">기간</label>
+                  <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">기간</label>
                   <div className="grid grid-cols-2 gap-2">
                     <input
                       type="date"
@@ -447,7 +447,7 @@ const ReportGenerator: React.FC = () => {
                         ...prev,
                         dateRange: { ...prev.dateRange, start: e.target.value }
                       }))}
-                      className="border border-gray-200 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                      className="border border-gray-200 dark:border-gray-600 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                     />
                     <input
                       type="date"
@@ -456,16 +456,16 @@ const ReportGenerator: React.FC = () => {
                         ...prev,
                         dateRange: { ...prev.dateRange, end: e.target.value }
                       }))}
-                      className="border border-gray-200 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                      className="border border-gray-200 dark:border-gray-600 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-bold text-gray-700 mb-2">부서</label>
+                  <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">부서</label>
                   <select
                     multiple
-                    className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                    className="w-full border border-gray-200 dark:border-gray-600 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                   >
                     <option value="sales">영업팀</option>
                     <option value="marketing">마케팅팀</option>
@@ -476,7 +476,7 @@ const ReportGenerator: React.FC = () => {
             </div>
 
             {/* 액션 버튼 */}
-            <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 p-6">
+            <div className="bg-white dark:bg-gray-800 rounded-[2rem] shadow-sm border border-gray-100 dark:border-gray-700 p-6">
               <button
                 onClick={generateReport}
                 disabled={!selectedTemplate || generating}
@@ -504,7 +504,7 @@ const ReportGenerator: React.FC = () => {
 
                   <button
                     onClick={printReport}
-                    className="w-full bg-gray-800 hover:bg-gray-900 text-white py-3 px-4 rounded-xl font-bold flex items-center justify-center transition-colors"
+                    className="w-full bg-gray-800 dark:bg-gray-700 hover:bg-gray-900 dark:hover:bg-gray-600 text-white py-3 px-4 rounded-xl font-bold flex items-center justify-center transition-colors"
                   >
                     <Printer className="h-4 w-4 mr-2" />
                     인쇄
@@ -516,10 +516,10 @@ const ReportGenerator: React.FC = () => {
 
           {/* 리포트 미리보기/편집 */}
           <div className="lg:col-span-2">
-            <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 overflow-hidden">
+            <div className="bg-white dark:bg-gray-800 rounded-[2rem] shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
               {/* 미리보기 헤더 */}
-              <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
-                <h3 className="text-lg font-bold text-gray-900">
+              <div className="px-6 py-4 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between bg-gray-50/50 dark:bg-gray-700/30">
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white">
                   {selectedTemplate ? `${selectedTemplate.name} 미리보기` : '템플릿을 선택하세요'}
                 </h3>
 
@@ -527,13 +527,13 @@ const ReportGenerator: React.FC = () => {
                   <div className="flex items-center space-x-2">
                     <button
                       onClick={addCustomSection}
-                      className="text-blue-600 hover:text-blue-700 p-2 hover:bg-blue-50 rounded-full transition-colors"
+                      className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 p-2 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-full transition-colors"
                       title="섹션 추가"
                     >
                       <Plus className="h-5 w-5" />
                     </button>
                     <button
-                      className="text-gray-600 hover:text-gray-700 p-2 hover:bg-gray-100 rounded-full transition-colors"
+                      className="text-gray-600 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors"
                       title="설정"
                     >
                       <Settings className="h-5 w-5" />
@@ -547,22 +547,22 @@ const ReportGenerator: React.FC = () => {
                 {selectedTemplate ? (
                   <div>
                     {/* 리포트 헤더 */}
-                    <div className="text-center mb-10 pb-8 border-b border-gray-100">
-                      <h1 className="text-3xl font-bold text-gray-900 mb-3">
+                    <div className="text-center mb-10 pb-8 border-b border-gray-100 dark:border-gray-700">
+                      <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-3">
                         {selectedTemplate.name}
                       </h1>
-                      <p className="text-gray-500 font-medium">
+                      <p className="text-gray-500 dark:text-gray-400 font-medium">
                         생성일: {new Date().toLocaleDateString('ko-KR')} |
                         기간: {filters.dateRange.start} ~ {filters.dateRange.end}
                       </p>
                     </div>
 
                     {/* 섹션 목록 */}
-                    <div className="space-y-4 mb-8 bg-gray-50 rounded-2xl p-6">
-                      <h4 className="font-bold text-gray-900 mb-2">포함된 섹션</h4>
+                    <div className="space-y-4 mb-8 bg-gray-50 dark:bg-gray-700/30 rounded-2xl p-6">
+                      <h4 className="font-bold text-gray-900 dark:text-white mb-2">포함된 섹션</h4>
                       {selectedTemplate.sections.map((section) => (
-                        <div key={section.id} className="flex items-center justify-between p-3 bg-white rounded-xl border border-gray-100 shadow-sm">
-                          <span className="text-sm font-medium text-gray-700">{section.title}</span>
+                        <div key={section.id} className="flex items-center justify-between p-3 bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm">
+                          <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{section.title}</span>
                           <label className="flex items-center cursor-pointer">
                             <input
                               type="checkbox"
@@ -570,7 +570,7 @@ const ReportGenerator: React.FC = () => {
                               onChange={() => toggleSectionEnabled(section.id)}
                               className="rounded border-gray-300 text-blue-600 focus:ring-blue-500 h-4 w-4"
                             />
-                            <span className="ml-2 text-sm text-gray-500 font-medium">포함</span>
+                            <span className="ml-2 text-sm text-gray-500 dark:text-gray-400 font-medium">포함</span>
                           </label>
                         </div>
                       ))}
@@ -585,7 +585,7 @@ const ReportGenerator: React.FC = () => {
                         {renderSection(section)}
                         <button
                           onClick={() => removeCustomSection(section.id)}
-                          className="absolute top-4 right-4 text-gray-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all p-2 bg-white rounded-full shadow-sm border border-gray-100"
+                          className="absolute top-4 right-4 text-gray-400 dark:text-gray-500 hover:text-red-500 dark:hover:text-red-400 opacity-0 group-hover:opacity-100 transition-all p-2 bg-white dark:bg-gray-700 rounded-full shadow-sm border border-gray-100 dark:border-gray-600"
                         >
                           <X className="h-5 w-5" />
                         </button>
@@ -594,11 +594,11 @@ const ReportGenerator: React.FC = () => {
                   </div>
                 ) : (
                   <div className="text-center py-20 flex flex-col items-center justify-center h-full">
-                    <div className="w-24 h-24 bg-gray-50 rounded-full flex items-center justify-center mb-6">
-                      <FileText className="h-10 w-10 text-gray-300" />
+                    <div className="w-24 h-24 bg-gray-50 dark:bg-gray-700/50 rounded-full flex items-center justify-center mb-6">
+                      <FileText className="h-10 w-10 text-gray-300 dark:text-gray-500" />
                     </div>
-                    <h3 className="text-xl font-bold text-gray-900 mb-2">리포트 템플릿을 선택하세요</h3>
-                    <p className="text-gray-500 max-w-sm mx-auto">왼쪽 패널에서 원하는 리포트 템플릿을 선택하여 시작하세요.</p>
+                    <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">리포트 템플릿을 선택하세요</h3>
+                    <p className="text-gray-500 dark:text-gray-400 max-w-sm mx-auto">왼쪽 패널에서 원하는 리포트 템플릿을 선택하여 시작하세요.</p>
                   </div>
                 )}
               </div>

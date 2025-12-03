@@ -37,6 +37,7 @@ import type {
   DateRange,
   AnalyticsFilter
 } from '../../types/analytics.types';
+import { useTheme } from '../../contexts/ThemeContext';
 
 /**
  * 통합 분석 대시보드 컴포넌트
@@ -296,6 +297,9 @@ interface SummaryTabProps {
 }
 
 const SummaryTab: React.FC<SummaryTabProps> = ({ timeSeriesData, departmentStats, onExport }) => {
+  const { actualTheme } = useTheme();
+  const isDark = actualTheme === 'dark';
+
   const enrollmentChartData = timeSeriesData.map(d => ({
     date: new Date(d.date).toLocaleDateString('ko-KR', { month: 'short', day: 'numeric' }),
     등록: d.new_enrollments,
@@ -325,10 +329,16 @@ const SummaryTab: React.FC<SummaryTabProps> = ({ timeSeriesData, departmentStats
           <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">등록 및 완료 추이</h3>
           <ResponsiveContainer width="100%" height={300}>
             <LineChart data={enrollmentChartData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="date" />
-              <YAxis />
-              <Tooltip />
+              <CartesianGrid strokeDasharray="3 3" stroke={isDark ? '#374151' : '#e5e7eb'} />
+              <XAxis dataKey="date" tick={{ fill: isDark ? '#9ca3af' : '#6b7280' }} />
+              <YAxis tick={{ fill: isDark ? '#9ca3af' : '#6b7280' }} />
+              <Tooltip
+                contentStyle={{
+                  backgroundColor: isDark ? '#1f2937' : '#ffffff',
+                  borderColor: isDark ? '#374151' : '#e5e7eb',
+                  color: isDark ? '#f3f4f6' : '#111827'
+                }}
+              />
               <Legend />
               <Line type="monotone" dataKey="등록" stroke="#4f46e5" strokeWidth={2} />
               <Line type="monotone" dataKey="완료" stroke="#10b981" strokeWidth={2} />
@@ -355,7 +365,13 @@ const SummaryTab: React.FC<SummaryTabProps> = ({ timeSeriesData, departmentStats
                   <Cell key={`cell-${index}`} fill={['#4f46e5', '#06b6d4', '#10b981', '#f59e0b', '#ef4444'][index % 5]} />
                 ))}
               </Pie>
-              <Tooltip />
+              <Tooltip
+                contentStyle={{
+                  backgroundColor: isDark ? '#1f2937' : '#ffffff',
+                  borderColor: isDark ? '#374151' : '#e5e7eb',
+                  color: isDark ? '#f3f4f6' : '#111827'
+                }}
+              />
             </PieChart>
           </ResponsiveContainer>
         </div>
@@ -371,6 +387,9 @@ interface CoursesTabProps {
 }
 
 const CoursesTab: React.FC<CoursesTabProps> = ({ coursePerformance, onExport }) => {
+  const { actualTheme } = useTheme();
+  const isDark = actualTheme === 'dark';
+
   const chartData = coursePerformance.slice(0, 10).map(c => ({
     name: c.course_name.length > 15 ? c.course_name.substring(0, 15) + '...' : c.course_name,
     완료율: c.completion_rate,
@@ -394,10 +413,17 @@ const CoursesTab: React.FC<CoursesTabProps> = ({ coursePerformance, onExport }) 
         <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">과정별 성과 비교</h3>
         <ResponsiveContainer width="100%" height={400}>
           <BarChart data={chartData}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="name" angle={-45} textAnchor="end" height={100} />
-            <YAxis />
-            <Tooltip />
+            <CartesianGrid strokeDasharray="3 3" stroke={isDark ? '#374151' : '#e5e7eb'} />
+            <XAxis dataKey="name" angle={-45} textAnchor="end" height={100} tick={{ fill: isDark ? '#9ca3af' : '#6b7280' }} />
+            <YAxis tick={{ fill: isDark ? '#9ca3af' : '#6b7280' }} />
+            <Tooltip
+              contentStyle={{
+                backgroundColor: isDark ? '#1f2937' : '#ffffff',
+                borderColor: isDark ? '#374151' : '#e5e7eb',
+                color: isDark ? '#f3f4f6' : '#111827'
+              }}
+              cursor={{ fill: isDark ? '#374151' : '#f9fafb' }}
+            />
             <Legend />
             <Bar dataKey="완료율" fill="#4f46e5" />
             <Bar dataKey="평균점수" fill="#10b981" />
@@ -526,6 +552,9 @@ interface DepartmentsTabProps {
 }
 
 const DepartmentsTab: React.FC<DepartmentsTabProps> = ({ departmentStats }) => {
+  const { actualTheme } = useTheme();
+  const isDark = actualTheme === 'dark';
+
   const chartData = departmentStats.map(d => ({
     name: d.department,
     교육생수: d.total_students,
@@ -540,10 +569,17 @@ const DepartmentsTab: React.FC<DepartmentsTabProps> = ({ departmentStats }) => {
         <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">부서별 성과 비교</h3>
         <ResponsiveContainer width="100%" height={400}>
           <BarChart data={chartData}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="name" />
-            <YAxis />
-            <Tooltip />
+            <CartesianGrid strokeDasharray="3 3" stroke={isDark ? '#374151' : '#e5e7eb'} />
+            <XAxis dataKey="name" tick={{ fill: isDark ? '#9ca3af' : '#6b7280' }} />
+            <YAxis tick={{ fill: isDark ? '#9ca3af' : '#6b7280' }} />
+            <Tooltip
+              contentStyle={{
+                backgroundColor: isDark ? '#1f2937' : '#ffffff',
+                borderColor: isDark ? '#374151' : '#e5e7eb',
+                color: isDark ? '#f3f4f6' : '#111827'
+              }}
+              cursor={{ fill: isDark ? '#374151' : '#f9fafb' }}
+            />
             <Legend />
             <Bar dataKey="교육생수" fill="#4f46e5" />
             <Bar dataKey="평균점수" fill="#10b981" />
