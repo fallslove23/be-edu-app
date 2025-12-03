@@ -2,18 +2,18 @@
 
 import React, { useState, useEffect } from 'react';
 import {
-  UsersIcon,
-  PlusIcon,
-  MagnifyingGlassIcon,
-  FunnelIcon,
-  ArrowUpTrayIcon,
-  DocumentArrowDownIcon,
-  UserIcon,
-  PhoneIcon,
-  EnvelopeIcon,
-  BuildingOfficeIcon,
-  TrashIcon
-} from '@heroicons/react/24/outline';
+  Users,
+  Plus,
+  Search,
+  Filter,
+  Upload,
+  FileDown,
+  User as UserIcon,
+  Phone,
+  Mail,
+  Building2,
+  Trash2
+} from 'lucide-react';
 import type { User, UserRole, UserStatus } from '../../types/auth.types';
 import { roleLabels, userStatusLabels } from '../../types/auth.types';
 import UserForm from './UserForm';
@@ -372,7 +372,7 @@ const UserManagement: React.FC = () => {
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
               <div>
                 <h1 className="text-2xl font-bold text-foreground flex items-center">
-                  <UsersIcon className="h-6 w-6 mr-2 text-primary" />
+                  <Users className="h-6 w-6 mr-2 text-primary" />
                   사용자 관리
                 </h1>
                 <p className="text-muted-foreground mt-1">시스템 사용자를 역할별로 관리합니다.</p>
@@ -382,14 +382,14 @@ const UserManagement: React.FC = () => {
                   onClick={() => setShowImportModal(true)}
                   className="btn-outline"
                 >
-                  <ArrowUpTrayIcon className="h-4 w-4" />
+                  <Upload className="h-4 w-4" />
                   <span>일괄 불러오기</span>
                 </button>
                 <button
                   onClick={handleCreateUser}
                   className="btn-primary"
                 >
-                  <PlusIcon className="h-5 w-5" />
+                  <Plus className="h-5 w-5" />
                   <span>사용자 추가</span>
                 </button>
               </div>
@@ -427,7 +427,7 @@ const UserManagement: React.FC = () => {
             <div className="flex flex-col md:flex-row gap-3">
               {/* 검색 입력 */}
               <div className="flex-1 relative">
-                <MagnifyingGlassIcon className="h-5 w-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
+                <Search className="h-5 w-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
                 <input
                   type="text"
                   placeholder="이름, 이메일, 사번, 부서 검색..."
@@ -451,13 +451,13 @@ const UserManagement: React.FC = () => {
 
               {/* 엑셀 내보내기 버튼 */}
               <button className="btn-outline">
-                <DocumentArrowDownIcon className="h-4 w-4" />
+                <FileDown className="h-4 w-4" />
                 <span>엑셀 내보내기</span>
               </button>
 
               {/* 결과 카운트 */}
               <div className="flex items-center px-4 py-2 bg-muted/50 border border-border rounded-lg">
-                <FunnelIcon className="h-4 w-4 mr-2 text-muted-foreground" />
+                <Filter className="h-4 w-4 mr-2 text-muted-foreground" />
                 <span className="text-sm font-medium text-foreground">
                   총 <span className="text-primary font-semibold">{filteredUsers.length}</span>명
                 </span>
@@ -501,11 +501,11 @@ const UserManagement: React.FC = () => {
                           <div className="ml-4">
                             <div className="text-sm font-medium text-foreground">{user.name}</div>
                             <div className="text-sm text-muted-foreground flex items-center">
-                              <EnvelopeIcon className="h-3 w-3 mr-1" />
+                              <Mail className="h-3 w-3 mr-1" />
                               {user.email}
                             </div>
                             <div className="text-sm text-muted-foreground flex items-center">
-                              <PhoneIcon className="h-3 w-3 mr-1" />
+                              <Phone className="h-3 w-3 mr-1" />
                               {user.phone}
                             </div>
                           </div>
@@ -523,7 +523,7 @@ const UserManagement: React.FC = () => {
                           </span>
                         </div>
                         <div className="text-sm text-muted-foreground flex items-center mt-1">
-                          <BuildingOfficeIcon className="h-3 w-3 mr-1" />
+                          <Building2 className="h-3 w-3 mr-1" />
                           {user.department} / {user.position}
                         </div>
                         <div className="text-xs text-muted-foreground">사번: {user.employee_id}</div>
@@ -559,7 +559,7 @@ const UserManagement: React.FC = () => {
                             className="p-1.5 text-destructive hover:bg-destructive/10 rounded-lg transition-colors"
                             title="사용자 삭제"
                           >
-                            <TrashIcon className="h-4 w-4" />
+                            <Trash2 className="h-4 w-4" />
                           </button>
                         </div>
                       </td>
@@ -571,7 +571,7 @@ const UserManagement: React.FC = () => {
 
             {filteredUsers.length === 0 && !loading && (
               <div className="text-center py-12">
-                <UsersIcon className="mx-auto h-12 w-12 text-muted-foreground" />
+                <Users className="mx-auto h-12 w-12 text-muted-foreground" />
                 <h3 className="mt-2 text-sm font-medium text-foreground">사용자가 없습니다</h3>
                 <p className="mt-1 text-sm text-muted-foreground">새 사용자를 추가해보세요.</p>
               </div>

@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import {
-  DocumentChartBarIcon,
-  UserGroupIcon,
-  ChartBarIcon,
-  MagnifyingGlassCircleIcon,
-  UserIcon
-} from '@heroicons/react/24/outline';
+  FileBarChart,
+  Users,
+  BarChart2,
+  Search,
+  User,
+  PieChart
+} from 'lucide-react';
 
 // 기존 컴포넌트들 import
 import IntegratedAnalyticsDashboard from '../reports/IntegratedAnalyticsDashboard';
@@ -25,31 +26,31 @@ const UnifiedAnalyticsHub: React.FC = () => {
     {
       id: 'dashboard',
       label: '통합 대시보드',
-      icon: DocumentChartBarIcon,
+      icon: FileBarChart,
       description: '전체 통계 및 과정별/교육생별/부서별 분석'
     },
     {
       id: 'reports',
       label: '교육생 리포트',
-      icon: UserGroupIcon,
+      icon: Users,
       description: '교육생 개별 성과 및 이수 현황'
     },
     {
       id: 'performance',
       label: '기본 성과 추적',
-      icon: ChartBarIcon,
+      icon: BarChart2,
       description: '일별 진도 및 출석 현황'
     },
     {
       id: 'advanced',
       label: '고급 분석',
-      icon: MagnifyingGlassCircleIcon,
+      icon: Search,
       description: '실시간 데이터 및 상세 분석'
     },
     {
       id: 'personal',
       label: '개인 분석',
-      icon: UserIcon,
+      icon: User,
       description: '개별 학습자 심층 분석'
     }
   ];
@@ -58,8 +59,9 @@ const UnifiedAnalyticsHub: React.FC = () => {
     <div className="space-y-6">
       {/* 헤더 */}
       <div>
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
-          📊 분석 및 보고서
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 flex items-center">
+          <PieChart className="mr-3 h-8 w-8 text-primary" />
+          분석 및 보고서
         </h1>
         <p className="text-gray-600 dark:text-gray-400 mt-2">
           교육 성과 분석, 통계, 리포트를 한 곳에서 확인하세요
@@ -75,11 +77,10 @@ const UnifiedAnalyticsHub: React.FC = () => {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id as any)}
-                className={`flex items-center px-4 py-3 border-b-2 transition-colors whitespace-nowrap ${
-                  activeTab === tab.id
-                    ? 'border-primary text-primary font-medium bg-primary/5'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 hover:border-gray-300'
-                }`}
+                className={`flex items-center px-4 py-3 border-b-2 transition-colors whitespace-nowrap ${activeTab === tab.id
+                  ? 'border-primary text-primary font-medium bg-primary/5'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 hover:border-gray-300'
+                  }`}
               >
                 <Icon className="h-5 w-5 mr-2" />
                 <div className="text-left">

@@ -3,13 +3,13 @@
 import React, { useState, useEffect } from 'react';
 import { StaggerContainer, FadeInUp } from '../common/Animations';
 import {
-  ArrowTrendingUpIcon,
-  ArrowTrendingDownIcon,
-  UsersIcon,
-  AcademicCapIcon,
-  CheckCircleIcon,
-  ClockIcon,
-} from '@heroicons/react/24/outline';
+  TrendingUp,
+  TrendingDown,
+  Users,
+  GraduationCap,
+  CheckCircle,
+  Clock,
+} from 'lucide-react';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -112,7 +112,7 @@ const EnhancedDashboard: React.FC = () => {
       change: `${stats.traineeGrowth > 0 ? '+' : ''}${stats.traineeGrowth.toFixed(1)}%`,
       trend: stats.traineeGrowth >= 0 ? 'up' : 'down',
       subtitle: '이번 달 신규 등록 증가',
-      icon: UsersIcon,
+      icon: Users,
     },
     {
       label: '진행 중인 과정',
@@ -120,7 +120,7 @@ const EnhancedDashboard: React.FC = () => {
       change: `${stats.courseGrowth > 0 ? '+' : ''}${stats.courseGrowth.toFixed(1)}%`,
       trend: stats.courseGrowth >= 0 ? 'up' : 'down',
       subtitle: '활발한 교육 운영',
-      icon: AcademicCapIcon,
+      icon: GraduationCap,
     },
     {
       label: '평균 출석률',
@@ -128,7 +128,7 @@ const EnhancedDashboard: React.FC = () => {
       change: `${stats.attendanceGrowth > 0 ? '+' : ''}${stats.attendanceGrowth.toFixed(1)}%`,
       trend: stats.attendanceGrowth >= 0 ? 'up' : 'down',
       subtitle: '높은 참여도 유지',
-      icon: CheckCircleIcon,
+      icon: CheckCircle,
     },
     {
       label: '완료율',
@@ -136,7 +136,7 @@ const EnhancedDashboard: React.FC = () => {
       change: `${stats.completionGrowth > 0 ? '+' : ''}${stats.completionGrowth.toFixed(1)}%`,
       trend: stats.completionGrowth >= 0 ? 'up' : 'down',
       subtitle: '목표 달성률 상승',
-      icon: ClockIcon,
+      icon: Clock,
     },
   ] : [];
 
@@ -354,9 +354,9 @@ const EnhancedDashboard: React.FC = () => {
                     : 'bg-rose-50 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400'
                     }`}>
                     {stat.trend === 'up' ? (
-                      <ArrowTrendingUpIcon className="w-3 h-3" />
+                      <TrendingUp className="w-3 h-3" />
                     ) : (
-                      <ArrowTrendingDownIcon className="w-3 h-3" />
+                      <TrendingDown className="w-3 h-3" />
                     )}
                     <span>{stat.change}</span>
                   </div>

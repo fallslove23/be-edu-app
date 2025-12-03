@@ -1,18 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import {
-  MagnifyingGlassIcon,
-  FunnelIcon,
-  UserGroupIcon,
-  AcademicCapIcon,
-  TrophyIcon,
-  ClockIcon,
-  EyeIcon,
-  PencilIcon,
-  UserPlusIcon,
-  DocumentArrowDownIcon,
-  ChartBarIcon,
-  ChevronRightIcon
-} from '@heroicons/react/24/outline';
+  Search,
+  Filter,
+  Users,
+  GraduationCap,
+  Trophy,
+  Clock,
+  Eye,
+  Pencil,
+  UserPlus,
+  FileDown,
+  BarChart2,
+  ChevronRight,
+  ClipboardList
+} from 'lucide-react';
 import StudentProfile from './StudentProfile';
 import PerformanceReportGenerator from './PerformanceReportGenerator';
 import AdvancedSearch, { SearchFilter, SearchQuery } from '../common/AdvancedSearch';
@@ -21,11 +22,11 @@ import type { StudentListItem, StudentStatistics, StudentSearchFilters } from '.
 
 const StudentManagement: React.FC = () => {
   const { user } = useAuth();
-  
+
   // 권한 체크: 강사는 읽기 전용, 관리자/운영자는 전체 권한
   const isInstructor = user?.role === 'instructor';
   const canModifyStudents = !isInstructor; // 강사가 아닌 경우에만 수정 가능
-  
+
   const [students, setStudents] = useState<StudentListItem[]>([]);
   const [filteredStudents, setFilteredStudents] = useState<StudentListItem[]>([]);
   const [statistics, setStatistics] = useState<StudentStatistics | null>(null);
@@ -128,7 +129,7 @@ const StudentManagement: React.FC = () => {
         student.name.toLowerCase().includes(query.searchText.toLowerCase()) ||
         student.department.toLowerCase().includes(query.searchText.toLowerCase()) ||
         student.position.toLowerCase().includes(query.searchText.toLowerCase()) ||
-        student.currentCourses.some(course => 
+        student.currentCourses.some(course =>
           course.courseCode.toLowerCase().includes(query.searchText.toLowerCase()) ||
           course.courseName.toLowerCase().includes(query.searchText.toLowerCase())
         )
@@ -149,7 +150,7 @@ const StudentManagement: React.FC = () => {
           }
           break;
         case 'courseType':
-          filtered = filtered.filter(student => 
+          filtered = filtered.filter(student =>
             student.currentCourses.some(course => course.courseCode.startsWith(value))
           );
           break;
@@ -186,7 +187,7 @@ const StudentManagement: React.FC = () => {
           filtered = filtered.filter(student => student.status === value);
           break;
         case 'hasCompletedCourse':
-          filtered = filtered.filter(student => 
+          filtered = filtered.filter(student =>
             value === true ? student.completedCourses > 0 : student.completedCourses === 0
           );
           break;
@@ -196,7 +197,7 @@ const StudentManagement: React.FC = () => {
     // 정렬
     filtered.sort((a, b) => {
       let aValue: any, bValue: any;
-      
+
       switch (query.sortBy) {
         case 'name':
           aValue = a.name;
@@ -456,8 +457,8 @@ const StudentManagement: React.FC = () => {
   // 학생 프로필 뷰
   if (selectedStudentId) {
     return (
-      <StudentProfile 
-        studentId={selectedStudentId} 
+      <StudentProfile
+        studentId={selectedStudentId}
         onBack={() => setSelectedStudentId(null)}
       />
     );
@@ -478,9 +479,12 @@ const StudentManagement: React.FC = () => {
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">👥 교육생 종합 관리</h1>
+            <h1 className="text-2xl font-bold text-gray-900 mb-2 flex items-center">
+              <Users className="mr-2 h-8 w-8 text-primary" />
+              교육생 종합 관리
+            </h1>
             <p className="text-gray-600">
-              {isInstructor 
+              {isInstructor
                 ? '교육생 현황 및 학습 이력을 조회할 수 있습니다. (조회 전용)'
                 : '교육생 현황 및 학습 이력을 종합적으로 관리하세요.'
               }
@@ -488,7 +492,8 @@ const StudentManagement: React.FC = () => {
             {isInstructor && (
               <div className="mt-2 p-2 bg-blue-50 border border-blue-200 rounded-md">
                 <p className="text-sm text-blue-700">
-                  📋 강사 권한으로 로그인하셨습니다. 교육생 정보 조회만 가능합니다.
+                  <ClipboardList className="inline-block w-4 h-4 mr-1" />
+                  강사 권한으로 로그인하셨습니다. 교육생 정보 조회만 가능합니다.
                 </p>
               </div>
             )}
@@ -497,31 +502,29 @@ const StudentManagement: React.FC = () => {
             <div className="flex items-center bg-gray-100 rounded-lg p-1">
               <button
                 onClick={() => setViewMode('list')}
-                className={`px-3 py-2 rounded-md text-sm font-medium ${
-                  viewMode === 'list'
-                    ? 'bg-white text-gray-900 shadow-sm'
-                    : 'text-gray-600 hover:text-gray-900'
-                }`}
+                className={`px-3 py-2 rounded-md text-sm font-medium ${viewMode === 'list'
+                  ? 'bg-white text-gray-900 shadow-sm'
+                  : 'text-gray-600 hover:text-gray-900'
+                  }`}
               >
                 목록
               </button>
               <button
                 onClick={() => setViewMode('grid')}
-                className={`px-3 py-2 rounded-md text-sm font-medium ${
-                  viewMode === 'grid'
-                    ? 'bg-white text-gray-900 shadow-sm'
-                    : 'text-gray-600 hover:text-gray-900'
-                }`}
+                className={`px-3 py-2 rounded-md text-sm font-medium ${viewMode === 'grid'
+                  ? 'bg-white text-gray-900 shadow-sm'
+                  : 'text-gray-600 hover:text-gray-900'
+                  }`}
               >
                 카드
               </button>
             </div>
             {canModifyStudents && (
               <button
-                onClick={() => {/* 새 교육생 등록 */}}
+                onClick={() => {/* 새 교육생 등록 */ }}
                 className="btn-primary px-4 py-2 rounded-full flex items-center space-x-2"
               >
-                <UserPlusIcon className="h-4 w-4" />
+                <UserPlus className="h-4 w-4" />
                 <span>교육생 등록</span>
               </button>
             )}
@@ -535,7 +538,7 @@ const StudentManagement: React.FC = () => {
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
             <div className="flex items-center">
               <div className="p-2 bg-blue-100 rounded-lg">
-                <UserGroupIcon className="h-6 w-6 text-blue-600" />
+                <Users className="h-6 w-6 text-blue-600" />
               </div>
               <div className="ml-4">
                 <p className="text-sm font-medium text-gray-600">전체 교육생</p>
@@ -547,7 +550,7 @@ const StudentManagement: React.FC = () => {
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
             <div className="flex items-center">
               <div className="p-2 bg-green-500/10 rounded-lg">
-                <ClockIcon className="h-6 w-6 text-green-600" />
+                <Clock className="h-6 w-6 text-green-600" />
               </div>
               <div className="ml-4">
                 <p className="text-sm font-medium text-gray-600">활성 교육생</p>
@@ -559,7 +562,7 @@ const StudentManagement: React.FC = () => {
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
             <div className="flex items-center">
               <div className="p-2 bg-purple-100 rounded-lg">
-                <AcademicCapIcon className="h-6 w-6 text-purple-600" />
+                <GraduationCap className="h-6 w-6 text-purple-600" />
               </div>
               <div className="ml-4">
                 <p className="text-sm font-medium text-gray-600">수료 완료</p>
@@ -571,7 +574,7 @@ const StudentManagement: React.FC = () => {
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
             <div className="flex items-center">
               <div className="p-2 bg-yellow-100 rounded-lg">
-                <TrophyIcon className="h-6 w-6 text-foreground" />
+                <Trophy className="h-6 w-6 text-foreground" />
               </div>
               <div className="ml-4">
                 <p className="text-sm font-medium text-gray-600">평균 성적</p>
@@ -583,7 +586,7 @@ const StudentManagement: React.FC = () => {
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
             <div className="flex items-center">
               <div className="p-2 bg-orange-500/10 rounded-lg">
-                <ChartBarIcon className="h-6 w-6 text-orange-600" />
+                <BarChart2 className="h-6 w-6 text-orange-600" />
               </div>
               <div className="ml-4">
                 <p className="text-sm font-medium text-gray-600">평균 출석률</p>
@@ -620,13 +623,13 @@ const StudentManagement: React.FC = () => {
             'BS 고급과정'
           ]}
         />
-        
+
         <div className="flex justify-end space-x-3 mt-4">
           <button
-            onClick={() => {/* 엑셀 다운로드 */}}
+            onClick={() => {/* 엑셀 다운로드 */ }}
             className="flex items-center space-x-1 border border-gray-300 rounded-full px-3 py-2 hover:bg-gray-50"
           >
-            <DocumentArrowDownIcon className="h-4 w-4" />
+            <FileDown className="h-4 w-4" />
             <span>엑셀 다운로드</span>
           </button>
 
@@ -634,7 +637,7 @@ const StudentManagement: React.FC = () => {
             onClick={() => setShowReportGenerator(true)}
             className="btn-success flex items-center space-x-1 rounded-full px-3 py-2"
           >
-            <ChartBarIcon className="h-4 w-4" />
+            <BarChart2 className="h-4 w-4" />
             <span>성과 리포트</span>
           </button>
         </div>
@@ -730,15 +733,15 @@ const StudentManagement: React.FC = () => {
                           className="text-blue-600 hover:text-blue-900 p-1 rounded"
                           title="상세보기"
                         >
-                          <EyeIcon className="h-4 w-4" />
+                          <Eye className="h-4 w-4" />
                         </button>
                         {canModifyStudents && (
                           <button
-                            onClick={() => {/* 편집 */}}
+                            onClick={() => {/* 편집 */ }}
                             className="text-green-600 hover:text-green-900 p-1 rounded"
                             title="편집"
                           >
-                            <PencilIcon className="h-4 w-4" />
+                            <Pencil className="h-4 w-4" />
                           </button>
                         )}
                       </div>
@@ -760,9 +763,9 @@ const StudentManagement: React.FC = () => {
                 >
                   <div className="flex items-center justify-between mb-3">
                     <h4 className="font-medium text-gray-900">{student.name}</h4>
-                    <ChevronRightIcon className="h-4 w-4 text-gray-400" />
+                    <ChevronRight className="h-4 w-4 text-gray-400" />
                   </div>
-                  
+
                   <div className="text-sm text-gray-600 mb-3">
                     {student.department} · {student.position}
                   </div>
@@ -811,7 +814,7 @@ const StudentManagement: React.FC = () => {
 
         {filteredStudents.length === 0 && (
           <div className="p-12 text-center">
-            <UserGroupIcon className="h-16 w-16 text-gray-400 mx-auto mb-4" />
+            <Users className="h-16 w-16 text-gray-400 mx-auto mb-4" />
             <h3 className="text-lg font-medium text-gray-900 mb-2">교육생이 없습니다</h3>
             <p className="text-gray-600 mb-4">
               {searchQuery || Object.keys(filters).length > 0
@@ -820,7 +823,7 @@ const StudentManagement: React.FC = () => {
               }
             </p>
             <button
-              onClick={() => {/* 교육생 등록 */}}
+              onClick={() => {/* 교육생 등록 */ }}
               className="btn-primary px-4 py-2 rounded-full"
             >
               첫 교육생 등록하기

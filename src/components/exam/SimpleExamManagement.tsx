@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Target, BarChart2, Plus, TrendingUp } from 'lucide-react';
 
 import { PageContainer } from '../common/PageContainer';
 
@@ -10,7 +11,10 @@ const SimpleExamManagement: React.FC = () => {
       <div className="space-y-6">
         {/* 헤더 */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">🎯 이론 평가 관리</h1>
+          <h1 className="text-2xl font-bold text-gray-900 mb-2 flex items-center">
+            <Target className="mr-2 h-8 w-8 text-primary" />
+            이론 평가 관리
+          </h1>
           <p className="text-gray-600">수강생들의 이론 시험을 생성하고 관리하세요.</p>
         </div>
 
@@ -19,16 +23,16 @@ const SimpleExamManagement: React.FC = () => {
           <div className="border-b border-gray-200">
             <nav className="-mb-px flex">
               {[
-                { key: 'overview', label: '📊 개요' },
-                { key: 'create', label: '➕ 시험 생성' },
-                { key: 'results', label: '📈 결과 분석' }
+                { key: 'overview', label: <span className="flex items-center"><BarChart2 className="w-4 h-4 mr-2" />개요</span> },
+                { key: 'create', label: <span className="flex items-center"><Plus className="w-4 h-4 mr-2" />시험 생성</span> },
+                { key: 'results', label: <span className="flex items-center"><TrendingUp className="w-4 h-4 mr-2" />결과 분석</span> }
               ].map((tab) => (
                 <button
                   key={tab.key}
                   onClick={() => setActiveTab(tab.key as any)}
                   className={`px-6 py-3 text-sm font-medium border-b-2 transition-colors ${activeTab === tab.key
-                      ? 'border-blue-500 text-blue-600'
-                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                    ? 'border-blue-500 text-blue-600'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                     }`}
                 >
                   {tab.label}
@@ -78,8 +82,8 @@ const SimpleExamManagement: React.FC = () => {
                         <div className="flex items-center space-x-4">
                           <span className="text-sm text-gray-500">{exam.students}명 참여</span>
                           <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${exam.status === 'active' ? 'bg-green-500/10 text-green-700' :
-                              exam.status === 'scheduled' ? 'bg-blue-100 text-blue-800' :
-                                'bg-gray-100 text-gray-800'
+                            exam.status === 'scheduled' ? 'bg-blue-100 text-blue-800' :
+                              'bg-gray-100 text-gray-800'
                             }`}>
                             {exam.status === 'active' ? '진행중' :
                               exam.status === 'scheduled' ? '예정' : '완료'}

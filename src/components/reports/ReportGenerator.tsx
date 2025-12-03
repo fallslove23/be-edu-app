@@ -1,17 +1,17 @@
 import React, { useState, useRef } from 'react';
 import {
-  DocumentTextIcon,
-  ChartBarIcon,
-  CalendarDaysIcon,
-  UserGroupIcon,
-  AcademicCapIcon,
-  ClipboardDocumentCheckIcon,
-  ArrowDownTrayIcon,
-  PrinterIcon,
-  Cog6ToothIcon,
-  PlusIcon,
-  XMarkIcon
-} from '@heroicons/react/24/outline';
+  FileText,
+  BarChart2,
+  CalendarDays,
+  Users,
+  GraduationCap,
+  ClipboardCheck,
+  Download,
+  Printer,
+  Settings,
+  Plus,
+  X
+} from 'lucide-react';
 import {
   BarChart,
   Bar,
@@ -184,20 +184,20 @@ const ReportGenerator: React.FC = () => {
           name: `과목${i + 1}`,
           value: Math.floor(Math.random() * 40) + 60
         }));
-      
+
       case 'line':
         return Array.from({ length: 12 }, (_, i) => ({
           name: `${i + 1}월`,
           value: Math.floor(Math.random() * 20) + 75
         }));
-      
+
       case 'pie':
         return [
           { name: '완료', value: 65 },
           { name: '진행중', value: 25 },
           { name: '미시작', value: 10 }
         ];
-      
+
       default:
         return [];
     }
@@ -215,8 +215,8 @@ const ReportGenerator: React.FC = () => {
   };
 
   const updateCustomSection = (id: string, updates: Partial<ReportSection>) => {
-    setCustomSections(prev => 
-      prev.map(section => 
+    setCustomSections(prev =>
+      prev.map(section =>
         section.id === id ? { ...section, ...updates } : section
       )
     );
@@ -244,10 +244,10 @@ const ReportGenerator: React.FC = () => {
 
   const generateReport = async () => {
     setGenerating(true);
-    
+
     // 실제로는 API 호출하여 데이터 생성
     await new Promise(resolve => setTimeout(resolve, 2000));
-    
+
     setGenerating(false);
     setPreview(true);
   };
@@ -277,7 +277,7 @@ const ReportGenerator: React.FC = () => {
             </BarChart>
           </ResponsiveContainer>
         );
-      
+
       case 'line':
         return (
           <ResponsiveContainer width="100%" height={300}>
@@ -290,7 +290,7 @@ const ReportGenerator: React.FC = () => {
             </LineChart>
           </ResponsiveContainer>
         );
-      
+
       case 'pie':
         return (
           <ResponsiveContainer width="100%" height={300}>
@@ -301,7 +301,7 @@ const ReportGenerator: React.FC = () => {
                 cy="50%"
                 outerRadius={80}
                 dataKey="value"
-                label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                label={({ name, percent }: any) => `${name} ${(percent * 100).toFixed(0)}%`}
               >
                 {data.map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={['#3b82f6', '#10b981', '#f59e0b'][index]} />
@@ -311,7 +311,7 @@ const ReportGenerator: React.FC = () => {
             </PieChart>
           </ResponsiveContainer>
         );
-      
+
       default:
         return <div>지원되지 않는 차트 타입</div>;
     }
@@ -323,7 +323,7 @@ const ReportGenerator: React.FC = () => {
     return (
       <div key={section.id} className="mb-8 bg-white rounded-lg border border-gray-200 p-6">
         <h3 className="text-lg font-medium text-gray-900 mb-4">{section.title}</h3>
-        
+
         {section.type === 'overview' && (
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="text-center">
@@ -414,11 +414,10 @@ const ReportGenerator: React.FC = () => {
               {reportTemplates.map((template) => (
                 <div
                   key={template.id}
-                  className={`p-3 rounded-full border cursor-pointer transition-colors ${
-                    selectedTemplate?.id === template.id
-                      ? 'border-blue-500 bg-blue-50'
-                      : 'border-gray-200 hover:border-gray-300'
-                  }`}
+                  className={`p-3 rounded-full border cursor-pointer transition-colors ${selectedTemplate?.id === template.id
+                    ? 'border-blue-500 bg-blue-50'
+                    : 'border-gray-200 hover:border-gray-300'
+                    }`}
                   onClick={() => setSelectedTemplate(template)}
                 >
                   <div className="font-medium text-gray-900">{template.name}</div>
@@ -493,15 +492,15 @@ const ReportGenerator: React.FC = () => {
                   onClick={() => downloadReport('pdf')}
                   className="btn-success w-full py-2 px-4 rounded-full font-medium flex items-center justify-center"
                 >
-                  <ArrowDownTrayIcon className="h-4 w-4 mr-2" />
+                  <Download className="h-4 w-4 mr-2" />
                   PDF 다운로드
                 </button>
-                
+
                 <button
                   onClick={printReport}
                   className="w-full bg-gray-600 hover:bg-gray-700 text-white py-2 px-4 rounded-full font-medium flex items-center justify-center"
                 >
-                  <PrinterIcon className="h-4 w-4 mr-2" />
+                  <Printer className="h-4 w-4 mr-2" />
                   인쇄
                 </button>
               </div>
@@ -517,7 +516,7 @@ const ReportGenerator: React.FC = () => {
               <h3 className="text-lg font-medium text-gray-900">
                 {selectedTemplate ? `${selectedTemplate.name} 미리보기` : '템플릿을 선택하세요'}
               </h3>
-              
+
               {selectedTemplate && (
                 <div className="flex items-center space-x-2">
                   <button
@@ -525,13 +524,13 @@ const ReportGenerator: React.FC = () => {
                     className="text-blue-600 hover:text-blue-700 p-1"
                     title="섹션 추가"
                   >
-                    <PlusIcon className="h-5 w-5" />
+                    <Plus className="h-5 w-5" />
                   </button>
                   <button
                     className="text-gray-600 hover:text-gray-700 p-1"
                     title="설정"
                   >
-                    <Cog6ToothIcon className="h-5 w-5" />
+                    <Settings className="h-5 w-5" />
                   </button>
                 </div>
               )}
@@ -547,7 +546,7 @@ const ReportGenerator: React.FC = () => {
                       {selectedTemplate.name}
                     </h1>
                     <p className="text-gray-600">
-                      생성일: {new Date().toLocaleDateString('ko-KR')} | 
+                      생성일: {new Date().toLocaleDateString('ko-KR')} |
                       기간: {filters.dateRange.start} ~ {filters.dateRange.end}
                     </p>
                   </div>
@@ -582,14 +581,14 @@ const ReportGenerator: React.FC = () => {
                         onClick={() => removeCustomSection(section.id)}
                         className="absolute top-2 right-2 text-destructive hover:text-destructive"
                       >
-                        <XMarkIcon className="h-5 w-5" />
+                        <X className="h-5 w-5" />
                       </button>
                     </div>
                   ))}
                 </div>
               ) : (
                 <div className="text-center py-12">
-                  <DocumentTextIcon className="h-24 w-24 text-gray-400 mx-auto mb-4" />
+                  <FileText className="h-24 w-24 text-gray-400 mx-auto mb-4" />
                   <h3 className="text-lg font-medium text-gray-900 mb-2">리포트 템플릿을 선택하세요</h3>
                   <p className="text-gray-600">왼쪽 패널에서 원하는 리포트 템플릿을 선택하여 시작하세요.</p>
                 </div>

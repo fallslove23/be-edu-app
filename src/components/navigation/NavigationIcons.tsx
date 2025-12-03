@@ -1,152 +1,173 @@
 import React from 'react';
 import {
   // Dashboard
-  ChartBarIcon,
-  Squares2X2Icon,
-  // Course Management
-  AcademicCapIcon,
-  PlusCircleIcon,
-  CalendarIcon,
-  FolderIcon,
-  CloudArrowUpIcon,
-  CloudArrowDownIcon,
-  // Student Management
-  UsersIcon,
-  UserIcon,
-  UserPlusIcon,
-  UserCircleIcon,
-  UserGroupIcon,
-  IdentificationIcon,
-  // Course Operation
-  CogIcon,
-  ClipboardDocumentCheckIcon,
-  ClipboardDocumentListIcon,
-  ArrowTrendingUpIcon,
-  // Assessment
-  DocumentTextIcon,
-  DocumentDuplicateIcon,
-  BeakerIcon,
-  // Completion
-  TrophyIcon,
-  // Analytics
-  MagnifyingGlassIcon,
-  DocumentIcon,
-  // System Management
-  WrenchScrewdriverIcon,
-  LockClosedIcon,
-  MegaphoneIcon,
-  ServerStackIcon,
-  ComputerDesktopIcon,
-  // Student Specific
-  BookOpenIcon,
-  BookmarkIcon,
-  CalendarDaysIcon,
-  PencilSquareIcon,
-  MicrophoneIcon,
-  PencilIcon,
-  ChartPieIcon,
-  SpeakerWaveIcon,
-  ShieldCheckIcon,
-  // Additional icons
-  BuildingOfficeIcon,
-  BuildingOffice2Icon,
-  CurrencyDollarIcon,
-  Cog6ToothIcon,
-  DevicePhoneMobileIcon,
-  FolderOpenIcon,
-  ArrowUpTrayIcon,
-  PaperAirplaneIcon,
-  LinkIcon,
-  StarIcon,
-  TagIcon,
-  ArchiveBoxIcon,
-  SquaresPlusIcon,
-} from '@heroicons/react/24/outline';
-
-// Heroicon component mapping
-export const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
-  // Dashboard
-  'chart-bar': ChartBarIcon,
-  'squares-2x2': Squares2X2Icon,
+  LayoutGrid, // squares-2x2
+  BarChart2, // chart-bar
 
   // Course Management
-  'academic-cap': AcademicCapIcon,
-  'plus-circle': PlusCircleIcon,
-  'calendar': CalendarIcon,
-  'folder': FolderIcon,
-  'cloud-arrow-up': CloudArrowUpIcon,
-  'cloud-arrow-down': CloudArrowDownIcon,
+  GraduationCap, // academic-cap
+  PlusCircle, // plus-circle
+  Calendar, // calendar
+  Folder, // folder
+  CloudUpload, // cloud-arrow-up
+  CloudDownload, // cloud-arrow-down
 
   // Student Management
-  'users': UsersIcon,
-  'user': UserIcon,
-  'user-plus': UserPlusIcon,
-  'user-circle': UserCircleIcon,
-  'user-group': UserGroupIcon,
-  'identification': IdentificationIcon,
+  Users, // users
+  User, // user
+  UserPlus, // user-plus
+  UserCircle, // user-circle
+  UsersRound, // user-group
+  Contact, // identification
 
   // Course Operation
-  'cog': CogIcon,
-  'clipboard-check': ClipboardDocumentCheckIcon,
-  'clipboard-document-check': ClipboardDocumentCheckIcon,
-  'clipboard-document-list': ClipboardDocumentListIcon,
-  'trending-up': ArrowTrendingUpIcon,
+  Settings, // cog
+  ClipboardCheck, // clipboard-check
+  ClipboardList, // clipboard-document-list
+  TrendingUp, // trending-up
 
   // Assessment
-  'target': ChartBarIcon, // Using chart-bar for target
-  'pencil-alt': PencilIcon,
-  'beaker': BeakerIcon,
-  'document-duplicate': DocumentDuplicateIcon,
+  FileText, // document-text
+  Copy, // document-duplicate
+  FlaskConical, // beaker
+  Target, // target
 
   // Completion
-  'trophy': TrophyIcon,
-  'document-text': DocumentTextIcon,
+  Trophy, // trophy
 
   // Analytics
-  'magnifying-glass': MagnifyingGlassIcon,
-  'document': DocumentIcon,
-  'chart-bar-square': ChartBarIcon, // Survey management icon
+  Search, // magnifying-glass
+  File, // document
+  PieChart, // chart-pie
 
   // System Management
-  'wrench-screwdriver': WrenchScrewdriverIcon,
-  'lock-closed': LockClosedIcon,
-  'megaphone': MegaphoneIcon,
-  'server-stack': ServerStackIcon,
-  'computer-desktop': ComputerDesktopIcon,
+  Wrench, // wrench-screwdriver
+  Lock, // lock-closed
+  Megaphone, // megaphone
+  Server, // server-stack
+  Monitor, // computer-desktop
 
   // Student Specific
-  'book-open': BookOpenIcon,
-  'bookmark': BookmarkIcon,
-  'calendar-days': CalendarDaysIcon,
-  'pencil-square': PencilSquareIcon,
-  'microphone': MicrophoneIcon,
-  'pencil': PencilIcon,
-  'chart-pie': ChartPieIcon,
-  'speaker-wave': SpeakerWaveIcon,
-  'shield-check': ShieldCheckIcon,
+  BookOpen, // book-open
+  Bookmark, // bookmark
+  CalendarDays, // calendar-days
+  PenSquare, // pencil-square
+  Mic, // microphone
+  Pen, // pencil
+  AudioWaveform, // speaker-wave
+  ShieldCheck, // shield-check
 
   // Resource Management
-  'building-office': BuildingOfficeIcon,
-  'building-office-2': BuildingOffice2Icon,
-  'currency-dollar': CurrencyDollarIcon,
-  'tag': TagIcon,
+  Building2, // building-office
+  Building, // building-office-2
+  DollarSign, // currency-dollar
+  Tag, // tag
 
   // System & Files
-  'cog-6-tooth': Cog6ToothIcon,
-  'device-phone-mobile': DevicePhoneMobileIcon,
-  'folder-open': FolderOpenIcon,
-  'arrow-up-tray': ArrowUpTrayIcon,
-  'paper-airplane': PaperAirplaneIcon,
-  'archive-box': ArchiveBoxIcon,
-  'squares-plus': SquaresPlusIcon,
+  Settings2, // cog-6-tooth
+  Smartphone, // device-phone-mobile
+  FolderOpen, // folder-open
+  Upload, // arrow-up-tray
+  Send, // paper-airplane
+  Archive, // archive-box
+  PlusSquare, // squares-plus
 
   // External Links
-  'link': LinkIcon,
-  'star': StarIcon,
+  Link, // link
+  Star, // star
 
   // Additional utility
-  'library': BookOpenIcon, // Using book-open for library
-  'backpack': UserIcon, // Using user for backpack (no exact match)
+  Library, // library
+  Backpack, // backpack
+
+  // Fallback
+  HelpCircle
+} from 'lucide-react';
+
+// Icon component mapping
+export const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
+  // Dashboard
+  'chart-bar': BarChart2,
+  'squares-2x2': LayoutGrid,
+
+  // Course Management
+  'academic-cap': GraduationCap,
+  'plus-circle': PlusCircle,
+  'calendar': Calendar,
+  'folder': Folder,
+  'cloud-arrow-up': CloudUpload,
+  'cloud-arrow-down': CloudDownload,
+
+  // Student Management
+  'users': Users,
+  'user': User,
+  'user-plus': UserPlus,
+  'user-circle': UserCircle,
+  'user-group': UsersRound,
+  'identification': Contact,
+
+  // Course Operation
+  'cog': Settings,
+  'clipboard-check': ClipboardCheck,
+  'clipboard-document-check': ClipboardCheck,
+  'clipboard-document-list': ClipboardList,
+  'trending-up': TrendingUp,
+
+  // Assessment
+  'target': Target,
+  'pencil-alt': Pen,
+  'beaker': FlaskConical,
+  'document-duplicate': Copy,
+
+  // Completion
+  'trophy': Trophy,
+  'document-text': FileText,
+
+  // Analytics
+  'magnifying-glass': Search,
+  'document': File,
+  'chart-bar-square': BarChart2, // Survey management icon
+
+  // System Management
+  'wrench-screwdriver': Wrench,
+  'lock-closed': Lock,
+  'megaphone': Megaphone,
+  'server-stack': Server,
+  'computer-desktop': Monitor,
+
+  // Student Specific
+  'book-open': BookOpen,
+  'bookmark': Bookmark,
+  'calendar-days': CalendarDays,
+  'pencil-square': PenSquare,
+  'microphone': Mic,
+  'pencil': Pen,
+  'chart-pie': PieChart,
+  'speaker-wave': AudioWaveform,
+  'shield-check': ShieldCheck,
+
+  // Resource Management
+  'building-office': Building2,
+  'building-office-2': Building,
+  'currency-dollar': DollarSign,
+  'tag': Tag,
+
+  // System & Files
+  'cog-6-tooth': Settings2,
+  'device-phone-mobile': Smartphone,
+  'folder-open': FolderOpen,
+  'arrow-up-tray': Upload,
+  'paper-airplane': Send,
+  'archive-box': Archive,
+  'squares-plus': PlusSquare,
+
+  // External Links
+  'link': Link,
+  'star': Star,
+
+  // Additional utility
+  'library': Library,
+  'backpack': Backpack,
 };
 
 interface NavigationIconProps {
@@ -156,11 +177,11 @@ interface NavigationIconProps {
 
 export const NavigationIcon: React.FC<NavigationIconProps> = ({ iconName, className = "h-5 w-5" }) => {
   const IconComponent = iconMap[iconName];
-  
+
   if (!IconComponent) {
-    // Fallback to chart-bar icon if not found
-    return <ChartBarIcon className={className} />;
+    // Fallback icon if not found
+    return <HelpCircle className={className} />;
   }
-  
+
   return <IconComponent className={className} />;
 };

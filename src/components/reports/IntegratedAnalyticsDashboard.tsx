@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import {
-  ChartBarIcon,
-  ArrowTrendingUpIcon,
-  ArrowTrendingDownIcon,
-  UserGroupIcon,
-  AcademicCapIcon,
-  DocumentChartBarIcon,
-  ArrowDownTrayIcon,
-  CalendarDaysIcon,
-  FunnelIcon,
-  ArrowPathIcon
-} from '@heroicons/react/24/outline';
+  BarChart2,
+  TrendingUp,
+  TrendingDown,
+  Users,
+  GraduationCap,
+  FileBarChart,
+  Download,
+  CalendarDays,
+  Filter,
+  RefreshCw
+} from 'lucide-react';
 import {
   LineChart,
   Line,
@@ -104,7 +104,7 @@ const IntegratedAnalyticsDashboard: React.FC = () => {
     return (
       <div className="flex items-center justify-center h-96">
         <div className="text-center">
-          <ArrowPathIcon className="h-12 w-12 animate-spin text-primary mx-auto" />
+          <RefreshCw className="h-12 w-12 animate-spin text-primary mx-auto" />
           <p className="mt-4 text-muted-foreground">분석 데이터 로드 중...</p>
         </div>
       </div>
@@ -118,7 +118,10 @@ const IntegratedAnalyticsDashboard: React.FC = () => {
       {/* 헤더 */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">📊 통합 분석 대시보드</h1>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 flex items-center">
+            <BarChart2 className="mr-3 h-8 w-8 text-primary" />
+            통합 분석 대시보드
+          </h1>
           <p className="text-muted-foreground mt-1">
             전체 교육 성과 및 통계 분석
           </p>
@@ -143,7 +146,7 @@ const IntegratedAnalyticsDashboard: React.FC = () => {
             onClick={loadAnalyticsData}
             className="p-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
           >
-            <ArrowPathIcon className="h-5 w-5" />
+            <RefreshCw className="h-5 w-5" />
           </button>
         </div>
       </div>
@@ -156,7 +159,7 @@ const IntegratedAnalyticsDashboard: React.FC = () => {
             value={summary.total_students}
             subtitle={`활성: ${summary.active_students}`}
             growth={summary.student_growth}
-            icon={<UserGroupIcon className="h-6 w-6" />}
+            icon={<Users className="h-6 w-6" />}
             color="indigo"
           />
           <StatCard
@@ -164,7 +167,7 @@ const IntegratedAnalyticsDashboard: React.FC = () => {
             value={summary.active_courses}
             subtitle={`전체: ${summary.total_courses}`}
             growth={summary.course_growth}
-            icon={<AcademicCapIcon className="h-6 w-6" />}
+            icon={<GraduationCap className="h-6 w-6" />}
             color="cyan"
           />
           <StatCard
@@ -172,7 +175,7 @@ const IntegratedAnalyticsDashboard: React.FC = () => {
             value={`${summary.completion_rate.toFixed(1)}%`}
             subtitle={`인증서: ${summary.total_certificates}`}
             growth={summary.completion_growth}
-            icon={<DocumentChartBarIcon className="h-6 w-6" />}
+            icon={<FileBarChart className="h-6 w-6" />}
             color="emerald"
           />
           <StatCard
@@ -180,7 +183,7 @@ const IntegratedAnalyticsDashboard: React.FC = () => {
             value={summary.average_score.toFixed(1)}
             subtitle={`출석률: ${summary.average_attendance.toFixed(1)}%`}
             growth={summary.score_growth}
-            icon={<ChartBarIcon className="h-6 w-6" />}
+            icon={<BarChart2 className="h-6 w-6" />}
             color="amber"
           />
         </div>
@@ -190,19 +193,18 @@ const IntegratedAnalyticsDashboard: React.FC = () => {
       <div className="border-b border-gray-200 dark:border-gray-700">
         <div className="flex space-x-4">
           {[
-            { id: 'summary', label: '개요', icon: ChartBarIcon },
-            { id: 'courses', label: '과정별 분석', icon: AcademicCapIcon },
-            { id: 'students', label: '교육생별 분석', icon: UserGroupIcon },
-            { id: 'departments', label: '부서별 통계', icon: DocumentChartBarIcon }
+            { id: 'summary', label: '개요', icon: BarChart2 },
+            { id: 'courses', label: '과정별 분석', icon: GraduationCap },
+            { id: 'students', label: '교육생별 분석', icon: Users },
+            { id: 'departments', label: '부서별 통계', icon: FileBarChart }
           ].map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id as any)}
-              className={`flex items-center px-4 py-2 border-b-2 transition-colors ${
-                activeTab === tab.id
-                  ? 'border-primary text-primary font-medium'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
-              }`}
+              className={`flex items-center px-4 py-2 border-b-2 transition-colors ${activeTab === tab.id
+                ? 'border-primary text-primary font-medium'
+                : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
+                }`}
             >
               <tab.icon className="h-4 w-4 mr-2" />
               {tab.label}
@@ -273,7 +275,7 @@ const StatCard: React.FC<StatCardProps> = ({ title, value, subtitle, growth, ico
           {icon}
         </div>
         <div className={`flex items-center text-sm ${isPositive ? 'text-emerald-600' : 'text-red-600'}`}>
-          {isPositive ? <ArrowTrendingUpIcon className="h-4 w-4 mr-1" /> : <ArrowTrendingDownIcon className="h-4 w-4 mr-1" />}
+          {isPositive ? <TrendingUp className="h-4 w-4 mr-1" /> : <TrendingDown className="h-4 w-4 mr-1" />}
           {Math.abs(growth).toFixed(1)}%
         </div>
       </div>
@@ -312,7 +314,7 @@ const SummaryTab: React.FC<SummaryTabProps> = ({ timeSeriesData, departmentStats
           onClick={onExport}
           className="btn-primary flex items-center"
         >
-          <ArrowDownTrayIcon className="h-4 w-4 mr-2" />
+          <Download className="h-4 w-4 mr-2" />
           Excel 다운로드
         </button>
       </div>
@@ -382,7 +384,7 @@ const CoursesTab: React.FC<CoursesTabProps> = ({ coursePerformance, onExport }) 
           onClick={onExport}
           className="btn-primary flex items-center"
         >
-          <ArrowDownTrayIcon className="h-4 w-4 mr-2" />
+          <Download className="h-4 w-4 mr-2" />
           Excel 다운로드
         </button>
       </div>
@@ -464,12 +466,11 @@ const StudentsTab: React.FC<StudentsTabProps> = ({ studentPerformance, onExport 
           {topStudents.map((student, index) => (
             <div key={student.student_id} className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
               <div className="flex items-center">
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center mr-3 ${
-                  index === 0 ? 'bg-amber-500 text-white' :
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center mr-3 ${index === 0 ? 'bg-amber-500 text-white' :
                   index === 1 ? 'bg-gray-400 text-white' :
-                  index === 2 ? 'bg-amber-700 text-white' :
-                  'bg-gray-200 dark:bg-gray-600 text-gray-600 dark:text-gray-300'
-                }`}>
+                    index === 2 ? 'bg-amber-700 text-white' :
+                      'bg-gray-200 dark:bg-gray-600 text-gray-600 dark:text-gray-300'
+                  }`}>
                   {index + 1}
                 </div>
                 <div>

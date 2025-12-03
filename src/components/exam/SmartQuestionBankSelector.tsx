@@ -1,10 +1,10 @@
 import React, { useState, useMemo } from 'react';
 import {
-  XMarkIcon,
-  MagnifyingGlassIcon,
-  FunnelIcon,
-  SparklesIcon
-} from '@heroicons/react/24/outline';
+  X,
+  Search,
+  Filter,
+  Sparkles
+} from 'lucide-react';
 import { QuestionBank } from '@/types/exam.types';
 
 interface SmartQuestionBankSelectorProps {
@@ -165,7 +165,7 @@ const SmartQuestionBankSelector: React.FC<SmartQuestionBankSelectorProps> = ({
               onClick={onClose}
               className="btn-ghost p-2 rounded-full"
             >
-              <XMarkIcon className="h-6 w-6" />
+              <X className="h-6 w-6" />
             </button>
           </div>
 
@@ -173,7 +173,7 @@ const SmartQuestionBankSelector: React.FC<SmartQuestionBankSelectorProps> = ({
           {recommendedBank && selectedTags.length === 0 && !searchTerm && (
             <div className="bg-gradient-to-r from-purple-100 to-pink-100 rounded-lg p-4 mb-4">
               <div className="flex items-start gap-3">
-                <SparklesIcon className="h-6 w-6 text-purple-600 flex-shrink-0 mt-0.5" />
+                <Sparkles className="h-6 w-6 text-purple-600 flex-shrink-0 mt-0.5" />
                 <div className="flex-1">
                   <h3 className="font-semibold text-purple-900 mb-1">AI 추천</h3>
                   <p className="text-sm text-purple-800 mb-2">
@@ -192,7 +192,7 @@ const SmartQuestionBankSelector: React.FC<SmartQuestionBankSelectorProps> = ({
 
           {/* 검색 */}
           <div className="relative">
-            <MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
             <input
               type="text"
               placeholder="문제은행 검색..."
@@ -206,7 +206,7 @@ const SmartQuestionBankSelector: React.FC<SmartQuestionBankSelectorProps> = ({
         {/* 필터 태그 */}
         <div className="px-4 py-3 sm:px-6 sm:py-4 bg-gray-50 border-b border-gray-200">
           <div className="flex items-center gap-3 mb-3">
-            <FunnelIcon className="h-5 w-5 text-gray-500" />
+            <Filter className="h-5 w-5 text-gray-500" />
             <span className="text-sm font-medium text-gray-700">빠른 필터</span>
             {selectedTags.length > 0 && (
               <button
@@ -256,7 +256,7 @@ const SmartQuestionBankSelector: React.FC<SmartQuestionBankSelectorProps> = ({
         <div className="flex-1 overflow-y-auto p-4 sm:p-6">
           {filteredBanks.length === 0 ? (
             <div className="text-center py-12">
-              <MagnifyingGlassIcon className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+              <Search className="h-12 w-12 text-gray-400 mx-auto mb-4" />
               <p className="text-gray-600 mb-2">검색 결과가 없습니다</p>
               <button
                 onClick={() => {
@@ -288,7 +288,7 @@ const SmartQuestionBankSelector: React.FC<SmartQuestionBankSelectorProps> = ({
                     {/* AI 추천 배지 */}
                     {isRecommended && (
                       <div className="absolute -top-2 -right-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white px-3 py-1 rounded-full text-xs font-semibold shadow-lg flex items-center gap-1">
-                        <SparklesIcon className="h-3 w-3" />
+                        <Sparkles className="h-3 w-3" />
                         AI 추천
                       </div>
                     )}

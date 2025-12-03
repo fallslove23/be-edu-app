@@ -1,18 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import {
-  ChartBarIcon,
-  ArrowDownTrayIcon,
-  UserIcon,
-  DocumentChartBarIcon,
-  AcademicCapIcon,
-  TrophyIcon,
-  CalendarDaysIcon,
-  ClockIcon,
-  CheckCircleIcon,
-  ExclamationTriangleIcon,
-  ArrowTrendingUpIcon,
-  ArrowTrendingDownIcon
-} from '@heroicons/react/24/outline';
+  BarChart2,
+  Download,
+  User,
+  FileBarChart,
+  GraduationCap,
+  Trophy,
+  CalendarDays,
+  Clock,
+  CheckCircle,
+  AlertTriangle,
+  TrendingUp,
+  TrendingDown,
+  FileText,
+  ClipboardList,
+  BookOpen
+} from 'lucide-react';
 
 interface DailyProgress {
   day: number;
@@ -241,17 +244,17 @@ const PerformanceTracking: React.FC = () => {
         <div className="border-b border-gray-200 dark:border-gray-700 overflow-x-auto scroll-touch">
           <nav className="-mb-px flex">
             {[
-              { key: 'daily-progress', label: '일차별 진도', icon: CalendarDaysIcon },
-              { key: 'overview', label: '전체 현황', icon: ChartBarIcon },
-              { key: 'individual', label: '개별 성과', icon: UserIcon },
-              { key: 'reports', label: '상세 리포트', icon: DocumentChartBarIcon }
+              { key: 'daily-progress', label: '일차별 진도', icon: CalendarDays },
+              { key: 'overview', label: '전체 현황', icon: BarChart2 },
+              { key: 'individual', label: '개별 성과', icon: User },
+              { key: 'reports', label: '상세 리포트', icon: FileBarChart }
             ].map((tab) => (
               <button
                 key={tab.key}
                 onClick={() => setActiveTab(tab.key as any)}
                 className={`px-4 sm:px-6 py-4 text-sm font-medium border-b-2 transition-all duration-200 flex items-center whitespace-nowrap min-w-[120px] justify-center ${activeTab === tab.key
-                    ? 'border-indigo-600 dark:border-indigo-400 text-indigo-600 dark:text-indigo-400'
-                    : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:border-gray-300 dark:hover:border-gray-600'
+                  ? 'border-indigo-600 dark:border-indigo-400 text-indigo-600 dark:text-indigo-400'
+                  : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:border-gray-300 dark:hover:border-gray-600'
                   }`}
               >
                 <tab.icon className={`h-5 w-5 mr-2 flex-shrink-0 transition-colors ${activeTab === tab.key ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-400 group-hover:text-gray-500'}`} />
@@ -305,27 +308,27 @@ const PerformanceTracking: React.FC = () => {
                         <div
                           key={day.day}
                           className={`border rounded-md p-4 transition-all shadow-sm ${isCurrentDay ? 'border-gray-500 bg-gray-50' :
-                              isCompleted ? 'border-gray-300 bg-white' :
-                                isBehind ? 'border-red-200 bg-red-50' :
-                                  'border-gray-200 bg-white'
+                            isCompleted ? 'border-gray-300 bg-white' :
+                              isBehind ? 'border-red-200 bg-red-50' :
+                                'border-gray-200 bg-white'
                             }`}
                         >
                           <div className="flex items-center justify-between mb-2">
                             <div className="flex items-center space-x-2">
                               <span className={`text-sm font-semibold ${isCurrentDay ? 'text-gray-700' :
-                                  isCompleted ? 'text-gray-600' :
-                                    isBehind ? 'text-destructive' :
-                                      'text-gray-500'
+                                isCompleted ? 'text-gray-600' :
+                                  isBehind ? 'text-destructive' :
+                                    'text-gray-500'
                                 }`}>
                                 {day.day}일차
                               </span>
-                              {isCurrentDay && <ClockIcon className="h-4 w-4 text-gray-600" />}
-                              {isCompleted && <CheckCircleIcon className="h-4 w-4 text-gray-600" />}
-                              {isBehind && <ExclamationTriangleIcon className="h-4 w-4 text-destructive" />}
+                              {isCurrentDay && <Clock className="h-4 w-4 text-gray-600" />}
+                              {isCompleted && <CheckCircle className="h-4 w-4 text-gray-600" />}
+                              {isBehind && <AlertTriangle className="h-4 w-4 text-destructive" />}
                             </div>
                             <span className={`text-xs px-2 py-1 rounded-full ${day.completion_rate >= 80 ? 'bg-gray-100 text-gray-700' :
-                                day.completion_rate >= 50 ? 'bg-yellow-100 text-orange-700' :
-                                  'bg-destructive/10 text-destructive'
+                              day.completion_rate >= 50 ? 'bg-yellow-100 text-orange-700' :
+                                'bg-destructive/10 text-destructive'
                               }`}>
                               {day.completion_rate}%
                             </span>
@@ -353,8 +356,8 @@ const PerformanceTracking: React.FC = () => {
                             <div className="flex items-center justify-between text-xs">
                               <span className="text-gray-500">출석률</span>
                               <span className={`font-medium ${attendanceRate >= 90 ? 'text-gray-700' :
-                                  attendanceRate >= 80 ? 'text-foreground' :
-                                    'text-destructive'
+                                attendanceRate >= 80 ? 'text-foreground' :
+                                  'text-destructive'
                                 }`}>
                                 {day.attendance_count}/{day.total_students} ({attendanceRate}%)
                               </span>
@@ -362,7 +365,10 @@ const PerformanceTracking: React.FC = () => {
 
                             {day.notes && (
                               <div className="mt-2 text-xs text-gray-600 bg-gray-100 p-2 rounded">
-                                📝 {day.notes}
+                                <div className="flex items-start text-sm text-gray-600 bg-gray-50 p-2 rounded">
+                                  <FileText className="w-4 h-4 mr-2 mt-0.5 flex-shrink-0" />
+                                  <span>{day.notes}</span>
+                                </div>
                               </div>
                             )}
                           </div>
@@ -398,9 +404,9 @@ const PerformanceTracking: React.FC = () => {
                             <div className="flex items-center justify-between mb-1">
                               <span className="text-sm font-medium text-gray-900">{student.name}</span>
                               <span className={`text-xs px-2 py-1 rounded-full ${student.status === 'ahead' ? 'bg-gray-100 text-gray-700' :
-                                  student.status === 'on_track' ? 'bg-gray-100 text-gray-600' :
-                                    student.status === 'behind' ? 'bg-yellow-100 text-orange-700' :
-                                      'bg-destructive/10 text-destructive'
+                                student.status === 'on_track' ? 'bg-gray-100 text-gray-600' :
+                                  student.status === 'behind' ? 'bg-yellow-100 text-orange-700' :
+                                    'bg-destructive/10 text-destructive'
                                 }`}>
                                 {student.status === 'ahead' ? '앞서감' :
                                   student.status === 'on_track' ? '정상' :
@@ -411,8 +417,8 @@ const PerformanceTracking: React.FC = () => {
                             <div className="w-full bg-gray-200 rounded-lg h-1.5">
                               <div
                                 className={`h-1.5 rounded-full ${student.overall_progress >= 80 ? 'bg-gray-600' :
-                                    student.overall_progress >= 60 ? 'bg-yellow-500' :
-                                      'bg-red-500'
+                                  student.overall_progress >= 60 ? 'bg-yellow-500' :
+                                    'bg-red-500'
                                   }`}
                                 style={{ width: `${student.overall_progress}%` }}
                               />
@@ -505,7 +511,10 @@ const PerformanceTracking: React.FC = () => {
 
               {/* 개선 권장사항 */}
               <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
-                <h3 className="font-medium text-gray-800 mb-2">📋 개선 권장사항</h3>
+                <h3 className="font-medium text-gray-800 mb-2 flex items-center">
+                  <ClipboardList className="w-5 h-5 mr-2 text-primary" />
+                  개선 권장사항
+                </h3>
                 <div className="space-y-1 text-sm text-gray-700">
                   <div>• {overallStats.needs_improvement}명의 수강생이 개선이 필요한 상태입니다.</div>
                   <div>• 평균 출석률이 {overallStats.avg_attendance}%입니다. 85% 이상 유지를 권장합니다.</div>
@@ -590,7 +599,10 @@ const PerformanceTracking: React.FC = () => {
               {/* 리포트 템플릿 */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="border border-gray-200 rounded-lg p-4 hover:shadow-sm transition-shadow">
-                  <h4 className="font-medium text-gray-900 mb-2">📊 종합 성과 리포트</h4>
+                  <h4 className="font-medium text-gray-900 mb-2 flex items-center">
+                    <BarChart2 className="w-4 h-4 mr-2 text-primary" />
+                    종합 성과 리포트
+                  </h4>
                   <p className="text-sm text-gray-600 mb-4">전체 수강생의 출석, 시험, 진도 현황을 종합한 리포트</p>
                   <button className="w-full bg-gray-600 text-white px-4 py-2 rounded-full hover:bg-gray-700 transition-colors text-sm">
                     리포트 생성
@@ -598,7 +610,10 @@ const PerformanceTracking: React.FC = () => {
                 </div>
 
                 <div className="border border-gray-200 rounded-lg p-4 hover:shadow-sm transition-shadow">
-                  <h4 className="font-medium text-gray-900 mb-2">📈 개별 수강생 리포트</h4>
+                  <h4 className="font-medium text-gray-900 mb-2 flex items-center">
+                    <TrendingUp className="w-4 h-4 mr-2 text-primary" />
+                    개별 수강생 리포트
+                  </h4>
                   <p className="text-sm text-gray-600 mb-4">특정 수강생의 상세한 학습 성과 분석 리포트</p>
                   <button className="w-full bg-gray-600 text-white px-4 py-2 rounded-full hover:bg-gray-700 transition-colors text-sm">
                     리포트 생성
@@ -606,7 +621,10 @@ const PerformanceTracking: React.FC = () => {
                 </div>
 
                 <div className="border border-gray-200 rounded-lg p-4 hover:shadow-sm transition-shadow">
-                  <h4 className="font-medium text-gray-900 mb-2">📚 과정별 분석 리포트</h4>
+                  <h4 className="font-medium text-gray-900 mb-2 flex items-center">
+                    <BookOpen className="w-4 h-4 mr-2 text-primary" />
+                    과정별 분석 리포트
+                  </h4>
                   <p className="text-sm text-gray-600 mb-4">과정별 수강생 성과 비교 및 분석 리포트</p>
                   <button className="w-full bg-gray-700 text-white px-4 py-2 rounded-full hover:bg-gray-800 transition-colors text-sm">
                     리포트 생성

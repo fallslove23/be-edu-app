@@ -2,16 +2,16 @@
 
 import React, { useState, useEffect } from 'react';
 import {
-  MegaphoneIcon,
-  PlusIcon,
-  MagnifyingGlassIcon,
-  FunnelIcon,
-  EyeIcon,
-  PencilIcon,
-  TrashIcon,
-  ClockIcon,
-  UserIcon
-} from '@heroicons/react/24/outline';
+  Megaphone,
+  Plus,
+  Search,
+  Filter,
+  Eye,
+  Pencil,
+  Trash2,
+  Clock,
+  User
+} from 'lucide-react';
 import { PageContainer } from '../common/PageContainer';
 
 interface Notice {
@@ -152,7 +152,7 @@ const NoticeManagement: React.FC = () => {
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
             <h1 className="text-2xl font-bold text-gray-900 flex items-center">
-              <MegaphoneIcon className="h-8 w-8 mr-3 text-blue-600" />
+              <Megaphone className="h-8 w-8 mr-3 text-blue-600" />
               공지사항 관리
             </h1>
             <p className="mt-2 text-gray-600">
@@ -163,7 +163,7 @@ const NoticeManagement: React.FC = () => {
             onClick={() => setShowForm(true)}
             className="btn-primary flex items-center space-x-2 whitespace-nowrap"
           >
-            <PlusIcon className="h-5 w-5" />
+            <Plus className="h-5 w-5" />
             <span>새 공지 작성</span>
           </button>
         </div>
@@ -196,7 +196,7 @@ const NoticeManagement: React.FC = () => {
         <div className="flex flex-col md:flex-row gap-3">
           {/* 검색 입력 */}
           <div className="flex-1 relative">
-            <MagnifyingGlassIcon className="h-5 w-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
+            <Search className="h-5 w-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
             <input
               type="text"
               value={searchTerm}
@@ -227,7 +227,7 @@ const NoticeManagement: React.FC = () => {
 
           {/* 결과 카운트 */}
           <div className="flex items-center px-4 py-2.5 bg-secondary/30 rounded-full border border-border">
-            <FunnelIcon className="h-4 w-4 mr-2 text-muted-foreground" />
+            <Filter className="h-4 w-4 mr-2 text-muted-foreground" />
             <span className="text-sm font-medium text-foreground whitespace-nowrap">
               총 <span className="text-primary font-semibold">{filteredNotices.length}</span>개 공지
             </span>
@@ -281,15 +281,15 @@ const NoticeManagement: React.FC = () => {
 
                       <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500">
                         <div className="flex items-center">
-                          <UserIcon className="h-4 w-4 mr-1" />
+                          <User className="h-4 w-4 mr-1" />
                           {notice.created_by}
                         </div>
                         <div className="flex items-center">
-                          <ClockIcon className="h-4 w-4 mr-1" />
+                          <Clock className="h-4 w-4 mr-1" />
                           {formatDate(notice.created_at)}
                         </div>
                         <div className="flex items-center">
-                          <EyeIcon className="h-4 w-4 mr-1" />
+                          <Eye className="h-4 w-4 mr-1" />
                           {notice.views.toLocaleString()}회 조회
                         </div>
                       </div>
@@ -301,7 +301,7 @@ const NoticeManagement: React.FC = () => {
                         className="btn-ghost p-2 rounded-full"
                         title="보기"
                       >
-                        <EyeIcon className="h-4 w-4" />
+                        <Eye className="h-4 w-4" />
                       </button>
                       <button
                         onClick={() => {
@@ -311,7 +311,7 @@ const NoticeManagement: React.FC = () => {
                         className="btn-ghost p-2 rounded-full"
                         title="수정"
                       >
-                        <PencilIcon className="h-4 w-4" />
+                        <Pencil className="h-4 w-4" />
                       </button>
                       <button
                         onClick={() => {
@@ -322,7 +322,7 @@ const NoticeManagement: React.FC = () => {
                         className="btn-ghost p-2 text-destructive hover:bg-destructive hover:text-destructive-foreground rounded-full"
                         title="삭제"
                       >
-                        <TrashIcon className="h-4 w-4" />
+                        <Trash2 className="h-4 w-4" />
                       </button>
                     </div>
                   </div>
@@ -331,7 +331,7 @@ const NoticeManagement: React.FC = () => {
 
               {filteredNotices.length === 0 && (
                 <div className="text-center py-12">
-                  <MegaphoneIcon className="h-12 w-12 mx-auto text-gray-300 mb-4" />
+                  <Megaphone className="h-12 w-12 mx-auto text-gray-300 mb-4" />
                   <p className="text-gray-500">검색 결과가 없습니다.</p>
                 </div>
               )}
@@ -381,15 +381,15 @@ const NoticeManagement: React.FC = () => {
 
                 <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500 pb-4 border-b border-gray-200">
                   <div className="flex items-center">
-                    <UserIcon className="h-4 w-4 mr-1" />
+                    <User className="h-4 w-4 mr-1" />
                     {selectedNotice.created_by}
                   </div>
                   <div className="flex items-center">
-                    <ClockIcon className="h-4 w-4 mr-1" />
+                    <Clock className="h-4 w-4 mr-1" />
                     {formatDate(selectedNotice.created_at)}
                   </div>
                   <div className="flex items-center">
-                    <EyeIcon className="h-4 w-4 mr-1" />
+                    <Eye className="h-4 w-4 mr-1" />
                     {selectedNotice.views.toLocaleString()}회 조회
                   </div>
                 </div>

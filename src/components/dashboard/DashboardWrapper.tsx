@@ -2,11 +2,12 @@
 
 import React from 'react';
 import {
-  UserGroupIcon,
-  AcademicCapIcon,
-  ChartBarIcon,
-  CalendarDaysIcon,
-} from '@heroicons/react/24/outline';
+  Users,
+  GraduationCap,
+  BarChart2,
+  CalendarDays,
+  LayoutGrid,
+} from 'lucide-react';
 import EnhancedDashboard from './EnhancedDashboard';
 import RolePreviewSelector from '../admin/RolePreviewSelector';
 import { useAuth } from '../../contexts/AuthContext';
@@ -24,7 +25,10 @@ const DashboardWrapper: React.FC<DashboardWrapperProps> = ({ onNavigate }) => {
   return (
     <PageContainer>
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6 sm:mb-8">
-        <h1 className="text-2xl sm:text-3xl font-bold text-foreground">🏠 대시보드</h1>
+        <h1 className="text-2xl sm:text-3xl font-bold text-foreground flex items-center">
+          <LayoutGrid className="mr-3 h-8 w-8 text-primary" />
+          대시보드
+        </h1>
 
         {/* 관리자 전용: 역할별 대시보드 미리보기 */}
         {isAdmin && <RolePreviewSelector />}
@@ -46,7 +50,7 @@ const DashboardWrapper: React.FC<DashboardWrapperProps> = ({ onNavigate }) => {
               >
                 <div className="flex items-start justify-between mb-4">
                   <div className="w-12 h-12 bg-indigo-50 dark:bg-indigo-900/30 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                    <AcademicCapIcon className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
+                    <GraduationCap className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
                   </div>
                   <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     <div className="w-8 h-8 rounded-full bg-indigo-50 dark:bg-indigo-900/30 flex items-center justify-center">
@@ -67,7 +71,7 @@ const DashboardWrapper: React.FC<DashboardWrapperProps> = ({ onNavigate }) => {
               >
                 <div className="flex items-start justify-between mb-4">
                   <div className="w-12 h-12 bg-blue-50 dark:bg-blue-900/30 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                    <UserGroupIcon className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                    <Users className="w-6 h-6 text-blue-600 dark:text-blue-400" />
                   </div>
                   <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     <div className="w-8 h-8 rounded-full bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center">
@@ -88,7 +92,7 @@ const DashboardWrapper: React.FC<DashboardWrapperProps> = ({ onNavigate }) => {
               >
                 <div className="flex items-start justify-between mb-4">
                   <div className="w-12 h-12 bg-emerald-50 dark:bg-emerald-900/30 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                    <ChartBarIcon className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
+                    <BarChart2 className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
                   </div>
                   <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     <div className="w-8 h-8 rounded-full bg-emerald-50 dark:bg-emerald-900/30 flex items-center justify-center">
@@ -109,7 +113,7 @@ const DashboardWrapper: React.FC<DashboardWrapperProps> = ({ onNavigate }) => {
               >
                 <div className="flex items-start justify-between mb-4">
                   <div className="w-12 h-12 bg-purple-50 dark:bg-purple-900/30 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                    <CalendarDaysIcon className="w-6 h-6 text-purple-600 dark:text-purple-400" />
+                    <CalendarDays className="w-6 h-6 text-purple-600 dark:text-purple-400" />
                   </div>
                   <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     <div className="w-8 h-8 rounded-full bg-purple-50 dark:bg-purple-900/30 flex items-center justify-center">

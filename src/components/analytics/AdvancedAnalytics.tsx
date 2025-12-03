@@ -1,20 +1,20 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import {
-  ChartBarIcon,
-  ArrowTrendingUpIcon,
-  ArrowTrendingDownIcon,
-  UserGroupIcon,
-  AcademicCapIcon,
-  CalendarDaysIcon,
-  ArrowDownTrayIcon,
-  FunnelIcon,
-  EyeIcon,
-  ClockIcon,
-  ArrowPathIcon,
-  Cog6ToothIcon,
-  DocumentChartBarIcon,
-  TableCellsIcon
-} from '@heroicons/react/24/outline';
+  BarChart2,
+  TrendingUp,
+  TrendingDown,
+  Users,
+  GraduationCap,
+  CalendarDays,
+  Download,
+  Filter,
+  Eye,
+  Clock,
+  RefreshCw,
+  Settings,
+  FileBarChart,
+  Table
+} from 'lucide-react';
 import {
   LineChart,
   Line,
@@ -134,7 +134,7 @@ const AdvancedAnalytics: React.FC = () => {
         const progress = Math.floor(Math.random() * 100);
         const totalLessons = Math.floor(Math.random() * 20) + 5;
         const completedLessons = Math.floor((progress / 100) * totalLessons);
-        
+
         learningProgress.push({
           userId: `user_${i}`,
           userName: `사용자${i}`,
@@ -172,7 +172,7 @@ const AdvancedAnalytics: React.FC = () => {
         const deptUsers = learningProgress.filter(p => p.department === dept);
         const avgProgress = deptUsers.reduce((sum, p) => sum + p.progress, 0) / deptUsers.length;
         const avgScore = deptUsers.reduce((sum, p) => sum + p.score, 0) / deptUsers.length;
-        const activeUsers = deptUsers.filter(p => 
+        const activeUsers = deptUsers.filter(p =>
           new Date(p.lastActivity).getTime() > Date.now() - 7 * 24 * 60 * 60 * 1000
         ).length;
 
@@ -232,7 +232,7 @@ const AdvancedAnalytics: React.FC = () => {
           } else { // 주말
             if (hour >= 10 && hour <= 20) baseActivity = 40;
           }
-          
+
           const activity = Math.max(0, baseActivity + Math.floor(Math.random() * 30) - 15);
           heatMapData.push({ hour, day, activity });
         }
@@ -286,9 +286,9 @@ const AdvancedAnalytics: React.FC = () => {
 
   const exportData = useCallback((format: 'json' | 'csv' = 'json') => {
     if (!analyticsData) return;
-    
+
     const timestamp = new Date().toISOString().split('T')[0];
-    
+
     if (format === 'json') {
       const dataToExport = {
         exportDate: new Date().toISOString(),
@@ -301,12 +301,12 @@ const AdvancedAnalytics: React.FC = () => {
       const dataStr = JSON.stringify(dataToExport, null, 2);
       const dataBlob = new Blob([dataStr], { type: 'application/json' });
       const url = URL.createObjectURL(dataBlob);
-      
+
       const link = document.createElement('a');
       link.href = url;
       link.download = `analytics-report-${timestamp}.json`;
       link.click();
-      
+
       URL.revokeObjectURL(url);
     } else if (format === 'csv') {
       // CSV 내보내기
@@ -329,12 +329,12 @@ const AdvancedAnalytics: React.FC = () => {
 
       const csvBlob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
       const csvUrl = URL.createObjectURL(csvBlob);
-      
+
       const link = document.createElement('a');
       link.href = csvUrl;
       link.download = `analytics-report-${timestamp}.csv`;
       link.click();
-      
+
       URL.revokeObjectURL(csvUrl);
     }
   }, [analyticsData, selectedTimeRange, selectedDepartment, selectedCourse]);
@@ -386,12 +386,12 @@ const AdvancedAnalytics: React.FC = () => {
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
           <div>
             <h1 className="text-2xl font-bold text-gray-900 flex items-center">
-              <ChartBarIcon className="h-6 w-6 mr-2" />
+              <BarChart2 className="h-6 w-6 mr-2" />
               고급 학습 분석
             </h1>
             <p className="text-gray-600">학습 진도, 성과 분석 및 트렌드 리포트</p>
           </div>
-          
+
           {/* 필터 컨트롤 */}
           <div className="flex flex-wrap items-center gap-3">
             <select
@@ -404,7 +404,7 @@ const AdvancedAnalytics: React.FC = () => {
               <option value="90d">최근 90일</option>
               <option value="1y">최근 1년</option>
             </select>
-            
+
             <select
               value={selectedDepartment}
               onChange={(e) => setSelectedDepartment(e.target.value)}
@@ -423,13 +423,13 @@ const AdvancedAnalytics: React.FC = () => {
                 onClick={() => setViewMode('charts')}
                 className={`px-3 py-2 text-sm ${viewMode === 'charts' ? 'bg-primary text-primary-foreground' : 'text-foreground hover:bg-muted'} transition-colors`}
               >
-                <ChartBarIcon className="h-4 w-4" />
+                <BarChart2 className="h-4 w-4" />
               </button>
               <button
                 onClick={() => setViewMode('table')}
                 className={`px-3 py-2 text-sm ${viewMode === 'table' ? 'bg-primary text-primary-foreground' : 'text-foreground hover:bg-muted'} transition-colors`}
               >
-                <TableCellsIcon className="h-4 w-4" />
+                <Table className="h-4 w-4" />
               </button>
             </div>
 
@@ -438,20 +438,20 @@ const AdvancedAnalytics: React.FC = () => {
                 onClick={() => exportData('json')}
                 className="btn-success"
               >
-                <ArrowDownTrayIcon className="h-4 w-4 mr-1" />
+                <Download className="h-4 w-4 mr-1" />
                 JSON
               </button>
               <button
                 onClick={() => exportData('csv')}
                 className="btn-primary"
               >
-                <DocumentChartBarIcon className="h-4 w-4 mr-1" />
+                <FileBarChart className="h-4 w-4 mr-1" />
                 CSV
               </button>
             </div>
 
             <button className="p-2 bg-gray-100 hover:bg-gray-200 rounded-full transition-colors">
-              <Cog6ToothIcon className="h-4 w-4 text-gray-600" />
+              <Settings className="h-4 w-4 text-gray-600" />
             </button>
           </div>
         </div>
@@ -462,20 +462,19 @@ const AdvancedAnalytics: React.FC = () => {
         <div className="border-b border-gray-200">
           <nav className="-mb-px flex space-x-8 px-6">
             {[
-              { key: 'overview', label: '개요', icon: EyeIcon },
-              { key: 'progress', label: '학습 진도', icon: ArrowTrendingUpIcon },
-              { key: 'performance', label: '성과 분석', icon: AcademicCapIcon },
-              { key: 'trends', label: '트렌드', icon: CalendarDaysIcon },
-              { key: 'realtime', label: '실시간', icon: ClockIcon }
+              { key: 'overview', label: '개요', icon: Eye },
+              { key: 'progress', label: '학습 진도', icon: TrendingUp },
+              { key: 'performance', label: '성과 분석', icon: GraduationCap },
+              { key: 'trends', label: '트렌드', icon: CalendarDays },
+              { key: 'realtime', label: '실시간', icon: Clock }
             ].map(({ key, label, icon: Icon }) => (
               <button
                 key={key}
                 onClick={() => setActiveTab(key as any)}
-                className={`py-4 px-1 border-b-2 font-medium text-sm flex items-center ${
-                  activeTab === key
-                    ? 'border-blue-500 text-blue-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                }`}
+                className={`py-4 px-1 border-b-2 font-medium text-sm flex items-center ${activeTab === key
+                  ? 'border-blue-500 text-blue-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  }`}
               >
                 <Icon className="h-4 w-4 mr-2" />
                 {label}
@@ -499,7 +498,7 @@ const AdvancedAnalytics: React.FC = () => {
                   </p>
                 </div>
                 <div className="p-2 bg-blue-100 rounded-lg">
-                  <UserGroupIcon className="h-6 w-6 text-blue-600" />
+                  <Users className="h-6 w-6 text-blue-600" />
                 </div>
               </div>
             </div>
@@ -513,9 +512,9 @@ const AdvancedAnalytics: React.FC = () => {
                   </p>
                   <div className={`flex items-center mt-1 ${performanceIndicators.progressChange >= 0 ? 'text-green-600' : 'text-destructive'}`}>
                     {performanceIndicators.progressChange >= 0 ? (
-                      <ArrowTrendingUpIcon className="h-4 w-4 mr-1" />
+                      <TrendingUp className="h-4 w-4 mr-1" />
                     ) : (
-                      <ArrowTrendingDownIcon className="h-4 w-4 mr-1" />
+                      <TrendingDown className="h-4 w-4 mr-1" />
                     )}
                     <span className="text-sm font-medium">
                       {Math.abs(performanceIndicators.progressChange)}%
@@ -523,7 +522,7 @@ const AdvancedAnalytics: React.FC = () => {
                   </div>
                 </div>
                 <div className="p-2 bg-green-500/10 rounded-lg">
-                  <ArrowTrendingUpIcon className="h-6 w-6 text-green-600" />
+                  <TrendingUp className="h-6 w-6 text-green-600" />
                 </div>
               </div>
             </div>
@@ -537,9 +536,9 @@ const AdvancedAnalytics: React.FC = () => {
                   </p>
                   <div className={`flex items-center mt-1 ${performanceIndicators.scoreChange >= 0 ? 'text-green-600' : 'text-destructive'}`}>
                     {performanceIndicators.scoreChange >= 0 ? (
-                      <ArrowTrendingUpIcon className="h-4 w-4 mr-1" />
+                      <TrendingUp className="h-4 w-4 mr-1" />
                     ) : (
-                      <ArrowTrendingDownIcon className="h-4 w-4 mr-1" />
+                      <TrendingDown className="h-4 w-4 mr-1" />
                     )}
                     <span className="text-sm font-medium">
                       {Math.abs(performanceIndicators.scoreChange)}점
@@ -547,7 +546,7 @@ const AdvancedAnalytics: React.FC = () => {
                   </div>
                 </div>
                 <div className="p-2 bg-yellow-100 rounded-lg">
-                  <AcademicCapIcon className="h-6 w-6 text-foreground" />
+                  <GraduationCap className="h-6 w-6 text-foreground" />
                 </div>
               </div>
             </div>
@@ -561,9 +560,9 @@ const AdvancedAnalytics: React.FC = () => {
                   </p>
                   <div className={`flex items-center mt-1 ${performanceIndicators.completionChange >= 0 ? 'text-green-600' : 'text-destructive'}`}>
                     {performanceIndicators.completionChange >= 0 ? (
-                      <ArrowTrendingUpIcon className="h-4 w-4 mr-1" />
+                      <TrendingUp className="h-4 w-4 mr-1" />
                     ) : (
-                      <ArrowTrendingDownIcon className="h-4 w-4 mr-1" />
+                      <TrendingDown className="h-4 w-4 mr-1" />
                     )}
                     <span className="text-sm font-medium">
                       {Math.abs(performanceIndicators.completionChange)}%
@@ -571,7 +570,7 @@ const AdvancedAnalytics: React.FC = () => {
                   </div>
                 </div>
                 <div className="p-2 bg-purple-100 rounded-lg">
-                  <CalendarDaysIcon className="h-6 w-6 text-purple-600" />
+                  <CalendarDays className="h-6 w-6 text-purple-600" />
                 </div>
               </div>
             </div>
@@ -833,7 +832,7 @@ const AdvancedAnalytics: React.FC = () => {
               <h3 className="text-lg font-medium text-gray-900">실시간 모니터링</h3>
               <div className="flex items-center space-x-4">
                 <div className="flex items-center space-x-2 text-sm text-gray-500">
-                  <ClockIcon className="h-4 w-4" />
+                  <Clock className="h-4 w-4" />
                   <span>마지막 업데이트: {lastUpdated.toLocaleTimeString()}</span>
                 </div>
                 <select
@@ -866,7 +865,7 @@ const AdvancedAnalytics: React.FC = () => {
                   }}
                   className="btn-primary"
                 >
-                  <ArrowPathIcon className="h-4 w-4" />
+                  <RefreshCw className="h-4 w-4" />
                 </button>
               </div>
             </div>
@@ -884,7 +883,7 @@ const AdvancedAnalytics: React.FC = () => {
                         {analyticsData.realTimeMetrics[analyticsData.realTimeMetrics.length - 1].activeUsers}
                       </p>
                     </div>
-                    <UserGroupIcon className="h-8 w-8 text-blue-500" />
+                    <Users className="h-8 w-8 text-blue-500" />
                   </div>
                 </div>
 
@@ -896,7 +895,7 @@ const AdvancedAnalytics: React.FC = () => {
                         {analyticsData.realTimeMetrics[analyticsData.realTimeMetrics.length - 1].newSessions}
                       </p>
                     </div>
-                    <ArrowTrendingUpIcon className="h-8 w-8 text-green-500" />
+                    <TrendingUp className="h-8 w-8 text-green-500" />
                   </div>
                 </div>
 
@@ -908,7 +907,7 @@ const AdvancedAnalytics: React.FC = () => {
                         {analyticsData.realTimeMetrics[analyticsData.realTimeMetrics.length - 1].completedLessons}
                       </p>
                     </div>
-                    <AcademicCapIcon className="h-8 w-8 text-purple-500" />
+                    <GraduationCap className="h-8 w-8 text-purple-500" />
                   </div>
                 </div>
 
@@ -920,7 +919,7 @@ const AdvancedAnalytics: React.FC = () => {
                         {analyticsData.realTimeMetrics[analyticsData.realTimeMetrics.length - 1].avgResponseTime}ms
                       </p>
                     </div>
-                    <ClockIcon className="h-8 w-8 text-foreground" />
+                    <Clock className="h-8 w-8 text-foreground" />
                   </div>
                 </div>
               </>
@@ -933,12 +932,12 @@ const AdvancedAnalytics: React.FC = () => {
             <ResponsiveContainer width="100%" height={400}>
               <LineChart data={analyticsData.realTimeMetrics}>
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis 
-                  dataKey="timestamp" 
+                <XAxis
+                  dataKey="timestamp"
                   tickFormatter={(value) => new Date(value).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })}
                 />
                 <YAxis />
-                <Tooltip 
+                <Tooltip
                   labelFormatter={(value) => `시간: ${new Date(value).toLocaleString()}`}
                 />
                 <Legend />
@@ -955,12 +954,12 @@ const AdvancedAnalytics: React.FC = () => {
             <ResponsiveContainer width="100%" height={200}>
               <AreaChart data={analyticsData.realTimeMetrics}>
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis 
-                  dataKey="timestamp" 
+                <XAxis
+                  dataKey="timestamp"
                   tickFormatter={(value) => new Date(value).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })}
                 />
                 <YAxis />
-                <Tooltip 
+                <Tooltip
                   labelFormatter={(value) => `시간: ${new Date(value).toLocaleString()}`}
                   formatter={(value) => [`${value}ms`, '응답시간']}
                 />

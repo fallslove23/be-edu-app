@@ -2,21 +2,21 @@
 
 import React, { useState, useEffect } from 'react';
 import {
-  AcademicCapIcon,
-  PlusIcon,
-  CalendarDaysIcon,
-  UserGroupIcon,
-  ClockIcon,
-  MapPinIcon,
-  ChartBarIcon,
-  Cog6ToothIcon,
-  EyeIcon,
-  PencilIcon,
-  TrashIcon,
-  PlayIcon,
-  StopIcon,
-  UsersIcon
-} from '@heroicons/react/24/outline';
+  GraduationCap,
+  Plus,
+  CalendarDays,
+  UsersRound,
+  Clock,
+  MapPin,
+  BarChart2,
+  Settings2,
+  Eye,
+  Pencil,
+  Trash2,
+  Play,
+  Square,
+  Users
+} from 'lucide-react';
 import { CourseTemplateService } from '../../services/course-template.service';
 import { UnifiedCourseService } from '../../services/unified-course.service';
 import { TemplateCurriculumService } from '../../services/template-curriculum.service';
@@ -823,7 +823,7 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
                       ? 'bg-blue-100 text-blue-600'
                       : 'bg-purple-100 text-purple-600'
                       }`}>
-                      <AcademicCapIcon className="h-6 w-6" />
+                      <GraduationCap className="h-6 w-6 mr-2 text-blue-600" />
                     </div>
                     <div>
                       <h3 className="text-lg font-bold text-card-foreground">{item.template_name}</h3>
@@ -879,11 +879,11 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
                     <div className="flex items-center justify-between text-sm text-muted-foreground">
                       <div className="flex items-center space-x-4">
                         <div className="flex items-center">
-                          <CalendarDaysIcon className="w-4 h-4 mr-1" />
+                          <CalendarDays className="h-4 w-4 mr-1.5 text-gray-400" />
                           {round.start_date}
                         </div>
                         <div className="flex items-center">
-                          <UsersIcon className="w-4 h-4 mr-1" />
+                          <Users className="h-4 w-4 mr-1.5 text-gray-400" />
                           {round.current_trainees}/{round.max_trainees}
                         </div>
                       </div>
@@ -924,17 +924,17 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
                 {/* 상세 정보 */}
                 <div className="p-6 space-y-3">
                   <div className="flex items-center text-sm text-muted-foreground">
-                    <CalendarDaysIcon className="w-4 h-4 mr-2 flex-shrink-0" />
+                    <CalendarDays className="h-4 w-4 mr-2 text-gray-400" />
                     <span>{round.start_date} ~ {round.end_date}</span>
                   </div>
 
                   <div className="flex items-center text-sm text-muted-foreground">
-                    <UserGroupIcon className="w-4 h-4 mr-2 flex-shrink-0" />
+                    <UsersRound className="h-4 w-4 mr-1.5 flex-shrink-0" />
                     <span>수강생: {round.current_trainees}/{round.max_trainees}명</span>
                   </div>
 
                   <div className="flex items-center text-sm text-muted-foreground">
-                    <MapPinIcon className="w-4 h-4 mr-2 flex-shrink-0" />
+                    <MapPin className="h-4 w-4 mr-1.5 flex-shrink-0" />
                     <span>{round.location}</span>
                   </div>
                 </div>
@@ -946,14 +946,14 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
                       onClick={() => handleViewRound(round)}
                       className="btn-neutral btn-sm flex-1 flex items-center justify-center"
                     >
-                      <EyeIcon className="w-4 h-4 mr-1" />
+                      <Eye className="w-4 h-4 mr-1" />
                       상세
                     </button>
                     <button
                       onClick={() => handleEditRound(round)}
                       className="btn-slate btn-sm flex-1 flex items-center justify-center"
                     >
-                      <PencilIcon className="w-4 h-4 mr-1" />
+                      <Pencil className="w-4 h-4 mr-1" />
                       편집
                     </button>
                     {round.status === 'recruiting' && (
@@ -961,7 +961,7 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
                         onClick={() => handleStartRound(round)}
                         className="btn-primary btn-sm flex-1 flex items-center justify-center"
                       >
-                        <PlayIcon className="w-4 h-4 mr-1" />
+                        <Play className="h-4 w-4 mr-1" />
                         시작
                       </button>
                     )}
@@ -970,7 +970,7 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
                         onClick={() => handleCompleteRound(round)}
                         className="btn-primary btn-sm flex-1 flex items-center justify-center"
                       >
-                        <StopIcon className="w-4 h-4 mr-1" />
+                        <Square className="h-4 w-4 mr-1" />
                         완료
                       </button>
                     )}
@@ -983,14 +983,14 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
           {/* 과정이 없을 때 */}
           {rounds.length === 0 && (
             <div className="text-center py-12 bg-card rounded-lg shadow-sm border border-border">
-              <AcademicCapIcon className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
+              <GraduationCap className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
               <h3 className="text-lg font-medium text-card-foreground mb-2">등록된 과정이 없습니다</h3>
               <p className="text-muted-foreground mb-6">첫 번째 과정을 생성해보세요.</p>
               <button
                 onClick={() => setIsRoundModalOpen(true)}
                 className="bg-primary text-primary-foreground hover:bg-primary/90 inline-flex items-center px-4 py-2 rounded-full font-medium transition-colors"
               >
-                <PlusIcon className="w-4 h-4 mr-2" />
+                <Plus className="w-4 h-4 mr-2" />
                 새 과정 생성
               </button>
             </div>
@@ -1018,7 +1018,7 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
                 onClick={() => setIsNewTemplateModalOpen(true)}
                 className="btn-primary flex items-center"
               >
-                <PlusIcon className="w-4 h-4 mr-2" />
+                <Plus className="w-4 h-4 mr-2" />
                 새 과정 추가
               </button>
             </div>
@@ -1043,17 +1043,17 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
                   {/* 템플릿 정보 */}
                   <div className="grid grid-cols-3 gap-4 mb-6">
                     <div className="text-center p-3 bg-muted rounded-lg">
-                      <CalendarDaysIcon className="w-5 h-5 text-muted-foreground mx-auto mb-1" />
+                      <CalendarDays className="w-5 h-5 text-muted-foreground mx-auto mb-1" />
                       <div className="text-lg font-bold text-card-foreground">{template.duration_days}</div>
                       <div className="text-xs text-muted-foreground">일</div>
                     </div>
                     <div className="text-center p-3 bg-muted rounded-lg">
-                      <ClockIcon className="w-5 h-5 text-muted-foreground mx-auto mb-1" />
+                      <Clock className="w-5 h-5 text-muted-foreground mx-auto mb-1" />
                       <div className="text-lg font-bold text-card-foreground">{template.total_hours}</div>
                       <div className="text-xs text-muted-foreground">시간</div>
                     </div>
                     <div className="text-center p-3 bg-muted rounded-lg">
-                      <AcademicCapIcon className="w-5 h-5 text-muted-foreground mx-auto mb-1" />
+                      <GraduationCap className="w-5 h-5 text-muted-foreground mx-auto mb-1" />
                       <div className="text-lg font-bold text-card-foreground">{template.curriculum?.length || 0}</div>
                       <div className="text-xs text-muted-foreground">커리큘럼</div>
                     </div>
@@ -1107,11 +1107,11 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
                       onClick={() => handleEditTemplate(template)}
                       className="bg-primary text-primary-foreground hover:bg-primary/90 flex-1 flex items-center justify-center px-4 py-2 text-sm font-medium rounded-full transition-colors"
                     >
-                      <PencilIcon className="w-4 h-4 mr-2" />
+                      <Pencil className="w-4 h-4 mr-2" />
                       편집
                     </button>
                     <button className="btn-secondary">
-                      <EyeIcon className="w-4 h-4" />
+                      <Eye className="h-4 w-4" />
                     </button>
                     {isAdmin && (
                       <button
@@ -1119,7 +1119,7 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
                         className="btn-outline border-destructive text-destructive hover:bg-destructive hover:text-destructive-foreground"
                         title="템플릿 삭제 (관리자)"
                       >
-                        <TrashIcon className="w-4 h-4" />
+                        <Trash2 className="w-4 h-4" />
                       </button>
                     )}
                   </div>
@@ -1196,7 +1196,7 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
               <div>
                 <h3 className="text-sm font-medium text-muted-foreground mb-2">교육 일정</h3>
                 <div className="flex items-center text-card-foreground">
-                  <CalendarDaysIcon className="w-5 h-5 mr-2 text-muted-foreground" />
+                  <CalendarDays className="w-5 h-5 mr-2 text-muted-foreground" />
                   {round.start_date} ~ {round.end_date}
                 </div>
               </div>
@@ -1206,14 +1206,14 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
                 <div>
                   <h3 className="text-sm font-medium text-muted-foreground mb-2">수강생</h3>
                   <div className="flex items-center text-card-foreground">
-                    <UserGroupIcon className="w-5 h-5 mr-2 text-muted-foreground" />
+                    <UsersRound className="w-5 h-5 mr-2 text-muted-foreground" />
                     {round.current_trainees}/{round.max_trainees}명
                   </div>
                 </div>
                 <div>
                   <h3 className="text-sm font-medium text-muted-foreground mb-2">강의 장소</h3>
                   <div className="flex items-center text-card-foreground">
-                    <MapPinIcon className="w-5 h-5 mr-2 text-muted-foreground" />
+                    <MapPin className="w-5 h-5 mr-2 text-muted-foreground" />
                     {round.location}
                   </div>
                 </div>
@@ -1647,7 +1647,7 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
                               }}
                               title="템플릿 편집"
                             >
-                              <PencilIcon className="w-4 h-4" />
+                              <Pencil className="h-4 w-4" />
                             </button>
                             {isAdmin && (
                               <button
@@ -1659,7 +1659,7 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
                                 }}
                                 title="템플릿 삭제 (관리자)"
                               >
-                                <TrashIcon className="w-4 h-4" />
+                                <Trash2 className="h-4 w-4" />
                               </button>
                             )}
                           </div>

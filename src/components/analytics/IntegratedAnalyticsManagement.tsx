@@ -2,13 +2,14 @@
 
 import React, { useState } from 'react';
 import {
-  ChartBarIcon,
-  PresentationChartLineIcon,
-  DocumentArrowDownIcon,
-  FunnelIcon,
-  MagnifyingGlassIcon,
-  ArrowDownTrayIcon
-} from '@heroicons/react/24/outline';
+  BarChart2,
+  LineChart,
+  FileDown,
+  Filter,
+  Search,
+  Download,
+  PieChart
+} from 'lucide-react';
 import PerformanceTracking from '../performance/PerformanceTracking';
 import AdvancedAnalytics from './AdvancedAnalytics';
 import { ReportGenerator } from '../reports';
@@ -28,21 +29,21 @@ const tabs: TabConfig[] = [
   {
     id: 'performance',
     label: '성과 분석',
-    icon: ChartBarIcon,
+    icon: BarChart2,
     description: '교육생 성과 추적 및 리포팅',
     roles: ['admin', 'manager', 'operator', 'instructor']
   },
   {
     id: 'analytics',
     label: '고급 분석',
-    icon: PresentationChartLineIcon,
+    icon: LineChart,
     description: '상세 데이터 분석 및 시각화',
     roles: ['admin', 'manager']
   },
   {
     id: 'reports',
     label: '보고서 생성',
-    icon: DocumentArrowDownIcon,
+    icon: FileDown,
     description: '맞춤형 보고서 생성 및 내보내기',
     roles: ['admin', 'manager', 'operator', 'instructor']
   }
@@ -107,7 +108,10 @@ const IntegratedAnalyticsManagement: React.FC<IntegratedAnalyticsManagementProps
       <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 mb-8">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-2">분석 및 보고서</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-2 flex items-center">
+              <PieChart className="mr-3 h-8 w-8 text-primary" />
+              분석 및 보고서
+            </h1>
             <p className="text-gray-500 dark:text-gray-400">{getActiveTabConfig()?.description}</p>
           </div>
 
@@ -133,7 +137,7 @@ const IntegratedAnalyticsManagement: React.FC<IntegratedAnalyticsManagementProps
             <button
               className="btn-primary px-5 py-2.5 rounded-xl text-sm font-semibold whitespace-nowrap shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/30 transition-all"
             >
-              <ArrowDownTrayIcon className="h-5 w-5 inline mr-2" />
+              <Download className="h-5 w-5 inline mr-2" />
               리포트 생성
             </button>
           </div>

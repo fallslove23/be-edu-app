@@ -1,15 +1,15 @@
 import React from 'react';
 import {
-  ArrowLeftIcon,
-  PencilIcon,
-  UserIcon,
-  EnvelopeIcon,
-  PhoneIcon,
-  BuildingOfficeIcon,
-  CalendarDaysIcon,
-  ClockIcon,
-  ExclamationCircleIcon
-} from '@heroicons/react/24/outline';
+  ArrowLeft,
+  Pencil,
+  User as UserIcon,
+  Mail,
+  Phone,
+  Building2,
+  CalendarDays,
+  Clock,
+  AlertCircle
+} from 'lucide-react';
 import type { User } from '../../types/auth.types';
 import { roleLabels, userStatusLabels } from '../../types/auth.types';
 
@@ -42,7 +42,7 @@ const UserDetail: React.FC<UserDetailProps> = ({ user, onBack, onEdit }) => {
               onClick={onBack}
               className="mr-4 p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-full transition-colors"
             >
-              <ArrowLeftIcon className="h-5 w-5" />
+              <ArrowLeft className="h-5 w-5" />
             </button>
             <div>
               <h1 className="text-2xl font-bold text-gray-900">사용자 상세 정보</h1>
@@ -53,7 +53,7 @@ const UserDetail: React.FC<UserDetailProps> = ({ user, onBack, onEdit }) => {
             onClick={() => onEdit(user)}
             className="btn-primary"
           >
-            <PencilIcon className="h-4 w-4 mr-2" />
+            <Pencil className="h-4 w-4 mr-2" />
             수정
           </button>
         </div>
@@ -79,11 +79,11 @@ const UserDetail: React.FC<UserDetailProps> = ({ user, onBack, onEdit }) => {
 
             <div className="space-y-3">
               <div className="flex items-center text-gray-700">
-                <EnvelopeIcon className="h-4 w-4 mr-3 text-gray-400" />
+                <Mail className="h-4 w-4 mr-3 text-gray-400" />
                 <span>{user.email}</span>
               </div>
               <div className="flex items-center text-gray-700">
-                <PhoneIcon className="h-4 w-4 mr-3 text-gray-400" />
+                <Phone className="h-4 w-4 mr-3 text-gray-400" />
                 <span>{user.phone}</span>
               </div>
             </div>
@@ -116,7 +116,7 @@ const UserDetail: React.FC<UserDetailProps> = ({ user, onBack, onEdit }) => {
             <div>
               <label className="block text-sm font-medium text-gray-500 mb-1">최근 접속</label>
               <div className="flex items-center text-gray-700">
-                <ClockIcon className="h-4 w-4 mr-2 text-gray-400" />
+                <Clock className="h-4 w-4 mr-2 text-gray-400" />
                 <span>{user.last_login ? formatDateTime(user.last_login) : '미접속'}</span>
               </div>
             </div>
@@ -132,7 +132,7 @@ const UserDetail: React.FC<UserDetailProps> = ({ user, onBack, onEdit }) => {
           <div>
             <label className="block text-sm font-medium text-gray-500 mb-1">부서</label>
             <div className="flex items-center text-gray-900">
-              <BuildingOfficeIcon className="h-4 w-4 mr-2 text-gray-400" />
+              <Building2 className="h-4 w-4 mr-2 text-gray-400" />
               <span className="font-medium">{user.department}</span>
             </div>
           </div>
@@ -145,7 +145,7 @@ const UserDetail: React.FC<UserDetailProps> = ({ user, onBack, onEdit }) => {
           <div>
             <label className="block text-sm font-medium text-gray-500 mb-1">입사일</label>
             <div className="flex items-center text-gray-900">
-              <CalendarDaysIcon className="h-4 w-4 mr-2 text-gray-400" />
+              <CalendarDays className="h-4 w-4 mr-2 text-gray-400" />
               <span>{formatDate(user.hire_date)}</span>
             </div>
           </div>
@@ -171,7 +171,7 @@ const UserDetail: React.FC<UserDetailProps> = ({ user, onBack, onEdit }) => {
       {user.role === 'trainee' && user.emergency_contact && (
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
           <h2 className="text-lg font-medium text-gray-900 mb-4 flex items-center">
-            <ExclamationCircleIcon className="h-5 w-5 mr-2 text-orange-500" />
+            <AlertCircle className="h-5 w-5 mr-2 text-orange-500" />
             비상 연락처
           </h2>
 
@@ -189,7 +189,7 @@ const UserDetail: React.FC<UserDetailProps> = ({ user, onBack, onEdit }) => {
             <div>
               <label className="block text-sm font-medium text-gray-500 mb-1">전화번호</label>
               <div className="flex items-center text-gray-900">
-                <PhoneIcon className="h-4 w-4 mr-2 text-gray-400" />
+                <Phone className="h-4 w-4 mr-2 text-gray-400" />
                 <span>{user.emergency_contact.phone}</span>
               </div>
             </div>
@@ -242,7 +242,7 @@ const UserDetail: React.FC<UserDetailProps> = ({ user, onBack, onEdit }) => {
             onClick={() => onEdit(user)}
             className="btn-primary"
           >
-            <PencilIcon className="h-4 w-4 mr-2" />
+            <Pencil className="h-4 w-4 mr-2" />
             정보 수정
           </button>
         </div>

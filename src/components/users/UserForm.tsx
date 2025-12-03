@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { ArrowLeftIcon, CheckIcon } from '@heroicons/react/24/outline';
+import { ArrowLeft, Check } from 'lucide-react';
 import type { User, UserRole, UserStatus } from '../../types/auth.types';
 import { roleLabels, userStatusLabels } from '../../types/auth.types';
 
@@ -214,7 +214,7 @@ const UserForm: React.FC<UserFormProps> = ({ user, onBack, onSave }) => {
             onClick={onBack}
             className="mr-4 p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-full transition-colors"
           >
-            <ArrowLeftIcon className="h-5 w-5" />
+            <ArrowLeft className="h-5 w-5" />
           </button>
           <div>
             <h1 className="text-2xl font-bold text-gray-900">
@@ -491,7 +491,7 @@ const UserForm: React.FC<UserFormProps> = ({ user, onBack, onSave }) => {
               disabled={isSubmitting}
               className="btn-primary"
             >
-              <CheckIcon className="h-4 w-4 mr-2" />
+              <Check className="h-4 w-4 mr-2" />
               {isSubmitting ? '저장 중...' : (user ? '수정 완료' : '사용자 등록')}
             </button>
           </div>
