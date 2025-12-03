@@ -22,6 +22,8 @@ import {
 } from 'lucide-react';
 import EnhancedDashboard from './EnhancedDashboard';
 import RolePreviewSelector from '../admin/RolePreviewSelector';
+import TraineeDashboard from '../trainee/TraineeDashboard';
+import InstructorDashboard from '../instructor/InstructorDashboard';
 import { useAuth } from '../../contexts/AuthContext';
 
 interface DashboardWrapperProps {
@@ -34,6 +36,17 @@ const DashboardWrapper: React.FC<DashboardWrapperProps> = ({ onNavigate }) => {
   const { user } = useAuth();
   const isAdmin = user && ['admin', 'manager'].includes(user.role);
 
+  // 교육생 대시보드 렌더링
+  if (user?.role === 'trainee') {
+    return <TraineeDashboard traineeId={user.id} />;
+  }
+
+  // 강사 대시보드 렌더링
+  if (user?.role === 'instructor') {
+    return <InstructorDashboard instructorId={user.id} />;
+  }
+
+  // 관리자 대시보드 렌더링
   return (
     <div className="min-h-screen bg-[#F2F4F6] dark:bg-gray-900 p-4 sm:p-6 pb-24 transition-colors duration-200">
       <div className="max-w-5xl mx-auto space-y-6">
@@ -48,10 +61,18 @@ const DashboardWrapper: React.FC<DashboardWrapperProps> = ({ onNavigate }) => {
             </h1>
           </div>
           <div className="flex items-center space-x-4">
-            <button className="p-2 text-gray-800 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-800 rounded-full transition-colors">
+            <button
+              onClick={() => onNavigate?.('search')}
+              className="p-2 text-gray-800 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-800 rounded-full transition-colors"
+              title="검색"
+            >
               <Search className="w-6 h-6" />
             </button>
-            <button className="p-2 text-gray-800 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-800 rounded-full transition-colors">
+            <button
+              onClick={() => onNavigate?.('messages')}
+              className="p-2 text-gray-800 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-800 rounded-full transition-colors"
+              title="메시지"
+            >
               <MessageCircle className="w-6 h-6" />
             </button>
           </div>
