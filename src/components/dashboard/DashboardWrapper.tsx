@@ -8,6 +8,8 @@ import {
   CalendarDaysIcon,
 } from '@heroicons/react/24/outline';
 import EnhancedDashboard from './EnhancedDashboard';
+import RolePreviewSelector from '../admin/RolePreviewSelector';
+import { useAuth } from '../../contexts/AuthContext';
 
 interface DashboardWrapperProps {
   onNavigate?: (view: string) => void;
@@ -16,9 +18,19 @@ interface DashboardWrapperProps {
 import { PageContainer } from '../common/PageContainer';
 
 const DashboardWrapper: React.FC<DashboardWrapperProps> = ({ onNavigate }) => {
+  const { user } = useAuth();
+  const isAdmin = user && ['admin', 'manager'].includes(user.role);
+
   return (
     <PageContainer>
       <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-6 sm:mb-8">🏠 대시보드</h1>
+
+      {/* 관리자 전용: 역할별 대시보드 미리보기 */}
+      {isAdmin && (
+        <div className="mb-6 sm:mb-8">
+          <RolePreviewSelector />
+        </div>
+      )}
 
       {/* 차트 기반 대시보드 */}
       <EnhancedDashboard />
