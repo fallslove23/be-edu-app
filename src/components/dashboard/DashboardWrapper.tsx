@@ -23,14 +23,12 @@ const DashboardWrapper: React.FC<DashboardWrapperProps> = ({ onNavigate }) => {
 
   return (
     <PageContainer>
-      <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-6 sm:mb-8">🏠 대시보드</h1>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6 sm:mb-8">
+        <h1 className="text-2xl sm:text-3xl font-bold text-foreground">🏠 대시보드</h1>
 
-      {/* 관리자 전용: 역할별 대시보드 미리보기 */}
-      {isAdmin && (
-        <div className="mb-6 sm:mb-8">
-          <RolePreviewSelector />
-        </div>
-      )}
+        {/* 관리자 전용: 역할별 대시보드 미리보기 */}
+        {isAdmin && <RolePreviewSelector />}
+      </div>
 
       {/* 차트 기반 대시보드 */}
       <EnhancedDashboard />

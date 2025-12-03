@@ -107,42 +107,27 @@ const RolePreviewSelector: React.FC<RolePreviewSelectorProps> = ({ onClose }) =>
   }
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
-      <div className="flex items-center gap-3 mb-6">
-        <div className="w-10 h-10 bg-purple-50 dark:bg-purple-900/30 rounded-xl flex items-center justify-center">
-          <EyeIcon className="h-5 w-5 text-purple-600 dark:text-purple-400" />
-        </div>
-        <div>
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-            역할별 대시보드 미리보기
-          </h3>
-          <p className="text-sm text-gray-500 dark:text-gray-400">
-            다른 역할의 대시보드를 미리 확인할 수 있습니다
-          </p>
-        </div>
-      </div>
+    <div className="flex items-center gap-2">
+      <span className="text-xs text-muted-foreground mr-1">미리보기:</span>
+      {roles.map((role) => {
+        const Icon = role.icon;
+        const colorClasses = {
+          indigo: 'bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-100 dark:hover:bg-indigo-900/50 border-indigo-200 dark:border-indigo-800',
+          emerald: 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-100 dark:hover:bg-emerald-900/50 border-emerald-200 dark:border-emerald-800'
+        };
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        {roles.map((role) => {
-          const Icon = role.icon;
-          const colorClasses = {
-            indigo: 'bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-100 dark:hover:bg-indigo-900/40 border-indigo-200 dark:border-indigo-800',
-            emerald: 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 border-emerald-200 dark:border-emerald-800'
-          };
-
-          return (
-            <button
-              key={role.id}
-              onClick={() => setPreviewRole(role.id)}
-              className={`p-5 rounded-xl border-2 transition-all duration-200 text-left ${colorClasses[role.color as keyof typeof colorClasses]}`}
-            >
-              <Icon className="h-8 w-8 mb-3" />
-              <h4 className="font-semibold mb-1">{role.name}</h4>
-              <p className="text-sm opacity-80">{role.description}</p>
-            </button>
-          );
-        })}
-      </div>
+        return (
+          <button
+            key={role.id}
+            onClick={() => setPreviewRole(role.id)}
+            className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border transition-all duration-200 text-xs font-medium ${colorClasses[role.color as keyof typeof colorClasses]}`}
+            title={role.description}
+          >
+            <Icon className="h-3.5 w-3.5" />
+            <span>{role.name}</span>
+          </button>
+        );
+      })}
     </div>
   );
 };
