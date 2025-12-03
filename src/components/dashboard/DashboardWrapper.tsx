@@ -72,74 +72,87 @@ const DashboardWrapper: React.FC<DashboardWrapperProps> = ({ onNavigate }) => {
         </div>
 
         {/* Main Card (LMS Status Style) */}
-        <div className="bg-white dark:bg-gray-800 rounded-[2rem] p-6 shadow-sm relative overflow-hidden border border-gray-100 dark:border-gray-700">
-          <div className="flex justify-between items-start mb-6">
-            <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-indigo-600 rounded-full flex items-center justify-center text-white">
-                <GraduationCap className="w-5 h-5" />
-              </div>
-              <div>
-                <div className="flex items-center space-x-1">
-                  <span className="font-bold text-gray-900 dark:text-white">교육 현황</span>
-                  <span className="text-sm text-gray-500 dark:text-gray-400 underline decoration-gray-300 dark:decoration-gray-600 underline-offset-2">2024년 하반기</span>
+        {/* Main Card (LMS Status Style) */}
+        <div className="bg-white dark:bg-gray-800 rounded-[2rem] p-8 shadow-lg relative overflow-hidden border border-gray-100 dark:border-gray-700 group">
+          {/* Background Decoration */}
+          <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-50 dark:bg-indigo-900/20 rounded-full blur-3xl -mr-32 -mt-32 transition-opacity opacity-50 group-hover:opacity-70"></div>
+
+          <div className="relative z-10">
+            <div className="flex justify-between items-start mb-8">
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-indigo-500/30">
+                  <GraduationCap className="w-6 h-6" />
                 </div>
-                <div className="text-xs text-gray-400 dark:text-gray-500 mt-0.5 flex items-center">
-                  BS Education Center
+                <div>
+                  <div className="flex items-center space-x-2">
+                    <span className="text-lg font-bold text-gray-900 dark:text-white">교육 현황</span>
+                    <span className="px-2 py-0.5 rounded-full bg-gray-100 dark:bg-gray-700 text-xs font-medium text-gray-500 dark:text-gray-400">
+                      2024 하반기
+                    </span>
+                  </div>
+                  <div className="text-xs text-gray-400 dark:text-gray-500 mt-1">
+                    BS Education Center
+                  </div>
+                </div>
+              </div>
+              <button className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 rounded-full hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                <MoreVertical className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="text-center py-6">
+              <div className="inline-flex items-baseline justify-center space-x-2">
+                <span className="text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400 tracking-tight">
+                  8
+                </span>
+                <span className="text-xl font-medium text-gray-500 dark:text-gray-400">
+                  개 과정 진행중
+                </span>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4 mt-8">
+              <button
+                onClick={() => onNavigate?.('course-management')}
+                className="py-4 rounded-2xl bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 font-bold hover:bg-indigo-100 dark:hover:bg-indigo-900/50 transition-all hover:scale-[1.02] active:scale-95 text-center shadow-sm"
+              >
+                과정 관리
+              </button>
+              <button
+                onClick={() => onNavigate?.('trainees')}
+                className="py-4 rounded-2xl bg-white dark:bg-gray-700 border-2 border-indigo-50 dark:border-gray-600 text-gray-700 dark:text-gray-200 font-bold hover:bg-gray-50 dark:hover:bg-gray-600 transition-all hover:scale-[1.02] active:scale-95 text-center shadow-sm"
+              >
+                교육생 관리
+              </button>
+            </div>
+
+            {/* Sub Info (Attendance / New Students) */}
+            <div className="grid grid-cols-2 gap-4 mt-6">
+              <div className="bg-gray-50 dark:bg-gray-700/30 rounded-2xl p-4 flex items-center space-x-4 border border-gray-100 dark:border-gray-700/50">
+                <div className="w-10 h-10 bg-emerald-100 dark:bg-emerald-900/30 rounded-full flex items-center justify-center text-emerald-600 dark:text-emerald-400">
+                  <CheckCircle className="w-5 h-5" />
+                </div>
+                <div>
+                  <div className="text-xs text-gray-500 dark:text-gray-400 mb-0.5">오늘 출석률</div>
+                  <div className="text-lg font-bold text-gray-900 dark:text-white">98.5%</div>
+                </div>
+              </div>
+              <div className="bg-gray-50 dark:bg-gray-700/30 rounded-2xl p-4 flex items-center space-x-4 border border-gray-100 dark:border-gray-700/50">
+                <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center text-blue-600 dark:text-blue-400">
+                  <Users className="w-5 h-5" />
+                </div>
+                <div>
+                  <div className="text-xs text-gray-500 dark:text-gray-400 mb-0.5">총 교육생</div>
+                  <div className="text-lg font-bold text-gray-900 dark:text-white">156명</div>
                 </div>
               </div>
             </div>
-            <button className="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300">
-              <MoreVertical className="w-5 h-5" />
-            </button>
-          </div>
 
-          <div className="text-center py-4">
-            <h2 className="text-4xl font-bold text-gray-900 dark:text-white tracking-tight">
-              8<span className="text-2xl font-normal ml-1">개 과정 진행중</span>
-            </h2>
-          </div>
-
-          <div className="grid grid-cols-2 gap-3 mt-6">
-            <button
-              onClick={() => onNavigate?.('course-management')}
-              className="py-3.5 rounded-xl bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 font-semibold hover:bg-indigo-100 dark:hover:bg-indigo-900/50 transition-colors text-center"
-            >
-              과정 관리
-            </button>
-            <button
-              onClick={() => onNavigate?.('trainees')}
-              className="py-3.5 rounded-xl bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 font-semibold hover:bg-indigo-100 dark:hover:bg-indigo-900/50 transition-colors text-center"
-            >
-              교육생 관리
-            </button>
-          </div>
-
-          {/* Sub Info (Attendance / New Students) */}
-          <div className="flex space-x-3 mt-6 overflow-x-auto pb-2">
-            <div className="flex-shrink-0 bg-gray-50 dark:bg-gray-700/50 rounded-2xl p-3 flex items-center space-x-3 min-w-[160px]">
-              <div className="w-8 h-8 bg-emerald-500 rounded-full flex items-center justify-center text-white">
-                <CheckCircle className="w-4 h-4" />
-              </div>
-              <div>
-                <div className="text-xs text-gray-500 dark:text-gray-400">오늘 출석률</div>
-                <div className="text-sm font-bold text-gray-900 dark:text-white">98.5%</div>
-              </div>
+            {/* Pagination Dots */}
+            <div className="flex justify-center space-x-2 mt-6">
+              <div className="w-2 h-2 rounded-full bg-indigo-600 dark:bg-indigo-400"></div>
+              <div className="w-2 h-2 rounded-full bg-gray-200 dark:bg-gray-700"></div>
             </div>
-            <div className="flex-shrink-0 bg-gray-50 dark:bg-gray-700/50 rounded-2xl p-3 flex items-center space-x-3 min-w-[160px]">
-              <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white">
-                <Users className="w-4 h-4" />
-              </div>
-              <div>
-                <div className="text-xs text-gray-500 dark:text-gray-400">총 교육생</div>
-                <div className="text-sm font-bold text-gray-900 dark:text-white">156명</div>
-              </div>
-            </div>
-          </div>
-
-          {/* Pagination Dots */}
-          <div className="flex justify-center space-x-1.5 mt-4">
-            <div className="w-1.5 h-1.5 rounded-full bg-gray-800 dark:bg-gray-200"></div>
-            <div className="w-1.5 h-1.5 rounded-full bg-gray-300 dark:bg-gray-600"></div>
           </div>
         </div>
 
