@@ -264,6 +264,7 @@ const EnhancedDashboard: React.FC = () => {
         backgroundColor: 'rgba(20, 184, 166, 0.6)',
         borderColor: 'rgb(20, 184, 166)',
         borderWidth: 1,
+        maxBarThickness: 50,
       },
       {
         label: '진행 과정 수',
@@ -271,6 +272,7 @@ const EnhancedDashboard: React.FC = () => {
         backgroundColor: 'rgba(59, 130, 246, 0.6)',
         borderColor: 'rgb(59, 130, 246)',
         borderWidth: 1,
+        maxBarThickness: 50,
       },
     ],
   };
@@ -337,7 +339,7 @@ const EnhancedDashboard: React.FC = () => {
           {statCards.map((stat, index) => (
             <div
               key={index}
-              className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-700 flex flex-col justify-between relative overflow-hidden hover:shadow-lg hover:shadow-indigo-500/5 transition-all duration-300 min-w-[260px] md:min-w-0 snap-start flex-shrink-0 group"
+              className="bg-white dark:bg-gray-800 rounded-[2rem] p-6 shadow-sm border border-gray-100 dark:border-gray-700 flex flex-col justify-between relative overflow-hidden hover:shadow-lg hover:shadow-indigo-500/5 transition-all duration-300 min-w-[260px] md:min-w-0 snap-start flex-shrink-0 group"
             >
               {/* 헤더 */}
               <div className="flex items-start justify-between mb-4">
@@ -372,7 +374,7 @@ const EnhancedDashboard: React.FC = () => {
         {/* 차트 그리드 */}
         <FadeInUp delay={0.2} className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* 출석률 추이 차트 */}
-          <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-700 lg:col-span-2">
+          <div className="bg-white dark:bg-gray-800 rounded-[2rem] p-6 shadow-sm border border-gray-100 dark:border-gray-700 lg:col-span-2">
             <div className="flex items-center justify-between mb-6">
               <div>
                 <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-1">출석률 추이</h2>
@@ -385,7 +387,7 @@ const EnhancedDashboard: React.FC = () => {
           </div>
 
           {/* 과정별 분포 도넛 차트 */}
-          <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-700">
+          <div className="bg-white dark:bg-gray-800 rounded-[2rem] p-6 shadow-sm border border-gray-100 dark:border-gray-700">
             <div className="flex items-center justify-between mb-6">
               <div>
                 <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-1">과정 분포</h2>
@@ -398,7 +400,7 @@ const EnhancedDashboard: React.FC = () => {
           </div>
 
           {/* 강사별 부하 바 차트 */}
-          <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-700 lg:col-span-3">
+          <div className="bg-white dark:bg-gray-800 rounded-[2rem] p-6 shadow-sm border border-gray-100 dark:border-gray-700 lg:col-span-3">
             <div className="flex items-center justify-between mb-6">
               <div>
                 <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-1">강사별 강의 부하</h2>
@@ -412,7 +414,7 @@ const EnhancedDashboard: React.FC = () => {
         </FadeInUp>
 
         {/* 활발한 과정 테이블 */}
-        <FadeInUp delay={0.4} className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
+        <FadeInUp delay={0.4} className="bg-white dark:bg-gray-800 rounded-[2rem] shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
           <div className="border-b border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800 p-4">
             <div className="flex items-center space-x-4 px-2">
               <h2 className="text-lg font-bold text-gray-900 dark:text-white">활발한 과정</h2>
