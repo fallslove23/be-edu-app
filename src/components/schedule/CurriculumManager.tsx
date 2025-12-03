@@ -1365,7 +1365,7 @@ export default function CurriculumManager() {
               });
               setShowCreateModal(true);
             }}
-            className="mt-4 sm:mt-0 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-bold shadow-lg shadow-blue-200 hover:shadow-xl transition-all flex items-center space-x-2"
+            className="mt-4 sm:mt-0 btn-primary px-6 py-3 rounded-xl font-bold hover:shadow-xl transition-all flex items-center space-x-2"
           >
             <PlusIcon className="w-5 h-5" />
             <span>새 과정 만들기</span>

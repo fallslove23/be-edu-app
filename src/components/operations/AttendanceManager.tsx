@@ -114,7 +114,7 @@ const AttendanceManager: React.FC = () => {
             </div>
             <button
               onClick={() => router.push('/attendance')}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-bold shadow-lg shadow-blue-200 hover:shadow-xl transition-all flex items-center space-x-2"
+              className="btn-primary px-6 py-3 rounded-xl font-bold hover:shadow-xl transition-all flex items-center space-x-2"
             >
               <span>출석 관리로 이동</span>
               <ArrowRight className="h-4 w-4" />

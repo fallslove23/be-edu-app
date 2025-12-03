@@ -557,7 +557,7 @@ const StudentManagement: React.FC = () => {
               {canModifyStudents && (
                 <button
                   onClick={() => {/* 새 교육생 등록 */ }}
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-full flex items-center space-x-2 shadow-lg shadow-blue-200 transition-all font-bold"
+                  className="btn-primary px-5 py-2.5 rounded-full flex items-center space-x-2 transition-all font-bold"
                 >
                   <UserPlus className="h-4 w-4" />
                   <span>교육생 등록</span>

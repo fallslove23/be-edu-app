@@ -391,7 +391,7 @@ const UserManagement: React.FC = () => {
               </button>
               <button
                 onClick={handleCreateUser}
-                className="flex-1 sm:flex-none bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-bold shadow-lg shadow-blue-200 hover:shadow-xl transition-all flex items-center justify-center space-x-2"
+                className="flex-1 sm:flex-none btn-primary px-6 py-3 rounded-xl font-bold hover:shadow-xl transition-all flex items-center justify-center space-x-2"
               >
                 <Plus className="w-5 h-5" />
                 <span>사용자 추가</span>

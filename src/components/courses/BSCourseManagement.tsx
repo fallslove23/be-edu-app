@@ -809,7 +809,7 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
             </select>
             <button
               onClick={() => setIsRoundModalOpen(true)}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3.5 rounded-xl font-bold shadow-lg shadow-blue-200 hover:shadow-xl transition-all flex items-center gap-2"
+              className="btn-primary px-6 py-3.5 rounded-xl font-bold hover:shadow-xl transition-all flex items-center gap-2"
             >
               <Plus className="w-5 h-5" />
               <span>새 차수 개설</span>
@@ -996,7 +996,7 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
               <p className="text-gray-500 dark:text-gray-400 mb-6">첫 번째 과정을 생성해보세요.</p>
               <button
                 onClick={() => setIsRoundModalOpen(true)}
-                className="bg-blue-600 dark:bg-blue-500 text-white hover:bg-blue-700 dark:hover:bg-blue-600 inline-flex items-center px-4 py-2 rounded-full font-medium transition-colors"
+                className="btn-primary inline-flex items-center px-4 py-2 rounded-full font-medium transition-colors"
               >
                 <Plus className="w-4 h-4 mr-2" />
                 새 과정 생성
@@ -1113,7 +1113,7 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
                   <div className="flex space-x-2">
                     <button
                       onClick={() => handleEditTemplate(template)}
-                      className="bg-blue-600 dark:bg-blue-500 text-white hover:bg-blue-700 dark:hover:bg-blue-600 flex-1 flex items-center justify-center px-4 py-2 text-sm font-medium rounded-full transition-colors"
+                      className="btn-primary flex-1 flex items-center justify-center px-4 py-2 text-sm font-medium rounded-full transition-colors"
                     >
                       <Pencil className="w-4 h-4 mr-2" />
                       편집

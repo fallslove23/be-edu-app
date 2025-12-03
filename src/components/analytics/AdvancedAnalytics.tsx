@@ -450,7 +450,7 @@ const AdvancedAnalytics: React.FC = () => {
               </button>
               <button
                 onClick={() => exportData('csv')}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-xl text-sm font-bold shadow-lg shadow-blue-200 transition-colors flex items-center"
+                className="btn-primary px-4 py-2.5 rounded-xl text-sm font-bold transition-colors flex items-center"
               >
                 <FileBarChart className="h-4 w-4 mr-2" />
                 CSV

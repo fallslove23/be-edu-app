@@ -480,7 +480,7 @@ const ReportGenerator: React.FC = () => {
               <button
                 onClick={generateReport}
                 disabled={!selectedTemplate || generating}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-4 rounded-xl font-bold disabled:opacity-50 disabled:cursor-not-allowed mb-3 transition-colors shadow-lg shadow-blue-200"
+                className="w-full btn-primary py-3 px-4 rounded-xl font-bold disabled:opacity-50 disabled:cursor-not-allowed mb-3 transition-colors"
               >
                 {generating ? (
                   <div className="flex items-center justify-center">

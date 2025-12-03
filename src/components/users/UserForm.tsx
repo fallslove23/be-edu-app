@@ -516,7 +516,7 @@ const UserForm: React.FC<UserFormProps> = ({ user, onBack, onSave }) => {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="px-8 py-3 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 shadow-lg shadow-blue-200 hover:shadow-xl transition-all flex items-center"
+              className="px-8 py-3 btn-primary rounded-xl font-bold hover:shadow-xl transition-all flex items-center"
             >
               <Check className="h-5 w-5 mr-2" />
               {isSubmitting ? '저장 중...' : (user ? '수정 완료' : '사용자 등록')}
