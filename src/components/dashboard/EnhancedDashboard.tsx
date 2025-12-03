@@ -333,7 +333,7 @@ const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({ embedded = false 
   }
 
   const content = (
-    <div className={embedded ? "" : "space-y-6"}>
+    <div className="space-y-6">
       {/* 통계 카드 그리드 */}
       <StaggerContainer className="flex gap-4 overflow-x-auto pb-4 -mx-4 px-4 md:mx-0 md:px-0 md:grid md:grid-cols-2 lg:grid-cols-4 md:overflow-x-visible md:pb-0 snap-x snap-mandatory scroll-touch">
         {statCards.map((stat, index) => (
