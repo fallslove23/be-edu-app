@@ -12,7 +12,9 @@ const SimpleExamManagement: React.FC = () => {
         {/* 헤더 */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
           <h1 className="text-2xl font-bold text-gray-900 mb-2 flex items-center">
-            <Target className="mr-2 h-8 w-8 text-primary" />
+            <div className="p-3 bg-red-50 dark:bg-red-900/20 rounded-xl mr-4">
+              <Target className="h-8 w-8 text-red-600 dark:text-red-400" />
+            </div>
             이론 평가 관리
           </h1>
           <p className="text-gray-600">수강생들의 이론 시험을 생성하고 관리하세요.</p>

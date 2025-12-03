@@ -7,6 +7,14 @@ import {
   BarChart2,
   CalendarDays,
   LayoutGrid,
+  Search,
+  MessageCircle,
+  Copy,
+  MoreVertical,
+  CreditCard,
+  Utensils,
+  Plane,
+  Wallet,
 } from 'lucide-react';
 import EnhancedDashboard from './EnhancedDashboard';
 import RolePreviewSelector from '../admin/RolePreviewSelector';
@@ -23,118 +31,188 @@ const DashboardWrapper: React.FC<DashboardWrapperProps> = ({ onNavigate }) => {
   const isAdmin = user && ['admin', 'manager'].includes(user.role);
 
   return (
-    <PageContainer>
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6 sm:mb-8">
-        <h1 className="text-2xl sm:text-3xl font-bold text-foreground flex items-center">
-          <LayoutGrid className="mr-3 h-8 w-8 text-primary" />
-          대시보드
-        </h1>
-
-        {/* 관리자 전용: 역할별 대시보드 미리보기 */}
-        {isAdmin && <RolePreviewSelector />}
-      </div>
-
-      {/* 차트 기반 대시보드 */}
-      <EnhancedDashboard />
-
-      {/* 빠른 액션 */}
-      <div className="mt-6 sm:mt-8">
-        <div className="bg-card rounded-lg shadow-sm border border-border">
-          <div className="p-4 sm:p-6">
-            <h3 className="text-base sm:text-lg font-semibold text-card-foreground mb-4 sm:mb-6">빠른 작업</h3>
-            <div className="flex gap-4 overflow-x-auto pb-4 -mx-4 px-4 sm:mx-0 sm:px-0 sm:grid sm:grid-cols-2 lg:grid-cols-4 sm:overflow-x-visible sm:pb-0 snap-x snap-mandatory scroll-touch hide-scrollbar">
-              {/* 새 과정 개설 */}
-              <button
-                onClick={() => onNavigate?.('course-management')}
-                className="group relative p-5 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded-2xl transition-all duration-300 text-left border border-gray-100 dark:border-gray-700 hover:border-indigo-200 dark:hover:border-indigo-800 hover:shadow-lg hover:shadow-indigo-500/10 min-w-[200px] sm:min-w-0 snap-start flex-shrink-0"
-              >
-                <div className="flex items-start justify-between mb-4">
-                  <div className="w-12 h-12 bg-indigo-50 dark:bg-indigo-900/30 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                    <GraduationCap className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
-                  </div>
-                  <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <div className="w-8 h-8 rounded-full bg-indigo-50 dark:bg-indigo-900/30 flex items-center justify-center">
-                      <svg className="w-4 h-4 text-indigo-600 dark:text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                      </svg>
-                    </div>
-                  </div>
-                </div>
-                <h4 className="font-bold text-gray-900 dark:text-white mb-1 text-base">새 과정 개설</h4>
-                <p className="text-sm text-gray-500 dark:text-gray-400">BS 과정 차수 생성</p>
-              </button>
-
-              {/* 교육생 등록 */}
-              <button
-                onClick={() => onNavigate?.('trainees')}
-                className="group relative p-5 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded-2xl transition-all duration-300 text-left border border-gray-100 dark:border-gray-700 hover:border-blue-200 dark:hover:border-blue-800 hover:shadow-lg hover:shadow-blue-500/10 min-w-[200px] sm:min-w-0 snap-start flex-shrink-0"
-              >
-                <div className="flex items-start justify-between mb-4">
-                  <div className="w-12 h-12 bg-blue-50 dark:bg-blue-900/30 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                    <Users className="w-6 h-6 text-blue-600 dark:text-blue-400" />
-                  </div>
-                  <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <div className="w-8 h-8 rounded-full bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center">
-                      <svg className="w-4 h-4 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                      </svg>
-                    </div>
-                  </div>
-                </div>
-                <h4 className="font-bold text-gray-900 dark:text-white mb-1 text-base">교육생 등록</h4>
-                <p className="text-sm text-gray-500 dark:text-gray-400">새 교육생 추가</p>
-              </button>
-
-              {/* 출석 체크 */}
-              <button
-                onClick={() => onNavigate?.('course-management')}
-                className="group relative p-5 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded-2xl transition-all duration-300 text-left border border-gray-100 dark:border-gray-700 hover:border-emerald-200 dark:hover:border-emerald-800 hover:shadow-lg hover:shadow-emerald-500/10 min-w-[200px] sm:min-w-0 snap-start flex-shrink-0"
-              >
-                <div className="flex items-start justify-between mb-4">
-                  <div className="w-12 h-12 bg-emerald-50 dark:bg-emerald-900/30 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                    <BarChart2 className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
-                  </div>
-                  <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <div className="w-8 h-8 rounded-full bg-emerald-50 dark:bg-emerald-900/30 flex items-center justify-center">
-                      <svg className="w-4 h-4 text-emerald-600 dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                      </svg>
-                    </div>
-                  </div>
-                </div>
-                <h4 className="font-bold text-gray-900 dark:text-white mb-1 text-base">출석 체크</h4>
-                <p className="text-sm text-gray-500 dark:text-gray-400">오늘 출석 현황</p>
-              </button>
-
-              {/* 일정 관리 */}
-              <button
-                onClick={() => onNavigate?.('schedule-management')}
-                className="group relative p-5 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded-2xl transition-all duration-300 text-left border border-gray-100 dark:border-gray-700 hover:border-purple-200 dark:hover:border-purple-800 hover:shadow-lg hover:shadow-purple-500/10 min-w-[200px] sm:min-w-0 snap-start flex-shrink-0"
-              >
-                <div className="flex items-start justify-between mb-4">
-                  <div className="w-12 h-12 bg-purple-50 dark:bg-purple-900/30 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                    <CalendarDays className="w-6 h-6 text-purple-600 dark:text-purple-400" />
-                  </div>
-                  <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <div className="w-8 h-8 rounded-full bg-purple-50 dark:bg-purple-900/30 flex items-center justify-center">
-                      <svg className="w-4 h-4 text-purple-600 dark:text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                      </svg>
-                    </div>
-                  </div>
-                </div>
-                <h4 className="font-bold text-gray-900 dark:text-white mb-1 text-base">일정 관리</h4>
-                <p className="text-sm text-gray-500 dark:text-gray-400">과정 스케줄 확인</p>
-              </button>
+    <div className="min-h-screen bg-[#F2F4F6] p-4 sm:p-6 pb-24">
+      <div className="max-w-5xl mx-auto space-y-6">
+        {/* Header Section */}
+        <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center space-x-2">
+            <div className="w-8 h-8 bg-indigo-600 rounded-full flex items-center justify-center text-white font-bold text-sm">
+              P
             </div>
+            <h1 className="text-xl font-bold text-gray-900">
+              {user?.name || '최효동'}님
+            </h1>
+          </div>
+          <div className="flex items-center space-x-4">
+            <button className="p-2 text-gray-800 hover:bg-gray-200 rounded-full transition-colors">
+              <Search className="w-6 h-6" />
+            </button>
+            <button className="p-2 text-gray-800 hover:bg-gray-200 rounded-full transition-colors">
+              <MessageCircle className="w-6 h-6" />
+            </button>
           </div>
         </div>
-      </div>
 
-      <div className="mt-6 sm:mt-8 text-center text-xs sm:text-sm text-muted-foreground pb-4">
-        BS 학습 관리 시스템 - 실시간 대시보드
+        {/* Banner */}
+        <div className="flex items-center justify-between bg-white p-4 rounded-2xl shadow-sm cursor-pointer hover:bg-gray-50 transition-colors">
+          <div>
+            <p className="text-xs text-gray-500 mb-1">커플 모임통장이 드리는 데이트 지원금♥</p>
+            <p className="text-sm font-bold text-gray-900">선착순 200명! 5만원 받으러 가기 <span className="inline-block ml-1">&gt;</span></p>
+          </div>
+          <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+            <span className="text-2xl">💌</span>
+          </div>
+        </div>
+
+        {/* Main Card (Account Style) */}
+        <div className="bg-white rounded-[2rem] p-6 shadow-sm relative overflow-hidden">
+          <div className="flex justify-between items-start mb-6">
+            <div className="flex items-center space-x-2">
+              <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white">
+                <LayoutGrid className="w-5 h-5" />
+              </div>
+              <div>
+                <div className="flex items-center space-x-1">
+                  <span className="font-bold text-gray-900">입출금</span>
+                  <span className="text-sm text-gray-500 underline decoration-gray-300 underline-offset-2">쏠편한 입출금통장(저축예금)</span>
+                </div>
+                <div className="text-xs text-gray-400 mt-0.5 flex items-center">
+                  신한 110-580-623839 <Copy className="w-3 h-3 ml-1 cursor-pointer" />
+                </div>
+              </div>
+            </div>
+            <button className="text-gray-400 hover:text-gray-600">
+              <MoreVertical className="w-5 h-5" />
+            </button>
+          </div>
+
+          <div className="text-center py-4">
+            <h2 className="text-4xl font-bold text-gray-900 tracking-tight">
+              43,759<span className="text-2xl font-normal ml-1">원</span>
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3 mt-6">
+            <button
+              onClick={() => onNavigate?.('attendance')}
+              className="py-3.5 rounded-xl bg-blue-50 text-blue-600 font-semibold hover:bg-blue-100 transition-colors text-center"
+            >
+              이체
+            </button>
+            <button
+              onClick={() => onNavigate?.('course-management')}
+              className="py-3.5 rounded-xl bg-blue-50 text-blue-600 font-semibold hover:bg-blue-100 transition-colors text-center"
+            >
+              급여클럽+
+            </button>
+          </div>
+
+          {/* Sub Accounts / Info */}
+          <div className="flex space-x-3 mt-6 overflow-x-auto pb-2 hide-scrollbar">
+            <div className="flex-shrink-0 bg-gray-50 rounded-2xl p-3 flex items-center space-x-3 min-w-[160px]">
+              <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white text-xs">
+                S
+              </div>
+              <div>
+                <div className="text-xs text-gray-500">강서구50버4141최영철</div>
+                <div className="text-sm font-bold text-gray-900">32,000</div>
+              </div>
+            </div>
+            <div className="flex-shrink-0 bg-gray-50 rounded-2xl p-3 flex items-center space-x-3 min-w-[160px]">
+              <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white text-xs">
+                S
+              </div>
+              <div>
+                <div className="text-xs text-gray-500">김아영</div>
+                <div className="text-sm font-bold text-gray-900">1,300,000</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Pagination Dots */}
+          <div className="flex justify-center space-x-1.5 mt-4">
+            <div className="w-1.5 h-1.5 rounded-full bg-gray-800"></div>
+            <div className="w-1.5 h-1.5 rounded-full bg-gray-300"></div>
+          </div>
+        </div>
+
+        {/* Middle Action Bar */}
+        <div className="bg-white rounded-2xl p-4 shadow-sm flex items-center justify-between">
+          <div className="flex items-center space-x-3">
+            <div className="w-8 h-8 bg-blue-900 rounded-lg flex items-center justify-center">
+              <CreditCard className="w-5 h-5 text-white" />
+            </div>
+            <span className="font-bold text-gray-900">신한 SOL Pay</span>
+          </div>
+          <button className="px-4 py-1.5 bg-blue-50 text-blue-600 text-sm font-bold rounded-full hover:bg-blue-100 transition-colors">
+            결제
+          </button>
+        </div>
+
+        {/* Horizontal Menu */}
+        <div className="bg-white rounded-2xl p-4 shadow-sm flex justify-around items-center">
+          <div className="flex items-center space-x-1">
+            <span className="text-blue-500 font-bold italic text-lg">Super</span>
+            <span className="text-blue-600 font-bold text-lg">SOL</span>
+          </div>
+          <div className="h-4 w-px bg-gray-200"></div>
+          <button className="text-blue-500 font-bold text-sm">카드</button>
+          <div className="h-4 w-px bg-gray-200"></div>
+          <button className="text-blue-500 font-bold text-sm">증권</button>
+          <div className="h-4 w-px bg-gray-200"></div>
+          <button className="text-purple-500 font-bold text-sm bg-purple-50 px-3 py-1 rounded-full">보험</button>
+        </div>
+
+        {/* Bottom Grid (Colorful Cards) */}
+        <div className="grid grid-cols-3 gap-4">
+          {/* Orange Card */}
+          <button
+            onClick={() => onNavigate?.('notices')}
+            className="bg-[#FF8800] rounded-3xl p-5 h-40 relative overflow-hidden text-left hover:opacity-90 transition-opacity shadow-sm group"
+          >
+            <h3 className="text-white font-bold text-lg relative z-10">땡겨요</h3>
+            <div className="absolute bottom-[-10px] right-[-10px] opacity-90 group-hover:scale-110 transition-transform duration-300">
+              <Utensils className="w-20 h-20 text-white/30" />
+              <div className="absolute bottom-4 right-4 w-12 h-12 bg-white/20 rounded-full blur-xl"></div>
+            </div>
+            <div className="absolute bottom-4 right-4">
+              <img src="https://cdn-icons-png.flaticon.com/512/1046/1046771.png" alt="chicken" className="w-12 h-12 object-contain opacity-90 drop-shadow-lg" style={{ filter: 'brightness(0) invert(1)' }} />
+            </div>
+          </button>
+
+          {/* Blue Card */}
+          <button
+            onClick={() => onNavigate?.('schedule-management')}
+            className="bg-[#28C2FF] rounded-3xl p-5 h-40 relative overflow-hidden text-left hover:opacity-90 transition-opacity shadow-sm group"
+          >
+            <h3 className="text-white font-bold text-lg relative z-10">SOL트래블</h3>
+            <div className="absolute bottom-2 right-2 group-hover:scale-110 transition-transform duration-300">
+              <Plane className="w-16 h-16 text-white/90" />
+            </div>
+            <div className="absolute bottom-4 left-4">
+              <CreditCard className="w-10 h-10 text-white/50" />
+            </div>
+          </button>
+
+          {/* White Card */}
+          <button
+            onClick={() => onNavigate?.('trainees')}
+            className="bg-white rounded-3xl p-5 h-40 relative overflow-hidden text-left hover:bg-gray-50 transition-colors shadow-sm border border-gray-100 group"
+          >
+            <h3 className="text-gray-900 font-bold text-lg relative z-10">쏠지갑</h3>
+            <div className="absolute bottom-4 right-4 group-hover:scale-110 transition-transform duration-300">
+              <Wallet className="w-14 h-14 text-blue-500" />
+            </div>
+          </button>
+        </div>
+
+        {/* Original Dashboard Content (Hidden or moved below) */}
+        <div className="pt-8 border-t border-gray-200">
+          <h3 className="text-lg font-bold text-gray-900 mb-4 px-2">상세 대시보드</h3>
+          <EnhancedDashboard />
+        </div>
       </div>
-    </PageContainer>
+    </div>
   );
 };
 

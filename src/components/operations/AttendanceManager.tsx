@@ -102,7 +102,9 @@ const AttendanceManager: React.FC = () => {
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
           <div>
             <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2 flex items-center">
-              <ClipboardList className="mr-2 h-8 w-8 text-primary" />
+              <div className="p-3 bg-blue-100 dark:bg-blue-900/30 rounded-xl mr-4">
+                <ClipboardList className="h-8 w-8 text-blue-600 dark:text-blue-400" />
+              </div>
               출석 현황 요약
             </h1>
             <p className="text-gray-600 dark:text-gray-300">

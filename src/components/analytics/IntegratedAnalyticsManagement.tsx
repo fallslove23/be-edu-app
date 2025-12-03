@@ -109,7 +109,9 @@ const IntegratedAnalyticsManagement: React.FC<IntegratedAnalyticsManagementProps
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div>
             <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-2 flex items-center">
-              <PieChart className="mr-3 h-8 w-8 text-primary" />
+              <div className="p-3 bg-indigo-50 dark:bg-indigo-900/20 rounded-xl mr-4">
+                <PieChart className="w-8 h-8 text-indigo-600 dark:text-indigo-400" />
+              </div>
               분석 및 보고서
             </h1>
             <p className="text-gray-500 dark:text-gray-400">{getActiveTabConfig()?.description}</p>

@@ -480,7 +480,9 @@ const StudentManagement: React.FC = () => {
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
           <div>
             <h1 className="text-2xl font-bold text-gray-900 mb-2 flex items-center">
-              <Users className="mr-2 h-8 w-8 text-primary" />
+              <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-xl mr-4">
+                <Users className="h-8 w-8 text-blue-600 dark:text-blue-400" />
+              </div>
               교육생 종합 관리
             </h1>
             <p className="text-gray-600">

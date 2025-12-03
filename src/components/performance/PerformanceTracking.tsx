@@ -257,7 +257,9 @@ const PerformanceTracking: React.FC = () => {
                   : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:border-gray-300 dark:hover:border-gray-600'
                   }`}
               >
-                <tab.icon className={`h-5 w-5 mr-2 flex-shrink-0 transition-colors ${activeTab === tab.key ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-400 group-hover:text-gray-500'}`} />
+                <div className={`mr-2 p-1 rounded-md ${activeTab === tab.key ? 'bg-indigo-100 dark:bg-indigo-900/30' : 'bg-transparent'}`}>
+                  <tab.icon className={`h-5 w-5 flex-shrink-0 transition-colors ${activeTab === tab.key ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-400 group-hover:text-gray-500'}`} />
+                </div>
                 <span className="text-xs sm:text-sm">{tab.label}</span>
               </button>
             ))}
