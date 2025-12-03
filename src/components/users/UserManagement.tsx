@@ -384,14 +384,14 @@ const UserManagement: React.FC = () => {
             <div className="flex space-x-3 mt-4 sm:mt-0 w-full sm:w-auto">
               <button
                 onClick={() => setShowImportModal(true)}
-                className="flex-1 sm:flex-none bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-gray-600 px-4 py-3 rounded-xl font-bold shadow-sm hover:shadow transition-all flex items-center justify-center space-x-2"
+                className="flex-1 sm:flex-none bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-gray-600 px-4 py-3 rounded-full font-bold shadow-sm hover:shadow transition-all flex items-center justify-center space-x-2"
               >
                 <Upload className="w-5 h-5 text-gray-500 dark:text-gray-400" />
                 <span>일괄 불러오기</span>
               </button>
               <button
                 onClick={handleCreateUser}
-                className="flex-1 sm:flex-none btn-primary px-6 py-3 rounded-xl font-bold hover:shadow-xl transition-all flex items-center justify-center space-x-2"
+                className="flex-1 sm:flex-none btn-primary px-6 py-3 rounded-full font-bold hover:shadow-xl transition-all flex items-center justify-center space-x-2"
               >
                 <Plus className="w-5 h-5" />
                 <span>사용자 추가</span>
