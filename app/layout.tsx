@@ -2,6 +2,7 @@
 
 import '../src/index.css'
 import { AuthProvider } from '@/contexts/AuthContext'
+import { ThemeProvider } from '@/contexts/ThemeContext'
 
 export default function RootLayout({
   children,
@@ -11,9 +12,11 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body className="bg-background text-foreground antialiased">
-        <AuthProvider>
-          {children}
-        </AuthProvider>
+        <ThemeProvider>
+          <AuthProvider>
+            {children}
+          </AuthProvider>
+        </ThemeProvider>
       </body>
     </html>
   )
