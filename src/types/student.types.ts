@@ -8,27 +8,27 @@ export interface StudentProfile {
   position: string;
   joinDate: string;
   employeeId: string;
-  
+
   // 프로필 이미지
   avatar?: string;
-  
+
   // 수강 이력
   enrollmentHistory: CourseEnrollment[];
   currentCourses: CourseEnrollment[];
   completedCourses: CourseEnrollment[];
-  
+
   // 성과 지표
   overallGrade: number; // 전체 평균 성적
   attendanceRate: number; // 출석률 (%)
   satisfactionScore: number; // 만족도 (1-5)
   completionRate: number; // 수료율 (%)
-  
+
   // 활동 기록
   totalJournals: number;
   totalPresentations: number;
   totalStudyHours: number;
-  
-  
+
+
   // 메타 정보
   createdAt: string;
   updatedAt: string;
@@ -44,7 +44,7 @@ export interface CourseEnrollment {
   enrollmentDate: string;
   completionDate?: string;
   status: 'enrolled' | 'completed' | 'dropped' | 'waiting' | 'suspended';
-  
+
   // 성적 정보
   attendance: number; // 출석 횟수
   totalSessions: number; // 전체 세션 수
@@ -52,21 +52,21 @@ export interface CourseEnrollment {
   examScores: ExamScore[];
   finalGrade: string; // A+, A, B+, B, C+, C, D+, D, F
   gradePoint: number; // 4.5 만점
-  
+
   // 활동 기록
   journalCount: number;
   presentationCount: number;
   studyHours: number;
-  
+
   // 피드백
   instructorFeedback?: string;
   studentFeedback?: string;
   satisfactionScore?: number; // 1-5
-  
+
   // 수료 정보
   certificateIssued: boolean;
   certificateNumber?: string;
-  
+
   // 메타 정보
   createdAt: string;
   updatedAt: string;
@@ -91,20 +91,20 @@ export interface LearningGoal {
   description: string;
   category: 'skill' | 'knowledge' | 'behavior' | 'performance';
   priority: 'high' | 'medium' | 'low';
-  
+
   // 목표 설정
   targetDate: string;
   targetValue?: number;
   currentValue?: number;
   unit?: string; // 점수, %, 시간 등
-  
+
   // 진행 상황
   status: 'active' | 'completed' | 'paused' | 'cancelled';
   progress: number; // 0-100%
-  
+
   // 관련 과정
   relatedCourses: string[];
-  
+
   // 메타 정보
   createdAt: string;
   updatedAt: string;
@@ -115,12 +115,12 @@ export interface StudentStatistics {
   totalStudents: number;
   activeStudents: number;
   completedStudents: number;
-  
+
   // 성과 통계
   averageGrade: number;
   averageAttendance: number;
   averageSatisfaction: number;
-  
+
   // 과정별 통계
   courseStatistics: {
     courseCode: string;
@@ -131,13 +131,13 @@ export interface StudentStatistics {
     averageGrade: number;
     completionRate: number;
   }[];
-  
+
   // 기간별 통계
   monthlyEnrollments: {
     month: string;
     count: number;
   }[];
-  
+
   monthlyCompletions: {
     month: string;
     count: number;
@@ -173,8 +173,12 @@ export interface StudentListItem {
     progress: number;
   }[];
   overallGrade: number;
+  averageScore: number; // Added for compatibility
   attendanceRate: number;
   lastActiveAt: string;
+  enrollmentDate: string; // Added
+  status: 'active' | 'completed' | 'dropped' | 'pending'; // Added
+  completedCourses: number; // Added count of completed courses
 }
 
 // 점수 관리를 위한 새로운 인터페이스들
@@ -196,21 +200,21 @@ export interface StudentScore {
   courseDisplayName: string;
   companyId: string;
   companyName: string;
-  
+
   // 점수 항목들
   theoryScore: number;
   practicalScore: number;
   bsActivityScore: number; // BS Advanced 과정만 해당
   attitudeScore: number;
-  
+
   // 계산된 점수들
   overallScore: number;
   tScore: number; // Theory Score
   pScore: number; // Practical Score
-  
+
   // 합격/불합격
   passFail: 'PASS' | 'FAIL' | 'PENDING';
-  
+
   // 기타
   remarks: string;
   lastUpdated: string;

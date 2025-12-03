@@ -67,11 +67,11 @@ const WaitingListManager: React.FC<WaitingListManagerProps> = ({
       setProcessing(entry.id);
       // TODO: 실제 우선 배정 API 호출
       await new Promise(resolve => setTimeout(resolve, 1000)); // 임시 대기
-      
+
       toast.success(`${entry.trainee_name}님이 우선 배정되었습니다.`);
       loadWaitingList();
       onWaitingListUpdate?.();
-      
+
     } catch (error) {
       console.error('Failed to priority enroll:', error);
       toast.error('우선 배정에 실패했습니다.');
@@ -86,10 +86,10 @@ const WaitingListManager: React.FC<WaitingListManagerProps> = ({
       setProcessing(entryId);
       // TODO: 실제 순번 변경 API 호출
       await new Promise(resolve => setTimeout(resolve, 500)); // 임시 대기
-      
+
       toast.success('대기순번이 변경되었습니다.');
       loadWaitingList();
-      
+
     } catch (error) {
       console.error('Failed to change position:', error);
       toast.error('순번 변경에 실패했습니다.');
@@ -108,11 +108,11 @@ const WaitingListManager: React.FC<WaitingListManagerProps> = ({
       setProcessing(entry.id);
       // TODO: 실제 대기자 제거 API 호출
       await new Promise(resolve => setTimeout(resolve, 500)); // 임시 대기
-      
+
       toast.success(`${entry.trainee_name}님이 대기자 목록에서 제거되었습니다.`);
       loadWaitingList();
       onWaitingListUpdate?.();
-      
+
     } catch (error) {
       console.error('Failed to remove from waiting list:', error);
       toast.error('대기자 제거에 실패했습니다.');
@@ -133,7 +133,7 @@ const WaitingListManager: React.FC<WaitingListManagerProps> = ({
       toast.success('대기자 목록이 처리되었습니다.');
       loadWaitingList();
       onWaitingListUpdate?.();
-      
+
     } catch (error) {
       console.error('Failed to process waiting list:', error);
       toast.error('대기자 목록 처리에 실패했습니다.');
@@ -183,7 +183,7 @@ const WaitingListManager: React.FC<WaitingListManagerProps> = ({
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg shadow-xl w-full max-w-4xl mx-4 max-h-[90vh] overflow-hidden">
+      <div className="bg-white rounded-[2rem] shadow-xl w-full max-w-4xl mx-4 max-h-[90vh] overflow-hidden">
         {/* 헤더 */}
         <div className="flex items-center justify-between p-6 border-b border-gray-200">
           <div>
@@ -195,7 +195,7 @@ const WaitingListManager: React.FC<WaitingListManagerProps> = ({
               {course.name} - 현재 {availableSpots}자리 남음
             </p>
           </div>
-          
+
           <div className="flex items-center space-x-2">
             {waitingList.length > 0 && availableSpots > 0 && (
               <button
@@ -207,7 +207,7 @@ const WaitingListManager: React.FC<WaitingListManagerProps> = ({
                 자동 처리
               </button>
             )}
-            
+
             <button
               onClick={onClose}
               className="text-gray-400 hover:text-gray-600 transition-colors"
@@ -273,21 +273,21 @@ const WaitingListManager: React.FC<WaitingListManagerProps> = ({
                       <div className="flex-1">
                         <div className="flex items-center space-x-2 mb-1">
                           <h4 className="font-medium text-gray-900">{entry.trainee_name}</h4>
-                          
+
                           <span className={`px-2 py-1 text-xs font-medium rounded-full ${getPriorityBadgeClass(entry.priority)}`}>
-                            {entry.priority === 'urgent' ? '긴급' 
-                             : entry.priority === 'high' ? '높음' : '일반'}
+                            {entry.priority === 'urgent' ? '긴급'
+                              : entry.priority === 'high' ? '높음' : '일반'}
                           </span>
-                          
+
                           <span className={`px-2 py-1 text-xs font-medium rounded-full ${getStatusBadgeClass(entry.status)}`}>
                             {waitingListStatusLabels[entry.status]}
                           </span>
                         </div>
-                        
+
                         <div className="text-sm text-gray-600">
                           {entry.trainee_email}
                         </div>
-                        
+
                         <div className="text-xs text-gray-500 mt-1">
                           요청일: {formatDate(entry.requested_at)}
                           {entry.estimated_enrollment_date && (
@@ -296,7 +296,7 @@ const WaitingListManager: React.FC<WaitingListManagerProps> = ({
                             </span>
                           )}
                         </div>
-                        
+
                         {entry.notes && (
                           <div className="text-xs text-gray-600 mt-2 p-2 bg-gray-100 rounded">
                             {entry.notes}
@@ -318,7 +318,7 @@ const WaitingListManager: React.FC<WaitingListManagerProps> = ({
                           <ArrowUpIcon className="h-4 w-4" />
                         </button>
                       )}
-                      
+
                       {entry.position < waitingList.length && (
                         <button
                           onClick={() => handlePositionChange(entry.id, entry.position + 1)}
@@ -353,7 +353,7 @@ const WaitingListManager: React.FC<WaitingListManagerProps> = ({
                       </button>
                     </div>
                   </div>
-                  
+
                   {processing === entry.id && (
                     <div className="mt-2 flex items-center text-sm text-blue-600">
                       <div className="animate-spin rounded-lg h-4 w-4 border-b-2 border-blue-600 mr-2"></div>
@@ -394,7 +394,7 @@ const WaitingListManager: React.FC<WaitingListManagerProps> = ({
       {/* 전체 처리 중 오버레이 */}
       {processing === 'all' && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-60">
-          <div className="bg-white rounded-lg p-6 max-w-sm mx-4">
+          <div className="bg-white rounded-[2rem] p-6 max-w-sm mx-4">
             <div className="flex items-center">
               <div className="animate-spin rounded-lg h-6 w-6 border-b-2 border-blue-600 mr-3"></div>
               <span className="text-gray-700">대기자 목록을 처리하는 중...</span>

@@ -109,7 +109,7 @@ const InstructorDashboard: React.FC<InstructorDashboardProps> = ({ instructorId 
   return (
     <PageContainer>
       {/* 헤더 */}
-      <div className="bg-gradient-to-r from-emerald-500 to-teal-600 dark:from-emerald-600 dark:to-teal-700 rounded-2xl shadow-lg p-6 sm:p-8 mb-6 sm:mb-8">
+      <div className="bg-gradient-to-r from-emerald-500 to-teal-600 dark:from-emerald-600 dark:to-teal-700 rounded-[2rem] shadow-lg p-6 sm:p-8 mb-6 sm:mb-8">
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
           <div className="flex items-center">
             <div className="w-14 h-14 sm:w-16 sm:h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center mr-4">
@@ -141,7 +141,7 @@ const InstructorDashboard: React.FC<InstructorDashboardProps> = ({ instructorId 
 
       {/* 강의 개요 카드 */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 hover:shadow-md transition-shadow">
+        <div className="bg-white dark:bg-gray-800 rounded-[2rem] shadow-sm border border-gray-100 dark:border-gray-700 p-6 hover:shadow-md transition-shadow">
           <div className="flex items-center">
             <div className="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-900/30">
               <BookOpenIcon className="h-6 w-6 text-emerald-600 dark:text-emerald-400" />
@@ -158,7 +158,7 @@ const InstructorDashboard: React.FC<InstructorDashboardProps> = ({ instructorId 
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 hover:shadow-md transition-shadow">
+        <div className="bg-white dark:bg-gray-800 rounded-[2rem] shadow-sm border border-gray-100 dark:border-gray-700 p-6 hover:shadow-md transition-shadow">
           <div className="flex items-center">
             <div className="p-3 rounded-xl bg-blue-50 dark:bg-blue-900/30">
               <UserGroupIcon className="h-6 w-6 text-blue-600 dark:text-blue-400" />
@@ -175,7 +175,7 @@ const InstructorDashboard: React.FC<InstructorDashboardProps> = ({ instructorId 
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 hover:shadow-md transition-shadow">
+        <div className="bg-white dark:bg-gray-800 rounded-[2rem] shadow-sm border border-gray-100 dark:border-gray-700 p-6 hover:shadow-md transition-shadow">
           <div className="flex items-center">
             <div className="p-3 rounded-xl bg-purple-50 dark:bg-purple-900/30">
               <ChartBarIcon className="h-6 w-6 text-purple-600 dark:text-purple-400" />
@@ -192,7 +192,7 @@ const InstructorDashboard: React.FC<InstructorDashboardProps> = ({ instructorId 
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 hover:shadow-md transition-shadow">
+        <div className="bg-white dark:bg-gray-800 rounded-[2rem] shadow-sm border border-gray-100 dark:border-gray-700 p-6 hover:shadow-md transition-shadow">
           <div className="flex items-center">
             <div className="p-3 rounded-xl bg-amber-50 dark:bg-amber-900/30">
               <CurrencyDollarIcon className="h-6 w-6 text-amber-600 dark:text-amber-400" />
@@ -214,7 +214,7 @@ const InstructorDashboard: React.FC<InstructorDashboardProps> = ({ instructorId 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
         {/* 담당 과정 */}
         <div className="lg:col-span-2 space-y-6">
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
+          <div className="bg-white dark:bg-gray-800 rounded-[2rem] shadow-sm border border-gray-100 dark:border-gray-700">
             <div className="px-4 sm:px-6 py-4 border-b border-gray-100 dark:border-gray-700">
               <h2 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
                 <BookOpenIcon className="h-5 w-5 mr-2 text-emerald-600 dark:text-emerald-400" />
@@ -236,13 +236,12 @@ const InstructorDashboard: React.FC<InstructorDashboardProps> = ({ instructorId 
                             {course.courseName}
                           </h3>
                           <div className="flex items-center mt-2 flex-wrap gap-2">
-                            <span className={`px-2 py-1 rounded-lg text-xs font-medium ${
-                              course.status === 'active'
+                            <span className={`px-2 py-1 rounded-lg text-xs font-medium ${course.status === 'active'
                                 ? 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400'
                                 : course.status === 'completed'
-                                ? 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-400'
-                                : 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400'
-                            }`}>
+                                  ? 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-400'
+                                  : 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400'
+                              }`}>
                               {course.status === 'active' ? '진행중' : course.status === 'completed' ? '완료' : '예정'}
                             </span>
                             <span className="text-xs text-gray-500 dark:text-gray-400">
@@ -290,7 +289,7 @@ const InstructorDashboard: React.FC<InstructorDashboardProps> = ({ instructorId 
         {/* 사이드바 */}
         <div className="space-y-6">
           {/* 다가오는 수업 */}
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
+          <div className="bg-white dark:bg-gray-800 rounded-[2rem] shadow-sm border border-gray-100 dark:border-gray-700">
             <div className="px-4 sm:px-6 py-4 border-b border-gray-100 dark:border-gray-700">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
                 <CalendarDaysIcon className="h-5 w-5 mr-2 text-blue-600 dark:text-blue-400" />
@@ -326,7 +325,7 @@ const InstructorDashboard: React.FC<InstructorDashboardProps> = ({ instructorId 
           </div>
 
           {/* 알림 */}
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
+          <div className="bg-white dark:bg-gray-800 rounded-[2rem] shadow-sm border border-gray-100 dark:border-gray-700">
             <div className="px-4 sm:px-6 py-4 border-b border-gray-100 dark:border-gray-700">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
                 <BellIcon className="h-5 w-5 mr-2 text-orange-600 dark:text-orange-400" />
@@ -342,11 +341,10 @@ const InstructorDashboard: React.FC<InstructorDashboardProps> = ({ instructorId 
               ) : (
                 <div className="space-y-3">
                   {notifications.slice(0, 3).map((notification) => (
-                    <div key={notification.id} className={`border-l-4 rounded-r-lg pl-4 pr-3 py-3 ${
-                      notification.priority === 'high'
+                    <div key={notification.id} className={`border-l-4 rounded-r-lg pl-4 pr-3 py-3 ${notification.priority === 'high'
                         ? 'border-red-500 bg-red-50 dark:bg-red-900/20'
                         : 'border-emerald-500 bg-emerald-50 dark:bg-emerald-900/20'
-                    } hover:brightness-95 dark:hover:brightness-110 transition`}>
+                      } hover:brightness-95 dark:hover:brightness-110 transition`}>
                       <div className="flex justify-between items-start gap-2">
                         <div className="flex-1 min-w-0">
                           <h4 className="text-sm font-semibold text-gray-900 dark:text-white">

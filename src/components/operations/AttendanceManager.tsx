@@ -103,7 +103,7 @@ const AttendanceManager: React.FC = () => {
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
             <div>
               <h1 className="text-2xl font-bold text-gray-900 mb-2 flex items-center">
-                <div className="p-3 bg-blue-100 rounded-xl mr-4">
+                <div className="p-3 bg-blue-50 rounded-xl mr-4">
                   <ClipboardList className="h-8 w-8 text-blue-600" />
                 </div>
                 출석 현황 요약
@@ -114,7 +114,7 @@ const AttendanceManager: React.FC = () => {
             </div>
             <button
               onClick={() => router.push('/attendance')}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-full font-medium shadow-sm hover:shadow-md transition-all flex items-center space-x-2"
+              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-bold shadow-lg shadow-blue-200 hover:shadow-xl transition-all flex items-center space-x-2"
             >
               <span>출석 관리로 이동</span>
               <ArrowRight className="h-4 w-4" />
@@ -124,49 +124,49 @@ const AttendanceManager: React.FC = () => {
 
         {/* 요약 통계 카드 */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow">
+          <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow">
             <div className="flex items-center">
-              <div className="p-3 bg-green-100 rounded-xl">
+              <div className="p-3 bg-green-50 rounded-xl">
                 <CheckCircle className="h-6 w-6 text-green-600" />
               </div>
               <div className="ml-4">
-                <p className="text-sm font-medium text-gray-500">평균 출석률</p>
+                <p className="text-sm font-bold text-gray-500">평균 출석률</p>
                 <p className="text-2xl font-bold text-gray-900">{summaryStats.averageAttendanceRate}%</p>
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow">
+          <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow">
             <div className="flex items-center">
-              <div className="p-3 bg-blue-100 rounded-xl">
+              <div className="p-3 bg-blue-50 rounded-xl">
                 <CalendarDays className="h-6 w-6 text-blue-600" />
               </div>
               <div className="ml-4">
-                <p className="text-sm font-medium text-gray-500">총 세션 수</p>
+                <p className="text-sm font-bold text-gray-500">총 세션 수</p>
                 <p className="text-2xl font-bold text-gray-900">{summaryStats.totalSessions}개</p>
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow">
+          <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow">
             <div className="flex items-center">
-              <div className="p-3 bg-purple-100 rounded-xl">
+              <div className="p-3 bg-purple-50 rounded-xl">
                 <User className="h-6 w-6 text-purple-600" />
               </div>
               <div className="ml-4">
-                <p className="text-sm font-medium text-gray-500">총 교육생</p>
+                <p className="text-sm font-bold text-gray-500">총 교육생</p>
                 <p className="text-2xl font-bold text-gray-900">{summaryStats.totalStudents}명</p>
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow">
+          <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow">
             <div className="flex items-center">
-              <div className="p-3 bg-orange-100 rounded-xl">
+              <div className="p-3 bg-orange-50 rounded-xl">
                 <Clock className="h-6 w-6 text-orange-600" />
               </div>
               <div className="ml-4">
-                <p className="text-sm font-medium text-gray-500">오늘 세션</p>
+                <p className="text-sm font-bold text-gray-500">오늘 세션</p>
                 <p className="text-2xl font-bold text-gray-900">{summaryStats.todaySessions}개</p>
               </div>
             </div>
@@ -174,9 +174,9 @@ const AttendanceManager: React.FC = () => {
         </div>
 
         {/* 안내 메시지 */}
-        <div className="bg-white border border-gray-100 rounded-2xl p-8 shadow-sm">
+        <div className="bg-white border border-gray-100 rounded-[2rem] p-8 shadow-sm">
           <div className="flex items-start space-x-4">
-            <div className="p-3 bg-blue-50 rounded-2xl flex-shrink-0">
+            <div className="p-3 bg-blue-50 rounded-xl flex-shrink-0">
               <BarChart2 className="h-6 w-6 text-blue-600" />
             </div>
             <div>
@@ -185,29 +185,29 @@ const AttendanceManager: React.FC = () => {
               </h3>
               <p className="text-gray-600 mb-6 leading-relaxed">
                 실시간 출석 체크, 교육생별 출석 현황, 출석 통계 분석 등 모든 출석 관리 기능은
-                <span className="font-semibold text-blue-600"> 출석 관리 페이지</span>에서 이용하실 수 있습니다.
+                <span className="font-bold text-blue-600"> 출석 관리 페이지</span>에서 이용하실 수 있습니다.
               </p>
               <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm text-gray-600 mb-6">
-                <li className="flex items-center p-3 bg-gray-50 rounded-xl">
+                <li className="flex items-center p-3 bg-gray-50 rounded-xl font-medium">
                   <CheckCircle className="h-4 w-4 text-green-600 mr-2" />
                   차수별/날짜별 출석 체크
                 </li>
-                <li className="flex items-center p-3 bg-gray-50 rounded-xl">
+                <li className="flex items-center p-3 bg-gray-50 rounded-xl font-medium">
                   <CheckCircle className="h-4 w-4 text-green-600 mr-2" />
                   교육생별 출석 현황 및 통계
                 </li>
-                <li className="flex items-center p-3 bg-gray-50 rounded-xl">
+                <li className="flex items-center p-3 bg-gray-50 rounded-xl font-medium">
                   <CheckCircle className="h-4 w-4 text-green-600 mr-2" />
                   일별/차수별 출석 통계
                 </li>
-                <li className="flex items-center p-3 bg-gray-50 rounded-xl">
+                <li className="flex items-center p-3 bg-gray-50 rounded-xl font-medium">
                   <CheckCircle className="h-4 w-4 text-green-600 mr-2" />
                   출석부 Excel 다운로드
                 </li>
               </ul>
               <button
                 onClick={() => router.push('/attendance')}
-                className="bg-gray-900 hover:bg-gray-800 text-white px-6 py-3 rounded-xl font-medium shadow-sm hover:shadow transition-all inline-flex items-center space-x-2"
+                className="bg-gray-900 hover:bg-gray-800 text-white px-6 py-3 rounded-xl font-bold shadow-lg hover:shadow-xl transition-all inline-flex items-center space-x-2"
               >
                 <span>출석 관리로 이동</span>
                 <ArrowRight className="h-4 w-4" />

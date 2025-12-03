@@ -503,7 +503,7 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
 
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-        <div className="bg-white rounded-lg w-full max-w-4xl max-h-[90vh] overflow-hidden">
+        <div className="bg-white rounded-[2rem] w-full max-w-4xl max-h-[90vh] overflow-hidden">
           <div className="flex justify-between items-center p-4 sm:p-6 border-b border-gray-200">
             <h2 className="text-xl font-bold text-gray-900">템플릿 편집: {editingTemplate.name}</h2>
             <button
@@ -631,7 +631,7 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
 
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-        <div className="bg-white rounded-lg w-full max-w-2xl max-h-[90vh] overflow-hidden">
+        <div className="bg-white rounded-[2rem] w-full max-w-2xl max-h-[90vh] overflow-hidden">
           <div className="flex justify-between items-center p-4 sm:p-6 border-b border-gray-200">
             <h2 className="text-xl font-bold text-gray-900">새 과정 템플릿 생성</h2>
             <button
@@ -786,26 +786,34 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
     <PageContainer>
       {/* 필터 - 과정 관리 뷰에서만 표시 */}
       {viewMode === 'rounds' && (
-        <div className="bg-white rounded-lg shadow-md border border-gray-100 p-6 mb-6">
+        <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 p-6 mb-6">
           <div className="flex items-center gap-4">
             <select
               id="template-filter"
               value={selectedTemplate}
               onChange={(e) => setSelectedTemplate(e.target.value)}
-              className="flex-1 sm:w-64 border-2 border-gray-200 rounded-lg px-6 py-3.5 text-base bg-white text-gray-700 font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all shadow-sm hover:border-gray-300 appearance-none cursor-pointer"
+              className="flex-1 sm:w-64 border border-gray-200 rounded-xl px-6 py-3.5 text-base bg-white text-gray-700 font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all shadow-sm hover:border-gray-300 appearance-none cursor-pointer"
               style={{
                 backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`,
                 backgroundPosition: 'right 0.75rem center',
                 backgroundRepeat: 'no-repeat',
                 backgroundSize: '1.5em 1.5em',
-                paddingRight: '2.5rem'
               }}
             >
-              <option value="all">모든 상태</option>
-              {templates.map(template => (
-                <option key={template.id} value={template.id}>{template.name}</option>
+              <option value="all">모든 과정 템플릿</option>
+              {templates.map((template) => (
+                <option key={template.id} value={template.id}>
+                  {template.name}
+                </option>
               ))}
             </select>
+            <button
+              onClick={() => setIsRoundModalOpen(true)}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3.5 rounded-xl font-bold shadow-lg shadow-blue-200 hover:shadow-xl transition-all flex items-center gap-2"
+            >
+              <Plus className="w-5 h-5" />
+              <span>새 차수 개설</span>
+            </button>
           </div>
         </div>
       )}
@@ -816,7 +824,7 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
           {/* 요약 통계 */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {summary.map((item, index) => (
-              <div key={index} className="bg-card rounded-lg shadow-sm border border-border p-6">
+              <div key={index} className="bg-white rounded-[2rem] shadow-sm border border-gray-100 p-6">
                 <div className="flex items-start justify-between">
                   <div className="flex items-center space-x-3">
                     <div className={`p-3 rounded-full ${item.template_name === 'BS Basic'
@@ -858,7 +866,7 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
           </div>
 
           {/* 최근 차수 목록 */}
-          <div className="bg-card rounded-lg shadow-sm border border-border">
+          <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100">
             <div className="p-6 border-b border-border">
               <h2 className="text-lg font-bold text-card-foreground">최근 차수</h2>
             </div>
@@ -907,7 +915,7 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
         <div className="space-y-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
             {rounds.map(round => (
-              <div key={round.id} className="bg-card rounded-lg shadow-sm border border-border overflow-hidden">
+              <div key={round.id} className="bg-white rounded-[2rem] shadow-sm border border-gray-100 overflow-hidden">
                 {/* 헤더 */}
                 <div className="p-6 border-b border-border">
                   <div className="flex justify-between items-start mb-2">
@@ -982,7 +990,7 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
 
           {/* 과정이 없을 때 */}
           {rounds.length === 0 && (
-            <div className="text-center py-12 bg-card rounded-lg shadow-sm border border-border">
+            <div className="text-center py-12 bg-white rounded-[2rem] shadow-sm border border-gray-100">
               <GraduationCap className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
               <h3 className="text-lg font-medium text-card-foreground mb-2">등록된 과정이 없습니다</h3>
               <p className="text-muted-foreground mb-6">첫 번째 과정을 생성해보세요.</p>
@@ -1001,7 +1009,7 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
       {/* 템플릿 편집 */}
       {viewMode === 'templates' && (
         <div className="space-y-6">
-          <div className="bg-card rounded-lg shadow-sm border border-border p-6">
+          <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 p-6">
             <div className="flex justify-between items-center mb-6">
               <div>
                 <h2 className="text-xl font-bold text-card-foreground">과정 템플릿 관리</h2>
@@ -1025,7 +1033,7 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {templates.map(template => (
-                <div key={template.id} className="border border-border rounded-lg p-6 hover:shadow-md transition-shadow">
+                <div key={template.id} className="border border-gray-100 rounded-2xl p-6 hover:shadow-md transition-shadow bg-white">
                   {/* 템플릿 헤더 */}
                   <div className="flex justify-between items-start mb-4">
                     <div>
@@ -1147,7 +1155,7 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
 
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-        <div className="bg-card rounded-lg w-full max-w-3xl max-h-[90vh] overflow-hidden border border-border">
+        <div className="bg-white rounded-[2rem] w-full max-w-3xl max-h-[90vh] overflow-hidden border border-gray-100">
           <div className="flex justify-between items-center p-4 sm:p-6 border-b border-border">
             <div>
               <h2 className="text-xl font-bold text-card-foreground">{round.title}</h2>
@@ -1301,7 +1309,7 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
 
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-        <div className="bg-card rounded-lg w-full max-w-2xl max-h-[90vh] overflow-hidden border border-border">
+        <div className="bg-white rounded-[2rem] w-full max-w-2xl max-h-[90vh] overflow-hidden border border-gray-100">
           <div className="flex justify-between items-center p-4 sm:p-6 border-b border-border">
             <h2 className="text-xl font-bold text-card-foreground">차수 편집</h2>
             <button
@@ -1571,7 +1579,7 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
 
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-        <div className="bg-card rounded-lg w-full max-w-2xl border border-border max-h-[90vh] overflow-hidden">
+        <div className="bg-white rounded-[2rem] w-full max-w-2xl border border-gray-100 max-h-[90vh] overflow-hidden">
           <div className="flex justify-between items-center p-4 sm:p-6 border-b border-border">
             <h2 className="text-xl font-bold text-card-foreground">새 과정 생성</h2>
             <button
@@ -1602,7 +1610,7 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
               {/* 등록된 과정 */}
               <div>
                 <h3 className="text-lg font-semibold text-card-foreground mb-4">등록된 과정</h3>
-                <div className="max-h-[300px] overflow-y-auto border border-border rounded-lg p-3 bg-muted/20">
+                <div className="max-h-[300px] overflow-y-auto border border-border rounded-xl p-3 bg-muted/20">
                   <div className="space-y-3">
                     {templates.map(template => (
                       <div

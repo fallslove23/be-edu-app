@@ -31,7 +31,7 @@ const EnrollmentHistoryModal: React.FC<EnrollmentHistoryModalProps> = ({
   const [filteredHistory, setFilteredHistory] = useState<EnrollmentHistory[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  
+
   // 필터 상태
   const [actionFilter, setActionFilter] = useState<string>('all');
   const [dateFilter, setDateFilter] = useState<string>('all');
@@ -72,10 +72,10 @@ const EnrollmentHistoryModal: React.FC<EnrollmentHistoryModalProps> = ({
     // 날짜 필터
     const now = new Date();
     if (dateFilter !== 'all') {
-      const days = dateFilter === 'today' ? 1 
-                  : dateFilter === 'week' ? 7 
-                  : dateFilter === 'month' ? 30 : 0;
-      
+      const days = dateFilter === 'today' ? 1
+        : dateFilter === 'week' ? 7
+          : dateFilter === 'month' ? 30 : 0;
+
       if (days > 0) {
         const cutoff = new Date(now.getTime() - days * 24 * 60 * 60 * 1000);
         filtered = filtered.filter(h => new Date(h.action_date) >= cutoff);
@@ -85,7 +85,7 @@ const EnrollmentHistoryModal: React.FC<EnrollmentHistoryModalProps> = ({
     // 검색어 필터
     if (searchTerm) {
       const term = searchTerm.toLowerCase();
-      filtered = filtered.filter(h => 
+      filtered = filtered.filter(h =>
         h.trainee_name.toLowerCase().includes(term) ||
         h.action_by_name.toLowerCase().includes(term) ||
         (h.reason && h.reason.toLowerCase().includes(term))
@@ -126,7 +126,7 @@ const EnrollmentHistoryModal: React.FC<EnrollmentHistoryModalProps> = ({
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg shadow-xl w-full max-w-5xl mx-4 max-h-[90vh] overflow-hidden">
+      <div className="bg-white rounded-[2rem] shadow-xl w-full max-w-5xl mx-4 max-h-[90vh] overflow-hidden">
         {/* 헤더 */}
         <div className="flex items-center justify-between p-6 border-b border-gray-200">
           <div>
@@ -180,7 +180,7 @@ const EnrollmentHistoryModal: React.FC<EnrollmentHistoryModalProps> = ({
 
             {/* 확장 필터 */}
             {showFilters && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-gray-50 rounded-lg">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-gray-50 rounded-xl">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">액션</label>
                   <select
@@ -246,25 +246,25 @@ const EnrollmentHistoryModal: React.FC<EnrollmentHistoryModalProps> = ({
                           {historyItem.trainee_name}
                         </span>
                       </div>
-                      
+
                       <div className="space-y-1 text-sm text-gray-600">
                         <div className="flex items-center">
                           <UserIcon className="h-4 w-4 mr-2" />
                           <span>담당자: {historyItem.action_by_name}</span>
                         </div>
-                        
+
                         <div className="flex items-center">
                           <ClockIcon className="h-4 w-4 mr-2" />
                           <span>{formatDate(historyItem.action_date)}</span>
                         </div>
-                        
+
                         {historyItem.reason && (
                           <div className="flex items-start">
                             <DocumentTextIcon className="h-4 w-4 mr-2 mt-0.5 flex-shrink-0" />
                             <span className="break-words">{historyItem.reason}</span>
                           </div>
                         )}
-                        
+
                         {historyItem.notes && (
                           <div className="mt-2 p-2 bg-gray-100 rounded text-xs">
                             {historyItem.notes}
@@ -272,7 +272,7 @@ const EnrollmentHistoryModal: React.FC<EnrollmentHistoryModalProps> = ({
                         )}
                       </div>
                     </div>
-                    
+
                     {(historyItem.previous_status || historyItem.new_status) && (
                       <div className="ml-4 text-xs text-gray-500">
                         {historyItem.previous_status && (

@@ -397,202 +397,211 @@ const ReportGenerator: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6">
-      {/* 헤더 */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-        <h1 className="text-2xl font-bold text-gray-900 mb-2">커스텀 리포트 생성기</h1>
-        <p className="text-gray-600">원하는 데이터와 차트를 조합하여 맞춤형 리포트를 생성하세요.</p>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* 설정 패널 */}
-        <div className="lg:col-span-1 space-y-6">
-          {/* 템플릿 선택 */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <h3 className="text-lg font-medium text-gray-900 mb-4">리포트 템플릿</h3>
-            <div className="space-y-3">
-              {reportTemplates.map((template) => (
-                <div
-                  key={template.id}
-                  className={`p-3 rounded-full border cursor-pointer transition-colors ${selectedTemplate?.id === template.id
-                    ? 'border-blue-500 bg-blue-50'
-                    : 'border-gray-200 hover:border-gray-300'
-                    }`}
-                  onClick={() => setSelectedTemplate(template)}
-                >
-                  <div className="font-medium text-gray-900">{template.name}</div>
-                  <div className="text-sm text-gray-600 mt-1">{template.description}</div>
-                </div>
-              ))}
+    <div className="min-h-screen bg-[#F2F4F6] p-4 sm:p-6 pb-24">
+      <div className="max-w-5xl mx-auto space-y-6">
+        {/* 헤더 */}
+        <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 p-6">
+          <h1 className="text-2xl font-bold text-gray-900 mb-2 flex items-center">
+            <div className="p-3 bg-blue-50 rounded-xl mr-4">
+              <FileText className="h-8 w-8 text-blue-600" />
             </div>
-          </div>
-
-          {/* 필터 설정 */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <h3 className="text-lg font-medium text-gray-900 mb-4">데이터 필터</h3>
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">기간</label>
-                <div className="grid grid-cols-2 gap-2">
-                  <input
-                    type="date"
-                    value={filters.dateRange.start}
-                    onChange={(e) => setFilters(prev => ({
-                      ...prev,
-                      dateRange: { ...prev.dateRange, start: e.target.value }
-                    }))}
-                    className="border border-gray-300 rounded-full px-3 py-2 text-sm"
-                  />
-                  <input
-                    type="date"
-                    value={filters.dateRange.end}
-                    onChange={(e) => setFilters(prev => ({
-                      ...prev,
-                      dateRange: { ...prev.dateRange, end: e.target.value }
-                    }))}
-                    className="border border-gray-300 rounded-full px-3 py-2 text-sm"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">부서</label>
-                <select
-                  multiple
-                  className="w-full border border-gray-300 rounded-full px-3 py-2 text-sm"
-                >
-                  <option value="sales">영업팀</option>
-                  <option value="marketing">마케팅팀</option>
-                  <option value="hr">인사팀</option>
-                </select>
-              </div>
-            </div>
-          </div>
-
-          {/* 액션 버튼 */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <button
-              onClick={generateReport}
-              disabled={!selectedTemplate || generating}
-              className="btn-primary w-full py-2 px-4 rounded-full font-medium disabled:opacity-50 disabled:cursor-not-allowed mb-3"
-            >
-              {generating ? (
-                <div className="flex items-center justify-center">
-                  <div className="animate-spin rounded-lg h-4 w-4 border-b-2 border-white mr-2"></div>
-                  생성 중...
-                </div>
-              ) : (
-                '리포트 생성'
-              )}
-            </button>
-
-            {preview && (
-              <div className="space-y-2">
-                <button
-                  onClick={() => downloadReport('pdf')}
-                  className="btn-success w-full py-2 px-4 rounded-full font-medium flex items-center justify-center"
-                >
-                  <Download className="h-4 w-4 mr-2" />
-                  PDF 다운로드
-                </button>
-
-                <button
-                  onClick={printReport}
-                  className="w-full bg-gray-600 hover:bg-gray-700 text-white py-2 px-4 rounded-full font-medium flex items-center justify-center"
-                >
-                  <Printer className="h-4 w-4 mr-2" />
-                  인쇄
-                </button>
-              </div>
-            )}
-          </div>
+            커스텀 리포트 생성기
+          </h1>
+          <p className="text-gray-600">원하는 데이터와 차트를 조합하여 맞춤형 리포트를 생성하세요.</p>
         </div>
 
-        {/* 리포트 미리보기/편집 */}
-        <div className="lg:col-span-2">
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-            {/* 미리보기 헤더 */}
-            <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
-              <h3 className="text-lg font-medium text-gray-900">
-                {selectedTemplate ? `${selectedTemplate.name} 미리보기` : '템플릿을 선택하세요'}
-              </h3>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* 설정 패널 */}
+          <div className="lg:col-span-1 space-y-6">
+            {/* 템플릿 선택 */}
+            <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 p-6">
+              <h3 className="text-lg font-bold text-gray-900 mb-4">리포트 템플릿</h3>
+              <div className="space-y-3">
+                {reportTemplates.map((template) => (
+                  <div
+                    key={template.id}
+                    className={`p-4 rounded-xl border cursor-pointer transition-all ${selectedTemplate?.id === template.id
+                      ? 'border-blue-500 bg-blue-50 ring-1 ring-blue-500'
+                      : 'border-gray-200 hover:border-blue-300 hover:bg-gray-50'
+                      }`}
+                    onClick={() => setSelectedTemplate(template)}
+                  >
+                    <div className="font-bold text-gray-900">{template.name}</div>
+                    <div className="text-sm text-gray-500 mt-1">{template.description}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
 
-              {selectedTemplate && (
-                <div className="flex items-center space-x-2">
-                  <button
-                    onClick={addCustomSection}
-                    className="text-blue-600 hover:text-blue-700 p-1"
-                    title="섹션 추가"
+            {/* 필터 설정 */}
+            <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 p-6">
+              <h3 className="text-lg font-bold text-gray-900 mb-4">데이터 필터</h3>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-bold text-gray-700 mb-2">기간</label>
+                  <div className="grid grid-cols-2 gap-2">
+                    <input
+                      type="date"
+                      value={filters.dateRange.start}
+                      onChange={(e) => setFilters(prev => ({
+                        ...prev,
+                        dateRange: { ...prev.dateRange, start: e.target.value }
+                      }))}
+                      className="border border-gray-200 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                    />
+                    <input
+                      type="date"
+                      value={filters.dateRange.end}
+                      onChange={(e) => setFilters(prev => ({
+                        ...prev,
+                        dateRange: { ...prev.dateRange, end: e.target.value }
+                      }))}
+                      className="border border-gray-200 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-bold text-gray-700 mb-2">부서</label>
+                  <select
+                    multiple
+                    className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
                   >
-                    <Plus className="h-5 w-5" />
+                    <option value="sales">영업팀</option>
+                    <option value="marketing">마케팅팀</option>
+                    <option value="hr">인사팀</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            {/* 액션 버튼 */}
+            <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 p-6">
+              <button
+                onClick={generateReport}
+                disabled={!selectedTemplate || generating}
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-4 rounded-xl font-bold disabled:opacity-50 disabled:cursor-not-allowed mb-3 transition-colors shadow-lg shadow-blue-200"
+              >
+                {generating ? (
+                  <div className="flex items-center justify-center">
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                    생성 중...
+                  </div>
+                ) : (
+                  '리포트 생성'
+                )}
+              </button>
+
+              {preview && (
+                <div className="space-y-2">
+                  <button
+                    onClick={() => downloadReport('pdf')}
+                    className="w-full bg-green-600 hover:bg-green-700 text-white py-3 px-4 rounded-xl font-bold flex items-center justify-center transition-colors shadow-lg shadow-green-200"
+                  >
+                    <Download className="h-4 w-4 mr-2" />
+                    PDF 다운로드
                   </button>
+
                   <button
-                    className="text-gray-600 hover:text-gray-700 p-1"
-                    title="설정"
+                    onClick={printReport}
+                    className="w-full bg-gray-800 hover:bg-gray-900 text-white py-3 px-4 rounded-xl font-bold flex items-center justify-center transition-colors"
                   >
-                    <Settings className="h-5 w-5" />
+                    <Printer className="h-4 w-4 mr-2" />
+                    인쇄
                   </button>
                 </div>
               )}
             </div>
+          </div>
 
-            {/* 미리보기 내용 */}
-            <div ref={printRef} className="p-6">
-              {selectedTemplate ? (
-                <div>
-                  {/* 리포트 헤더 */}
-                  <div className="text-center mb-8 pb-6 border-b border-gray-200">
-                    <h1 className="text-2xl font-bold text-gray-900 mb-2">
-                      {selectedTemplate.name}
-                    </h1>
-                    <p className="text-gray-600">
-                      생성일: {new Date().toLocaleDateString('ko-KR')} |
-                      기간: {filters.dateRange.start} ~ {filters.dateRange.end}
-                    </p>
+          {/* 리포트 미리보기/편집 */}
+          <div className="lg:col-span-2">
+            <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 overflow-hidden">
+              {/* 미리보기 헤더 */}
+              <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
+                <h3 className="text-lg font-bold text-gray-900">
+                  {selectedTemplate ? `${selectedTemplate.name} 미리보기` : '템플릿을 선택하세요'}
+                </h3>
+
+                {selectedTemplate && (
+                  <div className="flex items-center space-x-2">
+                    <button
+                      onClick={addCustomSection}
+                      className="text-blue-600 hover:text-blue-700 p-2 hover:bg-blue-50 rounded-full transition-colors"
+                      title="섹션 추가"
+                    >
+                      <Plus className="h-5 w-5" />
+                    </button>
+                    <button
+                      className="text-gray-600 hover:text-gray-700 p-2 hover:bg-gray-100 rounded-full transition-colors"
+                      title="설정"
+                    >
+                      <Settings className="h-5 w-5" />
+                    </button>
                   </div>
+                )}
+              </div>
 
-                  {/* 섹션 목록 */}
-                  <div className="space-y-4 mb-6">
-                    <h4 className="font-medium text-gray-900">포함된 섹션</h4>
-                    {selectedTemplate.sections.map((section) => (
-                      <div key={section.id} className="flex items-center justify-between p-2 bg-gray-50 rounded">
-                        <span className="text-sm">{section.title}</span>
-                        <label className="flex items-center">
-                          <input
-                            type="checkbox"
-                            checked={section.enabled}
-                            onChange={() => toggleSectionEnabled(section.id)}
-                            className="rounded border-gray-300"
-                          />
-                          <span className="ml-2 text-sm text-gray-600">포함</span>
-                        </label>
+              {/* 미리보기 내용 */}
+              <div ref={printRef} className="p-8 min-h-[600px]">
+                {selectedTemplate ? (
+                  <div>
+                    {/* 리포트 헤더 */}
+                    <div className="text-center mb-10 pb-8 border-b border-gray-100">
+                      <h1 className="text-3xl font-bold text-gray-900 mb-3">
+                        {selectedTemplate.name}
+                      </h1>
+                      <p className="text-gray-500 font-medium">
+                        생성일: {new Date().toLocaleDateString('ko-KR')} |
+                        기간: {filters.dateRange.start} ~ {filters.dateRange.end}
+                      </p>
+                    </div>
+
+                    {/* 섹션 목록 */}
+                    <div className="space-y-4 mb-8 bg-gray-50 rounded-2xl p-6">
+                      <h4 className="font-bold text-gray-900 mb-2">포함된 섹션</h4>
+                      {selectedTemplate.sections.map((section) => (
+                        <div key={section.id} className="flex items-center justify-between p-3 bg-white rounded-xl border border-gray-100 shadow-sm">
+                          <span className="text-sm font-medium text-gray-700">{section.title}</span>
+                          <label className="flex items-center cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={section.enabled}
+                              onChange={() => toggleSectionEnabled(section.id)}
+                              className="rounded border-gray-300 text-blue-600 focus:ring-blue-500 h-4 w-4"
+                            />
+                            <span className="ml-2 text-sm text-gray-500 font-medium">포함</span>
+                          </label>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* 템플릿 섹션 렌더링 */}
+                    {selectedTemplate.sections.map(renderSection)}
+
+                    {/* 커스텀 섹션 렌더링 */}
+                    {customSections.map((section) => (
+                      <div key={section.id} className="relative group">
+                        {renderSection(section)}
+                        <button
+                          onClick={() => removeCustomSection(section.id)}
+                          className="absolute top-4 right-4 text-gray-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all p-2 bg-white rounded-full shadow-sm border border-gray-100"
+                        >
+                          <X className="h-5 w-5" />
+                        </button>
                       </div>
                     ))}
                   </div>
-
-                  {/* 템플릿 섹션 렌더링 */}
-                  {selectedTemplate.sections.map(renderSection)}
-
-                  {/* 커스텀 섹션 렌더링 */}
-                  {customSections.map((section) => (
-                    <div key={section.id} className="relative">
-                      {renderSection(section)}
-                      <button
-                        onClick={() => removeCustomSection(section.id)}
-                        className="absolute top-2 right-2 text-destructive hover:text-destructive"
-                      >
-                        <X className="h-5 w-5" />
-                      </button>
+                ) : (
+                  <div className="text-center py-20 flex flex-col items-center justify-center h-full">
+                    <div className="w-24 h-24 bg-gray-50 rounded-full flex items-center justify-center mb-6">
+                      <FileText className="h-10 w-10 text-gray-300" />
                     </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="text-center py-12">
-                  <FileText className="h-24 w-24 text-gray-400 mx-auto mb-4" />
-                  <h3 className="text-lg font-medium text-gray-900 mb-2">리포트 템플릿을 선택하세요</h3>
-                  <p className="text-gray-600">왼쪽 패널에서 원하는 리포트 템플릿을 선택하여 시작하세요.</p>
-                </div>
-              )}
+                    <h3 className="text-xl font-bold text-gray-900 mb-2">리포트 템플릿을 선택하세요</h3>
+                    <p className="text-gray-500 max-w-sm mx-auto">왼쪽 패널에서 원하는 리포트 템플릿을 선택하여 시작하세요.</p>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>

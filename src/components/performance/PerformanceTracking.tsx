@@ -238,433 +238,335 @@ const PerformanceTracking: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6">
-      {/* 탭 메뉴 */}
-      <div className="bg-card rounded-lg shadow-sm border border-border">
-        <div className="border-b border-gray-200 dark:border-gray-700 overflow-x-auto scroll-touch">
-          <nav className="-mb-px flex">
-            {[
-              { key: 'daily-progress', label: '일차별 진도', icon: CalendarDays },
-              { key: 'overview', label: '전체 현황', icon: BarChart2 },
-              { key: 'individual', label: '개별 성과', icon: User },
-              { key: 'reports', label: '상세 리포트', icon: FileBarChart }
-            ].map((tab) => (
-              <button
-                key={tab.key}
-                onClick={() => setActiveTab(tab.key as any)}
-                className={`px-4 sm:px-6 py-4 text-sm font-medium border-b-2 transition-all duration-200 flex items-center whitespace-nowrap min-w-[120px] justify-center ${activeTab === tab.key
-                  ? 'border-indigo-600 dark:border-indigo-400 text-indigo-600 dark:text-indigo-400'
-                  : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:border-gray-300 dark:hover:border-gray-600'
-                  }`}
-              >
-                <div className={`mr-2 p-1 rounded-md ${activeTab === tab.key ? 'bg-indigo-100 dark:bg-indigo-900/30' : 'bg-transparent'}`}>
-                  <tab.icon className={`h-5 w-5 flex-shrink-0 transition-colors ${activeTab === tab.key ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-400 group-hover:text-gray-500'}`} />
-                </div>
-                <span className="text-xs sm:text-sm">{tab.label}</span>
-              </button>
-            ))}
-          </nav>
-        </div>
-
-        <div className="p-6">
-          {/* 일차별 진도 탭 */}
-          {activeTab === 'daily-progress' && (
-            <div className="space-y-6">
-              {courseProgressData.map((course) => (
-                <div key={course.id} className="bg-white border border-gray-200 rounded-lg p-6">
-                  {/* 과정 헤더 */}
-                  <div className="flex items-center justify-between mb-6">
-                    <div>
-                      <h3 className="text-lg font-semibold text-gray-900">{course.course_name}</h3>
-                      <p className="text-sm text-gray-600">{course.session_name} • {course.start_date} ~ {course.end_date}</p>
-                    </div>
-                    <div className="text-right">
-                      <div className="text-2xl font-bold text-gray-700">{course.current_day}/{course.total_days}일차</div>
-                      <div className="text-sm text-gray-600">전체 진도 {course.overall_completion}%</div>
-                    </div>
+    <div className="min-h-screen bg-[#F2F4F6] p-4 sm:p-6 pb-24">
+      <div className="max-w-5xl mx-auto space-y-6">
+        {/* 탭 메뉴 */}
+        <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 overflow-hidden">
+          <div className="border-b border-gray-100 overflow-x-auto scroll-touch">
+            <nav className="-mb-px flex px-6">
+              {[
+                { key: 'daily-progress', label: '일차별 진도', icon: CalendarDays },
+                { key: 'overview', label: '전체 현황', icon: BarChart2 },
+                { key: 'individual', label: '개별 성과', icon: User },
+                { key: 'reports', label: '상세 리포트', icon: FileBarChart }
+              ].map((tab) => (
+                <button
+                  key={tab.key}
+                  onClick={() => setActiveTab(tab.key as any)}
+                  className={`px-4 sm:px-6 py-4 text-sm font-medium border-b-2 transition-all duration-200 flex items-center whitespace-nowrap min-w-[120px] justify-center ${activeTab === tab.key
+                    ? 'border-indigo-600 text-indigo-600'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                    }`}
+                >
+                  <div className={`mr-2 p-1 rounded-md ${activeTab === tab.key ? 'bg-indigo-50' : 'bg-transparent'}`}>
+                    <tab.icon className={`h-5 w-5 flex-shrink-0 transition-colors ${activeTab === tab.key ? 'text-indigo-600' : 'text-gray-400 group-hover:text-gray-500'}`} />
                   </div>
+                  <span className="text-xs sm:text-sm">{tab.label}</span>
+                </button>
+              ))}
+            </nav>
+          </div>
 
-                  {/* 진도 현황 */}
-                  <div className="mb-6">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm font-medium text-gray-700">전체 진도율</span>
-                      <span className="text-sm text-gray-600">{course.overall_completion}%</span>
+          <div className="p-6">
+            {/* 일차별 진도 탭 */}
+            {activeTab === 'daily-progress' && (
+              <div className="space-y-6">
+                {courseProgressData.map((course) => (
+                  <div key={course.id} className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm">
+                    {/* 과정 헤더 */}
+                    <div className="flex items-center justify-between mb-6">
+                      <div>
+                        <h3 className="text-xl font-bold text-gray-900">{course.course_name}</h3>
+                        <p className="text-sm text-gray-500 mt-1">{course.session_name} • {course.start_date} ~ {course.end_date}</p>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-2xl font-bold text-indigo-600">{course.current_day}/{course.total_days}<span className="text-base text-gray-500 font-normal ml-1">일차</span></div>
+                        <div className="text-sm text-gray-500">전체 진도 {course.overall_completion}%</div>
+                      </div>
                     </div>
-                    <div className="w-full bg-gray-200 rounded-lg h-2">
-                      <div
-                        className="bg-gray-600 h-2 rounded-lg transition-all duration-300"
-                        style={{ width: `${course.overall_completion}%` }}
-                      />
-                    </div>
-                  </div>
 
-                  {/* 일차별 진도 그리드 */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                    {course.daily_progress.map((day) => {
-                      const attendanceRate = Math.round((day.attendance_count / day.total_students) * 100);
-                      const isCurrentDay = day.day === course.current_day;
-                      const isCompleted = day.completion_rate === 100;
-                      const isBehind = day.completion_rate < 80 && day.day < course.current_day;
-
-                      return (
+                    {/* 진도 현황 */}
+                    <div className="mb-8">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-sm font-bold text-gray-700">전체 진도율</span>
+                        <span className="text-sm font-bold text-indigo-600">{course.overall_completion}%</span>
+                      </div>
+                      <div className="w-full bg-gray-100 rounded-full h-3">
                         <div
-                          key={day.day}
-                          className={`border rounded-md p-4 transition-all shadow-sm ${isCurrentDay ? 'border-gray-500 bg-gray-50' :
-                            isCompleted ? 'border-gray-300 bg-white' :
-                              isBehind ? 'border-red-200 bg-red-50' :
-                                'border-gray-200 bg-white'
-                            }`}
-                        >
-                          <div className="flex items-center justify-between mb-2">
-                            <div className="flex items-center space-x-2">
-                              <span className={`text-sm font-semibold ${isCurrentDay ? 'text-gray-700' :
-                                isCompleted ? 'text-gray-600' :
-                                  isBehind ? 'text-destructive' :
-                                    'text-gray-500'
-                                }`}>
-                                {day.day}일차
-                              </span>
-                              {isCurrentDay && <Clock className="h-4 w-4 text-gray-600" />}
-                              {isCompleted && <CheckCircle className="h-4 w-4 text-gray-600" />}
-                              {isBehind && <AlertTriangle className="h-4 w-4 text-destructive" />}
-                            </div>
-                            <span className={`text-xs px-2 py-1 rounded-full ${day.completion_rate >= 80 ? 'bg-gray-100 text-gray-700' :
-                              day.completion_rate >= 50 ? 'bg-yellow-100 text-orange-700' :
-                                'bg-destructive/10 text-destructive'
-                              }`}>
-                              {day.completion_rate}%
-                            </span>
-                          </div>
+                          className="bg-indigo-600 h-3 rounded-full transition-all duration-300"
+                          style={{ width: `${course.overall_completion}%` }}
+                        />
+                      </div>
+                    </div>
 
-                          <div className="text-xs text-gray-600 mb-2">{day.date}</div>
-
-                          <div className="space-y-2">
-                            <div>
-                              <div className="text-xs text-gray-500 mb-1">계획된 주제 ({day.planned_topics.length}개)</div>
-                              <div className="text-xs text-gray-700">
-                                {day.planned_topics.slice(0, 2).join(', ')}
-                                {day.planned_topics.length > 2 && ` 외 ${day.planned_topics.length - 2}개`}
-                              </div>
-                            </div>
-
-                            <div>
-                              <div className="text-xs text-gray-500 mb-1">완료된 주제 ({day.completed_topics.length}개)</div>
-                              <div className="text-xs text-gray-700">
-                                {day.completed_topics.slice(0, 2).join(', ')}
-                                {day.completed_topics.length > 2 && ` 외 ${day.completed_topics.length - 2}개`}
-                              </div>
-                            </div>
-
-                            <div className="flex items-center justify-between text-xs">
-                              <span className="text-gray-500">출석률</span>
-                              <span className={`font-medium ${attendanceRate >= 90 ? 'text-gray-700' :
-                                attendanceRate >= 80 ? 'text-foreground' :
-                                  'text-destructive'
-                                }`}>
-                                {day.attendance_count}/{day.total_students} ({attendanceRate}%)
-                              </span>
-                            </div>
-
-                            {day.notes && (
-                              <div className="mt-2 text-xs text-gray-600 bg-gray-100 p-2 rounded">
-                                <div className="flex items-start text-sm text-gray-600 bg-gray-50 p-2 rounded">
-                                  <FileText className="w-4 h-4 mr-2 mt-0.5 flex-shrink-0" />
-                                  <span>{day.notes}</span>
-                                </div>
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      );
-                    })}
-
-                    {/* 예정된 일차들 */}
-                    {Array.from({ length: course.total_days - course.daily_progress.length }, (_, i) => {
-                      const dayNumber = course.daily_progress.length + i + 1;
-                      return (
-                        <div key={`future-${dayNumber}`} className="border border-gray-200 rounded-md p-4 bg-gray-50 shadow-sm">
-                          <div className="flex items-center justify-between mb-2">
-                            <span className="text-sm font-semibold text-gray-400">{dayNumber}일차</span>
-                            <span className="text-xs px-2 py-1 rounded-full bg-gray-200 text-gray-500">예정</span>
-                          </div>
-                          <div className="text-xs text-gray-400">미정</div>
-                          <div className="mt-2 text-xs text-gray-500">강의 계획 수립 예정</div>
-                        </div>
-                      );
-                    })}
-                  </div>
-
-                  {/* 학생별 진도 요약 */}
-                  <div className="mt-6">
-                    <h4 className="text-sm font-medium text-gray-900 mb-3">학생별 진도 현황</h4>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                      {course.students.slice(0, 6).map((student) => {
-                        const attendanceRate = Math.round((student.daily_attendance.filter(Boolean).length / student.daily_attendance.length) * 100);
+                    {/* 일차별 진도 그리드 */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                      {course.daily_progress.map((day) => {
+                        const attendanceRate = Math.round((day.attendance_count / day.total_students) * 100);
+                        const isCurrentDay = day.day === course.current_day;
+                        const isCompleted = day.completion_rate === 100;
+                        const isBehind = day.completion_rate < 80 && day.day < course.current_day;
 
                         return (
-                          <div key={student.id} className="bg-gray-50 rounded p-3">
-                            <div className="flex items-center justify-between mb-1">
-                              <span className="text-sm font-medium text-gray-900">{student.name}</span>
-                              <span className={`text-xs px-2 py-1 rounded-full ${student.status === 'ahead' ? 'bg-gray-100 text-gray-700' :
-                                student.status === 'on_track' ? 'bg-gray-100 text-gray-600' :
-                                  student.status === 'behind' ? 'bg-yellow-100 text-orange-700' :
-                                    'bg-destructive/10 text-destructive'
+                          <div
+                            key={day.day}
+                            className={`border rounded-xl p-4 transition-all shadow-sm ${isCurrentDay ? 'border-indigo-200 bg-indigo-50/50 ring-1 ring-indigo-200' :
+                              isCompleted ? 'border-gray-100 bg-white' :
+                                isBehind ? 'border-red-100 bg-red-50/50' :
+                                  'border-gray-100 bg-gray-50/50'
+                              }`}
+                          >
+                            <div className="flex items-center justify-between mb-3">
+                              <div className="flex items-center space-x-2">
+                                <span className={`text-sm font-bold ${isCurrentDay ? 'text-indigo-700' :
+                                  isCompleted ? 'text-gray-700' :
+                                    isBehind ? 'text-red-700' :
+                                      'text-gray-500'
+                                  }`}>
+                                  {day.day}일차
+                                </span>
+                                {isCurrentDay && <Clock className="h-4 w-4 text-indigo-600" />}
+                                {isCompleted && <CheckCircle className="h-4 w-4 text-green-500" />}
+                                {isBehind && <AlertTriangle className="h-4 w-4 text-red-500" />}
+                              </div>
+                              <span className={`text-xs px-2 py-1 rounded-full font-medium ${day.completion_rate >= 80 ? 'bg-green-100 text-green-700' :
+                                day.completion_rate >= 50 ? 'bg-yellow-100 text-yellow-700' :
+                                  'bg-red-100 text-red-700'
                                 }`}>
-                                {student.status === 'ahead' ? '앞서감' :
-                                  student.status === 'on_track' ? '정상' :
-                                    student.status === 'behind' ? '지연' : '위험'}
+                                {day.completion_rate}%
                               </span>
                             </div>
-                            <div className="text-xs text-gray-600 mb-2">진도 {student.overall_progress}% • 출석 {attendanceRate}%</div>
-                            <div className="w-full bg-gray-200 rounded-lg h-1.5">
+
+                            <div className="text-xs text-gray-500 mb-3 font-medium">{day.date}</div>
+
+                            <div className="space-y-3">
+                              <div>
+                                <div className="text-xs text-gray-400 mb-1">계획된 주제</div>
+                                <div className="text-xs text-gray-700 font-medium line-clamp-1">
+                                  {day.planned_topics.join(', ')}
+                                </div>
+                              </div>
+
+                              <div>
+                                <div className="text-xs text-gray-400 mb-1">완료된 주제</div>
+                                <div className="text-xs text-gray-700 font-medium line-clamp-1">
+                                  {day.completed_topics.join(', ')}
+                                </div>
+                              </div>
+
+                              <div className="flex items-center justify-between text-xs pt-2 border-t border-gray-100/50">
+                                <span className="text-gray-500">출석률</span>
+                                <span className={`font-bold ${attendanceRate >= 90 ? 'text-green-600' :
+                                  attendanceRate >= 80 ? 'text-yellow-600' :
+                                    'text-red-600'
+                                  }`}>
+                                  {attendanceRate}%
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* 전체 현황 탭 */}
+            {activeTab === 'overview' && (
+              <div className="space-y-6">
+                {/* 주요 지표 */}
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                  <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
+                    <div className="text-3xl font-bold text-gray-900 mb-1">{overallStats.total_trainees}</div>
+                    <div className="text-sm font-medium text-gray-500">총 수강생</div>
+                  </div>
+                  <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
+                    <div className="text-3xl font-bold text-gray-900 mb-1">{overallStats.avg_attendance}%</div>
+                    <div className="text-sm font-medium text-gray-500">평균 출석률</div>
+                  </div>
+                  <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
+                    <div className="text-3xl font-bold text-gray-900 mb-1">{overallStats.avg_exam_score}</div>
+                    <div className="text-sm font-medium text-gray-500">평균 시험 점수</div>
+                  </div>
+                  <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
+                    <div className="text-3xl font-bold text-gray-900 mb-1">{overallStats.avg_progress}%</div>
+                    <div className="text-sm font-medium text-gray-500">평균 진도율</div>
+                  </div>
+                </div>
+
+                {/* 성과 분포 */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <div className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm">
+                    <h3 className="text-lg font-bold text-gray-900 mb-4">성과 등급 분포</h3>
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
+                        <span className="text-gray-900 font-bold">우수 ({overallStats.excellent}명)</span>
+                        <span className="text-indigo-600 font-bold">{Math.round((overallStats.excellent / overallStats.total_trainees) * 100)}%</span>
+                      </div>
+                      <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
+                        <span className="text-gray-900 font-bold">양호 ({overallStats.good}명)</span>
+                        <span className="text-indigo-600 font-bold">{Math.round((overallStats.good / overallStats.total_trainees) * 100)}%</span>
+                      </div>
+                      <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
+                        <span className="text-gray-900 font-bold">개선 필요 ({overallStats.needs_improvement}명)</span>
+                        <span className="text-indigo-600 font-bold">{Math.round((overallStats.needs_improvement / overallStats.total_trainees) * 100)}%</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm">
+                    <h3 className="text-lg font-bold text-gray-900 mb-4">과정별 평균 성과</h3>
+                    <div className="space-y-4">
+                      {['BS 영업 기초과정', 'BS 고급 영업 전략', 'BS 고객 관리 시스템'].map((course) => {
+                        const courseStudents = performanceData.filter(p => p.course === course);
+                        const avgScore = courseStudents.length > 0
+                          ? Math.round(courseStudents.reduce((sum, p) => sum + p.exam_average, 0) / courseStudents.length)
+                          : 0;
+
+                        return (
+                          <div key={course}>
+                            <div className="flex items-center justify-between mb-2">
+                              <span className="font-medium text-gray-900">{course}</span>
+                              <span className="text-indigo-600 font-bold">{avgScore}점</span>
+                            </div>
+                            <div className="w-full bg-gray-100 rounded-full h-2.5">
                               <div
-                                className={`h-1.5 rounded-full ${student.overall_progress >= 80 ? 'bg-gray-600' :
-                                  student.overall_progress >= 60 ? 'bg-yellow-500' :
-                                    'bg-red-500'
-                                  }`}
-                                style={{ width: `${student.overall_progress}%` }}
+                                className="bg-indigo-600 h-2.5 rounded-full"
+                                style={{ width: `${avgScore}%` }}
                               />
                             </div>
                           </div>
                         );
                       })}
-                      {course.students.length > 6 && (
-                        <div className="bg-gray-100 rounded p-3 flex items-center justify-center">
-                          <span className="text-sm text-gray-600">외 {course.students.length - 6}명</span>
-                        </div>
-                      )}
                     </div>
                   </div>
                 </div>
-              ))}
-            </div>
-          )}
-
-          {/* 전체 현황 탭 */}
-          {activeTab === 'overview' && (
-            <div className="space-y-6">
-              {/* 주요 지표 */}
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                <div className="bg-gray-50 rounded-lg p-4">
-                  <div className="text-2xl font-bold text-gray-700">{overallStats.total_trainees}</div>
-                  <div className="text-sm text-gray-600">총 수강생</div>
-                </div>
-                <div className="bg-gray-100 rounded-lg p-4">
-                  <div className="text-2xl font-bold text-gray-700">{overallStats.avg_attendance}%</div>
-                  <div className="text-sm text-gray-600">평균 출석률</div>
-                </div>
-                <div className="bg-gray-100 rounded-lg p-4">
-                  <div className="text-2xl font-bold text-gray-700">{overallStats.avg_exam_score}</div>
-                  <div className="text-sm text-gray-600">평균 시험 점수</div>
-                </div>
-                <div className="bg-gray-50 rounded-lg p-4">
-                  <div className="text-2xl font-bold text-gray-700">{overallStats.avg_progress}%</div>
-                  <div className="text-sm text-gray-600">평균 진도율</div>
-                </div>
               </div>
+            )}
 
-              {/* 성과 분포 */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <div>
-                  <h3 className="text-lg font-medium text-gray-900 mb-4">성과 등급 분포</h3>
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between p-3 bg-gray-100 rounded-lg">
-                      <span className="text-gray-800 font-medium">우수 ({overallStats.excellent}명)</span>
-                      <span className="text-gray-700">{Math.round((overallStats.excellent / overallStats.total_trainees) * 100)}%</span>
-                    </div>
-                    <div className="flex items-center justify-between p-3 bg-gray-100 rounded-lg">
-                      <span className="text-gray-800 font-medium">양호 ({overallStats.good}명)</span>
-                      <span className="text-gray-700">{Math.round((overallStats.good / overallStats.total_trainees) * 100)}%</span>
-                    </div>
-                    <div className="flex items-center justify-between p-3 bg-gray-100 rounded-lg">
-                      <span className="text-gray-800 font-medium">개선 필요 ({overallStats.needs_improvement}명)</span>
-                      <span className="text-gray-700">{Math.round((overallStats.needs_improvement / overallStats.total_trainees) * 100)}%</span>
-                    </div>
+            {/* 개별 성과 탭 */}
+            {activeTab === 'individual' && (
+              <div className="space-y-6">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-lg font-bold text-gray-900">개별 수강생 성과</h3>
+                  <div className="flex items-center space-x-3">
+                    <input
+                      type="text"
+                      placeholder="수강생 검색..."
+                      className="border border-gray-200 rounded-xl px-4 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm"
+                    />
+                    <select className="border border-gray-200 rounded-xl px-4 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm bg-white">
+                      <option value="">전체 상태</option>
+                      <option value="excellent">우수</option>
+                      <option value="good">양호</option>
+                      <option value="needs_improvement">개선 필요</option>
+                    </select>
                   </div>
                 </div>
 
-                <div>
-                  <h3 className="text-lg font-medium text-gray-900 mb-4">과정별 평균 성과</h3>
-                  <div className="space-y-3">
-                    {['BS 영업 기초과정', 'BS 고급 영업 전략', 'BS 고객 관리 시스템'].map((course) => {
-                      const courseStudents = performanceData.filter(p => p.course === course);
-                      const avgScore = courseStudents.length > 0
-                        ? Math.round(courseStudents.reduce((sum, p) => sum + p.exam_average, 0) / courseStudents.length)
-                        : 0;
-
-                      return (
-                        <div key={course} className="p-3 bg-gray-50 rounded-lg">
-                          <div className="flex items-center justify-between mb-2">
-                            <span className="font-medium text-gray-900">{course}</span>
-                            <span className="text-gray-600">{avgScore}점</span>
-                          </div>
-                          <div className="w-full bg-gray-200 rounded-lg h-2">
-                            <div
-                              className="bg-gray-600 h-2 rounded-lg"
-                              style={{ width: `${avgScore}%` }}
-                            />
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              </div>
-
-              {/* 개선 권장사항 */}
-              <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
-                <h3 className="font-medium text-gray-800 mb-2 flex items-center">
-                  <ClipboardList className="w-5 h-5 mr-2 text-primary" />
-                  개선 권장사항
-                </h3>
-                <div className="space-y-1 text-sm text-gray-700">
-                  <div>• {overallStats.needs_improvement}명의 수강생이 개선이 필요한 상태입니다.</div>
-                  <div>• 평균 출석률이 {overallStats.avg_attendance}%입니다. 85% 이상 유지를 권장합니다.</div>
-                  <div>• 개별 맞춤 지도가 필요한 수강생에게 추가 지원을 제공하세요.</div>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* 개별 성과 탭 */}
-          {activeTab === 'individual' && (
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <h3 className="text-lg font-medium text-gray-900">개별 수강생 성과</h3>
-                <div className="flex items-center space-x-3">
-                  <input
-                    type="text"
-                    placeholder="수강생 검색..."
-                    className="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
-                  />
-                  <select className="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-gray-500 focus:border-gray-500">
-                    <option value="">전체 상태</option>
-                    <option value="excellent">우수</option>
-                    <option value="good">양호</option>
-                    <option value="needs_improvement">개선 필요</option>
-                  </select>
-                </div>
-              </div>
-
-              <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead className="bg-gray-50">
-                    <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">수강생</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">과정</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">출석률</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">시험 평균</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">진도율</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">상태</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">최근 활동</th>
-                    </tr>
-                  </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
-                    {performanceData.map((trainee) => (
-                      <tr key={trainee.id} className="hover:bg-gray-50">
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm font-medium text-gray-900">{trainee.name}</div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm text-gray-600">{trainee.course}</div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm text-gray-900">{trainee.attendance_rate}%</div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm text-gray-900">{trainee.exam_average}점</div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm text-gray-900">{trainee.progress}%</div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(trainee.status)}`}>
-                            {getStatusLabel(trainee.status)}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm text-gray-500">{trainee.last_activity}</div>
-                        </td>
+                <div className="overflow-hidden rounded-2xl border border-gray-100">
+                  <table className="min-w-full divide-y divide-gray-100">
+                    <thead className="bg-gray-50">
+                      <tr>
+                        <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">수강생</th>
+                        <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">과정</th>
+                        <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">출석률</th>
+                        <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">시험 평균</th>
+                        <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">진도율</th>
+                        <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">상태</th>
+                        <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">최근 활동</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          )}
-
-          {/* 상세 리포트 탭 */}
-          {activeTab === 'reports' && (
-            <div className="space-y-6">
-              <h3 className="text-lg font-medium text-gray-900">상세 성과 리포트</h3>
-
-              {/* 리포트 템플릿 */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="border border-gray-200 rounded-lg p-4 hover:shadow-sm transition-shadow">
-                  <h4 className="font-medium text-gray-900 mb-2 flex items-center">
-                    <BarChart2 className="w-4 h-4 mr-2 text-primary" />
-                    종합 성과 리포트
-                  </h4>
-                  <p className="text-sm text-gray-600 mb-4">전체 수강생의 출석, 시험, 진도 현황을 종합한 리포트</p>
-                  <button className="w-full bg-gray-600 text-white px-4 py-2 rounded-full hover:bg-gray-700 transition-colors text-sm">
-                    리포트 생성
-                  </button>
-                </div>
-
-                <div className="border border-gray-200 rounded-lg p-4 hover:shadow-sm transition-shadow">
-                  <h4 className="font-medium text-gray-900 mb-2 flex items-center">
-                    <TrendingUp className="w-4 h-4 mr-2 text-primary" />
-                    개별 수강생 리포트
-                  </h4>
-                  <p className="text-sm text-gray-600 mb-4">특정 수강생의 상세한 학습 성과 분석 리포트</p>
-                  <button className="w-full bg-gray-600 text-white px-4 py-2 rounded-full hover:bg-gray-700 transition-colors text-sm">
-                    리포트 생성
-                  </button>
-                </div>
-
-                <div className="border border-gray-200 rounded-lg p-4 hover:shadow-sm transition-shadow">
-                  <h4 className="font-medium text-gray-900 mb-2 flex items-center">
-                    <BookOpen className="w-4 h-4 mr-2 text-primary" />
-                    과정별 분석 리포트
-                  </h4>
-                  <p className="text-sm text-gray-600 mb-4">과정별 수강생 성과 비교 및 분석 리포트</p>
-                  <button className="w-full bg-gray-700 text-white px-4 py-2 rounded-full hover:bg-gray-800 transition-colors text-sm">
-                    리포트 생성
-                  </button>
-                </div>
-
-                <div className="border border-gray-200 rounded-lg p-4 hover:shadow-sm transition-shadow">
-                  <h4 className="font-medium text-gray-900 mb-2">⚠️ 개선 필요 수강생 리포트</h4>
-                  <p className="text-sm text-gray-600 mb-4">추가 지원이 필요한 수강생 현황 및 권장사항</p>
-                  <button className="w-full bg-gray-700 text-white px-4 py-2 rounded-full hover:bg-gray-800 transition-colors text-sm">
-                    리포트 생성
-                  </button>
+                    </thead>
+                    <tbody className="bg-white divide-y divide-gray-100">
+                      {performanceData.map((trainee) => (
+                        <tr key={trainee.id} className="hover:bg-gray-50 transition-colors">
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="text-sm font-bold text-gray-900">{trainee.name}</div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="text-sm text-gray-500">{trainee.course}</div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="text-sm font-medium text-gray-900">{trainee.attendance_rate}%</div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="text-sm font-medium text-gray-900">{trainee.exam_average}점</div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="text-sm font-medium text-gray-900">{trainee.progress}%</div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold ${getStatusColor(trainee.status)}`}>
+                              {getStatusLabel(trainee.status)}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="text-sm text-gray-400">{trainee.last_activity}</div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
               </div>
+            )}
 
-              {/* 리포트 히스토리 */}
-              <div>
-                <h4 className="font-medium text-gray-900 mb-3">최근 생성된 리포트</h4>
-                <div className="space-y-3">
-                  {[
-                    { name: '8월 종합 성과 리포트', date: '2024-08-01', type: '종합 리포트', size: '2.3MB' },
-                    { name: '과정별 분석 리포트 (7월)', date: '2024-07-31', type: '과정별 리포트', size: '1.8MB' },
-                    { name: '개선 필요 수강생 리포트', date: '2024-07-28', type: '개별 리포트', size: '945KB' }
-                  ].map((report, index) => (
-                    <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                      <div>
-                        <div className="font-medium text-gray-900">{report.name}</div>
-                        <div className="text-sm text-gray-600">{report.type} • {report.date} • {report.size}</div>
-                      </div>
-                      <button className="text-gray-600 hover:text-gray-700 text-sm font-medium rounded-full">
-                        다운로드
-                      </button>
-                    </div>
-                  ))}
+            {/* 상세 리포트 탭 */}
+            {activeTab === 'reports' && (
+              <div className="space-y-6">
+                <h3 className="text-lg font-bold text-gray-900">상세 성과 리포트</h3>
+
+                {/* 리포트 템플릿 */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="border border-gray-100 rounded-2xl p-6 hover:shadow-md transition-all bg-white group cursor-pointer">
+                    <h4 className="font-bold text-gray-900 mb-2 flex items-center group-hover:text-indigo-600 transition-colors">
+                      <BarChart2 className="w-5 h-5 mr-2 text-indigo-500" />
+                      종합 성과 리포트
+                    </h4>
+                    <p className="text-sm text-gray-500 mb-6">전체 수강생의 출석, 시험, 진도 현황을 종합한 리포트</p>
+                    <button className="w-full bg-gray-900 text-white px-4 py-3 rounded-xl hover:bg-gray-800 transition-colors text-sm font-bold">
+                      리포트 생성
+                    </button>
+                  </div>
+
+                  <div className="border border-gray-100 rounded-2xl p-6 hover:shadow-md transition-all bg-white group cursor-pointer">
+                    <h4 className="font-bold text-gray-900 mb-2 flex items-center group-hover:text-indigo-600 transition-colors">
+                      <TrendingUp className="w-5 h-5 mr-2 text-indigo-500" />
+                      개별 수강생 리포트
+                    </h4>
+                    <p className="text-sm text-gray-500 mb-6">특정 수강생의 상세한 학습 성과 분석 리포트</p>
+                    <button className="w-full bg-gray-900 text-white px-4 py-3 rounded-xl hover:bg-gray-800 transition-colors text-sm font-bold">
+                      리포트 생성
+                    </button>
+                  </div>
+
+                  <div className="border border-gray-100 rounded-2xl p-6 hover:shadow-md transition-all bg-white group cursor-pointer">
+                    <h4 className="font-bold text-gray-900 mb-2 flex items-center group-hover:text-indigo-600 transition-colors">
+                      <BookOpen className="w-5 h-5 mr-2 text-indigo-500" />
+                      과정별 분석 리포트
+                    </h4>
+                    <p className="text-sm text-gray-500 mb-6">과정별 수강생 성과 비교 및 분석 리포트</p>
+                    <button className="w-full bg-white border border-gray-200 text-gray-900 px-4 py-3 rounded-xl hover:bg-gray-50 transition-colors text-sm font-bold">
+                      리포트 생성
+                    </button>
+                  </div>
+
+                  <div className="border border-gray-100 rounded-2xl p-6 hover:shadow-md transition-all bg-white group cursor-pointer">
+                    <h4 className="font-bold text-gray-900 mb-2 flex items-center group-hover:text-red-600 transition-colors">
+                      <AlertTriangle className="w-5 h-5 mr-2 text-red-500" />
+                      개선 필요 수강생 리포트
+                    </h4>
+                    <p className="text-sm text-gray-500 mb-6">추가 지원이 필요한 수강생 현황 및 권장사항</p>
+                    <button className="w-full bg-white border border-gray-200 text-gray-900 px-4 py-3 rounded-xl hover:bg-gray-50 transition-colors text-sm font-bold">
+                      리포트 생성
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </div>
     </div>

@@ -128,7 +128,7 @@ export function ResourceSelector({
     <div className="space-y-6">
       {/* 로딩 상태 */}
       {loading && (
-        <div className="p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+        <div className="p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl">
           <p className="text-sm text-blue-800 dark:text-blue-300">
             자원 가용성을 확인하고 있습니다...
           </p>
@@ -137,7 +137,7 @@ export function ResourceSelector({
 
       {/* 추천 섹션 */}
       {showRecommendations && recommendations && !loading && (
-        <div className="p-4 bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-lg">
+        <div className="p-4 bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-xl">
           <div className="flex items-center gap-2 mb-3">
             <SparklesIcon className="w-5 h-5 text-purple-600 dark:text-purple-400" />
             <h3 className="font-semibold text-purple-900 dark:text-purple-300">
@@ -201,11 +201,10 @@ export function ResourceSelector({
           {instructorAvailability.map((instructor) => (
             <div
               key={instructor.id}
-              className={`p-3 border rounded-lg transition-all cursor-pointer ${
-                selectedInstructorId === instructor.id
+              className={`p-3 border rounded-xl transition-all cursor-pointer ${selectedInstructorId === instructor.id
                   ? 'border-primary bg-primary/5'
                   : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
-              }`}
+                }`}
               onClick={() => onInstructorChange(instructor.id)}
             >
               <div className="flex items-center justify-between">
@@ -246,7 +245,7 @@ export function ResourceSelector({
               {selectedInstructorId === instructor.id &&
                 showInstructorConflicts &&
                 instructor.conflicts && (
-                  <div className="mt-3 p-3 bg-red-50 dark:bg-red-900/20 rounded-lg">
+                  <div className="mt-3 p-3 bg-red-50 dark:bg-red-900/20 rounded-xl">
                     <p className="text-sm font-medium text-red-900 dark:text-red-300 mb-2">
                       충돌하는 일정:
                     </p>
@@ -268,7 +267,7 @@ export function ResourceSelector({
 
         {/* 선택된 강사의 충돌 경고 */}
         {selectedInstructorConflicts && selectedInstructorConflicts.length > 0 && (
-          <div className="mt-2 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+          <div className="mt-2 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl">
             <div className="flex items-start gap-2">
               <ExclamationTriangleIcon className="w-5 h-5 text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5" />
               <div className="text-sm text-red-800 dark:text-red-300">
@@ -295,11 +294,10 @@ export function ResourceSelector({
           {classroomAvailability.map((classroom) => (
             <div
               key={classroom.id}
-              className={`p-3 border rounded-lg transition-all cursor-pointer ${
-                selectedClassroomId === classroom.id
+              className={`p-3 border rounded-xl transition-all cursor-pointer ${selectedClassroomId === classroom.id
                   ? 'border-primary bg-primary/5'
                   : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
-              }`}
+                }`}
               onClick={() => onClassroomChange(classroom.id)}
             >
               <div className="flex items-center justify-between">
@@ -349,7 +347,7 @@ export function ResourceSelector({
 
         {/* 선택된 강의실의 충돌 경고 */}
         {selectedClassroomConflicts && selectedClassroomConflicts.length > 0 && (
-          <div className="mt-2 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+          <div className="mt-2 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl">
             <div className="flex items-start gap-2">
               <ExclamationTriangleIcon className="w-5 h-5 text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5" />
               <div className="text-sm text-red-800 dark:text-red-300">

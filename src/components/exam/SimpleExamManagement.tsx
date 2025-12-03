@@ -7,13 +7,13 @@ const SimpleExamManagement: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'overview' | 'create' | 'results'>('overview');
 
   return (
-    <PageContainer>
-      <div className="space-y-6">
+    <div className="min-h-screen bg-[#F2F4F6] p-4 sm:p-6 pb-24">
+      <div className="max-w-5xl mx-auto space-y-6">
         {/* 헤더 */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <div className="bg-white rounded-[2rem] p-6 shadow-sm border border-gray-100">
           <h1 className="text-2xl font-bold text-gray-900 mb-2 flex items-center">
-            <div className="p-3 bg-red-50 dark:bg-red-900/20 rounded-xl mr-4">
-              <Target className="h-8 w-8 text-red-600 dark:text-red-400" />
+            <div className="p-3 bg-red-50 rounded-xl mr-4">
+              <Target className="h-8 w-8 text-red-600" />
             </div>
             이론 평가 관리
           </h1>
@@ -21,9 +21,9 @@ const SimpleExamManagement: React.FC = () => {
         </div>
 
         {/* 탭 메뉴 */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-          <div className="border-b border-gray-200">
-            <nav className="-mb-px flex">
+        <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 overflow-hidden">
+          <div className="border-b border-gray-100">
+            <nav className="-mb-px flex px-6">
               {[
                 { key: 'overview', label: <span className="flex items-center"><BarChart2 className="w-4 h-4 mr-2" />개요</span> },
                 { key: 'create', label: <span className="flex items-center"><Plus className="w-4 h-4 mr-2" />시험 생성</span> },
@@ -32,7 +32,7 @@ const SimpleExamManagement: React.FC = () => {
                 <button
                   key={tab.key}
                   onClick={() => setActiveTab(tab.key as any)}
-                  className={`px-6 py-3 text-sm font-medium border-b-2 transition-colors ${activeTab === tab.key
+                  className={`px-6 py-4 text-sm font-medium border-b-2 transition-colors ${activeTab === tab.key
                     ? 'border-blue-500 text-blue-600'
                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                     }`}
@@ -49,43 +49,43 @@ const SimpleExamManagement: React.FC = () => {
               <div className="space-y-6">
                 {/* 통계 카드 */}
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                  <div className="bg-gray-50 rounded-lg p-4">
-                    <div className="text-2xl font-bold text-gray-900">8</div>
-                    <div className="text-sm text-gray-600">전체 시험</div>
+                  <div className="bg-gray-50 rounded-2xl p-5">
+                    <div className="text-3xl font-bold text-gray-900 mb-1">8</div>
+                    <div className="text-sm font-medium text-gray-500">전체 시험</div>
                   </div>
-                  <div className="bg-green-500/10 rounded-lg p-4">
-                    <div className="text-2xl font-bold text-green-600">3</div>
-                    <div className="text-sm text-gray-600">진행중</div>
+                  <div className="bg-green-50 rounded-2xl p-5">
+                    <div className="text-3xl font-bold text-green-600 mb-1">3</div>
+                    <div className="text-sm font-medium text-green-600">진행중</div>
                   </div>
-                  <div className="bg-blue-50 rounded-lg p-4">
-                    <div className="text-2xl font-bold text-blue-600">2</div>
-                    <div className="text-sm text-gray-600">예정됨</div>
+                  <div className="bg-blue-50 rounded-2xl p-5">
+                    <div className="text-3xl font-bold text-blue-600 mb-1">2</div>
+                    <div className="text-sm font-medium text-blue-600">예정됨</div>
                   </div>
-                  <div className="bg-purple-50 rounded-lg p-4">
-                    <div className="text-2xl font-bold text-purple-600">5</div>
-                    <div className="text-sm text-gray-600">완료됨</div>
+                  <div className="bg-purple-50 rounded-2xl p-5">
+                    <div className="text-3xl font-bold text-purple-600 mb-1">5</div>
+                    <div className="text-sm font-medium text-purple-600">완료됨</div>
                   </div>
                 </div>
 
                 {/* 최근 시험 목록 */}
                 <div>
-                  <h3 className="text-lg font-medium text-gray-900 mb-4">최근 시험</h3>
+                  <h3 className="text-lg font-bold text-gray-900 mb-4">최근 시험</h3>
                   <div className="space-y-3">
                     {[
                       { id: 1, title: '영업 기초 이론 평가', course: 'BS 영업 기초과정', status: 'active', students: 15 },
                       { id: 2, title: '고급 영업 전략 종합 평가', course: 'BS 고급 영업 전략', status: 'scheduled', students: 12 },
                       { id: 3, title: 'CRM 활용 능력 평가', course: 'BS 고객 관리 시스템', status: 'completed', students: 18 }
                     ].map((exam) => (
-                      <div key={exam.id} className="flex items-center justify-between p-4 bg-white border border-gray-200 rounded-lg hover:shadow-sm transition-shadow">
+                      <div key={exam.id} className="flex items-center justify-between p-5 bg-white border border-gray-100 rounded-2xl hover:shadow-md transition-all cursor-pointer">
                         <div>
-                          <h4 className="font-medium text-gray-900">{exam.title}</h4>
-                          <p className="text-sm text-gray-600">{exam.course}</p>
+                          <h4 className="font-bold text-gray-900 mb-1">{exam.title}</h4>
+                          <p className="text-sm text-gray-500">{exam.course}</p>
                         </div>
                         <div className="flex items-center space-x-4">
-                          <span className="text-sm text-gray-500">{exam.students}명 참여</span>
-                          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${exam.status === 'active' ? 'bg-green-500/10 text-green-700' :
-                            exam.status === 'scheduled' ? 'bg-blue-100 text-blue-800' :
-                              'bg-gray-100 text-gray-800'
+                          <span className="text-sm text-gray-500 font-medium">{exam.students}명 참여</span>
+                          <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-bold ${exam.status === 'active' ? 'bg-green-100 text-green-700' :
+                            exam.status === 'scheduled' ? 'bg-blue-100 text-blue-700' :
+                              'bg-gray-100 text-gray-600'
                             }`}>
                             {exam.status === 'active' ? '진행중' :
                               exam.status === 'scheduled' ? '예정' : '완료'}
@@ -101,22 +101,22 @@ const SimpleExamManagement: React.FC = () => {
             {/* 시험 생성 탭 */}
             {activeTab === 'create' && (
               <div className="space-y-6">
-                <div className="max-w-2xl">
-                  <h3 className="text-lg font-medium text-gray-900 mb-4">새 시험 생성</h3>
+                <div className="max-w-2xl mx-auto">
+                  <h3 className="text-xl font-bold text-gray-900 mb-6">새 시험 생성</h3>
 
-                  <div className="space-y-4">
+                  <div className="space-y-5">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">시험 제목</label>
+                      <label className="block text-sm font-bold text-gray-700 mb-2">시험 제목</label>
                       <input
                         type="text"
-                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        className="w-full border border-gray-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
                         placeholder="예: 영업 기초 이론 평가"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">과정 선택</label>
-                      <select className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                      <label className="block text-sm font-bold text-gray-700 mb-2">과정 선택</label>
+                      <select className="w-full border border-gray-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all bg-white">
                         <option value="">과정을 선택하세요</option>
                         <option value="1">BS 영업 기초과정</option>
                         <option value="2">BS 고급 영업 전략</option>
@@ -126,50 +126,50 @@ const SimpleExamManagement: React.FC = () => {
 
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">시험 시간 (분)</label>
+                        <label className="block text-sm font-bold text-gray-700 mb-2">시험 시간 (분)</label>
                         <input
                           type="number"
                           min="1"
-                          className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          className="w-full border border-gray-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
                           placeholder="60"
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">문항 수</label>
+                        <label className="block text-sm font-bold text-gray-700 mb-2">문항 수</label>
                         <input
                           type="number"
                           min="1"
-                          className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          className="w-full border border-gray-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
                           placeholder="10"
                         />
                       </div>
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">시험 설명</label>
+                      <label className="block text-sm font-bold text-gray-700 mb-2">시험 설명</label>
                       <textarea
                         rows={3}
-                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        className="w-full border border-gray-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
                         placeholder="시험에 대한 설명을 입력하세요."
                       />
                     </div>
 
-                    <div className="flex items-center space-x-6">
-                      <label className="flex items-center">
-                        <input type="checkbox" className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" />
-                        <span className="ml-2 text-sm text-gray-700">문제 순서 랜덤화</span>
+                    <div className="flex items-center space-x-6 py-2">
+                      <label className="flex items-center cursor-pointer">
+                        <input type="checkbox" className="h-5 w-5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" />
+                        <span className="ml-2 text-sm font-medium text-gray-700">문제 순서 랜덤화</span>
                       </label>
-                      <label className="flex items-center">
-                        <input type="checkbox" className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" />
-                        <span className="ml-2 text-sm text-gray-700">즉시 결과 표시</span>
+                      <label className="flex items-center cursor-pointer">
+                        <input type="checkbox" className="h-5 w-5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" />
+                        <span className="ml-2 text-sm font-medium text-gray-700">즉시 결과 표시</span>
                       </label>
                     </div>
 
-                    <div className="flex items-center space-x-3 pt-4">
-                      <button className="btn-primary">
+                    <div className="flex items-center space-x-3 pt-6">
+                      <button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-xl transition-colors shadow-lg shadow-blue-200">
                         시험 생성
                       </button>
-                      <button className="btn-outline">
+                      <button className="flex-1 bg-white border border-gray-200 text-gray-700 font-bold py-3.5 rounded-xl hover:bg-gray-50 transition-colors">
                         취소
                       </button>
                     </div>
@@ -181,12 +181,12 @@ const SimpleExamManagement: React.FC = () => {
             {/* 결과 분석 탭 */}
             {activeTab === 'results' && (
               <div className="space-y-6">
-                <h3 className="text-lg font-medium text-gray-900 mb-4">시험 결과 분석</h3>
+                <h3 className="text-xl font-bold text-gray-900 mb-4">시험 결과 분석</h3>
 
                 {/* 성적 분포 */}
-                <div>
-                  <h4 className="font-medium text-gray-900 mb-3">성적 분포</h4>
-                  <div className="space-y-3">
+                <div className="bg-gray-50 rounded-2xl p-6">
+                  <h4 className="font-bold text-gray-900 mb-4">성적 분포</h4>
+                  <div className="space-y-4">
                     {[
                       { range: '90-100점', count: 15, percentage: 25, color: 'bg-green-500' },
                       { range: '80-89점', count: 20, percentage: 33, color: 'bg-blue-500' },
@@ -195,15 +195,15 @@ const SimpleExamManagement: React.FC = () => {
                       { range: '60점 미만', count: 5, percentage: 8, color: 'bg-red-500' }
                     ].map((item) => (
                       <div key={item.range} className="flex items-center">
-                        <div className="w-20 text-sm text-gray-600">{item.range}</div>
+                        <div className="w-24 text-sm font-medium text-gray-600">{item.range}</div>
                         <div className="flex-1 mx-4">
-                          <div className="flex items-center justify-between mb-1">
-                            <span className="text-sm text-gray-700">{item.count}명</span>
-                            <span className="text-sm text-gray-500">{item.percentage}%</span>
+                          <div className="flex items-center justify-between mb-1.5">
+                            <span className="text-sm font-bold text-gray-900">{item.count}명</span>
+                            <span className="text-xs text-gray-500">{item.percentage}%</span>
                           </div>
-                          <div className="w-full bg-gray-200 rounded-lg h-3">
+                          <div className="w-full bg-gray-200 rounded-full h-2.5 overflow-hidden">
                             <div
-                              className={`h-3 rounded-full ${item.color}`}
+                              className={`h-2.5 rounded-full ${item.color}`}
                               style={{ width: `${item.percentage}%` }}
                             />
                           </div>
@@ -214,18 +214,16 @@ const SimpleExamManagement: React.FC = () => {
                 </div>
 
                 {/* 평균 점수 */}
-                <div className="bg-blue-50 rounded-lg p-4">
-                  <div className="text-center">
-                    <div className="text-3xl font-bold text-blue-600">78.5점</div>
-                    <div className="text-sm text-gray-600 mt-1">전체 평균 점수</div>
-                  </div>
+                <div className="bg-blue-50 rounded-2xl p-8 text-center border border-blue-100">
+                  <div className="text-4xl font-bold text-blue-600 mb-2">78.5<span className="text-2xl ml-1">점</span></div>
+                  <div className="text-sm font-medium text-blue-600/70">전체 평균 점수</div>
                 </div>
               </div>
             )}
           </div>
         </div>
       </div>
-    </PageContainer>
+    </div>
   );
 };
 

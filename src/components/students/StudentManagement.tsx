@@ -245,8 +245,12 @@ const StudentManagement: React.FC = () => {
             }
           ],
           overallGrade: 4.2,
+          averageScore: 84,
           attendanceRate: 97.5,
-          lastActiveAt: '2025-01-26T16:30:00Z'
+          lastActiveAt: '2025-01-26T16:30:00Z',
+          enrollmentDate: '2024-12-01',
+          status: 'active',
+          completedCourses: 0
         },
         {
           id: 'student-2',
@@ -261,8 +265,12 @@ const StudentManagement: React.FC = () => {
             }
           ],
           overallGrade: 4.5,
+          averageScore: 90,
           attendanceRate: 100,
-          lastActiveAt: '2025-01-25T14:20:00Z'
+          lastActiveAt: '2025-01-25T14:20:00Z',
+          enrollmentDate: '2024-11-15',
+          status: 'active',
+          completedCourses: 2
         },
         {
           id: 'student-3',
@@ -277,8 +285,12 @@ const StudentManagement: React.FC = () => {
             }
           ],
           overallGrade: 3.8,
+          averageScore: 76,
           attendanceRate: 90,
-          lastActiveAt: '2025-01-24T11:15:00Z'
+          lastActiveAt: '2025-01-24T11:15:00Z',
+          enrollmentDate: '2025-01-05',
+          status: 'active',
+          completedCourses: 1
         },
         {
           id: 'student-4',
@@ -287,8 +299,12 @@ const StudentManagement: React.FC = () => {
           position: '사원',
           currentCourses: [],
           overallGrade: 4.8,
+          averageScore: 96,
           attendanceRate: 98,
-          lastActiveAt: '2025-01-20T09:30:00Z'
+          lastActiveAt: '2025-01-20T09:30:00Z',
+          enrollmentDate: '2024-10-10',
+          status: 'completed',
+          completedCourses: 3
         },
         {
           id: 'student-5',
@@ -303,8 +319,12 @@ const StudentManagement: React.FC = () => {
             }
           ],
           overallGrade: 4.3,
+          averageScore: 86,
           attendanceRate: 95,
-          lastActiveAt: '2025-01-26T15:45:00Z'
+          lastActiveAt: '2025-01-26T15:45:00Z',
+          enrollmentDate: '2024-12-20',
+          status: 'active',
+          completedCourses: 0
         },
         {
           id: 'student-6',
@@ -324,8 +344,12 @@ const StudentManagement: React.FC = () => {
             }
           ],
           overallGrade: 4.1,
+          averageScore: 82,
           attendanceRate: 92,
-          lastActiveAt: '2025-01-25T13:20:00Z'
+          lastActiveAt: '2025-01-25T13:20:00Z',
+          enrollmentDate: '2025-01-10',
+          status: 'active',
+          completedCourses: 0
         },
         {
           id: 'student-7',
@@ -340,8 +364,12 @@ const StudentManagement: React.FC = () => {
             }
           ],
           overallGrade: 4.4,
+          averageScore: 88,
           attendanceRate: 96,
-          lastActiveAt: '2025-01-26T09:45:00Z'
+          lastActiveAt: '2025-01-26T09:45:00Z',
+          enrollmentDate: '2024-11-01',
+          status: 'active',
+          completedCourses: 1
         },
         {
           id: 'student-8',
@@ -356,8 +384,12 @@ const StudentManagement: React.FC = () => {
             }
           ],
           overallGrade: 4.6,
+          averageScore: 92,
           attendanceRate: 98,
-          lastActiveAt: '2025-01-26T11:30:00Z'
+          lastActiveAt: '2025-01-26T11:30:00Z',
+          enrollmentDate: '2024-09-15',
+          status: 'active',
+          completedCourses: 4
         }
       ];
 
@@ -505,7 +537,7 @@ const StudentManagement: React.FC = () => {
               <div className="flex items-center bg-gray-100 rounded-full p-1">
                 <button
                   onClick={() => setViewMode('list')}
-                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${viewMode === 'list'
+                  className={`px-4 py-2 rounded-full text-sm font-bold transition-all ${viewMode === 'list'
                     ? 'bg-white text-gray-900 shadow-sm'
                     : 'text-gray-500 hover:text-gray-900'
                     }`}
@@ -514,7 +546,7 @@ const StudentManagement: React.FC = () => {
                 </button>
                 <button
                   onClick={() => setViewMode('grid')}
-                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${viewMode === 'grid'
+                  className={`px-4 py-2 rounded-full text-sm font-bold transition-all ${viewMode === 'grid'
                     ? 'bg-white text-gray-900 shadow-sm'
                     : 'text-gray-500 hover:text-gray-900'
                     }`}
@@ -525,7 +557,7 @@ const StudentManagement: React.FC = () => {
               {canModifyStudents && (
                 <button
                   onClick={() => {/* 새 교육생 등록 */ }}
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-full flex items-center space-x-2 shadow-sm transition-colors"
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-full flex items-center space-x-2 shadow-lg shadow-blue-200 transition-all font-bold"
                 >
                   <UserPlus className="h-4 w-4" />
                   <span>교육생 등록</span>
@@ -538,61 +570,61 @@ const StudentManagement: React.FC = () => {
         {/* 통계 대시보드 */}
         {statistics && (
           <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 p-6">
               <div className="flex items-center">
-                <div className="p-2 bg-blue-100 rounded-lg">
+                <div className="p-3 bg-blue-50 rounded-xl">
                   <Users className="h-6 w-6 text-blue-600" />
                 </div>
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">전체 교육생</p>
+                  <p className="text-sm font-bold text-gray-500">전체 교육생</p>
                   <p className="text-2xl font-bold text-gray-900">{statistics.totalStudents}</p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 p-6">
               <div className="flex items-center">
-                <div className="p-2 bg-green-500/10 rounded-lg">
+                <div className="p-3 bg-green-50 rounded-xl">
                   <Clock className="h-6 w-6 text-green-600" />
                 </div>
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">활성 교육생</p>
+                  <p className="text-sm font-bold text-gray-500">활성 교육생</p>
                   <p className="text-2xl font-bold text-gray-900">{statistics.activeStudents}</p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 p-6">
               <div className="flex items-center">
-                <div className="p-2 bg-purple-100 rounded-lg">
+                <div className="p-3 bg-purple-50 rounded-xl">
                   <GraduationCap className="h-6 w-6 text-purple-600" />
                 </div>
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">수료 완료</p>
+                  <p className="text-sm font-bold text-gray-500">수료 완료</p>
                   <p className="text-2xl font-bold text-gray-900">{statistics.completedStudents}</p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 p-6">
               <div className="flex items-center">
-                <div className="p-2 bg-yellow-100 rounded-lg">
-                  <Trophy className="h-6 w-6 text-foreground" />
+                <div className="p-3 bg-yellow-50 rounded-xl">
+                  <Trophy className="h-6 w-6 text-yellow-600" />
                 </div>
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">평균 성적</p>
+                  <p className="text-sm font-bold text-gray-500">평균 성적</p>
                   <p className="text-2xl font-bold text-gray-900">{statistics.averageGrade.toFixed(1)}</p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 p-6">
               <div className="flex items-center">
-                <div className="p-2 bg-orange-500/10 rounded-lg">
+                <div className="p-3 bg-orange-50 rounded-xl">
                   <BarChart2 className="h-6 w-6 text-orange-600" />
                 </div>
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">평균 출석률</p>
+                  <p className="text-sm font-bold text-gray-500">평균 출석률</p>
                   <p className="text-2xl font-bold text-gray-900">{statistics.averageAttendance.toFixed(1)}%</p>
                 </div>
               </div>
@@ -601,7 +633,7 @@ const StudentManagement: React.FC = () => {
         )}
 
         {/* 고급 검색 */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 p-6">
           <AdvancedSearch
             filters={searchFilters}
             onSearch={handleAdvancedSearch}
@@ -630,7 +662,7 @@ const StudentManagement: React.FC = () => {
           <div className="flex justify-end space-x-3 mt-4">
             <button
               onClick={() => {/* 엑셀 다운로드 */ }}
-              className="flex items-center space-x-1 border border-gray-300 rounded-full px-3 py-2 hover:bg-gray-50"
+              className="flex items-center space-x-1 border border-gray-200 rounded-xl px-4 py-2.5 hover:bg-gray-50 font-bold text-gray-700 transition-colors"
             >
               <FileDown className="h-4 w-4" />
               <span>엑셀 다운로드</span>
@@ -638,7 +670,7 @@ const StudentManagement: React.FC = () => {
 
             <button
               onClick={() => setShowReportGenerator(true)}
-              className="btn-success flex items-center space-x-1 rounded-full px-3 py-2"
+              className="bg-green-600 hover:bg-green-700 text-white flex items-center space-x-1 rounded-xl px-4 py-2.5 font-bold shadow-lg shadow-green-200 transition-colors"
             >
               <BarChart2 className="h-4 w-4" />
               <span>성과 리포트</span>
@@ -647,9 +679,9 @@ const StudentManagement: React.FC = () => {
         </div>
 
         {/* 교육생 목록 */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-          <div className="px-6 py-4 border-b border-gray-200">
-            <h3 className="text-lg font-medium text-gray-900">
+        <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 overflow-hidden">
+          <div className="px-8 py-6 border-b border-gray-100">
+            <h3 className="text-lg font-bold text-gray-900">
               교육생 목록 ({filteredStudents.length})
             </h3>
           </div>
@@ -657,72 +689,72 @@ const StudentManagement: React.FC = () => {
           {viewMode === 'list' ? (
             // 목록 뷰
             <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
+              <table className="min-w-full divide-y divide-gray-100">
                 <thead className="bg-gray-50">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
                       교육생 정보
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
                       현재 수강 과정
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
                       성적
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
                       출석률
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
                       최근 활동
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
                       작업
                     </th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody className="bg-white divide-y divide-gray-100">
                   {filteredStudents.map((student) => (
-                    <tr key={student.id} className="hover:bg-gray-50">
+                    <tr key={student.id} className="hover:bg-gray-50 transition-colors">
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center">
                           <div>
-                            <div className="text-sm font-medium text-gray-900">{student.name}</div>
+                            <div className="text-sm font-bold text-gray-900">{student.name}</div>
                             <div className="text-sm text-gray-500">{student.department} · {student.position}</div>
                           </div>
                         </div>
                       </td>
                       <td className="px-6 py-4">
                         {student.currentCourses.length > 0 ? (
-                          <div className="space-y-1">
+                          <div className="space-y-2">
                             {student.currentCourses.map((course, index) => (
                               <div key={index}>
-                                <div className="text-sm font-medium text-gray-900">{course.courseCode}</div>
-                                <div className="text-sm text-gray-500">{course.courseName}</div>
-                                <div className="mt-1">
+                                <div className="text-sm font-bold text-gray-900">{course.courseCode}</div>
+                                <div className="text-sm text-gray-500 mb-1">{course.courseName}</div>
+                                <div>
                                   <div className="flex items-center space-x-2">
-                                    <div className="w-20 bg-gray-200 rounded-lg h-2">
+                                    <div className="w-24 bg-gray-100 rounded-full h-2">
                                       <div
-                                        className="bg-blue-600 h-2 rounded-lg"
+                                        className="bg-blue-600 h-2 rounded-full"
                                         style={{ width: `${course.progress}%` }}
                                       ></div>
                                     </div>
-                                    <span className="text-xs text-gray-500">{course.progress}%</span>
+                                    <span className="text-xs font-bold text-blue-600">{course.progress}%</span>
                                   </div>
                                 </div>
                               </div>
                             ))}
                           </div>
                         ) : (
-                          <span className="text-sm text-gray-500">수강 중인 과정 없음</span>
+                          <span className="text-sm text-gray-400">수강 중인 과정 없음</span>
                         )}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`text-sm font-medium ${getGradeColor(student.overallGrade)}`}>
+                        <span className={`text-sm font-bold ${getGradeColor(student.overallGrade)}`}>
                           {student.overallGrade.toFixed(1)}/5.0
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`text-sm font-medium ${getAttendanceColor(student.attendanceRate)}`}>
+                        <span className={`text-sm font-bold ${getAttendanceColor(student.attendanceRate)}`}>
                           {student.attendanceRate}%
                         </span>
                       </td>
@@ -733,7 +765,7 @@ const StudentManagement: React.FC = () => {
                         <div className="flex items-center space-x-2">
                           <button
                             onClick={() => setSelectedStudentId(student.id)}
-                            className="text-blue-600 hover:text-blue-900 p-1 rounded"
+                            className="text-gray-400 hover:text-blue-600 p-2 hover:bg-blue-50 rounded-full transition-all"
                             title="상세보기"
                           >
                             <Eye className="h-4 w-4" />
@@ -741,7 +773,7 @@ const StudentManagement: React.FC = () => {
                           {canModifyStudents && (
                             <button
                               onClick={() => {/* 편집 */ }}
-                              className="text-green-600 hover:text-green-900 p-1 rounded"
+                              className="text-gray-400 hover:text-green-600 p-2 hover:bg-green-50 rounded-full transition-all"
                               title="편집"
                             >
                               <Pencil className="h-4 w-4" />
@@ -761,43 +793,45 @@ const StudentManagement: React.FC = () => {
                 {filteredStudents.map((student) => (
                   <div
                     key={student.id}
-                    className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow cursor-pointer"
+                    className="border border-gray-100 rounded-2xl p-6 hover:shadow-lg transition-all cursor-pointer bg-white group"
                     onClick={() => setSelectedStudentId(student.id)}
                   >
-                    <div className="flex items-center justify-between mb-3">
-                      <h4 className="font-medium text-gray-900">{student.name}</h4>
-                      <ChevronRight className="h-4 w-4 text-gray-400" />
+                    <div className="flex items-center justify-between mb-4">
+                      <h4 className="font-bold text-gray-900 text-lg group-hover:text-blue-600 transition-colors">{student.name}</h4>
+                      <div className="bg-gray-50 p-2 rounded-full group-hover:bg-blue-50 transition-colors">
+                        <ChevronRight className="h-4 w-4 text-gray-400 group-hover:text-blue-500" />
+                      </div>
                     </div>
 
-                    <div className="text-sm text-gray-600 mb-3">
+                    <div className="text-sm text-gray-500 mb-4 font-medium">
                       {student.department} · {student.position}
                     </div>
 
                     {student.currentCourses.length > 0 ? (
-                      <div className="mb-3">
-                        <div className="text-xs text-gray-500 mb-1">현재 수강 과정</div>
+                      <div className="mb-4 bg-gray-50 rounded-xl p-4">
+                        <div className="text-xs font-bold text-gray-500 mb-2 uppercase tracking-wider">현재 수강 과정</div>
                         {student.currentCourses.map((course, index) => (
                           <div key={index} className="text-sm">
-                            <div className="font-medium text-gray-900">{course.courseCode}</div>
-                            <div className="flex items-center space-x-2 mt-1">
-                              <div className="flex-1 bg-gray-200 rounded-lg h-1.5">
+                            <div className="font-bold text-gray-900 mb-1">{course.courseCode}</div>
+                            <div className="flex items-center space-x-2 mt-2">
+                              <div className="flex-1 bg-gray-200 rounded-full h-2">
                                 <div
-                                  className="bg-blue-600 h-1.5 rounded-lg"
+                                  className="bg-blue-600 h-2 rounded-full"
                                   style={{ width: `${course.progress}%` }}
                                 ></div>
                               </div>
-                              <span className="text-xs text-gray-500">{course.progress}%</span>
+                              <span className="text-xs font-bold text-blue-600">{course.progress}%</span>
                             </div>
                           </div>
                         ))}
                       </div>
                     ) : (
-                      <div className="mb-3 text-sm text-gray-500">
+                      <div className="mb-4 text-sm text-gray-400 bg-gray-50 rounded-xl p-4 flex items-center justify-center h-[88px]">
                         수강 중인 과정 없음
                       </div>
                     )}
 
-                    <div className="flex justify-between items-center pt-3 border-t border-gray-100">
+                    <div className="flex justify-between items-center pt-4 border-t border-gray-100">
                       <div className="text-xs text-gray-500">
                         성적: <span className={`font-medium ${getGradeColor(student.overallGrade)}`}>
                           {student.overallGrade.toFixed(1)}

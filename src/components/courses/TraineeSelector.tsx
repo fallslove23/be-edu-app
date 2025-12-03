@@ -11,9 +11,9 @@ import {
   InformationCircleIcon
 } from '@heroicons/react/24/outline';
 import { CourseEnrollmentService } from '../../services/course-enrollment.service';
-import type { 
-  TraineeSearchFilter, 
-  TraineeSearchResult 
+import type {
+  TraineeSearchFilter,
+  TraineeSearchResult
 } from '../../types/course-enrollment.types';
 import type { Course } from '../../types/course.types';
 import toast from 'react-hot-toast';
@@ -49,8 +49,8 @@ const TraineeSelector: React.FC<TraineeSelectorProps> = ({
 
   // 부서 목록 (실제로는 API에서 조회)
   const departments = [
-    '영업1팀', '영업2팀', '영업3팀', 
-    '마케팅팀', '기획팀', '인사팀', 
+    '영업1팀', '영업2팀', '영업3팀',
+    '마케팅팀', '기획팀', '인사팀',
     '재무팀', '개발팀', 'CS팀'
   ];
 
@@ -58,14 +58,14 @@ const TraineeSelector: React.FC<TraineeSelectorProps> = ({
   const searchTrainees = async (resetPage = false) => {
     try {
       setLoading(true);
-      
-      const filter = resetPage 
+
+      const filter = resetPage
         ? { ...searchFilter, page: 1 }
         : searchFilter;
 
       const result = await CourseEnrollmentService.searchAvailableTrainees(filter);
       setSearchResult(result);
-      
+
       if (resetPage) {
         setSearchFilter(prev => ({ ...prev, page: 1 }));
       }
@@ -170,13 +170,13 @@ const TraineeSelector: React.FC<TraineeSelectorProps> = ({
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg shadow-xl w-full max-w-4xl mx-4 max-h-[90vh] overflow-hidden">
+      <div className="bg-white rounded-[2rem] shadow-xl w-full max-w-4xl mx-4 max-h-[90vh] overflow-hidden">
         {/* 헤더 */}
         <div className="flex items-center justify-between p-6 border-b border-gray-200">
           <div>
             <h2 className="text-xl font-semibold text-gray-900">교육생 배정</h2>
             <p className="text-sm text-gray-600 mt-1">
-              {course.name} - 현재 {course.current_trainees}/{course.max_trainees}명 
+              {course.name} - 현재 {course.current_trainees}/{course.max_trainees}명
               ({availableSpots}자리 남음)
             </p>
           </div>
@@ -233,7 +233,7 @@ const TraineeSelector: React.FC<TraineeSelectorProps> = ({
 
             {/* 확장 필터 */}
             {showFilters && (
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-gray-50 rounded-lg">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-gray-50 rounded-xl">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">부서</label>
                   <select
@@ -301,12 +301,12 @@ const TraineeSelector: React.FC<TraineeSelectorProps> = ({
                     <input
                       type="checkbox"
                       checked={searchResult.trainees.filter(t => t.is_eligible).every(t => selectedTrainees.has(t.id))}
-                      onChange={() => {}} // onClick으로 처리
+                      onChange={() => { }} // onClick으로 처리
                       className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 mr-2"
                     />
                     전체 선택 (배정 가능: {searchResult.trainees.filter(t => t.is_eligible).length}명)
                   </button>
-                  
+
                   <div className="text-sm text-gray-600">
                     총 {searchResult.total_count}명
                   </div>
@@ -318,9 +318,8 @@ const TraineeSelector: React.FC<TraineeSelectorProps> = ({
                 {searchResult.trainees.map((trainee) => (
                   <div
                     key={trainee.id}
-                    className={`p-4 hover:bg-gray-50 transition-colors ${
-                      !trainee.is_eligible ? 'opacity-50' : ''
-                    }`}
+                    className={`p-4 hover:bg-gray-50 transition-colors ${!trainee.is_eligible ? 'opacity-50' : ''
+                      }`}
                   >
                     <div className="flex items-center">
                       <input
@@ -330,7 +329,7 @@ const TraineeSelector: React.FC<TraineeSelectorProps> = ({
                         disabled={!trainee.is_eligible}
                         className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 mr-3"
                       />
-                      
+
                       <div className="flex-1">
                         <div className="flex items-center justify-between">
                           <div>
@@ -349,7 +348,7 @@ const TraineeSelector: React.FC<TraineeSelectorProps> = ({
                               )}
                             </div>
                           </div>
-                          
+
                           <div className="text-right">
                             {!trainee.is_eligible && trainee.eligibility_reason && (
                               <div className="flex items-center text-sm text-destructive">
@@ -376,11 +375,11 @@ const TraineeSelector: React.FC<TraineeSelectorProps> = ({
                     >
                       이전
                     </button>
-                    
+
                     <span className="text-sm text-gray-700">
                       {searchFilter.page || 1} / {Math.ceil(searchResult.total_count / (searchFilter.limit || 20))} 페이지
                     </span>
-                    
+
                     <button
                       onClick={() => goToPage((searchFilter.page || 1) + 1)}
                       disabled={!searchResult.has_next}
@@ -398,17 +397,17 @@ const TraineeSelector: React.FC<TraineeSelectorProps> = ({
         {/* 하단 액션 */}
         <div className="p-6 border-t border-gray-200">
           {willExceedCapacity && (
-            <div className="mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+            <div className="mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded-xl">
               <div className="flex items-center">
                 <InformationCircleIcon className="h-5 w-5 text-foreground mr-2" />
                 <div className="text-sm text-yellow-800">
-                  선택한 인원이 정원을 {selectedCount - availableSpots}명 초과합니다. 
+                  선택한 인원이 정원을 {selectedCount - availableSpots}명 초과합니다.
                   초과 인원은 대기자 목록에 추가됩니다.
                 </div>
               </div>
             </div>
           )}
-          
+
           <div className="flex justify-end space-x-3">
             <button
               onClick={handleClose}

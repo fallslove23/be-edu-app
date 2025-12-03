@@ -40,19 +40,19 @@ const BulkImportModal: React.FC<BulkImportModalProps> = ({ isOpen, onClose, onIm
     if (!file) return;
 
     setIsProcessing(true);
-    
+
     try {
       // 실제로는 SheetJS 라이브러리 사용
       // 여기서는 모의 데이터로 시연
       await new Promise(resolve => setTimeout(resolve, 2000));
-      
+
       const mockData = [
         ['이름', '이메일', '전화번호', '사번', '역할', '부서', '직급', '입사일', '상태'],
         ['홍길동', 'hong@company.com', '010-1234-5678', 'EMP001', 'trainee', '영업팀', '사원', '2024-03-01', 'active'],
         ['김철수', 'kim@company.com', '010-2345-6789', 'EMP002', 'instructor', '교육팀', '강사', '2022-01-15', 'active'],
         ['이영희', 'lee@company.com', '010-3456-7890', 'EMP003', 'manager', '영업본부', '팀장', '2020-06-01', 'active'],
       ];
-      
+
       processCsvData(mockData);
     } catch (error) {
       console.error('파일 처리 실패:', error);
@@ -64,19 +64,19 @@ const BulkImportModal: React.FC<BulkImportModalProps> = ({ isOpen, onClose, onIm
   // 구글 스프레드시트 처리
   const handleGoogleSheetImport = async () => {
     if (!googleSheetUrl) return;
-    
+
     setIsProcessing(true);
-    
+
     try {
       // 실제로는 Google Sheets API 사용
       await new Promise(resolve => setTimeout(resolve, 2000));
-      
+
       const mockData = [
         ['이름', '이메일', '전화번호', '사번', '역할', '부서', '직급', '입사일', '상태'],
         ['박구글', 'park@company.com', '010-4567-8901', 'EMP004', 'operator', '운영팀', '주임', '2023-09-01', 'active'],
         ['최스프레드', 'choi@company.com', '010-5678-9012', 'EMP005', 'trainee', '마케팅팀', '사원', '2024-01-01', 'pending'],
       ];
-      
+
       processCsvData(mockData);
     } catch (error) {
       console.error('구글 시트 처리 실패:', error);
@@ -196,8 +196,8 @@ const BulkImportModal: React.FC<BulkImportModalProps> = ({ isOpen, onClose, onIm
     <div className="fixed inset-0 z-50 overflow-y-auto">
       <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
         <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" onClick={onClose} />
-        
-        <div className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full sm:p-6">
+
+        <div className="inline-block align-bottom bg-white rounded-[2rem] px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full sm:p-6">
           <div className="absolute top-0 right-0 pt-4 pr-4">
             <button onClick={onClose} className="text-gray-400 hover:text-gray-600 rounded-full">
               <XMarkIcon className="h-6 w-6" />
@@ -215,22 +215,20 @@ const BulkImportModal: React.FC<BulkImportModalProps> = ({ isOpen, onClose, onIm
                 <div className="flex space-x-4">
                   <button
                     onClick={() => setImportType('excel')}
-                    className={`flex items-center px-4 py-2 rounded-full border transition-colors ${
-                      importType === 'excel'
+                    className={`flex items-center px-4 py-2 rounded-full border transition-colors ${importType === 'excel'
                         ? 'bg-blue-50 border-blue-200 text-blue-700'
                         : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-50'
-                    }`}
+                      }`}
                   >
                     <DocumentArrowUpIcon className="h-5 w-5 mr-2" />
                     엑셀/CSV 파일
                   </button>
                   <button
                     onClick={() => setImportType('google')}
-                    className={`flex items-center px-4 py-2 rounded-full border transition-colors ${
-                      importType === 'google'
+                    className={`flex items-center px-4 py-2 rounded-full border transition-colors ${importType === 'google'
                         ? 'bg-green-500/10 border-green-200 text-green-700'
                         : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-50'
-                    }`}
+                      }`}
                   >
                     <CloudArrowUpIcon className="h-5 w-5 mr-2" />
                     구글 스프레드시트
@@ -239,7 +237,7 @@ const BulkImportModal: React.FC<BulkImportModalProps> = ({ isOpen, onClose, onIm
               </div>
 
               {/* 템플릿 다운로드 */}
-              <div className="mb-6 p-4 bg-blue-50 rounded-lg">
+              <div className="mb-6 p-4 bg-blue-50 rounded-xl">
                 <div className="flex items-center justify-between">
                   <div>
                     <h4 className="text-sm font-medium text-blue-900">템플릿 다운로드</h4>
@@ -308,7 +306,7 @@ const BulkImportModal: React.FC<BulkImportModalProps> = ({ isOpen, onClose, onIm
               {(validUsers.length > 0 || errors.length > 0) && !isProcessing && (
                 <div className="mb-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                    <div className="bg-green-500/10 p-4 rounded-lg">
+                    <div className="bg-green-500/10 p-4 rounded-xl">
                       <div className="flex items-center">
                         <CheckCircleIcon className="h-5 w-5 text-green-600 mr-2" />
                         <span className="text-sm font-medium text-green-800">
@@ -316,7 +314,7 @@ const BulkImportModal: React.FC<BulkImportModalProps> = ({ isOpen, onClose, onIm
                         </span>
                       </div>
                     </div>
-                    <div className="bg-destructive/10 p-4 rounded-lg">
+                    <div className="bg-destructive/10 p-4 rounded-xl">
                       <div className="flex items-center">
                         <ExclamationTriangleIcon className="h-5 w-5 text-destructive mr-2" />
                         <span className="text-sm font-medium text-destructive">
@@ -328,7 +326,7 @@ const BulkImportModal: React.FC<BulkImportModalProps> = ({ isOpen, onClose, onIm
 
                   {/* 오류 목록 */}
                   {errors.length > 0 && (
-                    <div className="bg-destructive/10 border border-destructive/50 rounded-lg p-4 mb-4">
+                    <div className="bg-destructive/10 border border-destructive/50 rounded-xl p-4 mb-4">
                       <h4 className="text-sm font-medium text-destructive mb-2">검증 오류</h4>
                       <div className="max-h-32 overflow-y-auto">
                         {errors.map((error, index) => (
@@ -342,7 +340,7 @@ const BulkImportModal: React.FC<BulkImportModalProps> = ({ isOpen, onClose, onIm
 
                   {/* 유효한 사용자 미리보기 */}
                   {validUsers.length > 0 && (
-                    <div className="bg-green-500/10 border border-green-200 rounded-lg p-4">
+                    <div className="bg-green-500/10 border border-green-200 rounded-xl p-4">
                       <h4 className="text-sm font-medium text-green-800 mb-2">가져올 사용자 미리보기</h4>
                       <div className="max-h-32 overflow-y-auto">
                         {validUsers.slice(0, 5).map((user, index) => (

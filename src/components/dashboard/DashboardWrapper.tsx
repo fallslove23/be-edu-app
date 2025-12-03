@@ -161,16 +161,45 @@ const DashboardWrapper: React.FC<DashboardWrapperProps> = ({ onNavigate }) => {
 
         {/* Horizontal Menu */}
         <div className="bg-white rounded-2xl p-4 shadow-sm flex justify-around items-center">
-          <div className="flex items-center space-x-1">
-            <span className="text-blue-500 font-bold italic text-lg">Super</span>
-            <span className="text-blue-600 font-bold text-lg">SOL</span>
-          </div>
-          <div className="h-4 w-px bg-gray-200"></div>
-          <button className="text-blue-500 font-bold text-sm">카드</button>
-          <div className="h-4 w-px bg-gray-200"></div>
-          <button className="text-blue-500 font-bold text-sm">증권</button>
-          <div className="h-4 w-px bg-gray-200"></div>
-          <button className="text-purple-500 font-bold text-sm bg-purple-50 px-3 py-1 rounded-full">보험</button>
+          <button
+            onClick={() => onNavigate?.('my-courses')}
+            className="flex flex-col items-center space-y-1"
+          >
+            <div className="w-10 h-10 bg-indigo-50 rounded-full flex items-center justify-center text-indigo-600">
+              <GraduationCap className="w-5 h-5" />
+            </div>
+            <span className="text-xs font-medium text-gray-700">내 강의실</span>
+          </button>
+          <div className="h-8 w-px bg-gray-100"></div>
+          <button
+            onClick={() => onNavigate?.('assignments')}
+            className="flex flex-col items-center space-y-1"
+          >
+            <div className="w-10 h-10 bg-blue-50 rounded-full flex items-center justify-center text-blue-600">
+              <ClipboardCheck className="w-5 h-5" />
+            </div>
+            <span className="text-xs font-medium text-gray-700">과제</span>
+          </button>
+          <div className="h-8 w-px bg-gray-100"></div>
+          <button
+            onClick={() => onNavigate?.('grades')}
+            className="flex flex-col items-center space-y-1"
+          >
+            <div className="w-10 h-10 bg-green-50 rounded-full flex items-center justify-center text-green-600">
+              <BarChart2 className="w-5 h-5" />
+            </div>
+            <span className="text-xs font-medium text-gray-700">성적</span>
+          </button>
+          <div className="h-8 w-px bg-gray-100"></div>
+          <button
+            onClick={() => onNavigate?.('messages')}
+            className="flex flex-col items-center space-y-1"
+          >
+            <div className="w-10 h-10 bg-purple-50 rounded-full flex items-center justify-center text-purple-600">
+              <MessageCircle className="w-5 h-5" />
+            </div>
+            <span className="text-xs font-medium text-gray-700">메시지</span>
+          </button>
         </div>
 
         {/* Bottom Grid (Colorful Cards) */}

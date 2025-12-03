@@ -12,7 +12,7 @@ import {
   ExclamationTriangleIcon
 } from '@heroicons/react/24/outline';
 import { CourseEnrollmentService } from '../../services/course-enrollment.service';
-import type { 
+import type {
   CourseEnrollmentSummary,
   EnrollmentRequest,
   EnrollmentResult
@@ -140,7 +140,7 @@ const CourseEnrollmentDashboard: React.FC<CourseEnrollmentDashboardProps> = ({
     try {
       await CourseEnrollmentService.unenrollTrainee(enrollmentId, '관리자에 의한 해제');
       toast.success(`${traineeName}님의 배정이 해제되었습니다.`);
-      
+
       // 데이터 새로고침
       loadEnrollmentData(true);
       if (onCourseUpdate) {
@@ -169,16 +169,16 @@ const CourseEnrollmentDashboard: React.FC<CourseEnrollmentDashboardProps> = ({
     }
 
     try {
-      const promises = Array.from(selectedEnrollments).map(enrollmentId => 
+      const promises = Array.from(selectedEnrollments).map(enrollmentId =>
         CourseEnrollmentService.unenrollTrainee(enrollmentId, '일괄 해제')
       );
 
       await Promise.all(promises);
       toast.success(`${selectedEnrollments.size}명의 배정이 해제되었습니다.`);
-      
+
       setSelectedEnrollments(new Set());
       loadEnrollmentData(true);
-      
+
       if (onCourseUpdate) {
         const updatedCourse = {
           ...course,
@@ -210,7 +210,7 @@ const CourseEnrollmentDashboard: React.FC<CourseEnrollmentDashboardProps> = ({
 
     const activeEnrollments = enrollmentSummary.recent_enrollments.filter(e => e.status === 'active');
     const allSelected = activeEnrollments.every(e => selectedEnrollments.has(e.id));
-    
+
     const newSelected = new Set<string>();
     if (!allSelected) {
       activeEnrollments.forEach(e => newSelected.add(e.id));
@@ -243,7 +243,7 @@ const CourseEnrollmentDashboard: React.FC<CourseEnrollmentDashboardProps> = ({
 
   if (loading) {
     return (
-      <div className="bg-white rounded-lg shadow p-6">
+      <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 p-6">
         <div className="flex items-center justify-center h-64">
           <div className="animate-spin rounded-lg h-8 w-8 border-b-2 border-blue-600"></div>
           <span className="ml-2 text-gray-600">수강생 현황을 불러오는 중...</span>
@@ -254,7 +254,7 @@ const CourseEnrollmentDashboard: React.FC<CourseEnrollmentDashboardProps> = ({
 
   if (error || !enrollmentSummary) {
     return (
-      <div className="bg-white rounded-lg shadow p-6">
+      <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 p-6">
         <div className="text-center py-12">
           <ExclamationTriangleIcon className="h-12 w-12 text-destructive mx-auto mb-4" />
           <div className="text-gray-600 mb-4">{error || '데이터를 불러올 수 없습니다.'}</div>
@@ -275,7 +275,7 @@ const CourseEnrollmentDashboard: React.FC<CourseEnrollmentDashboardProps> = ({
   return (
     <div className="space-y-6">
       {/* 헤더 */}
-      <div className="bg-white rounded-lg shadow p-6">
+      <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 p-6">
         <div className="flex items-center justify-between mb-6">
           <div>
             <h2 className="text-2xl font-bold text-gray-900 flex items-center">
@@ -284,7 +284,7 @@ const CourseEnrollmentDashboard: React.FC<CourseEnrollmentDashboardProps> = ({
             </h2>
             <p className="text-gray-600 mt-1">{course.name}</p>
           </div>
-          
+
           <div className="flex items-center space-x-3">
             <button
               onClick={handleRefresh}
@@ -314,7 +314,7 @@ const CourseEnrollmentDashboard: React.FC<CourseEnrollmentDashboardProps> = ({
                 대기자 ({enrollment_stats.waiting_list_count})
               </button>
             )}
-            
+
             <button
               onClick={() => setShowTraineeSelector(true)}
               className="btn-primary"
@@ -327,7 +327,7 @@ const CourseEnrollmentDashboard: React.FC<CourseEnrollmentDashboardProps> = ({
 
         {/* 통계 카드 */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-          <div className="p-4 bg-blue-50 rounded-lg">
+          <div className="p-4 bg-blue-50 rounded-xl">
             <div className="flex items-center">
               <div className="p-2 bg-blue-100 rounded-lg">
                 <UserGroupIcon className="h-6 w-6 text-blue-600" />
@@ -344,7 +344,7 @@ const CourseEnrollmentDashboard: React.FC<CourseEnrollmentDashboardProps> = ({
             </div>
           </div>
 
-          <div className="p-4 bg-green-500/10 rounded-lg">
+          <div className="p-4 bg-green-500/10 rounded-xl">
             <div className="flex items-center">
               <div className="p-2 bg-green-500/10 rounded-lg">
                 <CheckCircleIcon className="h-6 w-6 text-green-600" />
@@ -361,7 +361,7 @@ const CourseEnrollmentDashboard: React.FC<CourseEnrollmentDashboardProps> = ({
             </div>
           </div>
 
-          <div className="p-4 bg-purple-50 rounded-lg">
+          <div className="p-4 bg-purple-50 rounded-xl">
             <div className="flex items-center">
               <div className="p-2 bg-purple-100 rounded-lg">
                 <ChartBarIcon className="h-6 w-6 text-purple-600" />
@@ -378,7 +378,7 @@ const CourseEnrollmentDashboard: React.FC<CourseEnrollmentDashboardProps> = ({
             </div>
           </div>
 
-          <div className="p-4 bg-yellow-50 rounded-lg">
+          <div className="p-4 bg-yellow-50 rounded-xl">
             <div className="flex items-center">
               <div className="p-2 bg-yellow-100 rounded-lg">
                 <ClockIcon className="h-6 w-6 text-foreground" />
@@ -412,13 +412,13 @@ const CourseEnrollmentDashboard: React.FC<CourseEnrollmentDashboardProps> = ({
       </div>
 
       {/* 수강생 목록 */}
-      <div className="bg-white rounded-lg shadow">
+      <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 overflow-hidden">
         <div className="px-6 py-4 border-b border-gray-200">
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-semibold text-gray-900">
               수강생 목록 ({recent_enrollments.length})
             </h3>
-            
+
             {selectedEnrollments.size > 0 && (
               <div className="flex items-center space-x-2">
                 <span className="text-sm text-gray-600">
@@ -518,7 +518,7 @@ const CourseEnrollmentDashboard: React.FC<CourseEnrollmentDashboardProps> = ({
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
                       <button
-                        onClick={() => {/* TODO: 상세 보기 */}}
+                        onClick={() => {/* TODO: 상세 보기 */ }}
                         className="text-blue-600 hover:text-blue-900 transition-colors"
                         title="상세 보기"
                       >
@@ -544,7 +544,7 @@ const CourseEnrollmentDashboard: React.FC<CourseEnrollmentDashboardProps> = ({
 
       {/* 대기자 목록 */}
       {waiting_list.length > 0 && (
-        <div className="bg-white rounded-lg shadow">
+        <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 overflow-hidden">
           <div className="px-6 py-4 border-b border-gray-200">
             <h3 className="text-lg font-semibold text-gray-900 flex items-center">
               <ClockIcon className="h-5 w-5 mr-2 text-foreground" />
@@ -568,7 +568,7 @@ const CourseEnrollmentDashboard: React.FC<CourseEnrollmentDashboardProps> = ({
                       {entry.position}번째 대기
                     </span>
                     <button
-                      onClick={() => {/* TODO: 우선 배정 */}}
+                      onClick={() => {/* TODO: 우선 배정 */ }}
                       className="text-blue-600 hover:text-blue-800 transition-colors"
                       title="우선 배정"
                     >
@@ -609,7 +609,7 @@ const CourseEnrollmentDashboard: React.FC<CourseEnrollmentDashboardProps> = ({
       {/* 처리 중 오버레이 */}
       {processingEnrollment && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 max-w-sm mx-4">
+          <div className="bg-white rounded-[2rem] p-6 max-w-sm mx-4">
             <div className="flex items-center">
               <div className="animate-spin rounded-lg h-6 w-6 border-b-2 border-blue-600 mr-3"></div>
               <span className="text-gray-700">교육생을 배정하는 중...</span>

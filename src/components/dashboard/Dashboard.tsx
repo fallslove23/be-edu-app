@@ -78,19 +78,18 @@ const Dashboard: React.FC = () => {
         {stats.map((stat, index) => (
           <div
             key={index}
-            className="bg-card rounded-lg border border-border p-6 hover:shadow-md transition-shadow"
+            className="bg-white rounded-[2rem] shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow"
           >
             {/* 헤더 */}
             <div className="flex items-start justify-between mb-4">
               <div>
                 <p className="text-sm text-muted-foreground mb-1">{stat.label}</p>
-                <h3 className="text-2xl font-bold text-card-foreground">{stat.value}</h3>
+                <h3 className="text-2xl font-bold text-gray-900">{stat.value}</h3>
               </div>
-              <div className={`flex items-center space-x-1 px-2 py-1 rounded-md ${
-                stat.trend === 'up'
+              <div className={`flex items-center space-x-1 px-2 py-1 rounded-md ${stat.trend === 'up'
                   ? 'bg-green-500/10 text-green-700'
                   : 'bg-destructive/10 text-destructive'
-              }`}>
+                }`}>
                 {stat.trend === 'up' ? (
                   <ArrowTrendingUpIcon className="w-4 h-4" />
                 ) : (
@@ -114,11 +113,11 @@ const Dashboard: React.FC = () => {
       </div>
 
       {/* 차트 섹션 */}
-      <div className="bg-card rounded-lg border border-border p-6">
+      <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 p-6">
         {/* 차트 헤더 */}
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h2 className="text-lg font-semibold text-card-foreground mb-1">교육 활동</h2>
+            <h2 className="text-lg font-semibold text-gray-900 mb-1">교육 활동</h2>
             <p className="text-sm text-muted-foreground">지난 3개월 교육 참여 현황</p>
           </div>
 
@@ -126,31 +125,28 @@ const Dashboard: React.FC = () => {
           <div className="flex items-center space-x-2">
             <button
               onClick={() => setActiveTab('3months')}
-              className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
-                activeTab === '3months'
+              className={`px-3 py-1.5 text-sm rounded-md transition-colors ${activeTab === '3months'
                   ? 'bg-secondary text-secondary-foreground font-medium'
                   : 'text-muted-foreground hover:text-foreground hover:bg-secondary/50'
-              }`}
+                }`}
             >
               최근 3개월
             </button>
             <button
               onClick={() => setActiveTab('30days')}
-              className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
-                activeTab === '30days'
+              className={`px-3 py-1.5 text-sm rounded-md transition-colors ${activeTab === '30days'
                   ? 'bg-secondary text-secondary-foreground font-medium'
                   : 'text-muted-foreground hover:text-foreground hover:bg-secondary/50'
-              }`}
+                }`}
             >
               최근 30일
             </button>
             <button
               onClick={() => setActiveTab('7days')}
-              className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
-                activeTab === '7days'
+              className={`px-3 py-1.5 text-sm rounded-md transition-colors ${activeTab === '7days'
                   ? 'bg-secondary text-secondary-foreground font-medium'
                   : 'text-muted-foreground hover:text-foreground hover:bg-secondary/50'
-              }`}
+                }`}
             >
               최근 7일
             </button>
@@ -207,11 +203,11 @@ const Dashboard: React.FC = () => {
       </div>
 
       {/* 하단 테이블 섹션 */}
-      <div className="bg-card rounded-lg border border-border overflow-hidden">
+      <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 overflow-hidden">
         {/* 테이블 헤더 */}
-        <div className="border-b border-border">
+        <div className="border-b border-gray-100">
           <div className="flex items-center space-x-4 px-6 py-4">
-            <button className="text-sm font-medium text-card-foreground pb-2 border-b-2 border-primary rounded-full">
+            <button className="text-sm font-medium text-gray-900 pb-2 border-b-2 border-primary rounded-full">
               개요
             </button>
             <button className="text-sm text-muted-foreground hover:text-foreground pb-2 rounded-full">
@@ -251,7 +247,7 @@ const Dashboard: React.FC = () => {
                 <th className="px-6 py-3"></th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-border">
+            <tbody className="divide-y divide-gray-100">
               {[
                 { name: 'BS Basic 1기', type: 'BS Basic', target: '28', limit: '85%', reviewer: '김민수' },
                 { name: 'BS Advanced 3기', type: 'BS Advanced', target: '24', limit: '92%', reviewer: '김민수' },
@@ -272,7 +268,7 @@ const Dashboard: React.FC = () => {
                         </button>
                         <input type="checkbox" className="w-4 h-4 rounded border-border" />
                       </div>
-                      <span className="text-sm text-card-foreground">{row.name}</span>
+                      <span className="text-sm text-gray-900">{row.name}</span>
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
@@ -286,7 +282,7 @@ const Dashboard: React.FC = () => {
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
                     {row.limit}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-card-foreground">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                     {row.reviewer}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right">

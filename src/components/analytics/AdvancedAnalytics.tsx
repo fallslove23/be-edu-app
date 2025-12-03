@@ -382,11 +382,13 @@ const AdvancedAnalytics: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* 헤더 */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 p-6">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900 flex items-center">
-              <BarChart2 className="h-6 w-6 mr-2" />
+            <h1 className="text-2xl font-bold text-gray-900 flex items-center mb-2">
+              <div className="p-3 bg-blue-50 rounded-xl mr-4">
+                <BarChart2 className="h-8 w-8 text-blue-600" />
+              </div>
               고급 학습 분석
             </h1>
             <p className="text-gray-600">학습 진도, 성과 분석 및 트렌드 리포트</p>
@@ -397,7 +399,7 @@ const AdvancedAnalytics: React.FC = () => {
             <select
               value={selectedTimeRange}
               onChange={(e) => setSelectedTimeRange(e.target.value as any)}
-              className="border border-gray-300 rounded-full px-3 py-2 text-sm"
+              className="border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
             >
               <option value="7d">최근 7일</option>
               <option value="30d">최근 30일</option>
@@ -408,7 +410,7 @@ const AdvancedAnalytics: React.FC = () => {
             <select
               value={selectedDepartment}
               onChange={(e) => setSelectedDepartment(e.target.value)}
-              className="border border-gray-300 rounded-full px-3 py-2 text-sm"
+              className="border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
             >
               <option value="all">전체 부서</option>
               {analyticsData.departmentStats.map(dept => (
@@ -418,16 +420,17 @@ const AdvancedAnalytics: React.FC = () => {
               ))}
             </select>
 
-            <div className="flex items-center border border-border rounded-full overflow-hidden">
+            <div className="flex items-center border border-gray-200 rounded-xl overflow-hidden bg-white">
               <button
                 onClick={() => setViewMode('charts')}
-                className={`px-3 py-2 text-sm ${viewMode === 'charts' ? 'bg-primary text-primary-foreground' : 'text-foreground hover:bg-muted'} transition-colors`}
+                className={`px-4 py-2.5 text-sm ${viewMode === 'charts' ? 'bg-blue-50 text-blue-600 font-bold' : 'text-gray-600 hover:bg-gray-50'} transition-colors`}
               >
                 <BarChart2 className="h-4 w-4" />
               </button>
+              <div className="w-px h-4 bg-gray-200"></div>
               <button
                 onClick={() => setViewMode('table')}
-                className={`px-3 py-2 text-sm ${viewMode === 'table' ? 'bg-primary text-primary-foreground' : 'text-foreground hover:bg-muted'} transition-colors`}
+                className={`px-4 py-2.5 text-sm ${viewMode === 'table' ? 'bg-blue-50 text-blue-600 font-bold' : 'text-gray-600 hover:bg-gray-50'} transition-colors`}
               >
                 <Table className="h-4 w-4" />
               </button>
@@ -436,31 +439,31 @@ const AdvancedAnalytics: React.FC = () => {
             <div className="flex items-center space-x-2">
               <button
                 onClick={() => exportData('json')}
-                className="btn-success"
+                className="bg-green-600 hover:bg-green-700 text-white px-4 py-2.5 rounded-xl text-sm font-bold shadow-lg shadow-green-200 transition-colors flex items-center"
               >
-                <Download className="h-4 w-4 mr-1" />
+                <Download className="h-4 w-4 mr-2" />
                 JSON
               </button>
               <button
                 onClick={() => exportData('csv')}
-                className="btn-primary"
+                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-xl text-sm font-bold shadow-lg shadow-blue-200 transition-colors flex items-center"
               >
-                <FileBarChart className="h-4 w-4 mr-1" />
+                <FileBarChart className="h-4 w-4 mr-2" />
                 CSV
               </button>
             </div>
 
-            <button className="p-2 bg-gray-100 hover:bg-gray-200 rounded-full transition-colors">
-              <Settings className="h-4 w-4 text-gray-600" />
+            <button className="p-2.5 bg-gray-100 hover:bg-gray-200 rounded-xl transition-colors">
+              <Settings className="h-5 w-5 text-gray-600" />
             </button>
           </div>
         </div>
       </div>
 
       {/* 탭 네비게이션 */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-        <div className="border-b border-gray-200">
-          <nav className="-mb-px flex space-x-8 px-6">
+      <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 overflow-hidden">
+        <div className="border-b border-gray-100">
+          <nav className="-mb-px flex space-x-8 px-8">
             {[
               { key: 'overview', label: '개요', icon: Eye },
               { key: 'progress', label: '학습 진도', icon: TrendingUp },
@@ -471,12 +474,12 @@ const AdvancedAnalytics: React.FC = () => {
               <button
                 key={key}
                 onClick={() => setActiveTab(key as any)}
-                className={`py-4 px-1 border-b-2 font-medium text-sm flex items-center ${activeTab === key
+                className={`py-5 px-1 border-b-2 font-bold text-sm flex items-center transition-all ${activeTab === key
                   ? 'border-blue-500 text-blue-600'
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                   }`}
               >
-                <Icon className="h-4 w-4 mr-2" />
+                <Icon className={`h-4 w-4 mr-2 ${activeTab === key ? 'text-blue-600' : 'text-gray-400'}`} />
                 {label}
               </button>
             ))}
@@ -489,87 +492,87 @@ const AdvancedAnalytics: React.FC = () => {
         <div className="space-y-6">
           {/* 향상된 KPI 카드들 */}
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">총 학습자</p>
-                  <p className="text-2xl font-bold text-gray-900">
+                  <p className="text-sm font-bold text-gray-500">총 학습자</p>
+                  <p className="text-2xl font-bold text-gray-900 mt-1">
                     {analyticsData.learningProgress.length}명
                   </p>
                 </div>
-                <div className="p-2 bg-blue-100 rounded-lg">
+                <div className="p-3 bg-blue-50 rounded-xl">
                   <Users className="h-6 w-6 text-blue-600" />
                 </div>
               </div>
             </div>
 
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">평균 진도</p>
-                  <p className="text-2xl font-bold text-gray-900">
+                  <p className="text-sm font-bold text-gray-500">평균 진도</p>
+                  <p className="text-2xl font-bold text-gray-900 mt-1">
                     {performanceIndicators.avgProgress}%
                   </p>
-                  <div className={`flex items-center mt-1 ${performanceIndicators.progressChange >= 0 ? 'text-green-600' : 'text-destructive'}`}>
+                  <div className={`flex items-center mt-2 ${performanceIndicators.progressChange >= 0 ? 'text-green-600' : 'text-red-500'}`}>
                     {performanceIndicators.progressChange >= 0 ? (
                       <TrendingUp className="h-4 w-4 mr-1" />
                     ) : (
                       <TrendingDown className="h-4 w-4 mr-1" />
                     )}
-                    <span className="text-sm font-medium">
+                    <span className="text-sm font-bold">
                       {Math.abs(performanceIndicators.progressChange)}%
                     </span>
                   </div>
                 </div>
-                <div className="p-2 bg-green-500/10 rounded-lg">
+                <div className="p-3 bg-green-50 rounded-xl">
                   <TrendingUp className="h-6 w-6 text-green-600" />
                 </div>
               </div>
             </div>
 
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">평균 점수</p>
-                  <p className="text-2xl font-bold text-gray-900">
+                  <p className="text-sm font-bold text-gray-500">평균 점수</p>
+                  <p className="text-2xl font-bold text-gray-900 mt-1">
                     {performanceIndicators.avgScore}점
                   </p>
-                  <div className={`flex items-center mt-1 ${performanceIndicators.scoreChange >= 0 ? 'text-green-600' : 'text-destructive'}`}>
+                  <div className={`flex items-center mt-2 ${performanceIndicators.scoreChange >= 0 ? 'text-green-600' : 'text-red-500'}`}>
                     {performanceIndicators.scoreChange >= 0 ? (
                       <TrendingUp className="h-4 w-4 mr-1" />
                     ) : (
                       <TrendingDown className="h-4 w-4 mr-1" />
                     )}
-                    <span className="text-sm font-medium">
+                    <span className="text-sm font-bold">
                       {Math.abs(performanceIndicators.scoreChange)}점
                     </span>
                   </div>
                 </div>
-                <div className="p-2 bg-yellow-100 rounded-lg">
-                  <GraduationCap className="h-6 w-6 text-foreground" />
+                <div className="p-3 bg-yellow-50 rounded-xl">
+                  <GraduationCap className="h-6 w-6 text-yellow-600" />
                 </div>
               </div>
             </div>
 
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">완료율</p>
-                  <p className="text-2xl font-bold text-gray-900">
+                  <p className="text-sm font-bold text-gray-500">완료율</p>
+                  <p className="text-2xl font-bold text-gray-900 mt-1">
                     {performanceIndicators.completionRate}%
                   </p>
-                  <div className={`flex items-center mt-1 ${performanceIndicators.completionChange >= 0 ? 'text-green-600' : 'text-destructive'}`}>
+                  <div className={`flex items-center mt-2 ${performanceIndicators.completionChange >= 0 ? 'text-green-600' : 'text-red-500'}`}>
                     {performanceIndicators.completionChange >= 0 ? (
                       <TrendingUp className="h-4 w-4 mr-1" />
                     ) : (
                       <TrendingDown className="h-4 w-4 mr-1" />
                     )}
-                    <span className="text-sm font-medium">
+                    <span className="text-sm font-bold">
                       {Math.abs(performanceIndicators.completionChange)}%
                     </span>
                   </div>
                 </div>
-                <div className="p-2 bg-purple-100 rounded-lg">
+                <div className="p-3 bg-purple-50 rounded-xl">
                   <CalendarDays className="h-6 w-6 text-purple-600" />
                 </div>
               </div>
@@ -580,23 +583,25 @@ const AdvancedAnalytics: React.FC = () => {
           {viewMode === 'charts' ? (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* 시계열 트렌드 */}
-              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                <h3 className="text-lg font-medium text-gray-900 mb-4">학습 활동 트렌드</h3>
+              <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 p-6">
+                <h3 className="text-lg font-bold text-gray-900 mb-6">학습 활동 트렌드</h3>
                 <ResponsiveContainer width="100%" height={300}>
                   <AreaChart data={analyticsData.timeSeriesData}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="date" />
-                    <YAxis />
-                    <Tooltip />
-                    <Area type="monotone" dataKey="totalActiveUsers" stackId="1" stroke="#3b82f6" fill="#3b82f6" fillOpacity={0.6} />
-                    <Area type="monotone" dataKey="newEnrollments" stackId="1" stroke="#10b981" fill="#10b981" fillOpacity={0.6} />
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
+                    <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{ fill: '#9ca3af', fontSize: 12 }} />
+                    <YAxis axisLine={false} tickLine={false} tick={{ fill: '#9ca3af', fontSize: 12 }} />
+                    <Tooltip
+                      contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}
+                    />
+                    <Area type="monotone" dataKey="totalActiveUsers" stackId="1" stroke="#3b82f6" fill="#3b82f6" fillOpacity={0.1} strokeWidth={2} />
+                    <Area type="monotone" dataKey="newEnrollments" stackId="1" stroke="#10b981" fill="#10b981" fillOpacity={0.1} strokeWidth={2} />
                   </AreaChart>
                 </ResponsiveContainer>
               </div>
 
               {/* 부서별 성과 */}
-              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                <h3 className="text-lg font-medium text-gray-900 mb-4">부서별 성과 분포</h3>
+              <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 p-6">
+                <h3 className="text-lg font-bold text-gray-900 mb-6">부서별 성과 분포</h3>
                 <ResponsiveContainer width="100%" height={300}>
                   <PieChart>
                     <Pie
@@ -605,40 +610,43 @@ const AdvancedAnalytics: React.FC = () => {
                       nameKey="department"
                       cx="50%"
                       cy="50%"
-                      outerRadius={80}
+                      outerRadius={100}
+                      innerRadius={60}
                       label={({ department, avgScore }) => `${department}: ${avgScore}점`}
                     >
                       {analyticsData.departmentStats.map((entry, index) => (
                         <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                       ))}
                     </Pie>
-                    <Tooltip />
+                    <Tooltip
+                      contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}
+                    />
                   </PieChart>
                 </ResponsiveContainer>
               </div>
             </div>
           ) : (
             /* 테이블 뷰 */
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-              <div className="px-6 py-4 border-b border-gray-200">
-                <h3 className="text-lg font-medium text-gray-900">학습 진도 상세</h3>
+            <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 overflow-hidden">
+              <div className="px-8 py-6 border-b border-gray-100">
+                <h3 className="text-lg font-bold text-gray-900">학습 진도 상세</h3>
               </div>
               <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-200">
+                <table className="min-w-full divide-y divide-gray-100">
                   <thead className="bg-gray-50">
                     <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">사용자</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">부서</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">과정</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">진도율</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">점수</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">학습시간</th>
+                      <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">사용자</th>
+                      <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">부서</th>
+                      <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">과정</th>
+                      <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">진도율</th>
+                      <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">점수</th>
+                      <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">학습시간</th>
                     </tr>
                   </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
+                  <tbody className="bg-white divide-y divide-gray-100">
                     {analyticsData.learningProgress.slice(0, 10).map((item, index) => (
-                      <tr key={index}>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                      <tr key={index} className="hover:bg-gray-50 transition-colors">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900">
                           {item.userName}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -649,16 +657,16 @@ const AdvancedAnalytics: React.FC = () => {
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                           <div className="flex items-center">
-                            <div className="w-full bg-gray-200 rounded-lg h-2 mr-2">
+                            <div className="w-full bg-gray-100 rounded-full h-2 mr-2">
                               <div
-                                className="bg-blue-600 h-2 rounded-lg"
+                                className="bg-blue-600 h-2 rounded-full"
                                 style={{ width: `${item.progress}%` }}
                               ></div>
                             </div>
-                            <span>{item.progress}%</span>
+                            <span className="font-bold text-blue-600">{item.progress}%</span>
                           </div>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900">
                           {item.score}점
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -677,22 +685,25 @@ const AdvancedAnalytics: React.FC = () => {
       {activeTab === 'progress' && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* 과정별 완료도 */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <h3 className="text-lg font-medium text-gray-900 mb-4">과정별 완료도</h3>
+          <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 p-6">
+            <h3 className="text-lg font-bold text-gray-900 mb-6">과정별 완료도</h3>
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={analyticsData.courseCompletion}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="courseName" angle={-45} textAnchor="end" height={80} />
-                <YAxis />
-                <Tooltip />
-                <Bar dataKey="avgProgress" fill="#3b82f6" />
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
+                <XAxis dataKey="courseName" angle={-45} textAnchor="end" height={80} axisLine={false} tickLine={false} tick={{ fill: '#9ca3af', fontSize: 12 }} />
+                <YAxis axisLine={false} tickLine={false} tick={{ fill: '#9ca3af', fontSize: 12 }} />
+                <Tooltip
+                  contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}
+                  cursor={{ fill: '#f9fafb' }}
+                />
+                <Bar dataKey="avgProgress" fill="#3b82f6" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
 
           {/* 부서별 진도 */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <h3 className="text-lg font-medium text-gray-900 mb-4">부서별 학습 진도</h3>
+          <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 p-6">
+            <h3 className="text-lg font-bold text-gray-900 mb-6">부서별 학습 진도</h3>
             <ResponsiveContainer width="100%" height={300}>
               <PieChart>
                 <Pie
@@ -701,14 +712,17 @@ const AdvancedAnalytics: React.FC = () => {
                   nameKey="department"
                   cx="50%"
                   cy="50%"
-                  outerRadius={80}
+                  outerRadius={100}
+                  innerRadius={60}
                   label={({ department, avgProgress }) => `${department}: ${avgProgress}%`}
                 >
                   {analyticsData.departmentStats.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>
-                <Tooltip />
+                <Tooltip
+                  contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}
+                />
               </PieChart>
             </ResponsiveContainer>
           </div>
@@ -718,35 +732,40 @@ const AdvancedAnalytics: React.FC = () => {
       {activeTab === 'performance' && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* 성과 레이더 차트 */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <h3 className="text-lg font-medium text-gray-900 mb-4">종합 성과 분석</h3>
+          <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 p-6">
+            <h3 className="text-lg font-bold text-gray-900 mb-6">종합 성과 분석</h3>
             <ResponsiveContainer width="100%" height={300}>
               <RadarChart data={analyticsData.performanceMetrics}>
-                <PolarGrid />
-                <PolarAngleAxis dataKey="category" />
-                <PolarRadiusAxis domain={[0, 100]} />
+                <PolarGrid stroke="#e5e7eb" />
+                <PolarAngleAxis dataKey="category" tick={{ fill: '#6b7280', fontSize: 12, fontWeight: 500 }} />
+                <PolarRadiusAxis domain={[0, 100]} axisLine={false} tick={false} />
                 <Radar
                   name="현재 성과"
                   dataKey="score"
                   stroke="#3b82f6"
                   fill="#3b82f6"
-                  fillOpacity={0.3}
+                  fillOpacity={0.4}
                 />
-                <Tooltip />
+                <Tooltip
+                  contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}
+                />
               </RadarChart>
             </ResponsiveContainer>
           </div>
 
           {/* 부서별 성과 비교 */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <h3 className="text-lg font-medium text-gray-900 mb-4">부서별 성과 비교</h3>
+          <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 p-6">
+            <h3 className="text-lg font-bold text-gray-900 mb-6">부서별 성과 비교</h3>
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={analyticsData.departmentStats}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="department" />
-                <YAxis />
-                <Tooltip />
-                <Bar dataKey="avgScore" fill="#10b981" />
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
+                <XAxis dataKey="department" axisLine={false} tickLine={false} tick={{ fill: '#9ca3af', fontSize: 12 }} />
+                <YAxis axisLine={false} tickLine={false} tick={{ fill: '#9ca3af', fontSize: 12 }} />
+                <Tooltip
+                  contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}
+                  cursor={{ fill: '#f9fafb' }}
+                />
+                <Bar dataKey="avgScore" fill="#10b981" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -756,30 +775,32 @@ const AdvancedAnalytics: React.FC = () => {
       {activeTab === 'trends' && (
         <div className="space-y-6">
           {/* 시계열 트렌드 */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <h3 className="text-lg font-medium text-gray-900 mb-4">학습 활동 트렌드</h3>
+          <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 p-6">
+            <h3 className="text-lg font-bold text-gray-900 mb-6">학습 활동 트렌드</h3>
             <ResponsiveContainer width="100%" height={400}>
               <LineChart data={analyticsData.timeSeriesData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="date" />
-                <YAxis />
-                <Tooltip />
-                <Legend />
-                <Line type="monotone" dataKey="completions" stroke="#3b82f6" name="완료" />
-                <Line type="monotone" dataKey="newEnrollments" stroke="#10b981" name="신규 등록" />
-                <Line type="monotone" dataKey="totalActiveUsers" stroke="#f59e0b" name="활성 사용자" />
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
+                <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{ fill: '#9ca3af', fontSize: 12 }} />
+                <YAxis axisLine={false} tickLine={false} tick={{ fill: '#9ca3af', fontSize: 12 }} />
+                <Tooltip
+                  contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}
+                />
+                <Legend iconType="circle" />
+                <Line type="monotone" dataKey="completions" stroke="#3b82f6" strokeWidth={3} dot={{ r: 4, fill: '#3b82f6', strokeWidth: 2, stroke: '#fff' }} name="완료" />
+                <Line type="monotone" dataKey="newEnrollments" stroke="#10b981" strokeWidth={3} dot={{ r: 4, fill: '#10b981', strokeWidth: 2, stroke: '#fff' }} name="신규 등록" />
+                <Line type="monotone" dataKey="totalActiveUsers" stroke="#f59e0b" strokeWidth={3} dot={{ r: 4, fill: '#f59e0b', strokeWidth: 2, stroke: '#fff' }} name="활성 사용자" />
               </LineChart>
             </ResponsiveContainer>
           </div>
 
           {/* 활동 히트맵 */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <h3 className="text-lg font-medium text-gray-900 mb-4">요일별 시간대 활동 패턴</h3>
-            <div className="space-y-2">
+          <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 p-6">
+            <h3 className="text-lg font-bold text-gray-900 mb-6">요일별 시간대 활동 패턴</h3>
+            <div className="space-y-3">
               {['월', '화', '수', '목', '금', '토', '일'].map(day => (
-                <div key={day} className="flex items-center space-x-2">
-                  <div className="w-8 text-sm text-gray-600">{day}</div>
-                  <div className="flex space-x-1">
+                <div key={day} className="flex items-center space-x-3">
+                  <div className="w-8 text-sm font-bold text-gray-500">{day}</div>
+                  <div className="flex space-x-1 flex-1">
                     {Array.from({ length: 24 }, (_, hour) => {
                       const heatData = analyticsData.heatMapData.find(d => d.day === day && d.hour === hour);
                       const activity = heatData?.activity || 0;
@@ -787,10 +808,10 @@ const AdvancedAnalytics: React.FC = () => {
                       return (
                         <div
                           key={hour}
-                          className="w-4 h-4 rounded-sm cursor-pointer hover:ring-2 hover:ring-blue-300"
+                          className="flex-1 h-8 rounded-md cursor-pointer hover:ring-2 hover:ring-blue-300 transition-all"
                           style={{
                             backgroundColor: `rgba(59, 130, 246, ${intensity})`,
-                            border: intensity > 0 ? '1px solid rgba(59, 130, 246, 0.3)' : '1px solid #e5e7eb'
+                            opacity: Math.max(0.1, intensity)
                           }}
                           title={`${day} ${hour}:00 - 활동도: ${activity}%`}
                         />
@@ -799,25 +820,12 @@ const AdvancedAnalytics: React.FC = () => {
                   </div>
                 </div>
               ))}
-              <div className="flex items-center justify-between text-xs text-gray-500 mt-4">
-                <span>0시</span>
-                <span>6시</span>
-                <span>12시</span>
-                <span>18시</span>
-                <span>23시</span>
-              </div>
-              <div className="flex items-center space-x-2 text-xs text-gray-500">
-                <span>낮음</span>
-                <div className="flex space-x-1">
-                  {[0.2, 0.4, 0.6, 0.8, 1.0].map(opacity => (
-                    <div
-                      key={opacity}
-                      className="w-3 h-3 rounded-sm"
-                      style={{ backgroundColor: `rgba(59, 130, 246, ${opacity})` }}
-                    />
-                  ))}
-                </div>
-                <span>높음</span>
+              <div className="flex justify-between text-xs text-gray-400 mt-2 pl-11">
+                <span>00:00</span>
+                <span>06:00</span>
+                <span>12:00</span>
+                <span>18:00</span>
+                <span>23:00</span>
               </div>
             </div>
           </div>
@@ -827,9 +835,9 @@ const AdvancedAnalytics: React.FC = () => {
       {activeTab === 'realtime' && (
         <div className="space-y-6">
           {/* 실시간 제어 패널 */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 p-6">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-medium text-gray-900">실시간 모니터링</h3>
+              <h3 className="text-lg font-bold text-gray-900">실시간 모니터링</h3>
               <div className="flex items-center space-x-4">
                 <div className="flex items-center space-x-2 text-sm text-gray-500">
                   <Clock className="h-4 w-4" />
