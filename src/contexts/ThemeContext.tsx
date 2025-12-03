@@ -25,8 +25,11 @@ interface ThemeProviderProps {
 
 export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
   const [theme, setThemeState] = useState<Theme>(() => {
-    const savedTheme = localStorage.getItem('bs-app-theme') as Theme;
-    return savedTheme || 'light';
+    if (typeof window !== 'undefined') {
+      const savedTheme = localStorage.getItem('bs-app-theme') as Theme;
+      return savedTheme || 'light';
+    }
+    return 'light';
   });
 
   const [actualTheme, setActualTheme] = useState<'light' | 'dark'>('light');
@@ -87,7 +90,9 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
 
   const setTheme = (newTheme: Theme) => {
     setThemeState(newTheme);
-    localStorage.setItem('bs-app-theme', newTheme);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('bs-app-theme', newTheme);
+    }
   };
 
   const toggleTheme = () => {
