@@ -128,7 +128,7 @@ const TraineeDashboard: React.FC<TraineeDashboardProps> = ({ traineeId }) => {
   return (
     <PageContainer>
       {/* 헤더 */}
-      <div className="bg-gradient-to-r from-indigo-500 to-purple-600 dark:from-indigo-600 dark:to-purple-700 rounded-2xl shadow-lg p-6 sm:p-8 mb-6 sm:mb-8">
+      <div className="bg-gradient-to-r from-indigo-500 to-purple-600 dark:from-indigo-600 dark:to-purple-700 rounded-[2rem] shadow-lg p-6 sm:p-8 mb-6 sm:mb-8">
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
           <div className="flex items-center">
             <div className="w-14 h-14 sm:w-16 sm:h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center mr-4">
@@ -160,7 +160,7 @@ const TraineeDashboard: React.FC<TraineeDashboardProps> = ({ traineeId }) => {
 
       {/* 학습 개요 카드 - 모바일 가로 스크롤 */}
       <div className="flex gap-4 overflow-x-auto pb-4 md:grid md:grid-cols-2 lg:grid-cols-4 md:overflow-x-visible md:pb-0 snap-x snap-mandatory mb-8 -mx-4 px-4 sm:mx-0 sm:px-0">
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 min-w-[280px] md:min-w-0 snap-start flex-shrink-0 hover:shadow-md transition-shadow">
+        <div className="bg-white dark:bg-gray-800 rounded-[2rem] shadow-sm border border-gray-100 dark:border-gray-700 p-6 min-w-[280px] md:min-w-0 snap-start flex-shrink-0 hover:shadow-md transition-shadow">
           <div className="flex items-center">
             <div className="p-3 rounded-xl bg-indigo-50 dark:bg-indigo-900/30">
               <BookOpenIcon className="h-6 w-6 text-indigo-600 dark:text-indigo-400" />
@@ -177,7 +177,7 @@ const TraineeDashboard: React.FC<TraineeDashboardProps> = ({ traineeId }) => {
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 min-w-[280px] md:min-w-0 snap-start flex-shrink-0 hover:shadow-md transition-shadow">
+        <div className="bg-white dark:bg-gray-800 rounded-[2rem] shadow-sm border border-gray-100 dark:border-gray-700 p-6 min-w-[280px] md:min-w-0 snap-start flex-shrink-0 hover:shadow-md transition-shadow">
           <div className="flex items-center">
             <div className="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-900/30">
               <CheckCircleIcon className="h-6 w-6 text-emerald-600 dark:text-emerald-400" />
@@ -194,7 +194,7 @@ const TraineeDashboard: React.FC<TraineeDashboardProps> = ({ traineeId }) => {
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 min-w-[280px] md:min-w-0 snap-start flex-shrink-0 hover:shadow-md transition-shadow">
+        <div className="bg-white dark:bg-gray-800 rounded-[2rem] shadow-sm border border-gray-100 dark:border-gray-700 p-6 min-w-[280px] md:min-w-0 snap-start flex-shrink-0 hover:shadow-md transition-shadow">
           <div className="flex items-center">
             <div className="p-3 rounded-xl bg-purple-50 dark:bg-purple-900/30">
               <ChartBarIcon className="h-6 w-6 text-purple-600 dark:text-purple-400" />
@@ -211,7 +211,7 @@ const TraineeDashboard: React.FC<TraineeDashboardProps> = ({ traineeId }) => {
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 min-w-[280px] md:min-w-0 snap-start flex-shrink-0 hover:shadow-md transition-shadow">
+        <div className="bg-white dark:bg-gray-800 rounded-[2rem] shadow-sm border border-gray-100 dark:border-gray-700 p-6 min-w-[280px] md:min-w-0 snap-start flex-shrink-0 hover:shadow-md transition-shadow">
           <div className="flex items-center">
             <div className="p-3 rounded-xl bg-amber-50 dark:bg-amber-900/30">
               <ClockIcon className="h-6 w-6 text-amber-600 dark:text-amber-400" />
@@ -233,7 +233,7 @@ const TraineeDashboard: React.FC<TraineeDashboardProps> = ({ traineeId }) => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
         {/* 현재 수강 과정 */}
         <div className="lg:col-span-2 space-y-6">
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
+          <div className="bg-white dark:bg-gray-800 rounded-[2rem] shadow-sm border border-gray-100 dark:border-gray-700">
             <div className="px-4 sm:px-6 py-4 border-b border-gray-100 dark:border-gray-700">
               <h2 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
                 <BookOpenIcon className="h-5 w-5 mr-2 text-indigo-600 dark:text-indigo-400" />
@@ -317,7 +317,7 @@ const TraineeDashboard: React.FC<TraineeDashboardProps> = ({ traineeId }) => {
         {/* 사이드바 - 이번 주 할 일 & 알림 */}
         <div className="space-y-6">
           {/* 이번 주 할 일 */}
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
+          <div className="bg-white dark:bg-gray-800 rounded-[2rem] shadow-sm border border-gray-100 dark:border-gray-700">
             <div className="px-4 sm:px-6 py-4 border-b border-gray-100 dark:border-gray-700">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
                 <CalendarDaysIcon className="h-5 w-5 mr-2 text-emerald-600 dark:text-emerald-400" />
@@ -381,7 +381,7 @@ const TraineeDashboard: React.FC<TraineeDashboardProps> = ({ traineeId }) => {
           </div>
 
           {/* 알림 */}
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
+          <div className="bg-white dark:bg-gray-800 rounded-[2rem] shadow-sm border border-gray-100 dark:border-gray-700">
             <div className="px-4 sm:px-6 py-4 border-b border-gray-100 dark:border-gray-700">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
                 <BellIcon className="h-5 w-5 mr-2 text-orange-600 dark:text-orange-400" />
