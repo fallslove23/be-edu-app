@@ -474,372 +474,374 @@ const StudentManagement: React.FC = () => {
   }
 
   return (
-    <div className="space-y-6">
-      {/* 헤더 */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900 mb-2 flex items-center">
-              <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-xl mr-4">
-                <Users className="h-8 w-8 text-blue-600 dark:text-blue-400" />
-              </div>
-              교육생 종합 관리
-            </h1>
-            <p className="text-gray-600">
-              {isInstructor
-                ? '교육생 현황 및 학습 이력을 조회할 수 있습니다. (조회 전용)'
-                : '교육생 현황 및 학습 이력을 종합적으로 관리하세요.'
-              }
-            </p>
-            {isInstructor && (
-              <div className="mt-2 p-2 bg-blue-50 border border-blue-200 rounded-md">
-                <p className="text-sm text-blue-700">
-                  <ClipboardList className="inline-block w-4 h-4 mr-1" />
-                  강사 권한으로 로그인하셨습니다. 교육생 정보 조회만 가능합니다.
-                </p>
-              </div>
-            )}
-          </div>
-          <div className="flex items-center space-x-3">
-            <div className="flex items-center bg-gray-100 rounded-lg p-1">
-              <button
-                onClick={() => setViewMode('list')}
-                className={`px-3 py-2 rounded-md text-sm font-medium ${viewMode === 'list'
-                  ? 'bg-white text-gray-900 shadow-sm'
-                  : 'text-gray-600 hover:text-gray-900'
-                  }`}
-              >
-                목록
-              </button>
-              <button
-                onClick={() => setViewMode('grid')}
-                className={`px-3 py-2 rounded-md text-sm font-medium ${viewMode === 'grid'
-                  ? 'bg-white text-gray-900 shadow-sm'
-                  : 'text-gray-600 hover:text-gray-900'
-                  }`}
-              >
-                카드
-              </button>
-            </div>
-            {canModifyStudents && (
-              <button
-                onClick={() => {/* 새 교육생 등록 */ }}
-                className="btn-primary px-4 py-2 rounded-full flex items-center space-x-2"
-              >
-                <UserPlus className="h-4 w-4" />
-                <span>교육생 등록</span>
-              </button>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {/* 통계 대시보드 */}
-      {statistics && (
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <div className="flex items-center">
-              <div className="p-2 bg-blue-100 rounded-lg">
-                <Users className="h-6 w-6 text-blue-600" />
-              </div>
-              <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">전체 교육생</p>
-                <p className="text-2xl font-bold text-gray-900">{statistics.totalStudents}</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <div className="flex items-center">
-              <div className="p-2 bg-green-500/10 rounded-lg">
-                <Clock className="h-6 w-6 text-green-600" />
-              </div>
-              <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">활성 교육생</p>
-                <p className="text-2xl font-bold text-gray-900">{statistics.activeStudents}</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <div className="flex items-center">
-              <div className="p-2 bg-purple-100 rounded-lg">
-                <GraduationCap className="h-6 w-6 text-purple-600" />
-              </div>
-              <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">수료 완료</p>
-                <p className="text-2xl font-bold text-gray-900">{statistics.completedStudents}</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <div className="flex items-center">
-              <div className="p-2 bg-yellow-100 rounded-lg">
-                <Trophy className="h-6 w-6 text-foreground" />
-              </div>
-              <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">평균 성적</p>
-                <p className="text-2xl font-bold text-gray-900">{statistics.averageGrade.toFixed(1)}</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <div className="flex items-center">
-              <div className="p-2 bg-orange-500/10 rounded-lg">
-                <BarChart2 className="h-6 w-6 text-orange-600" />
-              </div>
-              <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">평균 출석률</p>
-                <p className="text-2xl font-bold text-gray-900">{statistics.averageAttendance.toFixed(1)}%</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* 고급 검색 */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-        <AdvancedSearch
-          filters={searchFilters}
-          onSearch={handleAdvancedSearch}
-          placeholder="교육생 이름, 부서, 직급, 과정명으로 검색..."
-          showResults={true}
-          resultCount={filteredStudents.length}
-          recentSearches={[
-            '김교육',
-            '영업1팀',
-            'BS 기초과정',
-            '수료',
-            '사원'
-          ]}
-          suggestions={[
-            '김교육',
-            '이학습',
-            '박성장',
-            '영업1팀',
-            '영업2팀',
-            '마케팅팀',
-            'BS 기초과정',
-            'BS 고급과정'
-          ]}
-        />
-
-        <div className="flex justify-end space-x-3 mt-4">
-          <button
-            onClick={() => {/* 엑셀 다운로드 */ }}
-            className="flex items-center space-x-1 border border-gray-300 rounded-full px-3 py-2 hover:bg-gray-50"
-          >
-            <FileDown className="h-4 w-4" />
-            <span>엑셀 다운로드</span>
-          </button>
-
-          <button
-            onClick={() => setShowReportGenerator(true)}
-            className="btn-success flex items-center space-x-1 rounded-full px-3 py-2"
-          >
-            <BarChart2 className="h-4 w-4" />
-            <span>성과 리포트</span>
-          </button>
-        </div>
-      </div>
-
-      {/* 교육생 목록 */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-        <div className="px-6 py-4 border-b border-gray-200">
-          <h3 className="text-lg font-medium text-gray-900">
-            교육생 목록 ({filteredStudents.length})
-          </h3>
-        </div>
-
-        {viewMode === 'list' ? (
-          // 목록 뷰
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    교육생 정보
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    현재 수강 과정
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    성적
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    출석률
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    최근 활동
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    작업
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {filteredStudents.map((student) => (
-                  <tr key={student.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center">
-                        <div>
-                          <div className="text-sm font-medium text-gray-900">{student.name}</div>
-                          <div className="text-sm text-gray-500">{student.department} · {student.position}</div>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      {student.currentCourses.length > 0 ? (
-                        <div className="space-y-1">
-                          {student.currentCourses.map((course, index) => (
-                            <div key={index}>
-                              <div className="text-sm font-medium text-gray-900">{course.courseCode}</div>
-                              <div className="text-sm text-gray-500">{course.courseName}</div>
-                              <div className="mt-1">
-                                <div className="flex items-center space-x-2">
-                                  <div className="w-20 bg-gray-200 rounded-lg h-2">
-                                    <div
-                                      className="bg-blue-600 h-2 rounded-lg"
-                                      style={{ width: `${course.progress}%` }}
-                                    ></div>
-                                  </div>
-                                  <span className="text-xs text-gray-500">{course.progress}%</span>
-                                </div>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      ) : (
-                        <span className="text-sm text-gray-500">수강 중인 과정 없음</span>
-                      )}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`text-sm font-medium ${getGradeColor(student.overallGrade)}`}>
-                        {student.overallGrade.toFixed(1)}/5.0
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`text-sm font-medium ${getAttendanceColor(student.attendanceRate)}`}>
-                        {student.attendanceRate}%
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {formatDate(student.lastActiveAt)}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                      <div className="flex items-center space-x-2">
-                        <button
-                          onClick={() => setSelectedStudentId(student.id)}
-                          className="text-blue-600 hover:text-blue-900 p-1 rounded"
-                          title="상세보기"
-                        >
-                          <Eye className="h-4 w-4" />
-                        </button>
-                        {canModifyStudents && (
-                          <button
-                            onClick={() => {/* 편집 */ }}
-                            className="text-green-600 hover:text-green-900 p-1 rounded"
-                            title="편집"
-                          >
-                            <Pencil className="h-4 w-4" />
-                          </button>
-                        )}
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        ) : (
-          // 카드 뷰
-          <div className="p-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredStudents.map((student) => (
-                <div
-                  key={student.id}
-                  className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow cursor-pointer"
-                  onClick={() => setSelectedStudentId(student.id)}
-                >
-                  <div className="flex items-center justify-between mb-3">
-                    <h4 className="font-medium text-gray-900">{student.name}</h4>
-                    <ChevronRight className="h-4 w-4 text-gray-400" />
-                  </div>
-
-                  <div className="text-sm text-gray-600 mb-3">
-                    {student.department} · {student.position}
-                  </div>
-
-                  {student.currentCourses.length > 0 ? (
-                    <div className="mb-3">
-                      <div className="text-xs text-gray-500 mb-1">현재 수강 과정</div>
-                      {student.currentCourses.map((course, index) => (
-                        <div key={index} className="text-sm">
-                          <div className="font-medium text-gray-900">{course.courseCode}</div>
-                          <div className="flex items-center space-x-2 mt-1">
-                            <div className="flex-1 bg-gray-200 rounded-lg h-1.5">
-                              <div
-                                className="bg-blue-600 h-1.5 rounded-lg"
-                                style={{ width: `${course.progress}%` }}
-                              ></div>
-                            </div>
-                            <span className="text-xs text-gray-500">{course.progress}%</span>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="mb-3 text-sm text-gray-500">
-                      수강 중인 과정 없음
-                    </div>
-                  )}
-
-                  <div className="flex justify-between items-center pt-3 border-t border-gray-100">
-                    <div className="text-xs text-gray-500">
-                      성적: <span className={`font-medium ${getGradeColor(student.overallGrade)}`}>
-                        {student.overallGrade.toFixed(1)}
-                      </span>
-                    </div>
-                    <div className="text-xs text-gray-500">
-                      출석: <span className={`font-medium ${getAttendanceColor(student.attendanceRate)}`}>
-                        {student.attendanceRate}%
-                      </span>
-                    </div>
-                  </div>
+    <div className="min-h-screen bg-[#F2F4F6] p-4 sm:p-6 pb-24">
+      <div className="max-w-5xl mx-auto space-y-6">
+        {/* 헤더 */}
+        <div className="bg-white rounded-[2rem] p-6 shadow-sm border border-gray-100">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900 mb-2 flex items-center">
+                <div className="p-3 bg-blue-50 rounded-xl mr-4">
+                  <Users className="h-8 w-8 text-blue-600" />
                 </div>
-              ))}
+                교육생 종합 관리
+              </h1>
+              <p className="text-gray-600">
+                {isInstructor
+                  ? '교육생 현황 및 학습 이력을 조회할 수 있습니다. (조회 전용)'
+                  : '교육생 현황 및 학습 이력을 종합적으로 관리하세요.'
+                }
+              </p>
+              {isInstructor && (
+                <div className="mt-2 p-2 bg-blue-50 border border-blue-200 rounded-md">
+                  <p className="text-sm text-blue-700">
+                    <ClipboardList className="inline-block w-4 h-4 mr-1" />
+                    강사 권한으로 로그인하셨습니다. 교육생 정보 조회만 가능합니다.
+                  </p>
+                </div>
+              )}
+            </div>
+            <div className="flex items-center space-x-3">
+              <div className="flex items-center bg-gray-100 rounded-full p-1">
+                <button
+                  onClick={() => setViewMode('list')}
+                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${viewMode === 'list'
+                    ? 'bg-white text-gray-900 shadow-sm'
+                    : 'text-gray-500 hover:text-gray-900'
+                    }`}
+                >
+                  목록
+                </button>
+                <button
+                  onClick={() => setViewMode('grid')}
+                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${viewMode === 'grid'
+                    ? 'bg-white text-gray-900 shadow-sm'
+                    : 'text-gray-500 hover:text-gray-900'
+                    }`}
+                >
+                  카드
+                </button>
+              </div>
+              {canModifyStudents && (
+                <button
+                  onClick={() => {/* 새 교육생 등록 */ }}
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-full flex items-center space-x-2 shadow-sm transition-colors"
+                >
+                  <UserPlus className="h-4 w-4" />
+                  <span>교육생 등록</span>
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* 통계 대시보드 */}
+        {statistics && (
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+              <div className="flex items-center">
+                <div className="p-2 bg-blue-100 rounded-lg">
+                  <Users className="h-6 w-6 text-blue-600" />
+                </div>
+                <div className="ml-4">
+                  <p className="text-sm font-medium text-gray-600">전체 교육생</p>
+                  <p className="text-2xl font-bold text-gray-900">{statistics.totalStudents}</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+              <div className="flex items-center">
+                <div className="p-2 bg-green-500/10 rounded-lg">
+                  <Clock className="h-6 w-6 text-green-600" />
+                </div>
+                <div className="ml-4">
+                  <p className="text-sm font-medium text-gray-600">활성 교육생</p>
+                  <p className="text-2xl font-bold text-gray-900">{statistics.activeStudents}</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+              <div className="flex items-center">
+                <div className="p-2 bg-purple-100 rounded-lg">
+                  <GraduationCap className="h-6 w-6 text-purple-600" />
+                </div>
+                <div className="ml-4">
+                  <p className="text-sm font-medium text-gray-600">수료 완료</p>
+                  <p className="text-2xl font-bold text-gray-900">{statistics.completedStudents}</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+              <div className="flex items-center">
+                <div className="p-2 bg-yellow-100 rounded-lg">
+                  <Trophy className="h-6 w-6 text-foreground" />
+                </div>
+                <div className="ml-4">
+                  <p className="text-sm font-medium text-gray-600">평균 성적</p>
+                  <p className="text-2xl font-bold text-gray-900">{statistics.averageGrade.toFixed(1)}</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+              <div className="flex items-center">
+                <div className="p-2 bg-orange-500/10 rounded-lg">
+                  <BarChart2 className="h-6 w-6 text-orange-600" />
+                </div>
+                <div className="ml-4">
+                  <p className="text-sm font-medium text-gray-600">평균 출석률</p>
+                  <p className="text-2xl font-bold text-gray-900">{statistics.averageAttendance.toFixed(1)}%</p>
+                </div>
+              </div>
             </div>
           </div>
         )}
 
-        {filteredStudents.length === 0 && (
-          <div className="p-12 text-center">
-            <Users className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">교육생이 없습니다</h3>
-            <p className="text-gray-600 mb-4">
-              {searchQuery || Object.keys(filters).length > 0
-                ? '검색 조건에 맞는 교육생이 없습니다.'
-                : '등록된 교육생이 없습니다.'
-              }
-            </p>
+        {/* 고급 검색 */}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <AdvancedSearch
+            filters={searchFilters}
+            onSearch={handleAdvancedSearch}
+            placeholder="교육생 이름, 부서, 직급, 과정명으로 검색..."
+            showResults={true}
+            resultCount={filteredStudents.length}
+            recentSearches={[
+              '김교육',
+              '영업1팀',
+              'BS 기초과정',
+              '수료',
+              '사원'
+            ]}
+            suggestions={[
+              '김교육',
+              '이학습',
+              '박성장',
+              '영업1팀',
+              '영업2팀',
+              '마케팅팀',
+              'BS 기초과정',
+              'BS 고급과정'
+            ]}
+          />
+
+          <div className="flex justify-end space-x-3 mt-4">
             <button
-              onClick={() => {/* 교육생 등록 */ }}
-              className="btn-primary px-4 py-2 rounded-full"
+              onClick={() => {/* 엑셀 다운로드 */ }}
+              className="flex items-center space-x-1 border border-gray-300 rounded-full px-3 py-2 hover:bg-gray-50"
             >
-              첫 교육생 등록하기
+              <FileDown className="h-4 w-4" />
+              <span>엑셀 다운로드</span>
+            </button>
+
+            <button
+              onClick={() => setShowReportGenerator(true)}
+              className="btn-success flex items-center space-x-1 rounded-full px-3 py-2"
+            >
+              <BarChart2 className="h-4 w-4" />
+              <span>성과 리포트</span>
             </button>
           </div>
+        </div>
+
+        {/* 교육생 목록 */}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200">
+          <div className="px-6 py-4 border-b border-gray-200">
+            <h3 className="text-lg font-medium text-gray-900">
+              교육생 목록 ({filteredStudents.length})
+            </h3>
+          </div>
+
+          {viewMode === 'list' ? (
+            // 목록 뷰
+            <div className="overflow-x-auto">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      교육생 정보
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      현재 수강 과정
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      성적
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      출석률
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      최근 활동
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      작업
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {filteredStudents.map((student) => (
+                    <tr key={student.id} className="hover:bg-gray-50">
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex items-center">
+                          <div>
+                            <div className="text-sm font-medium text-gray-900">{student.name}</div>
+                            <div className="text-sm text-gray-500">{student.department} · {student.position}</div>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        {student.currentCourses.length > 0 ? (
+                          <div className="space-y-1">
+                            {student.currentCourses.map((course, index) => (
+                              <div key={index}>
+                                <div className="text-sm font-medium text-gray-900">{course.courseCode}</div>
+                                <div className="text-sm text-gray-500">{course.courseName}</div>
+                                <div className="mt-1">
+                                  <div className="flex items-center space-x-2">
+                                    <div className="w-20 bg-gray-200 rounded-lg h-2">
+                                      <div
+                                        className="bg-blue-600 h-2 rounded-lg"
+                                        style={{ width: `${course.progress}%` }}
+                                      ></div>
+                                    </div>
+                                    <span className="text-xs text-gray-500">{course.progress}%</span>
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <span className="text-sm text-gray-500">수강 중인 과정 없음</span>
+                        )}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className={`text-sm font-medium ${getGradeColor(student.overallGrade)}`}>
+                          {student.overallGrade.toFixed(1)}/5.0
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className={`text-sm font-medium ${getAttendanceColor(student.attendanceRate)}`}>
+                          {student.attendanceRate}%
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {formatDate(student.lastActiveAt)}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <div className="flex items-center space-x-2">
+                          <button
+                            onClick={() => setSelectedStudentId(student.id)}
+                            className="text-blue-600 hover:text-blue-900 p-1 rounded"
+                            title="상세보기"
+                          >
+                            <Eye className="h-4 w-4" />
+                          </button>
+                          {canModifyStudents && (
+                            <button
+                              onClick={() => {/* 편집 */ }}
+                              className="text-green-600 hover:text-green-900 p-1 rounded"
+                              title="편집"
+                            >
+                              <Pencil className="h-4 w-4" />
+                            </button>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            // 카드 뷰
+            <div className="p-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {filteredStudents.map((student) => (
+                  <div
+                    key={student.id}
+                    className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow cursor-pointer"
+                    onClick={() => setSelectedStudentId(student.id)}
+                  >
+                    <div className="flex items-center justify-between mb-3">
+                      <h4 className="font-medium text-gray-900">{student.name}</h4>
+                      <ChevronRight className="h-4 w-4 text-gray-400" />
+                    </div>
+
+                    <div className="text-sm text-gray-600 mb-3">
+                      {student.department} · {student.position}
+                    </div>
+
+                    {student.currentCourses.length > 0 ? (
+                      <div className="mb-3">
+                        <div className="text-xs text-gray-500 mb-1">현재 수강 과정</div>
+                        {student.currentCourses.map((course, index) => (
+                          <div key={index} className="text-sm">
+                            <div className="font-medium text-gray-900">{course.courseCode}</div>
+                            <div className="flex items-center space-x-2 mt-1">
+                              <div className="flex-1 bg-gray-200 rounded-lg h-1.5">
+                                <div
+                                  className="bg-blue-600 h-1.5 rounded-lg"
+                                  style={{ width: `${course.progress}%` }}
+                                ></div>
+                              </div>
+                              <span className="text-xs text-gray-500">{course.progress}%</span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="mb-3 text-sm text-gray-500">
+                        수강 중인 과정 없음
+                      </div>
+                    )}
+
+                    <div className="flex justify-between items-center pt-3 border-t border-gray-100">
+                      <div className="text-xs text-gray-500">
+                        성적: <span className={`font-medium ${getGradeColor(student.overallGrade)}`}>
+                          {student.overallGrade.toFixed(1)}
+                        </span>
+                      </div>
+                      <div className="text-xs text-gray-500">
+                        출석: <span className={`font-medium ${getAttendanceColor(student.attendanceRate)}`}>
+                          {student.attendanceRate}%
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {filteredStudents.length === 0 && (
+            <div className="p-12 text-center">
+              <Users className="h-16 w-16 text-gray-400 mx-auto mb-4" />
+              <h3 className="text-lg font-medium text-gray-900 mb-2">교육생이 없습니다</h3>
+              <p className="text-gray-600 mb-4">
+                {searchQuery || Object.keys(filters).length > 0
+                  ? '검색 조건에 맞는 교육생이 없습니다.'
+                  : '등록된 교육생이 없습니다.'
+                }
+              </p>
+              <button
+                onClick={() => {/* 교육생 등록 */ }}
+                className="btn-primary px-4 py-2 rounded-full"
+              >
+                첫 교육생 등록하기
+              </button>
+            </div>
+          )}
+        </div>
+
+        {/* 성과 리포트 생성기 모달 */}
+        {showReportGenerator && (
+          <PerformanceReportGenerator
+            onClose={() => setShowReportGenerator(false)}
+          />
         )}
       </div>
-
-      {/* 성과 리포트 생성기 모달 */}
-      {showReportGenerator && (
-        <PerformanceReportGenerator
-          onClose={() => setShowReportGenerator(false)}
-        />
-      )}
     </div>
   );
 };
