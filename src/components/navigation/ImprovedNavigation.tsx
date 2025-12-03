@@ -27,6 +27,8 @@ const ImprovedNavigation: React.FC<ImprovedNavigationProps> = ({
   // Initialize with all categories collapsed (empty set)
   const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set());
   const [recentViews, setRecentViews] = useState<string[]>([]);
+  // 접힌 상태에서 클릭으로 고정된 툴팁 추적
+  const [pinnedTooltip, setPinnedTooltip] = useState<string | null>(null);
 
   useEffect(() => {
     // Load recent views from localStorage
@@ -93,6 +95,13 @@ const ImprovedNavigation: React.FC<ImprovedNavigationProps> = ({
     : menuItems;
 
   const toggleCategory = (categoryId: string) => {
+    // 접힌 상태에서는 툴팁을 고정/해제
+    if (isCollapsed) {
+      setPinnedTooltip(pinnedTooltip === categoryId ? null : categoryId);
+      return;
+    }
+
+    // 펼쳐진 상태에서는 기존 동작
     const newExpanded = new Set(expandedCategories);
     if (newExpanded.has(categoryId)) {
       newExpanded.delete(categoryId);
@@ -103,6 +112,11 @@ const ImprovedNavigation: React.FC<ImprovedNavigationProps> = ({
   };
 
   const handleItemClick = (itemId: string, route?: string, isExternal?: boolean) => {
+    // 툴팁 고정 상태 해제
+    if (pinnedTooltip) {
+      setPinnedTooltip(null);
+    }
+
     if (isExternal && route) {
       // 외부 링크는 새 탭에서 열기
       window.open(route, '_blank', 'noopener,noreferrer');
@@ -273,8 +287,28 @@ const ImprovedNavigation: React.FC<ImprovedNavigationProps> = ({
                     </button>
                     {/* Tooltip for collapsed state */}
                     {isCollapsed && (
-                      <div className="absolute left-full ml-2 top-0 px-3 py-2 bg-popover text-popover-foreground text-xs rounded-lg shadow-xl invisible group-hover/menu:visible opacity-0 group-hover/menu:opacity-100 transition-all z-[100] min-w-max border border-border">
-                        <div className="font-semibold mb-2 border-b border-border pb-1">{item.label}</div>
+                      <div
+                        className={`absolute left-full ml-2 top-0 px-3 py-2 bg-popover text-popover-foreground text-xs rounded-lg shadow-xl transition-all z-[100] min-w-max border border-border ${
+                          pinnedTooltip === item.id
+                            ? 'visible opacity-100'
+                            : 'invisible group-hover/menu:visible opacity-0 group-hover/menu:opacity-100'
+                        }`}
+                      >
+                        <div className="flex items-center justify-between mb-2 border-b border-border pb-1">
+                          <div className="font-semibold">{item.label}</div>
+                          {pinnedTooltip === item.id && (
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setPinnedTooltip(null);
+                              }}
+                              className="ml-2 p-0.5 hover:bg-accent rounded"
+                              title="닫기"
+                            >
+                              <XMarkIcon className="h-3 w-3" />
+                            </button>
+                          )}
+                        </div>
                         <div className="space-y-1">
                           {item.subItems.map((subItem) => (
                             <button

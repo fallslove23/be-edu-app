@@ -60,7 +60,10 @@ const DashboardWrapper: React.FC<DashboardWrapperProps> = ({ onNavigate }) => {
               {user?.name || '관리자'}님
             </h1>
           </div>
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-2">
+            {/* 역할 미리보기 버튼 */}
+            {isAdmin && <RolePreviewSelector />}
+
             <button
               onClick={() => onNavigate?.('search')}
               className="p-2 text-gray-800 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-800 rounded-full transition-colors"
