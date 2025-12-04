@@ -14,6 +14,7 @@ import {
   TvIcon
 } from '@heroicons/react/24/outline';
 import { PageContainer } from '../common/PageContainer';
+import { PageHeader } from '../common/PageHeader';
 import { CourseTemplateService } from '../../services/course-template.service';
 import type { CourseRound } from '../../types/course-template.types';
 import { ExamService } from '../../services/exam.services';
@@ -268,20 +269,20 @@ const ExamManagement: React.FC = () => {
     return (
       <div className="space-y-6">
         {/* 헤더 */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
           <div className="flex items-center justify-between">
             <div>
               <button
                 onClick={() => setCurrentView('question-bank')}
-                className="mb-4 text-gray-600 hover:text-gray-800 flex items-center"
+                className="mb-4 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 flex items-center"
               >
                 ← 문제은행으로 돌아가기
               </button>
-              <h1 className="text-2xl font-bold text-gray-900 flex items-center">
-                <UserGroupIcon className="h-8 w-8 mr-3 text-gray-600" />
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center">
+                <UserGroupIcon className="h-8 w-8 mr-3 text-gray-600 dark:text-gray-400" />
                 시험 대상자 선택
               </h1>
-              <p className="mt-2 text-gray-600">
+              <p className="mt-2 text-gray-600 dark:text-gray-400">
                 "{selectedQuestionBank.name}" 문제은행으로 시험을 진행할 과정 차수를 선택하세요.
               </p>
             </div>
@@ -289,8 +290,8 @@ const ExamManagement: React.FC = () => {
               onClick={handleCreateExamFromBank}
               disabled={selectedTargets.length === 0}
               className={`px-4 py-2 rounded-full flex items-center transition-colors ${selectedTargets.length === 0
-                ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                : 'bg-gray-700 text-white hover:bg-gray-800'
+                ? 'bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-500 cursor-not-allowed'
+                : 'bg-gray-700 dark:bg-blue-600 text-white hover:bg-gray-800 dark:hover:bg-blue-700'
                 }`}
             >
               <ClipboardDocumentListIcon className="h-5 w-5 mr-2" />
@@ -300,57 +301,57 @@ const ExamManagement: React.FC = () => {
         </div>
 
         {/* 선택된 문제은행 정보 */}
-        <div className="bg-gray-50 rounded-lg border border-gray-200 p-4">
-          <h3 className="font-medium text-gray-900 mb-2">선택된 문제은행</h3>
+        <div className="bg-gray-50 dark:bg-gray-800/50 rounded-lg border border-gray-200 dark:border-gray-700 p-4">
+          <h3 className="font-medium text-gray-900 dark:text-white mb-2">선택된 문제은행</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="text-sm">
-              <span className="text-gray-600">문제은행명:</span>
-              <div className="font-medium">{selectedQuestionBank.name}</div>
+              <span className="text-gray-600 dark:text-gray-400">문제은행명:</span>
+              <div className="font-medium text-gray-900 dark:text-white">{selectedQuestionBank.name}</div>
             </div>
             <div className="text-sm">
-              <span className="text-gray-600">카테고리:</span>
-              <div className="font-medium">{selectedQuestionBank.category || '-'}</div>
+              <span className="text-gray-600 dark:text-gray-400">카테고리:</span>
+              <div className="font-medium text-gray-900 dark:text-white">{selectedQuestionBank.category || '-'}</div>
             </div>
             <div className="text-sm">
-              <span className="text-gray-600">문제 수:</span>
-              <div className="font-medium">{selectedQuestionBank.question_count || 0}개</div>
+              <span className="text-gray-600 dark:text-gray-400">문제 수:</span>
+              <div className="font-medium text-gray-900 dark:text-white">{selectedQuestionBank.question_count || 0}개</div>
             </div>
           </div>
         </div>
 
         {/* 과정 차수 목록 */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <h2 className="text-lg font-medium text-gray-900 mb-4">과정 차수 목록</h2>
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+          <h2 className="text-lg font-medium text-gray-900 dark:text-white mb-4">과정 차수 목록</h2>
           <div className="space-y-3">
             {examTargets.map((target) => (
               <label
                 key={target.id}
-                className={`flex items-center p-4 border rounded-full cursor-pointer transition-colors ${selectedTargets.includes(target.id)
-                  ? 'border-gray-600 bg-gray-50'
-                  : 'border-gray-200 hover:border-gray-300'
+                className={`flex items-center p-4 border rounded-xl cursor-pointer transition-all ${selectedTargets.includes(target.id)
+                  ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20 dark:border-blue-500 ring-1 ring-blue-500'
+                  : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 bg-white dark:bg-gray-800'
                   }`}
               >
                 <input
                   type="checkbox"
                   checked={selectedTargets.includes(target.id)}
                   onChange={() => handleTargetToggle(target.id)}
-                  className="w-4 h-4 text-gray-600 border-gray-300 rounded focus:ring-gray-500 mr-4"
+                  className="w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500 mr-4"
                 />
                 <div className="flex-1">
                   <div className="flex items-center justify-between">
                     <div>
-                      <h3 className="font-medium text-gray-900">
+                      <h3 className="font-medium text-gray-900 dark:text-white">
                         {target.course_name} - {target.session_name}
                       </h3>
-                      <p className="text-sm text-gray-600">
+                      <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
                         {target.start_date} ~ {target.end_date}
                       </p>
                     </div>
                     <div className="text-right">
-                      <div className="text-sm font-medium text-gray-900">
+                      <div className="text-sm font-medium text-gray-900 dark:text-white">
                         {target.student_count}명
                       </div>
-                      <div className="text-xs text-gray-500">
+                      <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                         {target.session_number}차
                       </div>
                     </div>
@@ -409,112 +410,111 @@ const ExamManagement: React.FC = () => {
     <PageContainer>
       <div className="space-y-6">
         {/* 헤더 */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900 flex items-center">
-                <AcademicCapIcon className="h-8 w-8 mr-3 text-blue-600" />
-                이론 평가 관리
-              </h1>
-              <p className="mt-2 text-gray-600">
-                수강생들의 이론 시험을 생성하고 관리하세요.
-              </p>
-            </div>
-            <div className="flex space-x-3">
-              <button
-                onClick={() => setCurrentView('question-bank')}
-                className="btn-secondary"
-              >
-                <BookOpenIcon className="h-5 w-5 mr-2" />
-                문제은행 관리
-              </button>
-              <button
-                onClick={() => setCurrentView('form')}
-                className="btn-primary"
-              >
-                <PlusIcon className="h-5 w-5 mr-2" />
-                새 시험 생성
-              </button>
-            </div>
+        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-4">
+          <PageHeader
+            title="이론 평가 관리"
+            description="수강생들의 이론 시험을 생성하고 관리하세요."
+            badge="Exam Management"
+          />
+          <div className="flex space-x-3 w-full lg:w-auto">
+            <button
+              onClick={() => setCurrentView('question-bank')}
+              className="btn-secondary flex-1 lg:flex-none justify-center"
+            >
+              <BookOpenIcon className="h-5 w-5 mr-2" />
+              문제은행 관리
+            </button>
+            <button
+              onClick={() => setCurrentView('form')}
+              className="btn-primary flex-1 lg:flex-none justify-center"
+            >
+              <PlusIcon className="h-5 w-5 mr-2" />
+              새 시험 생성
+            </button>
           </div>
+        </div>
 
-          {/* 통계 요약 */}
-          <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 mt-6">
-            <div className="bg-gray-50 rounded-lg p-4">
-              <div className="text-2xl font-bold text-gray-900">{examStats.total}</div>
-              <div className="text-sm text-gray-600">전체 시험</div>
-            </div>
-            <div className="bg-gray-100 rounded-lg p-4">
-              <div className="text-2xl font-bold text-gray-700">{examStats.active}</div>
-              <div className="text-sm text-gray-600">진행중</div>
-            </div>
-            <div className="bg-gray-100 rounded-lg p-4">
-              <div className="text-2xl font-bold text-gray-700">{examStats.scheduled}</div>
-              <div className="text-sm text-gray-600">예정됨</div>
-            </div>
-            <div className="bg-gray-100 rounded-lg p-4">
-              <div className="text-2xl font-bold text-gray-700">{examStats.completed}</div>
-              <div className="text-sm text-gray-600">완료됨</div>
-            </div>
-            <div className="bg-gray-50 rounded-lg p-4">
-              <div className="text-2xl font-bold text-gray-900">{questionBanks.length}</div>
-              <div className="text-sm text-gray-600">문제은행</div>
-            </div>
+        {/* 통계 요약 */}
+        <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-5">
+            <div className="text-3xl font-bold text-gray-900 dark:text-white mb-1">{examStats.total}</div>
+            <div className="text-sm text-gray-500 dark:text-gray-400">전체 시험</div>
+          </div>
+          <div className="bg-blue-50 dark:bg-blue-900/20 rounded-xl shadow-sm border border-blue-100 dark:border-blue-800 p-5">
+            <div className="text-3xl font-bold text-blue-700 dark:text-blue-400 mb-1">{examStats.active}</div>
+            <div className="text-sm text-blue-600 dark:text-blue-300">진행중</div>
+          </div>
+          <div className="bg-amber-50 dark:bg-amber-900/20 rounded-xl shadow-sm border border-amber-100 dark:border-amber-800 p-5">
+            <div className="text-3xl font-bold text-amber-700 dark:text-amber-400 mb-1">{examStats.scheduled}</div>
+            <div className="text-sm text-amber-600 dark:text-amber-300">예정됨</div>
+          </div>
+          <div className="bg-emerald-50 dark:bg-emerald-900/20 rounded-xl shadow-sm border border-emerald-100 dark:border-emerald-800 p-5">
+            <div className="text-3xl font-bold text-emerald-700 dark:text-emerald-400 mb-1">{examStats.completed}</div>
+            <div className="text-sm text-emerald-600 dark:text-emerald-300">완료됨</div>
+          </div>
+          <div className="bg-purple-50 dark:bg-purple-900/20 rounded-xl shadow-sm border border-purple-100 dark:border-purple-800 p-5">
+            <div className="text-3xl font-bold text-purple-700 dark:text-purple-400 mb-1">{questionBanks.length}</div>
+            <div className="text-sm text-purple-600 dark:text-purple-300">문제은행</div>
           </div>
         </div>
 
         {/* 검색 및 필터 */}
-        <div className="bg-card rounded-lg shadow-sm border border-border p-6">
-          <div className="flex flex-col md:flex-row gap-3">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+          <div className="flex flex-col md:flex-row gap-4">
             {/* 검색 입력 */}
             <div className="flex-1 relative">
-              <MagnifyingGlassIcon className="h-5 w-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
+              <MagnifyingGlassIcon className="h-5 w-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
               <input
                 type="text"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder="시험명, 과정명으로 검색..."
-                className="pl-10 pr-4 py-2.5 w-full border border-border rounded-lg bg-card text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all shadow-sm"
+                className="pl-10 pr-4 py-2.5 w-full border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
               />
             </div>
 
             {/* 결과 카운트 */}
-            <div className="flex items-center px-4 py-2.5 bg-secondary/30 rounded-full border border-border">
-              <FunnelIcon className="h-4 w-4 mr-2 text-muted-foreground" />
-              <span className="text-sm font-medium text-foreground whitespace-nowrap">
-                총 <span className="text-primary font-semibold">{filteredExams.length}</span>개 시험
+            <div className="flex items-center px-4 py-2.5 bg-gray-50 dark:bg-gray-700/50 rounded-lg border border-gray-200 dark:border-gray-600">
+              <FunnelIcon className="h-4 w-4 mr-2 text-gray-500 dark:text-gray-400" />
+              <span className="text-sm font-medium text-gray-700 dark:text-gray-300 whitespace-nowrap">
+                총 <span className="text-blue-600 dark:text-blue-400 font-bold">{filteredExams.length}</span>개 시험
               </span>
             </div>
           </div>
         </div>
 
         {/* 시험 목록 */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <h2 className="text-lg font-medium text-gray-900 mb-4">시험 목록</h2>
+        <div className="space-y-4">
+          <h2 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
+            <ClipboardDocumentListIcon className="w-5 h-5" />
+            시험 목록
+          </h2>
 
           {loading ? (
-            <div className="flex items-center justify-center py-12">
-              <div className="animate-spin rounded-lg h-8 w-8 border-b-2 border-blue-600"></div>
-              <span className="ml-3 text-gray-600">시험 목록을 불러오는 중...</span>
+            <div className="flex flex-col items-center justify-center py-20 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700">
+              <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600 mb-4"></div>
+              <span className="text-gray-500 dark:text-gray-400">시험 목록을 불러오는 중...</span>
             </div>
-          ) : (
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          ) : filteredExams.length > 0 ? (
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {filteredExams.map((exam) => (
                 <div
                   key={exam.id}
-                  className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
+                  className="group bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-5 hover:shadow-lg hover:border-blue-300 dark:hover:border-blue-700 transition-all duration-300"
                 >
-                  <div className="flex items-start justify-between mb-3">
-                    <div className="flex-1">
-                      <h3 className="font-medium text-gray-900 line-clamp-1">
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="flex-1 min-w-0 mr-3">
+                      <h3 className="font-bold text-lg text-gray-900 dark:text-white line-clamp-1 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                         {exam.title}
                       </h3>
-                      <p className="text-sm text-gray-600 mt-1">{exam.course_name || '과정 정보 없음'}</p>
+                      <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 truncate">
+                        {exam.course_name || '과정 정보 없음'}
+                      </p>
                     </div>
-                    <div className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border ${exam.status === 'active' ? 'bg-primary text-primary-foreground border-border' :
-                      exam.status === 'scheduled' ? 'bg-accent text-accent-foreground border-border' :
-                        exam.status === 'completed' ? 'bg-muted text-muted-foreground border-border' :
-                          'bg-secondary text-secondary-foreground border-border'
+                    <div className={`shrink-0 inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border ${exam.status === 'active' ? 'bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-800' :
+                      exam.status === 'scheduled' ? 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-900/30 dark:text-amber-300 dark:border-amber-800' :
+                        exam.status === 'completed' ? 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-300 dark:border-emerald-800' :
+                          'bg-gray-100 text-gray-700 border-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600'
                       }`}>
                       {exam.status === 'active' ? '진행중' :
                         exam.status === 'scheduled' ? '예정' :
@@ -522,68 +522,92 @@ const ExamManagement: React.FC = () => {
                     </div>
                   </div>
 
-                  <div className="space-y-2 mb-4">
-                    <div className="flex items-center text-sm text-gray-600">
-                      <span>⏱️ {exam.duration_minutes}분</span>
-                      <span className="mx-2">•</span>
-                      <span>📝 {exam.question_count || 0}문항</span>
+                  <div className="grid grid-cols-2 gap-3 mb-5">
+                    <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-2 text-center">
+                      <span className="block text-xs text-gray-500 dark:text-gray-400">제한시간</span>
+                      <span className="font-semibold text-gray-900 dark:text-white">{exam.duration_minutes}분</span>
                     </div>
-                    <div className="text-sm text-gray-600">
-                      🎯 합격점: {exam.passing_score}점
+                    <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-2 text-center">
+                      <span className="block text-xs text-gray-500 dark:text-gray-400">문항수</span>
+                      <span className="font-semibold text-gray-900 dark:text-white">{exam.question_count || 0}문항</span>
+                    </div>
+                    <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-2 text-center col-span-2">
+                      <span className="block text-xs text-gray-500 dark:text-gray-400">합격 기준</span>
+                      <span className="font-semibold text-gray-900 dark:text-white">{exam.passing_score}점 이상</span>
                     </div>
                   </div>
 
                   {exam.description && (
-                    <p className="text-sm text-gray-600 mb-4 line-clamp-2">
+                    <p className="text-sm text-gray-600 dark:text-gray-300 mb-5 line-clamp-2 min-h-[2.5em]">
                       {exam.description}
                     </p>
                   )}
 
-                  <div className="flex items-center gap-2">
+                  <div className="grid grid-cols-2 gap-2">
                     <button
                       onClick={() => handleExamTake(exam)}
-                      className="btn-primary btn-sm flex-1 inline-flex items-center justify-center !py-1.5"
+                      className="btn-primary btn-sm w-full justify-center"
                     >
-                      <span>시험응시</span>
+                      시험응시
                     </button>
                     <button
                       onClick={() => handleExamEdit(exam)}
-                      className="btn-outline btn-sm inline-flex items-center justify-center !py-1.5"
+                      className="btn-outline btn-sm w-full justify-center"
                     >
-                      <span>편집</span>
+                      편집
                     </button>
+
                     {exam.status === 'active' && (
                       <button
                         onClick={() => setLiveExam(exam)}
-                        className="btn-secondary btn-sm inline-flex items-center justify-center !p-2"
-                        title="실시간 현황"
+                        className="btn-secondary btn-sm w-full justify-center col-span-2 flex items-center gap-1"
                       >
                         <TvIcon className="h-4 w-4" />
+                        실시간 현황
                       </button>
                     )}
-                    <button
-                      onClick={() => setCloningExam(exam)}
-                      className="btn-outline btn-sm inline-flex items-center justify-center !p-2"
-                      title="시험 복제"
-                    >
-                      <DocumentDuplicateIcon className="h-4 w-4" />
-                    </button>
-                    <button
-                      onClick={() => handleExamResults(exam)}
-                      className="btn-outline btn-sm inline-flex items-center justify-center !py-1.5"
-                    >
-                      <span>결과</span>
-                    </button>
-                    <button
-                      onClick={() => setAnalyticsExam(exam)}
-                      className="btn-secondary py-1 h-auto text-sm"
-                      title="인터랙티브 분석"
-                    >
-                      <ChartBarIcon className="h-4 w-4" />
-                    </button>
+
+                    <div className="col-span-2 flex gap-2">
+                      <button
+                        onClick={() => setCloningExam(exam)}
+                        className="btn-outline btn-sm flex-1 justify-center flex items-center gap-1"
+                        title="시험 복제"
+                      >
+                        <DocumentDuplicateIcon className="h-4 w-4" />
+                        복제
+                      </button>
+                      <button
+                        onClick={() => handleExamResults(exam)}
+                        className="btn-outline btn-sm flex-1 justify-center"
+                      >
+                        결과
+                      </button>
+                      <button
+                        onClick={() => setAnalyticsExam(exam)}
+                        className="btn-secondary btn-sm px-3"
+                        title="인터랙티브 분석"
+                      >
+                        <ChartBarIcon className="h-4 w-4" />
+                      </button>
+                    </div>
                   </div>
                 </div>
               ))}
+            </div>
+          ) : (
+            <div className="text-center py-20 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700">
+              <div className="bg-gray-100 dark:bg-gray-700 rounded-full h-16 w-16 flex items-center justify-center mx-auto mb-4">
+                <AcademicCapIcon className="h-8 w-8 text-gray-400 dark:text-gray-500" />
+              </div>
+              <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-1">등록된 시험이 없습니다</h3>
+              <p className="text-gray-500 dark:text-gray-400 mb-6">새로운 시험을 생성하여 평가를 시작해보세요.</p>
+              <button
+                onClick={() => setCurrentView('form')}
+                className="btn-primary"
+              >
+                <PlusIcon className="h-5 w-5 mr-2" />
+                첫 시험 생성하기
+              </button>
             </div>
           )}
         </div>

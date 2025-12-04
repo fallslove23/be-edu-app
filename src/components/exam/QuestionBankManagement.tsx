@@ -152,7 +152,7 @@ const QuestionBankManagement: React.FC<QuestionBankManagementProps> = ({ onBack,
     <PageContainer>
       <div className="space-y-6">
         {/* 헤더 */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
           <div className="flex items-center justify-between">
             <div>
               <button
@@ -162,11 +162,11 @@ const QuestionBankManagement: React.FC<QuestionBankManagementProps> = ({ onBack,
                 <ArrowLeftIcon className="h-4 w-4 mr-1" />
                 뒤로 가기
               </button>
-              <h1 className="text-2xl font-bold text-gray-900 flex items-center">
-                <BookOpenIcon className="h-8 w-8 mr-3 text-gray-600" />
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center">
+                <BookOpenIcon className="h-8 w-8 mr-3 text-gray-600 dark:text-gray-400" />
                 문제은행 관리
               </h1>
-              <p className="mt-2 text-gray-600">
+              <p className="mt-2 text-gray-600 dark:text-gray-400">
                 시험 문제를 체계적으로 관리하고 재사용하세요.
               </p>
             </div>
@@ -184,7 +184,7 @@ const QuestionBankManagement: React.FC<QuestionBankManagementProps> = ({ onBack,
         </div>
 
         {/* 검색 */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
           <div className="relative">
             <MagnifyingGlassIcon className="h-5 w-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
             <input
@@ -192,29 +192,29 @@ const QuestionBankManagement: React.FC<QuestionBankManagementProps> = ({ onBack,
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="문제은행 검색..."
-              className="pl-10 pr-4 py-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
+              className="pl-10 pr-4 py-2 w-full border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400"
             />
           </div>
         </div>
 
         {/* 문제은행 목록 */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-medium text-gray-900">문제은행 목록</h2>
-            <div className="text-sm text-gray-600">
-              총 <span className="font-semibold text-gray-900">{filteredBanks.length}</span>개
+            <h2 className="text-lg font-medium text-gray-900 dark:text-white">문제은행 목록</h2>
+            <div className="text-sm text-gray-600 dark:text-gray-400">
+              총 <span className="font-semibold text-gray-900 dark:text-white">{filteredBanks.length}</span>개
             </div>
           </div>
 
           {loading ? (
             <div className="flex items-center justify-center py-12">
-              <div className="animate-spin rounded-lg h-8 w-8 border-b-2 border-gray-600"></div>
-              <span className="ml-3 text-gray-600">문제은행을 불러오는 중...</span>
+              <div className="animate-spin rounded-lg h-8 w-8 border-b-2 border-gray-600 dark:border-gray-400"></div>
+              <span className="ml-3 text-gray-600 dark:text-gray-400">문제은행을 불러오는 중...</span>
             </div>
           ) : filteredBanks.length === 0 ? (
             <div className="text-center py-12">
-              <BookOpenIcon className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-              <p className="text-gray-600 mb-4">
+              <BookOpenIcon className="h-12 w-12 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
+              <p className="text-gray-600 dark:text-gray-400 mb-4">
                 {searchTerm ? '검색 결과가 없습니다.' : '문제은행이 없습니다.'}
               </p>
               {!searchTerm && (
@@ -231,30 +231,30 @@ const QuestionBankManagement: React.FC<QuestionBankManagementProps> = ({ onBack,
               {filteredBanks.map((bank) => (
                 <div
                   key={bank.id}
-                  className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
+                  className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 hover:shadow-md transition-shadow bg-white dark:bg-gray-800"
                 >
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex-1">
-                      <h3 className="font-medium text-gray-900 line-clamp-1">
+                      <h3 className="font-medium text-gray-900 dark:text-white line-clamp-1">
                         {bank.name}
                       </h3>
                       {bank.category && (
-                        <p className="text-sm text-gray-600 mt-1">{bank.category}</p>
+                        <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">{bank.category}</p>
                       )}
                     </div>
                   </div>
 
                   {bank.description && (
-                    <p className="text-sm text-gray-600 mb-4 line-clamp-2">
+                    <p className="text-sm text-gray-600 dark:text-gray-400 mb-4 line-clamp-2">
                       {bank.description}
                     </p>
                   )}
 
                   <div className="space-y-2 mb-4">
-                    <div className="flex items-center text-sm text-gray-600">
+                    <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
                       <span>📝 {bank.question_count || 0}개 문제</span>
                     </div>
-                    <div className="text-sm text-gray-600">
+                    <div className="text-sm text-gray-600 dark:text-gray-400">
                       📅 {new Date(bank.updated_at).toLocaleDateString()}
                     </div>
                   </div>
@@ -331,7 +331,7 @@ const BankForm: React.FC<BankFormProps> = ({ bank, onSave, onCancel }) => {
     <PageContainer>
       <div className="space-y-6">
         {/* 헤더 */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
           <div className="flex items-center justify-between">
             <div>
               <button
@@ -341,7 +341,7 @@ const BankForm: React.FC<BankFormProps> = ({ bank, onSave, onCancel }) => {
                 <ArrowLeftIcon className="h-4 w-4 mr-1" />
                 뒤로 가기
               </button>
-              <h1 className="text-2xl font-bold text-gray-900">
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
                 {bank ? '문제은행 수정' : '새 문제은행'}
               </h1>
             </div>
@@ -349,9 +349,9 @@ const BankForm: React.FC<BankFormProps> = ({ bank, onSave, onCancel }) => {
         </div>
 
         {/* 폼 */}
-        <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 space-y-6">
+        <form onSubmit={handleSubmit} className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 space-y-6">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               문제은행 이름 <span className="text-destructive">*</span>
             </label>
             <input
@@ -359,13 +359,13 @@ const BankForm: React.FC<BankFormProps> = ({ bank, onSave, onCancel }) => {
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="예: BS 영업 기초 문제은행"
-              className="w-full border border-gray-300 rounded-full px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
+              className="w-full border border-gray-300 dark:border-gray-600 rounded-full px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400"
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               카테고리
             </label>
             <input
@@ -373,12 +373,12 @@ const BankForm: React.FC<BankFormProps> = ({ bank, onSave, onCancel }) => {
               value={category}
               onChange={(e) => setCategory(e.target.value)}
               placeholder="예: BS 영업 기초과정"
-              className="w-full border border-gray-300 rounded-full px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
+              className="w-full border border-gray-300 dark:border-gray-600 rounded-full px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               설명
             </label>
             <textarea
@@ -386,11 +386,11 @@ const BankForm: React.FC<BankFormProps> = ({ bank, onSave, onCancel }) => {
               onChange={(e) => setDescription(e.target.value)}
               placeholder="문제은행에 대한 설명을 입력하세요..."
               rows={4}
-              className="w-full border border-gray-300 rounded-full px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
+              className="w-full border border-gray-300 dark:border-gray-600 rounded-full px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400"
             />
           </div>
 
-          <div className="flex items-center justify-end space-x-3 pt-4 border-t">
+          <div className="flex items-center justify-end space-x-3 pt-4 border-t border-gray-200 dark:border-gray-700">
             <button
               type="button"
               onClick={onCancel}
@@ -513,7 +513,7 @@ const QuestionList: React.FC<QuestionListProps> = ({ bank, onBack, onRefresh }) 
     <PageContainer>
       <div className="space-y-6">
         {/* 헤더 */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
           <div className="flex items-center justify-between">
             <div>
               <button
@@ -523,10 +523,10 @@ const QuestionList: React.FC<QuestionListProps> = ({ bank, onBack, onRefresh }) 
                 <ArrowLeftIcon className="h-4 w-4 mr-1" />
                 문제은행 목록으로
               </button>
-              <h1 className="text-2xl font-bold text-gray-900">
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
                 {bank.name}
               </h1>
-              <p className="mt-2 text-gray-600">
+              <p className="mt-2 text-gray-600 dark:text-gray-400">
                 {bank.description || '문제를 추가하고 관리하세요.'}
               </p>
             </div>
@@ -544,22 +544,22 @@ const QuestionList: React.FC<QuestionListProps> = ({ bank, onBack, onRefresh }) 
         </div>
 
         {/* 문제 목록 */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-medium text-gray-900">문제 목록</h2>
-            <div className="text-sm text-gray-600">
-              총 <span className="font-semibold text-gray-900">{questions.length}</span>개
+            <h2 className="text-lg font-medium text-gray-900 dark:text-white">문제 목록</h2>
+            <div className="text-sm text-gray-600 dark:text-gray-400">
+              총 <span className="font-semibold text-gray-900 dark:text-white">{questions.length}</span>개
             </div>
           </div>
 
           {loading ? (
             <div className="flex items-center justify-center py-12">
-              <div className="animate-spin rounded-lg h-8 w-8 border-b-2 border-gray-600"></div>
-              <span className="ml-3 text-gray-600">문제를 불러오는 중...</span>
+              <div className="animate-spin rounded-lg h-8 w-8 border-b-2 border-gray-600 dark:border-gray-400"></div>
+              <span className="ml-3 text-gray-600 dark:text-gray-400">문제를 불러오는 중...</span>
             </div>
           ) : questions.length === 0 ? (
             <div className="text-center py-12">
-              <p className="text-gray-600 mb-4">문제가 없습니다.</p>
+              <p className="text-gray-600 dark:text-gray-400 mb-4">문제가 없습니다.</p>
               <button
                 onClick={() => setShowQuestionForm(true)}
                 className="btn-primary"
@@ -572,35 +572,35 @@ const QuestionList: React.FC<QuestionListProps> = ({ bank, onBack, onRefresh }) 
               {questions.map((question, index) => (
                 <div
                   key={question.id}
-                  className="border border-gray-200 rounded-lg p-4 hover:shadow-sm transition-shadow"
+                  className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 hover:shadow-sm transition-shadow bg-white dark:bg-gray-800"
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
                       <div className="flex items-center space-x-2 mb-2">
-                        <span className="text-sm font-medium text-gray-500">Q{index + 1}</span>
-                        <span className={`px-2 py-1 text-xs rounded-full ${question.type === 'multiple_choice' ? 'bg-blue-100 text-blue-700' :
-                          question.type === 'true_false' ? 'bg-green-500/10 text-green-700' :
-                            question.type === 'short_answer' ? 'bg-yellow-100 text-orange-700' :
-                              'bg-purple-100 text-purple-700'
+                        <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Q{index + 1}</span>
+                        <span className={`px-2 py-1 text-xs rounded-full ${question.type === 'multiple_choice' ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300' :
+                          question.type === 'true_false' ? 'bg-green-500/10 dark:bg-green-500/20 text-green-700 dark:text-green-400' :
+                            question.type === 'short_answer' ? 'bg-yellow-100 dark:bg-yellow-900/30 text-orange-700 dark:text-yellow-300' :
+                              'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300'
                           }`}>
                           {question.type === 'multiple_choice' ? '객관식' :
                             question.type === 'true_false' ? 'O/X' :
                               question.type === 'short_answer' ? '단답형' : '서술형'}
                         </span>
                         {question.difficulty && (
-                          <span className={`px-2 py-1 text-xs rounded-full ${question.difficulty === 'easy' ? 'bg-green-500/10 text-green-700' :
-                            question.difficulty === 'medium' ? 'bg-yellow-100 text-orange-700' :
-                              'bg-destructive/10 text-destructive'
+                          <span className={`px-2 py-1 text-xs rounded-full ${question.difficulty === 'easy' ? 'bg-green-500/10 dark:bg-green-500/20 text-green-700 dark:text-green-400' :
+                            question.difficulty === 'medium' ? 'bg-yellow-100 dark:bg-yellow-900/30 text-orange-700 dark:text-yellow-300' :
+                              'bg-destructive/10 dark:bg-red-900/30 text-destructive dark:text-red-400'
                             }`}>
                             {question.difficulty === 'easy' ? '쉬움' :
                               question.difficulty === 'medium' ? '보통' : '어려움'}
                           </span>
                         )}
-                        <span className="text-sm text-gray-600">{question.points}점</span>
+                        <span className="text-sm text-gray-600 dark:text-gray-400">{question.points}점</span>
                       </div>
-                      <p className="text-gray-900 mb-2">{question.question_text}</p>
+                      <p className="text-gray-900 dark:text-white mb-2">{question.question_text}</p>
                       {question.explanation && (
-                        <p className="text-sm text-gray-600">💡 {question.explanation}</p>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">💡 {question.explanation}</p>
                       )}
                     </div>
                     <div className="flex items-center space-x-2 ml-4">
@@ -703,7 +703,7 @@ const QuestionForm: React.FC<QuestionFormProps> = ({ bankId, question, onSave, o
     <PageContainer>
       <div className="space-y-6">
         {/* 헤더 */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
           <button
             onClick={onCancel}
             className="mb-4 btn-ghost flex items-center transition-colors"
@@ -711,22 +711,22 @@ const QuestionForm: React.FC<QuestionFormProps> = ({ bankId, question, onSave, o
             <ArrowLeftIcon className="h-4 w-4 mr-1" />
             뒤로 가기
           </button>
-          <h1 className="text-2xl font-bold text-gray-900">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
             {question ? '문제 수정' : '새 문제'}
           </h1>
         </div>
 
         {/* 폼 */}
-        <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 space-y-6">
+        <form onSubmit={handleSubmit} className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 문제 유형 <span className="text-destructive">*</span>
               </label>
               <select
                 value={type}
                 onChange={(e) => setType(e.target.value as any)}
-                className="w-full border border-gray-300 rounded-full px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-500"
+                className="w-full border border-gray-300 dark:border-gray-600 rounded-full px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
               >
                 <option value="multiple_choice">객관식</option>
                 <option value="true_false">O/X</option>
@@ -736,13 +736,13 @@ const QuestionForm: React.FC<QuestionFormProps> = ({ bankId, question, onSave, o
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 난이도
               </label>
               <select
                 value={difficulty}
                 onChange={(e) => setDifficulty(e.target.value as any)}
-                className="w-full border border-gray-300 rounded-full px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-500"
+                className="w-full border border-gray-300 dark:border-gray-600 rounded-full px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
               >
                 <option value="easy">쉬움</option>
                 <option value="medium">보통</option>
@@ -751,7 +751,7 @@ const QuestionForm: React.FC<QuestionFormProps> = ({ bankId, question, onSave, o
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 배점 <span className="text-destructive">*</span>
               </label>
               <input
@@ -759,14 +759,14 @@ const QuestionForm: React.FC<QuestionFormProps> = ({ bankId, question, onSave, o
                 value={points}
                 onChange={(e) => setPoints(parseInt(e.target.value) || 0)}
                 min="1"
-                className="w-full border border-gray-300 rounded-full px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-500"
+                className="w-full border border-gray-300 dark:border-gray-600 rounded-full px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                 required
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               문제 내용 <span className="text-destructive">*</span>
             </label>
             <textarea
@@ -774,7 +774,7 @@ const QuestionForm: React.FC<QuestionFormProps> = ({ bankId, question, onSave, o
               onChange={(e) => setQuestionText(e.target.value)}
               placeholder="문제를 입력하세요..."
               rows={3}
-              className="w-full border border-gray-300 rounded-full px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-500"
+              className="w-full border border-gray-300 dark:border-gray-600 rounded-full px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400"
               required
             />
           </div>
@@ -782,7 +782,7 @@ const QuestionForm: React.FC<QuestionFormProps> = ({ bankId, question, onSave, o
           {/* 객관식 선택지 */}
           {type === 'multiple_choice' && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 선택지 <span className="text-destructive">*</span>
               </label>
               <div className="space-y-2">
@@ -793,9 +793,9 @@ const QuestionForm: React.FC<QuestionFormProps> = ({ bankId, question, onSave, o
                       name="correct"
                       checked={correctAnswer === index}
                       onChange={() => setCorrectAnswer(index)}
-                      className="w-4 h-4 text-gray-600"
+                      className="w-4 h-4 text-gray-600 dark:text-gray-400"
                     />
-                    <span className="text-sm font-medium text-gray-700 w-8">{index + 1}.</span>
+                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300 w-8">{index + 1}.</span>
                     <input
                       type="text"
                       value={option}
@@ -805,7 +805,7 @@ const QuestionForm: React.FC<QuestionFormProps> = ({ bankId, question, onSave, o
                         setOptions(newOptions);
                       }}
                       placeholder={`선택지 ${index + 1}`}
-                      className="flex-1 border border-gray-300 rounded-full px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-500"
+                      className="flex-1 border border-gray-300 dark:border-gray-600 rounded-full px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400"
                       required
                     />
                   </div>
@@ -817,7 +817,7 @@ const QuestionForm: React.FC<QuestionFormProps> = ({ bankId, question, onSave, o
           {/* O/X 답 */}
           {type === 'true_false' && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 정답 <span className="text-destructive">*</span>
               </label>
               <div className="flex items-center space-x-4">
@@ -826,18 +826,18 @@ const QuestionForm: React.FC<QuestionFormProps> = ({ bankId, question, onSave, o
                     type="radio"
                     checked={correctAnswer === true}
                     onChange={() => setCorrectAnswer(true)}
-                    className="w-4 h-4 text-gray-600 mr-2"
+                    className="w-4 h-4 text-gray-600 dark:text-gray-400 mr-2"
                   />
-                  <span>O (참)</span>
+                  <span className="text-gray-700 dark:text-gray-300">O (참)</span>
                 </label>
                 <label className="flex items-center">
                   <input
                     type="radio"
                     checked={correctAnswer === false}
                     onChange={() => setCorrectAnswer(false)}
-                    className="w-4 h-4 text-gray-600 mr-2"
+                    className="w-4 h-4 text-gray-600 dark:text-gray-400 mr-2"
                   />
-                  <span>X (거짓)</span>
+                  <span className="text-gray-700 dark:text-gray-300">X (거짓)</span>
                 </label>
               </div>
             </div>
@@ -846,7 +846,7 @@ const QuestionForm: React.FC<QuestionFormProps> = ({ bankId, question, onSave, o
           {/* 단답형/서술형 모범답안 */}
           {(type === 'short_answer' || type === 'essay') && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 모범 답안
               </label>
               <textarea
@@ -854,13 +854,13 @@ const QuestionForm: React.FC<QuestionFormProps> = ({ bankId, question, onSave, o
                 onChange={(e) => setCorrectAnswer(e.target.value)}
                 placeholder="모범 답안을 입력하세요..."
                 rows={type === 'essay' ? 5 : 2}
-                className="w-full border border-gray-300 rounded-full px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-500"
+                className="w-full border border-gray-300 dark:border-gray-600 rounded-full px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400"
               />
             </div>
           )}
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               해설
             </label>
             <textarea
@@ -868,11 +868,11 @@ const QuestionForm: React.FC<QuestionFormProps> = ({ bankId, question, onSave, o
               onChange={(e) => setExplanation(e.target.value)}
               placeholder="문제에 대한 해설을 입력하세요..."
               rows={3}
-              className="w-full border border-gray-300 rounded-full px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-500"
+              className="w-full border border-gray-300 dark:border-gray-600 rounded-full px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400"
             />
           </div>
 
-          <div className="flex items-center justify-end space-x-3 pt-4 border-t">
+          <div className="flex items-center justify-end space-x-3 pt-4 border-t border-gray-200 dark:border-gray-700">
             <button
               type="button"
               onClick={onCancel}

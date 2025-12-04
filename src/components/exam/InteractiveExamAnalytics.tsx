@@ -347,9 +347,9 @@ export default function InteractiveExamAnalytics({
   if (loading) {
     return (
       <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-        <div className="bg-white rounded-lg p-8">
-          <div className="animate-spin rounded-lg h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">데이터 로딩 중...</p>
+        <div className="bg-white dark:bg-gray-800 rounded-lg p-8">
+          <div className="animate-spin rounded-lg h-12 w-12 border-b-2 border-blue-600 dark:border-blue-400 mx-auto"></div>
+          <p className="mt-4 text-gray-600 dark:text-gray-400">데이터 로딩 중...</p>
         </div>
       </div>
     );
@@ -357,9 +357,9 @@ export default function InteractiveExamAnalytics({
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg shadow-2xl w-full max-h-[90vh] overflow-hidden flex flex-col">
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-2xl w-full max-h-[90vh] overflow-hidden flex flex-col">
         {/* 헤더 */}
-        <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-6">
+        <div className="bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-900 dark:to-indigo-900 text-white p-6">
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-2xl font-bold flex items-center">
@@ -406,13 +406,14 @@ export default function InteractiveExamAnalytics({
         </div>
 
         {/* 탭 네비게이션 */}
-        <div className="border-b border-gray-200 bg-gray-50">
+        {/* 탭 네비게이션 */}
+        <div className="border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50">
           <div className="flex space-x-1 p-2">
             <button
               onClick={() => setActiveTab('overview')}
               className={`flex-1 px-4 py-3 rounded-full font-medium transition-all ${activeTab === 'overview'
-                ? 'bg-white text-blue-600 shadow'
-                : 'text-gray-600 hover:bg-white/50'
+                ? 'bg-white dark:bg-gray-800 text-blue-600 dark:text-blue-400 shadow'
+                : 'text-gray-600 dark:text-gray-400 hover:bg-white/50 dark:hover:bg-gray-800/50'
                 }`}
             >
               <ChartBarIcon className="h-5 w-5 inline mr-2" />
@@ -421,8 +422,8 @@ export default function InteractiveExamAnalytics({
             <button
               onClick={() => setActiveTab('questions')}
               className={`flex-1 px-4 py-3 rounded-full font-medium transition-all ${activeTab === 'questions'
-                ? 'bg-white text-blue-600 shadow'
-                : 'text-gray-600 hover:bg-white/50'
+                ? 'bg-white dark:bg-gray-800 text-blue-600 dark:text-blue-400 shadow'
+                : 'text-gray-600 dark:text-gray-400 hover:bg-white/50 dark:hover:bg-gray-800/50'
                 }`}
             >
               <AcademicCapIcon className="h-5 w-5 inline mr-2" />
@@ -431,8 +432,8 @@ export default function InteractiveExamAnalytics({
             <button
               onClick={() => setActiveTab('students')}
               className={`flex-1 px-4 py-3 rounded-full font-medium transition-all ${activeTab === 'students'
-                ? 'bg-white text-blue-600 shadow'
-                : 'text-gray-600 hover:bg-white/50'
+                ? 'bg-white dark:bg-gray-800 text-blue-600 dark:text-blue-400 shadow'
+                : 'text-gray-600 dark:text-gray-400 hover:bg-white/50 dark:hover:bg-gray-800/50'
                 }`}
             >
               <UserGroupIcon className="h-5 w-5 inline mr-2" />
@@ -441,8 +442,8 @@ export default function InteractiveExamAnalytics({
             <button
               onClick={() => setActiveTab('trends')}
               className={`flex-1 px-4 py-3 rounded-full font-medium transition-all ${activeTab === 'trends'
-                ? 'bg-white text-blue-600 shadow'
-                : 'text-gray-600 hover:bg-white/50'
+                ? 'bg-white dark:bg-gray-800 text-blue-600 dark:text-blue-400 shadow'
+                : 'text-gray-600 dark:text-gray-400 hover:bg-white/50 dark:hover:bg-gray-800/50'
                 }`}
             >
               <ClockIcon className="h-5 w-5 inline mr-2" />
@@ -456,16 +457,16 @@ export default function InteractiveExamAnalytics({
           {activeTab === 'overview' && (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* 점수 분포 */}
-              <div className="bg-white border border-gray-200 rounded-lg p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">점수 분포</h3>
+              <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">점수 분포</h3>
                 <div className="h-80">
                   <Bar data={scoreDistributionData} options={barChartOptions} />
                 </div>
               </div>
 
               {/* 난이도 분포 */}
-              <div className="bg-white border border-gray-200 rounded-lg p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">문제 난이도 분포</h3>
+              <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">문제 난이도 분포</h3>
                 <div className="h-80">
                   <Doughnut data={difficultyDistributionData} options={doughnutChartOptions} />
                 </div>
@@ -476,52 +477,52 @@ export default function InteractiveExamAnalytics({
           {activeTab === 'questions' && (
             <div className="space-y-6">
               {/* 문제별 정답률 차트 */}
-              <div className="bg-white border border-gray-200 rounded-lg p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">문제별 정답률</h3>
+              <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">문제별 정답률</h3>
                 <div className="h-96">
                   <Bar data={questionAccuracyData} options={barChartOptions} />
                 </div>
               </div>
 
               {/* 문제별 상세 테이블 */}
-              <div className="bg-white border border-gray-200 rounded-lg p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">문제별 상세 분석</h3>
+              <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">문제별 상세 분석</h3>
                 <div className="overflow-x-auto">
                   <table className="w-full">
-                    <thead className="bg-gray-50">
+                    <thead className="bg-gray-50 dark:bg-gray-700/50">
                       <tr>
-                        <th className="px-4 py-3 text-left text-sm font-semibold text-gray-900">문제</th>
-                        <th className="px-4 py-3 text-left text-sm font-semibold text-gray-900">난이도</th>
-                        <th className="px-4 py-3 text-right text-sm font-semibold text-gray-900">정답자/전체</th>
-                        <th className="px-4 py-3 text-right text-sm font-semibold text-gray-900">정답률</th>
-                        <th className="px-4 py-3 text-left text-sm font-semibold text-gray-900">평가</th>
+                        <th className="px-4 py-3 text-left text-sm font-semibold text-gray-900 dark:text-white">문제</th>
+                        <th className="px-4 py-3 text-left text-sm font-semibold text-gray-900 dark:text-white">난이도</th>
+                        <th className="px-4 py-3 text-right text-sm font-semibold text-gray-900 dark:text-white">정답자/전체</th>
+                        <th className="px-4 py-3 text-right text-sm font-semibold text-gray-900 dark:text-white">정답률</th>
+                        <th className="px-4 py-3 text-left text-sm font-semibold text-gray-900 dark:text-white">평가</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-gray-200">
+                    <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
                       {questionAnalytics.map((q) => (
-                        <tr key={q.question_number} className="hover:bg-gray-50">
-                          <td className="px-4 py-3 text-sm text-gray-900">문제 {q.question_number}</td>
+                        <tr key={q.question_number} className="hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                          <td className="px-4 py-3 text-sm text-gray-900 dark:text-gray-300">문제 {q.question_number}</td>
                           <td className="px-4 py-3 text-sm">
-                            <span className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${q.difficulty === 'easy' ? 'bg-green-500/10 text-green-700' :
-                              q.difficulty === 'medium' ? 'bg-yellow-100 text-yellow-800' :
-                                'bg-destructive/10 text-destructive'
+                            <span className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${q.difficulty === 'easy' ? 'bg-green-500/10 dark:bg-green-500/20 text-green-700 dark:text-green-400' :
+                              q.difficulty === 'medium' ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300' :
+                                'bg-destructive/10 dark:bg-red-900/30 text-destructive dark:text-red-400'
                               }`}>
                               {q.difficulty === 'easy' ? '쉬움' : q.difficulty === 'medium' ? '보통' : '어려움'}
                             </span>
                           </td>
-                          <td className="px-4 py-3 text-sm text-right text-gray-900">
+                          <td className="px-4 py-3 text-sm text-right text-gray-900 dark:text-gray-300">
                             {q.correct_count} / {q.total_count}
                           </td>
                           <td className="px-4 py-3 text-sm text-right font-semibold">
                             <span className={
-                              q.correct_rate >= 80 ? 'text-green-600' :
-                                q.correct_rate >= 60 ? 'text-foreground' :
-                                  'text-destructive'
+                              q.correct_rate >= 80 ? 'text-green-600 dark:text-green-400' :
+                                q.correct_rate >= 60 ? 'text-foreground dark:text-gray-300' :
+                                  'text-destructive dark:text-red-400'
                             }>
                               {q.correct_rate.toFixed(1)}%
                             </span>
                           </td>
-                          <td className="px-4 py-3 text-sm text-gray-600">
+                          <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">
                             {q.correct_rate >= 80 ? '✅ 우수' :
                               q.correct_rate >= 60 ? '⚠️ 보통' :
                                 '❌ 개선 필요'}
@@ -538,20 +539,20 @@ export default function InteractiveExamAnalytics({
           {activeTab === 'students' && (
             <div className="space-y-6">
               {/* 학습자별 성과 */}
-              <div className="bg-white border border-gray-200 rounded-lg p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">학습자별 성과</h3>
+              <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">학습자별 성과</h3>
                 <div className="overflow-x-auto">
                   <table className="w-full">
-                    <thead className="bg-gray-50">
+                    <thead className="bg-gray-50 dark:bg-gray-700/50">
                       <tr>
-                        <th className="px-4 py-3 text-left text-sm font-semibold text-gray-900">순위</th>
-                        <th className="px-4 py-3 text-left text-sm font-semibold text-gray-900">이름</th>
-                        <th className="px-4 py-3 text-right text-sm font-semibold text-gray-900">점수</th>
-                        <th className="px-4 py-3 text-right text-sm font-semibold text-gray-900">소요 시간</th>
-                        <th className="px-4 py-3 text-left text-sm font-semibold text-gray-900">상태</th>
+                        <th className="px-4 py-3 text-left text-sm font-semibold text-gray-900 dark:text-white">순위</th>
+                        <th className="px-4 py-3 text-left text-sm font-semibold text-gray-900 dark:text-white">이름</th>
+                        <th className="px-4 py-3 text-right text-sm font-semibold text-gray-900 dark:text-white">점수</th>
+                        <th className="px-4 py-3 text-right text-sm font-semibold text-gray-900 dark:text-white">소요 시간</th>
+                        <th className="px-4 py-3 text-left text-sm font-semibold text-gray-900 dark:text-white">상태</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-gray-200">
+                    <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
                       {attempts
                         .filter(a => a.status === 'completed')
                         .sort((a, b) => b.score - a.score)
@@ -565,25 +566,25 @@ export default function InteractiveExamAnalytics({
                             : 0;
 
                           return (
-                            <tr key={attempt.id} className="hover:bg-gray-50">
-                              <td className="px-4 py-3 text-sm font-semibold text-gray-900">
+                            <tr key={attempt.id} className="hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                              <td className="px-4 py-3 text-sm font-semibold text-gray-900 dark:text-white">
                                 {index === 0 && '🥇'}
                                 {index === 1 && '🥈'}
                                 {index === 2 && '🥉'}
                                 {index > 2 && index + 1}
                               </td>
-                              <td className="px-4 py-3 text-sm text-gray-900">{attempt.user_name}</td>
+                              <td className="px-4 py-3 text-sm text-gray-900 dark:text-gray-300">{attempt.user_name}</td>
                               <td className="px-4 py-3 text-sm text-right">
-                                <span className={`font-semibold ${attempt.score >= exam.passing_score ? 'text-green-600' : 'text-destructive'
+                                <span className={`font-semibold ${attempt.score >= exam.passing_score ? 'text-green-600 dark:text-green-400' : 'text-destructive dark:text-red-400'
                                   }`}>
                                   {attempt.score}점
                                 </span>
                               </td>
-                              <td className="px-4 py-3 text-sm text-right text-gray-600">{duration}분</td>
+                              <td className="px-4 py-3 text-sm text-right text-gray-600 dark:text-gray-400">{duration}분</td>
                               <td className="px-4 py-3 text-sm">
                                 <span className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${attempt.score >= exam.passing_score
-                                  ? 'bg-green-500/10 text-green-700'
-                                  : 'bg-destructive/10 text-destructive'
+                                  ? 'bg-green-500/10 dark:bg-green-500/20 text-green-700 dark:text-green-400'
+                                  : 'bg-destructive/10 dark:bg-red-900/30 text-destructive dark:text-red-400'
                                   }`}>
                                   {attempt.score >= exam.passing_score ? '합격' : '불합격'}
                                 </span>
@@ -601,40 +602,40 @@ export default function InteractiveExamAnalytics({
           {activeTab === 'trends' && (
             <div className="space-y-6">
               {/* 시간대별 응시 추세 */}
-              <div className="bg-white border border-gray-200 rounded-lg p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">시간대별 응시 추세</h3>
+              <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">시간대별 응시 추세</h3>
                 <div className="h-96">
                   <Line data={timeSeriesData} options={lineChartOptions} />
                 </div>
-                <p className="mt-4 text-sm text-gray-600">
+                <p className="mt-4 text-sm text-gray-600 dark:text-gray-400">
                   💡 <strong>분석:</strong> 대부분의 응시자가 오전 9시~12시 사이에 시험을 응시합니다.
                 </p>
               </div>
 
               {/* 인사이트 카드 */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="bg-gradient-to-br from-green-50 to-emerald-50 border border-green-200 rounded-lg p-6">
-                  <div className="text-green-600 font-semibold mb-2">✨ 우수 문제</div>
-                  <div className="text-2xl font-bold text-green-900 mb-2">
+                <div className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border border-green-200 dark:border-green-800 rounded-lg p-6">
+                  <div className="text-green-600 dark:text-green-400 font-semibold mb-2">✨ 우수 문제</div>
+                  <div className="text-2xl font-bold text-green-900 dark:text-green-100 mb-2">
                     {questionAnalytics.filter(q => q.correct_rate >= 80).length}개
                   </div>
-                  <p className="text-sm text-green-700">정답률 80% 이상</p>
+                  <p className="text-sm text-green-700 dark:text-green-300">정답률 80% 이상</p>
                 </div>
 
-                <div className="bg-gradient-to-br from-yellow-50 to-amber-50 border border-yellow-200 rounded-lg p-6">
-                  <div className="text-foreground font-semibold mb-2">⚠️ 주의 문제</div>
-                  <div className="text-2xl font-bold text-yellow-900 mb-2">
+                <div className="bg-gradient-to-br from-yellow-50 to-amber-50 dark:from-yellow-900/20 dark:to-amber-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-6">
+                  <div className="text-foreground dark:text-gray-300 font-semibold mb-2">⚠️ 주의 문제</div>
+                  <div className="text-2xl font-bold text-yellow-900 dark:text-yellow-100 mb-2">
                     {questionAnalytics.filter(q => q.correct_rate >= 60 && q.correct_rate < 80).length}개
                   </div>
-                  <p className="text-sm text-foreground">정답률 60-80%</p>
+                  <p className="text-sm text-foreground dark:text-gray-400">정답률 60-80%</p>
                 </div>
 
-                <div className="bg-gradient-to-br from-red-50 to-rose-50 border border-destructive/50 rounded-lg p-6">
-                  <div className="text-destructive font-semibold mb-2">🚨 개선 필요</div>
-                  <div className="text-2xl font-bold text-destructive mb-2">
+                <div className="bg-gradient-to-br from-red-50 to-rose-50 dark:from-red-900/20 dark:to-rose-900/20 border border-destructive/50 dark:border-red-800 rounded-lg p-6">
+                  <div className="text-destructive dark:text-red-400 font-semibold mb-2">🚨 개선 필요</div>
+                  <div className="text-2xl font-bold text-destructive dark:text-red-200 mb-2">
                     {questionAnalytics.filter(q => q.correct_rate < 60).length}개
                   </div>
-                  <p className="text-sm text-destructive">정답률 60% 미만</p>
+                  <p className="text-sm text-destructive dark:text-red-300">정답률 60% 미만</p>
                 </div>
               </div>
             </div>
@@ -642,8 +643,8 @@ export default function InteractiveExamAnalytics({
         </div>
 
         {/* 푸터 */}
-        <div className="border-t border-gray-200 bg-gray-50 px-6 py-4 flex justify-between items-center">
-          <div className="text-sm text-gray-600">
+        <div className="border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50 px-6 py-4 flex justify-between items-center">
+          <div className="text-sm text-gray-600 dark:text-gray-400">
             마지막 업데이트: {new Date().toLocaleString('ko-KR')}
           </div>
           <button

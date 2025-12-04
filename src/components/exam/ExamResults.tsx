@@ -193,11 +193,11 @@ const ExamResults: React.FC<ExamResultsProps> = ({
   if (loading) {
     return (
       <div className="max-w-6xl mx-auto">
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
           <div className="p-6">
             <div className="flex items-center justify-center py-12">
-              <div className="animate-spin rounded-lg h-8 w-8 border-b-2 border-blue-600"></div>
-              <span className="ml-3 text-gray-600">결과를 불러오는 중...</span>
+              <div className="animate-spin rounded-lg h-8 w-8 border-b-2 border-blue-600 dark:border-blue-400"></div>
+              <span className="ml-3 text-gray-600 dark:text-gray-400">결과를 불러오는 중...</span>
             </div>
           </div>
         </div>
@@ -208,7 +208,7 @@ const ExamResults: React.FC<ExamResultsProps> = ({
   if (error) {
     return (
       <div className="max-w-6xl mx-auto">
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
           <div className="p-6">
             <div className="text-center py-12">
               <ExclamationTriangleIcon className="h-12 w-12 mx-auto mb-4 text-red-300" />
@@ -230,7 +230,7 @@ const ExamResults: React.FC<ExamResultsProps> = ({
     <PageContainer>
       <div className="space-y-6">
         {/* 헤더 */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center">
               <button
@@ -240,11 +240,11 @@ const ExamResults: React.FC<ExamResultsProps> = ({
                 <ArrowLeftIcon className="h-5 w-5" />
               </button>
               <div>
-                <h1 className="text-2xl font-bold text-gray-900 flex items-center">
-                  <ChartBarIcon className="h-8 w-8 mr-3 text-blue-600" />
+                <h1 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center">
+                  <ChartBarIcon className="h-8 w-8 mr-3 text-blue-600 dark:text-blue-400" />
                   시험 결과
                 </h1>
-                <p className="mt-1 text-gray-600">{exam.title} - {exam.course_name}</p>
+                <p className="mt-1 text-gray-600 dark:text-gray-400">{exam.title} - {exam.course_name}</p>
               </div>
             </div>
             <div className="flex items-center space-x-3">
@@ -263,42 +263,42 @@ const ExamResults: React.FC<ExamResultsProps> = ({
 
           {/* 요약 통계 */}
           <div className="grid grid-cols-2 lg:grid-cols-6 gap-4 mt-6">
-            <div className="bg-gray-50 rounded-lg p-4">
-              <div className="text-2xl font-bold text-gray-900">{results.length}</div>
-              <div className="text-sm text-gray-600">총 수강생</div>
+            <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
+              <div className="text-2xl font-bold text-gray-900 dark:text-white">{results.length}</div>
+              <div className="text-sm text-gray-600 dark:text-gray-400">총 수강생</div>
             </div>
-            <div className="bg-green-500/10 rounded-lg p-4">
-              <div className="text-2xl font-bold text-green-600">{passedResults.length}</div>
-              <div className="text-sm text-gray-600">합격</div>
+            <div className="bg-green-500/10 dark:bg-green-500/20 rounded-lg p-4">
+              <div className="text-2xl font-bold text-green-600 dark:text-green-400">{passedResults.length}</div>
+              <div className="text-sm text-gray-600 dark:text-gray-400">합격</div>
             </div>
-            <div className="bg-destructive/10 rounded-lg p-4">
-              <div className="text-2xl font-bold text-destructive">{failedResults.length}</div>
-              <div className="text-sm text-gray-600">불합격</div>
+            <div className="bg-destructive/10 dark:bg-red-500/20 rounded-lg p-4">
+              <div className="text-2xl font-bold text-destructive dark:text-red-400">{failedResults.length}</div>
+              <div className="text-sm text-gray-600 dark:text-gray-400">불합격</div>
             </div>
-            <div className="bg-yellow-50 rounded-lg p-4">
-              <div className="text-2xl font-bold text-foreground">{inProgressResults.length}</div>
-              <div className="text-sm text-gray-600">응시중</div>
+            <div className="bg-yellow-50 dark:bg-yellow-500/20 rounded-lg p-4">
+              <div className="text-2xl font-bold text-foreground dark:text-yellow-400">{inProgressResults.length}</div>
+              <div className="text-sm text-gray-600 dark:text-gray-400">응시중</div>
             </div>
-            <div className="bg-blue-50 rounded-lg p-4">
-              <div className="text-2xl font-bold text-blue-600">{passRate.toFixed(1)}%</div>
-              <div className="text-sm text-gray-600">합격률</div>
+            <div className="bg-blue-50 dark:bg-blue-500/20 rounded-lg p-4">
+              <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">{passRate.toFixed(1)}%</div>
+              <div className="text-sm text-gray-600 dark:text-gray-400">합격률</div>
             </div>
-            <div className="bg-purple-50 rounded-lg p-4">
-              <div className="text-2xl font-bold text-purple-600">{averageScore.toFixed(1)}</div>
-              <div className="text-sm text-gray-600">평균 점수</div>
+            <div className="bg-purple-50 dark:bg-purple-500/20 rounded-lg p-4">
+              <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">{averageScore.toFixed(1)}</div>
+              <div className="text-sm text-gray-600 dark:text-gray-400">평균 점수</div>
             </div>
           </div>
         </div>
 
         {/* 탭 메뉴 */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-          <div className="border-b border-gray-200">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+          <div className="border-b border-gray-200 dark:border-gray-700">
             <nav className="-mb-px flex">
               <button
                 onClick={() => setSelectedTab('overview')}
                 className={`px-6 py-3 text-sm font-medium border-b-2 transition-colors ${selectedTab === 'overview'
-                  ? 'border-blue-500 text-blue-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  ? 'border-blue-500 text-blue-600 dark:text-blue-400'
+                  : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600'
                   }`}
               >
                 개요
@@ -306,8 +306,8 @@ const ExamResults: React.FC<ExamResultsProps> = ({
               <button
                 onClick={() => setSelectedTab('individual')}
                 className={`px-6 py-3 text-sm font-medium border-b-2 transition-colors ${selectedTab === 'individual'
-                  ? 'border-blue-500 text-blue-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  ? 'border-blue-500 text-blue-600 dark:text-blue-400'
+                  : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600'
                   }`}
               >
                 개별 결과
@@ -315,8 +315,8 @@ const ExamResults: React.FC<ExamResultsProps> = ({
               <button
                 onClick={() => setSelectedTab('statistics')}
                 className={`px-6 py-3 text-sm font-medium border-b-2 transition-colors ${selectedTab === 'statistics'
-                  ? 'border-blue-500 text-blue-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  ? 'border-blue-500 text-blue-600 dark:text-blue-400'
+                  : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600'
                   }`}
               >
                 통계 분석
@@ -330,19 +330,19 @@ const ExamResults: React.FC<ExamResultsProps> = ({
               <div className="space-y-6">
                 {/* 성적 분포 차트 */}
                 <div>
-                  <h3 className="text-lg font-medium text-gray-900 mb-4">성적 분포</h3>
+                  <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">성적 분포</h3>
                   <div className="space-y-4">
                     {scoreDistribution.map((range, index) => (
                       <div key={index} className="flex items-center">
-                        <div className="w-20 text-sm text-gray-600">{range.label}</div>
+                        <div className="w-20 text-sm text-gray-600 dark:text-gray-400">{range.label}</div>
                         <div className="flex-1 mx-4">
                           <div className="flex items-center justify-between mb-1">
-                            <span className="text-sm text-gray-700">{range.count}명</span>
-                            <span className="text-sm text-gray-500">
+                            <span className="text-sm text-gray-700 dark:text-gray-300">{range.count}명</span>
+                            <span className="text-sm text-gray-500 dark:text-gray-400">
                               {completedResults.length > 0 ? ((range.count / completedResults.length) * 100).toFixed(1) : 0}%
                             </span>
                           </div>
-                          <div className="w-full bg-gray-200 rounded-lg h-3">
+                          <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-lg h-3">
                             <div
                               className={`h-3 rounded-full ${range.color} transition-all duration-300`}
                               style={{ width: `${(range.count / maxCount) * 100}%` }}
@@ -356,24 +356,24 @@ const ExamResults: React.FC<ExamResultsProps> = ({
 
                 {/* 상위 수강생 */}
                 <div>
-                  <h3 className="text-lg font-medium text-gray-900 mb-4">상위 성과자</h3>
+                  <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">상위 성과자</h3>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     {passedResults
                       .sort((a, b) => b.best_score - a.best_score)
                       .slice(0, 3)
                       .map((result, index) => (
-                        <div key={result.trainee_id} className="bg-gradient-to-r from-yellow-50 to-yellow-100 rounded-lg p-4 border border-yellow-200">
+                        <div key={result.trainee_id} className="bg-gradient-to-r from-yellow-50 to-yellow-100 dark:from-yellow-900/20 dark:to-yellow-800/20 rounded-lg p-4 border border-yellow-200 dark:border-yellow-800">
                           <div className="flex items-center justify-between mb-2">
-                            <span className="text-sm font-medium text-yellow-800">
+                            <span className="text-sm font-medium text-yellow-800 dark:text-yellow-300">
                               {index + 1}등
                             </span>
-                            <TrophyIcon className={`h-5 w-5 ${index === 0 ? 'text-foreground' :
-                              index === 1 ? 'text-gray-500' : 'text-orange-600'
+                            <TrophyIcon className={`h-5 w-5 ${index === 0 ? 'text-yellow-600 dark:text-yellow-400' :
+                              index === 1 ? 'text-gray-500 dark:text-gray-400' : 'text-orange-600 dark:text-orange-400'
                               }`} />
                           </div>
-                          <div className="text-lg font-bold text-gray-900">{result.trainee_name}</div>
-                          <div className="text-2xl font-bold text-foreground">{result.best_score}점</div>
-                          <div className="text-sm text-gray-600">
+                          <div className="text-lg font-bold text-gray-900 dark:text-white">{result.trainee_name}</div>
+                          <div className="text-2xl font-bold text-foreground dark:text-gray-200">{result.best_score}점</div>
+                          <div className="text-sm text-gray-600 dark:text-gray-400">
                             {result.attempts_count}회 응시
                           </div>
                         </div>
@@ -383,24 +383,24 @@ const ExamResults: React.FC<ExamResultsProps> = ({
 
                 {/* 추가 개선이 필요한 수강생 */}
                 <div>
-                  <h3 className="text-lg font-medium text-gray-900 mb-4">추가 지원이 필요한 수강생</h3>
+                  <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">추가 지원이 필요한 수강생</h3>
                   <div className="space-y-3">
                     {results
                       .filter(r => !r.passed || r.status !== 'completed')
                       .slice(0, 5)
                       .map(result => (
-                        <div key={result.trainee_id} className="flex items-center justify-between p-4 bg-orange-500/10 border border-orange-200 rounded-lg">
+                        <div key={result.trainee_id} className="flex items-center justify-between p-4 bg-orange-500/10 dark:bg-orange-500/20 border border-orange-200 dark:border-orange-800 rounded-lg">
                           <div>
-                            <div className="font-medium text-gray-900">{result.trainee_name}</div>
-                            <div className="text-sm text-gray-600">
+                            <div className="font-medium text-gray-900 dark:text-white">{result.trainee_name}</div>
+                            <div className="text-sm text-gray-600 dark:text-gray-400">
                               {result.status === 'not_started' ? '미응시' :
                                 result.status === 'in_progress' ? '응시중' :
                                   `${result.best_score}점 (${result.attempts_count}회 응시)`}
                             </div>
                           </div>
-                          <div className={`px-3 py-1 rounded-full text-sm font-medium ${result.status === 'not_started' ? 'bg-gray-100 text-gray-800' :
-                            result.status === 'in_progress' ? 'bg-blue-100 text-blue-800' :
-                              'bg-destructive/10 text-destructive'
+                          <div className={`px-3 py-1 rounded-full text-sm font-medium ${result.status === 'not_started' ? 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300' :
+                            result.status === 'in_progress' ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300' :
+                              'bg-destructive/10 dark:bg-red-900/30 text-destructive dark:text-red-400'
                             }`}>
                             {result.status === 'not_started' ? '미응시' :
                               result.status === 'in_progress' ? '응시중' : '불합격'}
@@ -421,7 +421,7 @@ const ExamResults: React.FC<ExamResultsProps> = ({
                     <select
                       value={filterStatus}
                       onChange={(e) => setFilterStatus(e.target.value as any)}
-                      className="border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="border border-gray-300 dark:border-gray-600 rounded-full px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     >
                       <option value="all">전체</option>
                       <option value="passed">합격</option>
@@ -432,7 +432,7 @@ const ExamResults: React.FC<ExamResultsProps> = ({
                     <select
                       value={sortBy}
                       onChange={(e) => setSortBy(e.target.value as any)}
-                      className="border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="border border-gray-300 dark:border-gray-600 rounded-full px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     >
                       <option value="score">점수순</option>
                       <option value="name">이름순</option>
@@ -440,64 +440,64 @@ const ExamResults: React.FC<ExamResultsProps> = ({
                     </select>
                   </div>
 
-                  <div className="text-sm text-gray-600">
+                  <div className="text-sm text-gray-600 dark:text-gray-400">
                     {filteredAndSortedResults.length}명 표시
                   </div>
                 </div>
 
                 {/* 결과 목록 */}
                 <div className="overflow-x-auto">
-                  <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
+                  <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                    <thead className="bg-gray-50 dark:bg-gray-700/50">
                       <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                           수강생
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                           점수
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                           응시 횟수
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                           최근 응시일
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                           상태
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                           액션
                         </th>
                       </tr>
                     </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
+                    <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                       {filteredAndSortedResults.map((result) => (
-                        <tr key={result.trainee_id} className="hover:bg-gray-50">
+                        <tr key={result.trainee_id} className="hover:bg-gray-50 dark:hover:bg-gray-700/50">
                           <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="text-sm font-medium text-gray-900">
+                            <div className="text-sm font-medium text-gray-900 dark:text-white">
                               {result.trainee_name}
                             </div>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            <div className={`text-sm font-medium ${result.best_score >= exam.passing_score ? 'text-green-600' :
-                              result.best_score > 0 ? 'text-destructive' : 'text-gray-400'
+                            <div className={`text-sm font-medium ${result.best_score >= exam.passing_score ? 'text-green-600 dark:text-green-400' :
+                              result.best_score > 0 ? 'text-destructive dark:text-red-400' : 'text-gray-400'
                               }`}>
                               {result.status === 'not_started' ? '-' : `${result.best_score}점`}
                             </div>
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                             {result.attempts_count}회
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                             {result.last_attempt_date
                               ? format(parseISO(result.last_attempt_date), 'MM/dd HH:mm', { locale: ko })
                               : '-'}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${result.passed ? 'bg-green-500/10 text-green-700' :
-                              result.status === 'in_progress' ? 'bg-blue-100 text-blue-800' :
-                                result.status === 'not_started' ? 'bg-gray-100 text-gray-800' :
-                                  'bg-destructive/10 text-destructive'
+                            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${result.passed ? 'bg-green-500/10 text-green-700 dark:text-green-400' :
+                              result.status === 'in_progress' ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300' :
+                                result.status === 'not_started' ? 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300' :
+                                  'bg-destructive/10 dark:bg-red-900/30 text-destructive dark:text-red-400'
                               }`}>
                               {result.passed && <CheckCircleIcon className="w-3 h-3 mr-1" />}
                               {!result.passed && result.status === 'completed' && <XCircleIcon className="w-3 h-3 mr-1" />}
@@ -506,9 +506,9 @@ const ExamResults: React.FC<ExamResultsProps> = ({
                                   result.status === 'not_started' ? '미응시' : '불합격'}
                             </span>
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                             {result.status === 'completed' && (
-                              <button className="btn-ghost text-blue-600 hover:text-blue-700 flex items-center rounded-full">
+                              <button className="btn-ghost text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 flex items-center rounded-full">
                                 <EyeIcon className="h-4 w-4 mr-1" />
                                 상세보기
                               </button>
@@ -527,45 +527,45 @@ const ExamResults: React.FC<ExamResultsProps> = ({
               <div className="space-y-6">
                 {/* 전체 통계 */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                  <div className="bg-blue-50 rounded-lg p-6">
-                    <div className="text-3xl font-bold text-blue-600 mb-2">
+                  <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-6">
+                    <div className="text-3xl font-bold text-blue-600 dark:text-blue-400 mb-2">
                       {statistics.avg_score.toFixed(1)}
                     </div>
-                    <div className="text-sm text-gray-600">평균 점수</div>
+                    <div className="text-sm text-gray-600 dark:text-gray-400">평균 점수</div>
                   </div>
-                  <div className="bg-green-500/10 rounded-lg p-6">
-                    <div className="text-3xl font-bold text-green-600 mb-2">
+                  <div className="bg-green-500/10 dark:bg-green-500/20 rounded-lg p-6">
+                    <div className="text-3xl font-bold text-green-600 dark:text-green-400 mb-2">
                       {statistics.pass_rate.toFixed(1)}%
                     </div>
-                    <div className="text-sm text-gray-600">합격률</div>
+                    <div className="text-sm text-gray-600 dark:text-gray-400">합격률</div>
                   </div>
-                  <div className="bg-purple-50 rounded-lg p-6">
-                    <div className="text-3xl font-bold text-purple-600 mb-2">
+                  <div className="bg-purple-50 dark:bg-purple-500/20 rounded-lg p-6">
+                    <div className="text-3xl font-bold text-purple-600 dark:text-purple-400 mb-2">
                       {statistics.averageAttempts.toFixed(1)}
                     </div>
-                    <div className="text-sm text-gray-600">평균 응시 횟수</div>
+                    <div className="text-sm text-gray-600 dark:text-gray-400">평균 응시 횟수</div>
                   </div>
-                  <div className="bg-orange-500/10 rounded-lg p-6">
-                    <div className="text-3xl font-bold text-orange-600 mb-2">
+                  <div className="bg-orange-500/10 dark:bg-orange-500/20 rounded-lg p-6">
+                    <div className="text-3xl font-bold text-orange-600 dark:text-orange-400 mb-2">
                       {statistics.totalAttempts}
                     </div>
-                    <div className="text-sm text-gray-600">총 응시 횟수</div>
+                    <div className="text-sm text-gray-600 dark:text-gray-400">총 응시 횟수</div>
                   </div>
                 </div>
 
                 {/* 상세 점수 분포 */}
                 <div>
-                  <h3 className="text-lg font-medium text-gray-900 mb-4">점수대별 분포</h3>
+                  <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">점수대별 분포</h3>
                   <div className="space-y-4">
                     {statistics.scoreDistribution.map((dist, index) => (
                       <div key={index} className="flex items-center">
-                        <div className="w-20 text-sm text-gray-600">{dist.range}</div>
+                        <div className="w-20 text-sm text-gray-600 dark:text-gray-400">{dist.range}</div>
                         <div className="flex-1 mx-4">
                           <div className="flex items-center justify-between mb-1">
-                            <span className="text-sm text-gray-700">{dist.count}명</span>
-                            <span className="text-sm text-gray-500">{dist.percentage.toFixed(1)}%</span>
+                            <span className="text-sm text-gray-700 dark:text-gray-300">{dist.count}명</span>
+                            <span className="text-sm text-gray-500 dark:text-gray-400">{dist.percentage.toFixed(1)}%</span>
                           </div>
-                          <div className="w-full bg-gray-200 rounded-lg h-3">
+                          <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-lg h-3">
                             <div
                               className="bg-blue-500 h-3 rounded-lg transition-all duration-300"
                               style={{ width: `${dist.percentage}%` }}
@@ -578,9 +578,9 @@ const ExamResults: React.FC<ExamResultsProps> = ({
                 </div>
 
                 {/* 개선 권장사항 */}
-                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
-                  <h3 className="text-lg font-medium text-yellow-800 mb-3">개선 권장사항</h3>
-                  <div className="space-y-2 text-sm text-foreground">
+                <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-6">
+                  <h3 className="text-lg font-medium text-yellow-800 dark:text-yellow-300 mb-3">개선 권장사항</h3>
+                  <div className="space-y-2 text-sm text-foreground dark:text-gray-300">
                     {passRate < 70 && (
                       <div>• 합격률이 {passRate.toFixed(1)}%로 낮습니다. 교육 내용을 보완하거나 난이도를 조정해보세요.</div>
                     )}

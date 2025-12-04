@@ -84,24 +84,24 @@ const MyExams: React.FC = () => {
 
   const getStatusInfo = (exam: MyExam) => {
     const isOverdue = new Date(exam.due_date) < new Date();
-    
+
     switch (exam.status) {
       case 'available':
-        return { 
-          label: isOverdue ? '기한 만료' : '응시 가능', 
-          color: isOverdue ? 'bg-destructive/10 text-destructive' : 'bg-green-500/10 text-green-700', 
-          icon: isOverdue ? ExclamationTriangleIcon : PencilSquareIcon 
+        return {
+          label: isOverdue ? '기한 만료' : '응시 가능',
+          color: isOverdue ? 'bg-destructive/10 text-destructive dark:text-red-400' : 'bg-green-500/10 text-green-700 dark:text-green-400',
+          icon: isOverdue ? ExclamationTriangleIcon : PencilSquareIcon
         };
       case 'in_progress':
-        return { label: '진행중', color: 'bg-blue-100 text-blue-800', icon: ClockIcon };
+        return { label: '진행중', color: 'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300', icon: ClockIcon };
       case 'completed':
-        return { 
-          label: exam.passed ? '합격' : '불합격', 
-          color: exam.passed ? 'bg-green-500/10 text-green-700' : 'bg-yellow-100 text-yellow-800', 
-          icon: exam.passed ? CheckCircleIcon : ExclamationTriangleIcon 
+        return {
+          label: exam.passed ? '합격' : '불합격',
+          color: exam.passed ? 'bg-green-500/10 text-green-700 dark:text-green-400' : 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300',
+          icon: exam.passed ? CheckCircleIcon : ExclamationTriangleIcon
         };
       case 'missed':
-        return { label: '미응시', color: 'bg-destructive/10 text-destructive', icon: ExclamationTriangleIcon };
+        return { label: '미응시', color: 'bg-destructive/10 text-destructive dark:text-red-400', icon: ExclamationTriangleIcon };
     }
   };
 
@@ -112,67 +112,68 @@ const MyExams: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* 헤더 */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      {/* 헤더 */}
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900 flex items-center">
-              <PencilSquareIcon className="h-6 w-6 mr-2" />
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center">
+              <PencilSquareIcon className="h-6 w-6 mr-2 text-gray-900 dark:text-white" />
               시험 응시
             </h1>
-            <p className="text-gray-600">예정된 시험에 응시하고 결과를 확인하세요.</p>
+            <p className="text-gray-600 dark:text-gray-400">예정된 시험에 응시하고 결과를 확인하세요.</p>
           </div>
         </div>
       </div>
 
       {/* 통계 카드 */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <PencilSquareIcon className="h-8 w-8 text-blue-600" />
+              <PencilSquareIcon className="h-8 w-8 text-blue-600 dark:text-blue-400" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-500">응시 가능</p>
-              <p className="text-2xl font-semibold text-gray-900">{availableExams.length}</p>
+              <p className="text-sm font-medium text-gray-500 dark:text-gray-400">응시 가능</p>
+              <p className="text-2xl font-semibold text-gray-900 dark:text-white">{availableExams.length}</p>
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <CheckCircleIcon className="h-8 w-8 text-green-600" />
+              <CheckCircleIcon className="h-8 w-8 text-green-600 dark:text-green-400" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-500">완료</p>
-              <p className="text-2xl font-semibold text-gray-900">{completedExams.length}</p>
+              <p className="text-sm font-medium text-gray-500 dark:text-gray-400">완료</p>
+              <p className="text-2xl font-semibold text-gray-900 dark:text-white">{completedExams.length}</p>
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <TrophyIcon className="h-8 w-8 text-foreground" />
+              <TrophyIcon className="h-8 w-8 text-foreground dark:text-gray-300" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-500">합격률</p>
-              <p className="text-2xl font-semibold text-gray-900">
+              <p className="text-sm font-medium text-gray-500 dark:text-gray-400">합격률</p>
+              <p className="text-2xl font-semibold text-gray-900 dark:text-white">
                 {completedExams.length > 0 ? Math.round((passedExams.length / completedExams.length) * 100) : 0}%
               </p>
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <TrophyIcon className="h-8 w-8 text-purple-600" />
+              <TrophyIcon className="h-8 w-8 text-purple-600 dark:text-purple-400" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-500">평균 점수</p>
-              <p className="text-2xl font-semibold text-gray-900">
-                {completedExams.length > 0 
+              <p className="text-sm font-medium text-gray-500 dark:text-gray-400">평균 점수</p>
+              <p className="text-2xl font-semibold text-gray-900 dark:text-white">
+                {completedExams.length > 0
                   ? Math.round(completedExams.reduce((sum, e) => sum + (e.score || 0), 0) / completedExams.length)
                   : 0
                 }
@@ -183,36 +184,35 @@ const MyExams: React.FC = () => {
       </div>
 
       {/* 시험 목록 */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-        <div className="p-6 border-b border-gray-200">
-          <h2 className="text-lg font-medium text-gray-900">시험 목록</h2>
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+        <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+          <h2 className="text-lg font-medium text-gray-900 dark:text-white">시험 목록</h2>
         </div>
-        <div className="divide-y divide-gray-200">
+        <div className="divide-y divide-gray-200 dark:divide-gray-700">
           {exams.map((exam) => {
             const statusInfo = getStatusInfo(exam);
             const StatusIcon = statusInfo.icon;
             const isOverdue = new Date(exam.due_date) < new Date();
 
             return (
-              <div key={exam.id} className="p-6 hover:bg-gray-50 transition-colors">
+              <div key={exam.id} className="p-6 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
                     <div className="flex items-center space-x-3 mb-2">
-                      <h3 className="text-lg font-medium text-gray-900">{exam.title}</h3>
+                      <h3 className="text-lg font-medium text-gray-900 dark:text-white">{exam.title}</h3>
                       <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${statusInfo.color}`}>
                         <StatusIcon className="h-3 w-3 mr-1" />
                         {statusInfo.label}
                       </span>
-                      <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-                        exam.type === '이론' ? 'bg-blue-100 text-blue-800' : 'bg-purple-100 text-purple-800'
-                      }`}>
+                      <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${exam.type === '이론' ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300' : 'bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300'
+                        }`}>
                         {exam.type}
                       </span>
                     </div>
-                    
-                    <p className="text-gray-600 mb-3">{exam.course}</p>
-                    
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-gray-500 mb-4">
+
+                    <p className="text-gray-600 dark:text-gray-400 mb-3">{exam.course}</p>
+
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-gray-500 dark:text-gray-400 mb-4">
                       <div className="flex items-center">
                         <ClockIcon className="h-4 w-4 mr-1" />
                         {exam.duration}분
@@ -232,7 +232,7 @@ const MyExams: React.FC = () => {
                     </div>
 
                     {exam.completed_at && (
-                      <div className="text-sm text-gray-500">
+                      <div className="text-sm text-gray-500 dark:text-gray-400">
                         완료일: {new Date(exam.completed_at).toLocaleString('ko-KR')}
                       </div>
                     )}
@@ -255,7 +255,7 @@ const MyExams: React.FC = () => {
                       </button>
                     )}
                     {exam.status === 'completed' && (
-                      <button className="border border-gray-300 text-gray-700 px-4 py-2 rounded-full hover:bg-gray-50 transition-colors">
+                      <button className="border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 px-4 py-2 rounded-full hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                         결과 보기
                       </button>
                     )}
@@ -268,10 +268,10 @@ const MyExams: React.FC = () => {
       </div>
 
       {exams.length === 0 && (
-        <div className="text-center py-12 bg-white rounded-lg shadow-sm border border-gray-200">
-          <PencilSquareIcon className="mx-auto h-12 w-12 text-gray-400" />
-          <h3 className="mt-2 text-sm font-medium text-gray-900">예정된 시험이 없습니다</h3>
-          <p className="mt-1 text-sm text-gray-500">새로운 시험이 등록되면 알려드리겠습니다.</p>
+        <div className="text-center py-12 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+          <PencilSquareIcon className="mx-auto h-12 w-12 text-gray-400 dark:text-gray-600" />
+          <h3 className="mt-2 text-sm font-medium text-gray-900 dark:text-white">예정된 시험이 없습니다</h3>
+          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">새로운 시험이 등록되면 알려드리겠습니다.</p>
         </div>
       )}
     </div>
