@@ -16,6 +16,7 @@ import {
   PlusIcon
 } from '@heroicons/react/24/outline';
 import { PageContainer } from '../common/PageContainer';
+import { PageHeader } from '../common/PageHeader';
 import toast from 'react-hot-toast';
 import { useAuth } from '../../contexts/AuthContext';
 import BSActivityJournal from './BSActivityJournal';
@@ -307,169 +308,73 @@ const BSActivityManagementDesktop: React.FC = () => {
       <PageContainer>
         <div className="space-y-6">
           {/* 헤더 */}
-          <div className="bg-white rounded-lg shadow-sm border p-6">
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-              <div>
-                <h1 className="text-2xl font-bold text-gray-900">BS 활동 관리</h1>
-                <p className="text-gray-600">전체 교육생의 활동 일지 관리, 피드백 및 발표</p>
-              </div>
-              <div className="flex gap-3">
-                <button
-                  onClick={() => setViewMode('create')}
-                  className="btn-primary"
-                >
-                  <PlusIcon className="w-5 h-5" />
-                  새 활동 작성
-                </button>
-                <button
-                  onClick={() => setShowPresentationMode(true)}
-                  className="btn-secondary"
-                >
-                  <PresentationChartLineIcon className="w-5 h-5" />
-                  프레젠테이션 모드
-                </button>
-              </div>
-            </div>
-
-            {/* 검색 및 필터 */}
-            <div className="mt-6 space-y-4">
-              <div className="flex flex-col sm:flex-row gap-4">
-                <div className="flex-1 relative">
-                  <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-                  <input
-                    type="text"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="병원명, 활동 내용으로 검색..."
-                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  />
-                </div>
-                <button
-                  onClick={() => setShowFilters(!showFilters)}
-                  className="btn-outline"
-                >
-                  <FunnelIcon className="w-5 h-5" />
-                  필터
-                </button>
-              </div>
-
-              {/* 필터 패널 */}
-              {showFilters && (
-                <div className="bg-gray-50 rounded-lg p-4 space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">상태</label>
-                      <select
-                        multiple
-                        value={filters.status || []}
-                        onChange={(e) => {
-                          const values = Array.from(e.target.selectedOptions, option => option.value);
-                          setFilters(prev => ({ ...prev, status: values }));
-                        }}
-                        className="w-full border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500"
-                      >
-                        <option value="draft">작성 중</option>
-                        <option value="submitted">제출 완료</option>
-                        <option value="reviewed">검토 완료</option>
-                        <option value="approved">승인 완료</option>
-                      </select>
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">기간</label>
-                      <div className="flex space-x-2">
-                        <input
-                          type="date"
-                          value={filters.date_from || ''}
-                          onChange={(e) => setFilters(prev => ({ ...prev, date_from: e.target.value }))}
-                          className="flex-1 border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500"
-                        />
-                        <input
-                          type="date"
-                          value={filters.date_to || ''}
-                          onChange={(e) => setFilters(prev => ({ ...prev, date_to: e.target.value }))}
-                          className="flex-1 border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500"
-                        />
-                      </div>
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">병원명</label>
-                      <input
-                        type="text"
-                        value={filters.clinic_name || ''}
-                        onChange={(e) => setFilters(prev => ({ ...prev, clinic_name: e.target.value }))}
-                        placeholder="병원명 검색"
-                        className="w-full border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="flex justify-end space-x-2">
-                    <button
-                      onClick={() => {
-                        setFilters({
-                          status: [],
-                          activity_types: [],
-                          date_from: '',
-                          date_to: '',
-                          clinic_name: '',
-                          has_photos: undefined,
-                          has_feedback: undefined
-                        });
-                      }}
-                      className="btn-ghost"
-                    >
-                      초기화
-                    </button>
-                  </div>
-                </div>
-              )}
+          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-6 mb-8">
+            <PageHeader
+              title="BS 활동 관리"
+              description="전체 교육생의 활동 일지 관리, 피드백 및 발표"
+              badge="Activity Management"
+            />
+            <div className="flex gap-3 w-full lg:w-auto">
+              <button
+                onClick={() => setViewMode('create')}
+                className="btn-primary flex-1 lg:flex-none flex items-center justify-center gap-2"
+              >
+                <PlusIcon className="w-5 h-5" />
+                새 활동 작성
+              </button>
+              <button
+                onClick={() => setShowPresentationMode(true)}
+                className="btn-secondary flex-1 lg:flex-none flex items-center justify-center gap-2"
+              >
+                <PresentationChartLineIcon className="w-5 h-5" />
+                프레젠테이션 모드
+              </button>
             </div>
           </div>
 
+          {/* Rest of the content will be added here */}
           {/* 통계 요약 */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            <div className="bg-white rounded-lg shadow-sm border p-6">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
               <div className="flex items-center">
-                <DocumentTextIcon className="w-8 h-8 text-blue-600 mr-3" />
+                <DocumentTextIcon className="w-8 h-8 text-blue-600 dark:text-blue-400 mr-3" />
                 <div>
-                  <p className="text-sm text-gray-600">전체 일지</p>
-                  <p className="text-2xl font-bold text-gray-900">{activities.length}</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">전체 일지</p>
+                  <p className="text-2xl font-bold text-gray-900 dark:text-white">{activities.length}</p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-white rounded-lg shadow-sm border p-6">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
               <div className="flex items-center">
-                <CheckCircleIcon className="w-8 h-8 text-orange-600 mr-3" />
+                <CheckCircleIcon className="w-8 h-8 text-orange-600 dark:text-orange-400 mr-3" />
                 <div>
-                  <p className="text-sm text-gray-600">피드백 대기</p>
-                  <p className="text-2xl font-bold text-gray-900">
+                  <p className="text-sm text-gray-600 dark:text-gray-400">피드백 대기</p>
+                  <p className="text-2xl font-bold text-gray-900 dark:text-white">
                     {activities.filter(a => a.status === 'submitted').length}
                   </p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-white rounded-lg shadow-sm border p-6">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
               <div className="flex items-center">
-                <StarIcon className="w-8 h-8 text-green-600 mr-3" />
+                <StarIcon className="w-8 h-8 text-green-600 dark:text-green-400 mr-3" />
                 <div>
-                  <p className="text-sm text-gray-600">피드백 완료</p>
-                  <p className="text-2xl font-bold text-gray-900">
+                  <p className="text-sm text-gray-600 dark:text-gray-400">피드백 완료</p>
+                  <p className="text-2xl font-bold text-gray-900 dark:text-white">
                     {activities.filter(a => a.instructor_feedback).length}
                   </p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-white rounded-lg shadow-sm border p-6">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
               <div className="flex items-center">
-                <PhotoIcon className="w-8 h-8 text-purple-600 mr-3" />
+                <PhotoIcon className="w-8 h-8 text-purple-600 dark:text-purple-400 mr-3" />
                 <div>
-                  <p className="text-sm text-gray-600">총 사진</p>
-                  <p className="text-2xl font-bold text-gray-900">
+                  <p className="text-sm text-gray-600 dark:text-gray-400">총 사진</p>
+                  <p className="text-2xl font-bold text-gray-900 dark:text-white">
                     {activities.reduce((sum, a) => sum + a.photos.length, 0)}
                   </p>
                 </div>
@@ -478,17 +383,17 @@ const BSActivityManagementDesktop: React.FC = () => {
           </div>
 
           {/* 활동 목록 */}
-          <div className="bg-white rounded-lg shadow-sm border">
-            <div className="p-6 border-b border-gray-200">
-              <h2 className="text-lg font-bold text-gray-900">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+            <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+              <h2 className="text-lg font-bold text-gray-900 dark:text-white">
                 활동 일지 목록 ({filteredActivities.length})
               </h2>
             </div>
 
             {filteredActivities.length > 0 ? (
-              <div className="divide-y divide-gray-200">
+              <div className="divide-y divide-gray-200 dark:divide-gray-700">
                 {filteredActivities.map((activity) => (
-                  <div key={activity.id} className="p-6 hover:bg-gray-50 transition-colors">
+                  <div key={activity.id} className="p-6 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
                     <div className="flex justify-between items-start mb-3">
                       <div className="flex items-start space-x-4">
                         <div className="flex-shrink-0">
@@ -496,7 +401,7 @@ const BSActivityManagementDesktop: React.FC = () => {
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center space-x-3 mb-2">
-                            <h3 className="text-lg font-semibold text-gray-900 truncate">
+                            <h3 className="text-lg font-semibold text-gray-900 dark:text-white truncate">
                               {activity.clinic_name}
                             </h3>
                             <span className={`px-2 py-1 text-xs font-medium rounded-full border ${getStatusColor(activity.status)}`}>
@@ -504,7 +409,7 @@ const BSActivityManagementDesktop: React.FC = () => {
                             </span>
                           </div>
 
-                          <div className="flex items-center space-x-4 text-sm text-gray-600 mb-2">
+                          <div className="flex items-center space-x-4 text-sm text-gray-600 dark:text-gray-400 mb-2">
                             <span className="flex items-center">
                               <CalendarDaysIcon className="w-4 h-4 mr-1" />
                               {new Date(activity.visit_date).toLocaleDateString()}
@@ -519,7 +424,7 @@ const BSActivityManagementDesktop: React.FC = () => {
                             </span>
                           </div>
 
-                          <p className="text-gray-700 line-clamp-2">{activity.visit_purpose}</p>
+                          <p className="text-gray-700 dark:text-gray-300 line-clamp-2">{activity.visit_purpose}</p>
 
                           {/* 활동 유형 태그 */}
                           <div className="flex flex-wrap gap-2 mt-3">
@@ -532,7 +437,7 @@ const BSActivityManagementDesktop: React.FC = () => {
                               </span>
                             ))}
                             {Array.from(new Set(activity.activities.map(a => a.type))).length > 3 && (
-                              <span className="px-2 py-1 text-xs text-gray-600 bg-gray-100 rounded-full">
+                              <span className="px-2 py-1 text-xs text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 rounded-full">
                                 +{Array.from(new Set(activity.activities.map(a => a.type))).length - 3}개 더
                               </span>
                             )}
@@ -580,10 +485,10 @@ const BSActivityManagementDesktop: React.FC = () => {
 
                     {/* 피드백 표시 */}
                     {activity.instructor_feedback && (
-                      <div className="mt-3 p-3 bg-blue-50 rounded-lg border border-blue-200">
+                      <div className="mt-3 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
                         <div className="flex items-center space-x-2">
                           <StarIcon className="w-4 h-4 text-foreground" />
-                          <span className="text-sm font-medium text-blue-900">강사 피드백</span>
+                          <span className="text-sm font-medium text-blue-900 dark:text-blue-300">강사 피드백</span>
                           <div className="flex space-x-1">
                             {[1, 2, 3, 4, 5].map(star => (
                               <span
@@ -594,7 +499,7 @@ const BSActivityManagementDesktop: React.FC = () => {
                               </span>
                             ))}
                           </div>
-                          <span className="text-xs text-blue-700">
+                          <span className="text-xs text-blue-700 dark:text-blue-400">
                             ({activity.instructor_feedback.overall_rating}/5)
                           </span>
                         </div>
@@ -605,9 +510,9 @@ const BSActivityManagementDesktop: React.FC = () => {
               </div>
             ) : (
               <div className="p-12 text-center">
-                <DocumentTextIcon className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">제출된 활동 일지가 없습니다</h3>
-                <p className="text-gray-600">교육생들이 활동 일지를 제출하면 여기에서 확인하고 피드백을 제공할 수 있습니다.</p>
+                <DocumentTextIcon className="w-12 h-12 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
+                <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">제출된 활동 일지가 없습니다</h3>
+                <p className="text-gray-600 dark:text-gray-400">교육생들이 활동 일지를 제출하면 여기에서 확인하고 피드백을 제공할 수 있습니다.</p>
               </div>
             )}
           </div>
@@ -621,6 +526,7 @@ const BSActivityManagementDesktop: React.FC = () => {
               readonly={!!selectedActivity.instructor_feedback}
             />
           )}
+
         </div>
       </PageContainer>
     );
