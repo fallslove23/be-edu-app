@@ -42,6 +42,9 @@ const SecurityDashboard = dynamic(() => import('@/components/security/SecurityDa
 const AdvancedPWA = dynamic(() => import('@/components/pwa/AdvancedPWA').then(mod => mod.default), { ssr: false });
 const AdvancedFileManager = dynamic(() => import('@/components/files/AdvancedFileManager').then(mod => mod.default), { ssr: false });
 const MaterialsLibrary = dynamic(() => import('@/components/materials/MaterialsLibrary').then(mod => mod.default), { ssr: false });
+const MaterialsUpload = dynamic(() => import('@/components/materials/MaterialsUpload').then(mod => mod.default), { ssr: false });
+const MaterialsCategories = dynamic(() => import('@/components/materials/MaterialsCategories').then(mod => mod.default), { ssr: false });
+const MaterialsDistribution = dynamic(() => import('@/components/materials/MaterialsDistribution').then(mod => mod.default), { ssr: false });
 const IntegratedAttendanceManagement = dynamic(() => import('@/components/attendance/IntegratedAttendanceManagement').then(mod => mod.default), { ssr: false });
 
 // Loading component
@@ -158,6 +161,12 @@ export default function DashboardPage() {
         return <AdvancedFileManager />;
       case 'materials-library':
         return <MaterialsLibrary />;
+      case 'materials-upload':
+        return <MaterialsUpload />;
+      case 'materials-categories':
+        return <MaterialsCategories />;
+      case 'materials-distribution':
+        return <MaterialsDistribution />;
       case 'attendance':
         return <IntegratedAttendanceManagement />;
       default:
@@ -181,9 +190,8 @@ export default function DashboardPage() {
     <div className="h-screen flex overflow-hidden bg-background">
       {/* Desktop Sidebar - Collapsible */}
       <aside
-        className={`hidden md:flex md:flex-shrink-0 transition-all duration-300 ${
-          sidebarCollapsed ? 'w-16' : 'w-64'
-        }`}
+        className={`hidden md:flex md:flex-shrink-0 transition-all duration-300 ${sidebarCollapsed ? 'w-16' : 'w-64'
+          }`}
       >
         <div className="w-full h-full flex flex-col border-r border-border bg-card">
           <ImprovedNavigation
