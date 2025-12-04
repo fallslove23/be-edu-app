@@ -74,7 +74,7 @@ const MaterialsLibrary: React.FC = () => {
 
   const loadData = () => {
     setLoading(true);
-    
+
     setTimeout(() => {
       const mockFolders: Folder[] = [
         {
@@ -218,7 +218,7 @@ const MaterialsLibrary: React.FC = () => {
   const filteredMaterials = materials
     .filter(material => {
       const matchesSearch = material.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                           material.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()));
+        material.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()));
       const matchesCategory = selectedCategory === 'all' || material.category === selectedCategory;
       const matchesType = selectedType === 'all' || material.type === selectedType;
       return matchesSearch && matchesCategory && matchesType;
@@ -244,9 +244,9 @@ const MaterialsLibrary: React.FC = () => {
   };
 
   const toggleFavorite = (materialId: string) => {
-    setMaterials(prev => 
-      prev.map(material => 
-        material.id === materialId 
+    setMaterials(prev =>
+      prev.map(material =>
+        material.id === materialId
           ? { ...material, isFavorite: !material.isFavorite }
           : material
       )
@@ -286,10 +286,10 @@ const MaterialsLibrary: React.FC = () => {
     );
   }
 
-  console.log('📚 MaterialsLibrary 메인 렌더링 시작', { 
-    materials: materials.length, 
+  console.log('📚 MaterialsLibrary 메인 렌더링 시작', {
+    materials: materials.length,
     folders: folders.length,
-    filteredMaterials: filteredMaterials.length 
+    filteredMaterials: filteredMaterials.length
   });
 
   return (
@@ -310,7 +310,7 @@ const MaterialsLibrary: React.FC = () => {
             >
               {viewMode === 'grid' ? '목록' : '격자'}
             </button>
-            <button 
+            <button
               onClick={() => setShowUploadModal(true)}
               className="bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-full flex items-center space-x-2 transition-colors"
             >
@@ -399,7 +399,7 @@ const MaterialsLibrary: React.FC = () => {
             <option value="downloads">다운로드순</option>
           </select>
         </div>
-        
+
         {selectedMaterials.size > 0 && (
           <div className="mt-4 pt-4 border-t border-border">
             <div className="flex items-center justify-between">
@@ -407,13 +407,13 @@ const MaterialsLibrary: React.FC = () => {
                 {selectedMaterials.size}개 항목 선택됨
               </span>
               <div className="flex items-center space-x-2">
-                <button 
+                <button
                   onClick={handleBulkDownload}
                   className="text-sm text-primary hover:text-primary/80 transition-colors"
                 >
                   일괄 다운로드
                 </button>
-                <button 
+                <button
                   onClick={handleBulkDelete}
                   className="text-sm text-destructive hover:text-destructive/80 transition-colors"
                 >
@@ -430,7 +430,7 @@ const MaterialsLibrary: React.FC = () => {
         <div className="px-6 py-4 border-b border-border">
           <h3 className="text-lg font-medium text-card-foreground">폴더</h3>
         </div>
-        
+
         <div className="p-6">
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {folders.map((folder) => (
@@ -447,7 +447,7 @@ const MaterialsLibrary: React.FC = () => {
                     </h4>
                   </div>
                 </div>
-                
+
                 <div className="text-sm text-muted-foreground space-y-1">
                   <div>파일: {folder.materialsCount}개</div>
                   <div>하위폴더: {folder.subFoldersCount}개</div>
@@ -467,14 +467,14 @@ const MaterialsLibrary: React.FC = () => {
               교육 자료 ({filteredMaterials.length})
             </h3>
             <div className="flex items-center space-x-2">
-              <button 
+              <button
                 onClick={() => setSelectedMaterials(new Set(filteredMaterials.map(m => m.id)))}
                 className="text-sm text-muted-foreground hover:text-foreground transition-colors"
               >
                 모두 선택
               </button>
               <span className="text-border">|</span>
-              <button 
+              <button
                 onClick={() => setSelectedMaterials(new Set())}
                 className="text-sm text-muted-foreground hover:text-foreground transition-colors"
               >
@@ -483,18 +483,17 @@ const MaterialsLibrary: React.FC = () => {
             </div>
           </div>
         </div>
-        
+
         <div className="p-6">
           {viewMode === 'grid' ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {filteredMaterials.map((material) => (
                 <div
                   key={material.id}
-                  className={`border rounded-full p-4 transition-all cursor-pointer ${
-                    selectedMaterials.has(material.id)
+                  className={`border rounded-2xl p-4 transition-all cursor-pointer ${selectedMaterials.has(material.id)
                       ? 'border-primary bg-primary/5'
                       : 'border-border hover:border-primary/50'
-                  }`}
+                    }`}
                   onClick={() => toggleMaterialSelection(material.id)}
                 >
                   <div className="flex items-start justify-between mb-3">
@@ -509,11 +508,10 @@ const MaterialsLibrary: React.FC = () => {
                         }}
                         className="p-1 rounded hover:bg-muted transition-colors"
                       >
-                        <StarIcon className={`h-4 w-4 ${
-                          material.isFavorite 
-                            ? 'text-accent fill-current' 
+                        <StarIcon className={`h-4 w-4 ${material.isFavorite
+                            ? 'text-accent fill-current'
                             : 'text-muted-foreground'
-                        }`} />
+                          }`} />
                       </button>
                       <input
                         type="checkbox"
@@ -524,16 +522,16 @@ const MaterialsLibrary: React.FC = () => {
                       />
                     </div>
                   </div>
-                  
+
                   <h4 className="font-medium text-card-foreground mb-2 truncate" title={material.name}>
                     {material.name}
                   </h4>
-                  
+
                   <div className="space-y-2">
                     <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border ${getCategoryColor(material.category)}`}>
                       {getCategoryLabel(material.category)}
                     </span>
-                    
+
                     <div className="text-sm text-muted-foreground space-y-1">
                       <div className="flex items-center space-x-1">
                         <ClockIcon className="h-3 w-3" />
@@ -562,7 +560,7 @@ const MaterialsLibrary: React.FC = () => {
                       </div>
                     )}
                   </div>
-                  
+
                   <div className="mt-3 pt-3 border-t border-border flex justify-between">
                     <button className="text-sm text-primary hover:text-primary/80 flex items-center space-x-1 transition-colors rounded-full">
                       <EyeIcon className="h-3 w-3" />
@@ -581,11 +579,10 @@ const MaterialsLibrary: React.FC = () => {
               {filteredMaterials.map((material) => (
                 <div
                   key={material.id}
-                  className={`border rounded-full p-4 transition-colors cursor-pointer ${
-                    selectedMaterials.has(material.id)
+                  className={`border rounded-2xl p-4 transition-colors cursor-pointer ${selectedMaterials.has(material.id)
                       ? 'border-primary bg-primary/5'
                       : 'border-border hover:bg-muted/50'
-                  }`}
+                    }`}
                   onClick={() => toggleMaterialSelection(material.id)}
                 >
                   <div className="flex items-center space-x-4">
@@ -596,11 +593,11 @@ const MaterialsLibrary: React.FC = () => {
                       className="rounded border-input text-primary focus:ring-ring"
                       onClick={(e) => e.stopPropagation()}
                     />
-                    
+
                     <div className="flex-shrink-0">
                       {getTypeIcon(material.type)}
                     </div>
-                    
+
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center space-x-3">
                         <h4 className="font-medium text-card-foreground truncate">
@@ -613,21 +610,21 @@ const MaterialsLibrary: React.FC = () => {
                           <StarIcon className="h-4 w-4 text-accent fill-current" />
                         )}
                       </div>
-                      
+
                       <div className="mt-1 flex items-center space-x-4 text-sm text-muted-foreground">
                         <span>{material.size}</span>
                         <span>{new Date(material.uploadDate).toLocaleDateString('ko-KR')}</span>
                         <span>{material.uploadedBy}</span>
                         <span>다운로드 {material.downloadCount}회</span>
                       </div>
-                      
+
                       {material.description && (
                         <p className="mt-1 text-sm text-muted-foreground truncate">
                           {material.description}
                         </p>
                       )}
                     </div>
-                    
+
                     <div className="flex items-center space-x-2">
                       <button className="p-2 text-muted-foreground hover:text-primary transition-colors rounded-full">
                         <EyeIcon className="h-4 w-4" />
@@ -644,7 +641,7 @@ const MaterialsLibrary: React.FC = () => {
               ))}
             </div>
           )}
-          
+
           {filteredMaterials.length === 0 && (
             <div className="text-center py-12 text-muted-foreground">
               <DocumentIcon className="mx-auto h-12 w-12 mb-4" />
@@ -662,7 +659,7 @@ const MaterialsLibrary: React.FC = () => {
             <div className="px-6 py-4 border-b border-border">
               <h3 className="text-lg font-medium text-card-foreground">파일 업로드</h3>
             </div>
-            
+
             <div className="p-6">
               <div className="border-2 border-dashed border-border rounded-lg p-8 text-center">
                 <CloudArrowUpIcon className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
@@ -685,7 +682,7 @@ const MaterialsLibrary: React.FC = () => {
               >
                 취소
               </button>
-              <button 
+              <button
                 onClick={() => {
                   setShowUploadModal(false);
                   toast.success('파일이 업로드되었습니다.');
