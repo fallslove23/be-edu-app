@@ -74,23 +74,20 @@ export const usePerformanceMonitor = (
     return 0;
   }, []);
 
-  // FPS 측정
+  // FPS 측정 - 안정화된 버전
   const measureFPS = useCallback(() => {
     const now = performance.now();
     frameCountRef.current++;
-    
+
     if (now - lastFrameTimeRef.current >= 1000) { // 1초마다 측정
       const fps = frameCountRef.current;
       frameCountRef.current = 0;
       lastFrameTimeRef.current = now;
       return fps;
     }
-    
-    if (enableRealTimeMonitoring) {
-      requestAnimationFrame(measureFPS);
-    }
-    return metricsRef.current?.fps || 0;
-  }, [enableRealTimeMonitoring]);
+
+    return metricsRef.current?.fps || 60; // 기본값 60 FPS
+  }, []);
 
   // 성능 예산 검증
   const checkPerformanceBudget = useCallback((metrics: PerformanceMetrics) => {
@@ -118,11 +115,14 @@ export const usePerformanceMonitor = (
     return 'passed';
   }, [finalThresholds.budget]);
 
-  // 실시간 알림 시스템
+  // 실시간 알림 시스템 - 개발 환경에서는 비활성화
   const addAlert = useCallback((message: string, type: 'warning' | 'error' = 'warning') => {
+    // 프로덕션 환경에서만 알림 표시
+    if (process.env.NODE_ENV !== 'production') return;
+
     const alertMessage = `${type.toUpperCase()}: ${message}`;
     setAlerts(prev => [...prev.slice(-4), alertMessage]); // 최대 5개 유지
-    
+
     // 5초 후 자동 제거
     setTimeout(() => {
       setAlerts(prev => prev.filter(alert => alert !== alertMessage));

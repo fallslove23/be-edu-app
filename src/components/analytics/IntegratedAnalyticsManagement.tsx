@@ -103,9 +103,9 @@ const IntegratedAnalyticsManagement: React.FC<IntegratedAnalyticsManagementProps
 
   return (
     <div className="min-h-screen bg-[#F2F4F6] dark:bg-gray-900 p-4 sm:p-6 pb-24 transition-colors duration-200">
-      <div className="max-w-5xl mx-auto space-y-6">
+      <div className="max-w-7xl mx-auto space-y-4">
         {/* 헤더 */}
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <div className="w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-500/30">
               <ChartPie className="w-6 h-6 text-white" />
@@ -158,10 +158,8 @@ const IntegratedAnalyticsManagement: React.FC<IntegratedAnalyticsManagementProps
           </div>
         </div>
 
-        {/* 탭 콘텐츠 */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
-          {renderTabContent()}
-        </div>
+        {/* 탭 콘텐츠 - 박스 제거하고 직접 렌더링 */}
+        {renderTabContent()}
       </div>
     </div>
   );
