@@ -209,10 +209,10 @@ const ImprovedNavigation: React.FC<ImprovedNavigationProps> = ({
       </div>
 
       {/* Navigation Content */}
-      <div className={`flex-1 overflow-y-auto space-y-2 ${isCollapsed ? 'px-2 py-4' : 'p-4'}`}>
+      <div className={`flex-1 overflow-y-auto ${isCollapsed ? 'px-2 py-4' : 'p-4'}`}>
         {/* 즐겨찾기 섹션 */}
         {!searchTerm && getFavoriteItems().length > 0 && (
-          <div className={`${isCollapsed ? '' : 'mb-6 pb-4 border-b border-border/50'}`}>
+          <div className={`${isCollapsed ? 'mb-3' : 'mb-4 pb-3 border-b border-border/50'}`}>
             {!isCollapsed && (
               <div className="flex items-center gap-2 mb-3">
                 <StarIconSolid className="h-4 w-4 text-yellow-500 flex-shrink-0" />
@@ -230,7 +230,7 @@ const ImprovedNavigation: React.FC<ImprovedNavigationProps> = ({
 
         {/* 최근 사용 섹션 */}
         {!searchTerm && !isCollapsed && getRecentItems().length > 0 && (
-          <div className="mb-6 pb-4 border-b border-border/50">
+          <div className="mb-4 pb-3 border-b border-border/50">
             <div className="flex items-center gap-2 mb-3">
               <div className="flex-shrink-0 w-1 h-4 bg-gradient-to-b from-indigo-500 to-purple-600 rounded-full"></div>
               <h3 className="text-xs font-semibold text-foreground uppercase tracking-wider">
@@ -268,18 +268,18 @@ const ImprovedNavigation: React.FC<ImprovedNavigationProps> = ({
 
         {/* 섹션별 메뉴 */}
         {!searchTerm && (
-          <div className="space-y-6">
+          <div className="space-y-3">
             {Object.entries(menuSections).map(([section, items]) => (
               <div key={section}>
                 {!isCollapsed && (
-                  <div className="flex items-center gap-2 mb-2 px-1">
+                  <div className="flex items-center gap-2 mb-1.5 px-1">
                     <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                       {sectionLabels[section] || section}
                     </h3>
                     <div className="flex-1 h-px bg-border/50"></div>
                   </div>
                 )}
-                <div className="space-y-1">
+                <div className="space-y-0.5">
                   {items.map((item) => renderMenuItem(item))}
                 </div>
               </div>
