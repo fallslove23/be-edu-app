@@ -19,7 +19,6 @@ const CourseManagementTabs: React.FC = () => {
         title="과정 관리"
         description="BS 과정의 템플릿, 차수 및 출석을 통합 관리합니다."
         badge="Education Management"
-        icon={Book}
       />
 
       {/* 탭 네비게이션 */}
