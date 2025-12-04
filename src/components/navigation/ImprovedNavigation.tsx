@@ -2,14 +2,14 @@
 
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
-import { getMenuItemsForRole, MenuItem, SubMenuItem } from '../../config/navigation';
+import { getMenuItemsForRole, getMenuSections, sectionLabels, MenuItem } from '../../config/navigation';
 import { NavigationIcon } from './NavigationIcons';
 import {
-  ChevronRightIcon,
-  ChevronDownIcon,
   MagnifyingGlassIcon,
-  XMarkIcon
+  XMarkIcon,
+  StarIcon
 } from '@heroicons/react/24/outline';
+import { StarIcon as StarIconSolid } from '@heroicons/react/24/solid';
 
 interface ImprovedNavigationProps {
   activeView: string;
@@ -24,115 +24,149 @@ const ImprovedNavigation: React.FC<ImprovedNavigationProps> = ({
 }) => {
   const { user } = useAuth();
   const [searchTerm, setSearchTerm] = useState('');
-  // Initialize with all categories collapsed (empty set)
-  const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set());
   const [recentViews, setRecentViews] = useState<string[]>([]);
-  // 접힌 상태에서 클릭으로 고정된 툴팁 추적
-  const [pinnedTooltip, setPinnedTooltip] = useState<string | null>(null);
+  const [favorites, setFavorites] = useState<string[]>([]);
 
+  // Load favorites and recent views from localStorage
   useEffect(() => {
-    // Load recent views from localStorage
-    const saved = localStorage.getItem('recentViews');
-    if (saved) {
+    const savedRecent = localStorage.getItem('recentViews');
+    const savedFavorites = localStorage.getItem('favorites');
+
+    if (savedRecent) {
       try {
-        setRecentViews(JSON.parse(saved));
+        setRecentViews(JSON.parse(savedRecent));
       } catch {
         setRecentViews([]);
       }
     }
+
+    if (savedFavorites) {
+      try {
+        setFavorites(JSON.parse(savedFavorites));
+      } catch {
+        setFavorites([]);
+      }
+    }
   }, [user]);
 
+  // Update recent views when view changes
   useEffect(() => {
-    // Update recent views when view changes
     if (activeView && activeView !== 'dashboard') {
       const newRecent = [activeView, ...recentViews.filter(v => v !== activeView)].slice(0, 5);
       setRecentViews(newRecent);
       localStorage.setItem('recentViews', JSON.stringify(newRecent));
     }
-
-    // Automatically expand the category containing the active view
-    const menuItems = getMenuItemsForRole(user?.role || 'trainee');
-    const parentCategory = menuItems.find(item =>
-      item.isCategory && item.subItems?.some(sub => sub.id === activeView)
-    );
-
-    if (parentCategory) {
-      setExpandedCategories(prev => {
-        const newSet = new Set(prev);
-        newSet.add(parentCategory.id);
-        return newSet;
-      });
-    }
-  }, [activeView, user]);
+  }, [activeView]);
 
   if (!user) return null;
 
   const menuItems = getMenuItemsForRole(user.role);
-
-  type NavigationItem = MenuItem | SubMenuItem;
-
-  // Flatten all menu items for search
-  const allMenuItems: NavigationItem[] = [];
-  const flattenItems = (items: NavigationItem[]) => {
-    items.forEach(item => {
-      const isCategory = 'isCategory' in item ? item.isCategory : false;
-      if (!isCategory) {
-        allMenuItems.push(item);
-      }
-      if ('subItems' in item && item.subItems) {
-        flattenItems(item.subItems);
-      }
-    });
-  };
-  flattenItems(menuItems);
+  const menuSections = getMenuSections(user.role);
 
   // Filter items based on search
   const filteredItems = searchTerm
-    ? allMenuItems.filter(item =>
-      item.label.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (item.description && item.description.toLowerCase().includes(searchTerm.toLowerCase()))
-    )
-    : menuItems;
-
-  const toggleCategory = (categoryId: string) => {
-    // 접힌 상태에서는 툴팁을 고정/해제
-    if (isCollapsed) {
-      setPinnedTooltip(pinnedTooltip === categoryId ? null : categoryId);
-      return;
-    }
-
-    // 펼쳐진 상태에서는 기존 동작
-    const newExpanded = new Set(expandedCategories);
-    if (newExpanded.has(categoryId)) {
-      newExpanded.delete(categoryId);
-    } else {
-      newExpanded.add(categoryId);
-    }
-    setExpandedCategories(newExpanded);
-  };
+    ? menuItems.filter(item =>
+        item.label.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (item.description && item.description.toLowerCase().includes(searchTerm.toLowerCase()))
+      )
+    : [];
 
   const handleItemClick = (itemId: string, route?: string, isExternal?: boolean) => {
-    // 툴팁 고정 상태 해제
-    if (pinnedTooltip) {
-      setPinnedTooltip(null);
-    }
-
     if (isExternal && route) {
-      // 외부 링크는 새 탭에서 열기
       window.open(route, '_blank', 'noopener,noreferrer');
     } else {
       onViewChange(itemId);
     }
   };
 
+  const toggleFavorite = (itemId: string) => {
+    const newFavorites = favorites.includes(itemId)
+      ? favorites.filter(id => id !== itemId)
+      : [...favorites, itemId];
+
+    setFavorites(newFavorites);
+    localStorage.setItem('favorites', JSON.stringify(newFavorites));
+  };
+
   const clearSearch = () => {
     setSearchTerm('');
   };
 
+  const getFavoriteItems = () => {
+    return favorites.map(favId =>
+      menuItems.find(item => item.id === favId)
+    ).filter(Boolean) as MenuItem[];
+  };
+
   const getRecentItems = () => {
     return recentViews.map(viewId =>
-      allMenuItems.find(item => item.id === viewId)
+      menuItems.find(item => item.id === viewId)
     ).filter(Boolean) as MenuItem[];
+  };
+
+  // 메뉴 아이템 렌더링 함수
+  const renderMenuItem = (item: MenuItem, showFavoriteButton: boolean = true) => {
+    const isFavorite = favorites.includes(item.id);
+    const isActive = activeView === item.id;
+
+    return (
+      <div key={item.id} className="relative group/item">
+        <button
+          onClick={() => handleItemClick(item.id, item.route, item.isExternal)}
+          className={`w-full ${isCollapsed ? 'px-0 py-3' : 'px-3 py-2.5'} rounded-xl text-sm font-medium transition-all duration-200 flex items-center ${
+            isCollapsed ? 'justify-center' : 'space-x-3'
+          } ${
+            isActive
+              ? 'bg-gradient-to-r from-indigo-500/20 to-purple-500/20 text-primary border border-primary/30 shadow-sm'
+              : 'text-sidebar-foreground hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground border border-transparent'
+          }`}
+          title={isCollapsed ? item.label : item.description}
+        >
+          <div className={`flex-shrink-0 ${isCollapsed ? '' : 'p-1.5 rounded-lg'} ${isActive ? 'bg-primary/10' : 'bg-muted/50'}`}>
+            <NavigationIcon
+              iconName={item.icon}
+              className={`h-5 w-5 ${isActive ? 'text-primary' : 'text-muted-foreground'}`}
+            />
+          </div>
+          {!isCollapsed && (
+            <>
+              <span className="truncate flex-1 text-left">{item.label}</span>
+              {item.isExternal && (
+                <svg className="h-3 w-3 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                </svg>
+              )}
+              {isActive && <div className="flex-shrink-0 w-1.5 h-1.5 bg-primary rounded-full animate-pulse"></div>}
+            </>
+          )}
+        </button>
+
+        {/* 즐겨찾기 버튼 (펼쳐진 상태에서만) */}
+        {!isCollapsed && showFavoriteButton && (
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              toggleFavorite(item.id);
+            }}
+            className="absolute right-2 top-1/2 -translate-y-1/2 opacity-0 group-hover/item:opacity-100 transition-opacity p-1 hover:bg-accent rounded"
+            title={isFavorite ? '즐겨찾기 해제' : '즐겨찾기 추가'}
+          >
+            {isFavorite ? (
+              <StarIconSolid className="h-4 w-4 text-yellow-500" />
+            ) : (
+              <StarIcon className="h-4 w-4 text-muted-foreground" />
+            )}
+          </button>
+        )}
+
+        {/* 툴팁 (접힌 상태에서만) */}
+        {isCollapsed && (
+          <div className="absolute left-full ml-2 px-2 py-1 bg-popover text-popover-foreground text-xs rounded whitespace-nowrap opacity-0 group-hover/item:opacity-100 transition-opacity pointer-events-none z-50 shadow-lg border border-border">
+            {item.label}
+          </div>
+        )}
+      </div>
+    );
   };
 
   return (
@@ -176,7 +210,25 @@ const ImprovedNavigation: React.FC<ImprovedNavigationProps> = ({
 
       {/* Navigation Content */}
       <div className={`flex-1 overflow-y-auto space-y-2 ${isCollapsed ? 'px-2 py-4' : 'p-4'}`}>
-        {/* Recent Views - only show if no search and there are recent items */}
+        {/* 즐겨찾기 섹션 */}
+        {!searchTerm && getFavoriteItems().length > 0 && (
+          <div className={`${isCollapsed ? '' : 'mb-6 pb-4 border-b border-border/50'}`}>
+            {!isCollapsed && (
+              <div className="flex items-center gap-2 mb-3">
+                <StarIconSolid className="h-4 w-4 text-yellow-500 flex-shrink-0" />
+                <h3 className="text-xs font-semibold text-foreground uppercase tracking-wider">
+                  즐겨찾기
+                </h3>
+                <div className="flex-1 h-px bg-gradient-to-r from-border/50 to-transparent"></div>
+              </div>
+            )}
+            <div className="space-y-1">
+              {getFavoriteItems().map((item) => renderMenuItem(item, false))}
+            </div>
+          </div>
+        )}
+
+        {/* 최근 사용 섹션 */}
         {!searchTerm && !isCollapsed && getRecentItems().length > 0 && (
           <div className="mb-6 pb-4 border-b border-border/50">
             <div className="flex items-center gap-2 mb-3">
@@ -186,34 +238,13 @@ const ImprovedNavigation: React.FC<ImprovedNavigationProps> = ({
               </h3>
               <div className="flex-1 h-px bg-gradient-to-r from-border/50 to-transparent"></div>
             </div>
-            <div className="space-y-1 bg-muted/30 rounded-xl p-2">
-              {getRecentItems().slice(0, 3).map((item) => (
-                <button
-                  key={`recent-${item.id}`}
-                  onClick={() => handleItemClick(item.id)}
-                  className={`w-full text-left px-3 py-2.5 rounded-lg text-sm transition-all duration-200 flex items-center space-x-3 ${activeView === item.id
-                    ? 'bg-gradient-to-r from-indigo-500/20 to-purple-500/20 text-primary border border-primary/30 shadow-sm'
-                    : 'text-sidebar-foreground hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground border border-transparent'
-                    }`}
-                  title={item.description}
-                >
-                  <div className={`flex-shrink-0 p-1.5 rounded-lg ${activeView === item.id ? 'bg-primary/10' : 'bg-muted/50'}`}>
-                    <NavigationIcon
-                      iconName={item.icon}
-                      className={`h-4 w-4 ${activeView === item.id ? 'text-primary' : 'text-muted-foreground'}`}
-                    />
-                  </div>
-                  <span className="truncate font-medium">{item.label}</span>
-                  {activeView === item.id && (
-                    <div className="ml-auto flex-shrink-0 w-1.5 h-1.5 bg-primary rounded-full animate-pulse"></div>
-                  )}
-                </button>
-              ))}
+            <div className="space-y-1">
+              {getRecentItems().slice(0, 3).map((item) => renderMenuItem(item))}
             </div>
           </div>
         )}
 
-        {/* Search Results */}
+        {/* 검색 결과 */}
         {searchTerm && (
           <div>
             <div className="flex items-center gap-2 mb-3">
@@ -225,25 +256,7 @@ const ImprovedNavigation: React.FC<ImprovedNavigationProps> = ({
             </div>
             <div className="space-y-1">
               {filteredItems.length > 0 ? (
-                filteredItems.map((item) => (
-                  <button
-                    key={`search-${item.id}`}
-                    onClick={() => handleItemClick(item.id)}
-                    className={`w-full text-left px-3 py-2.5 rounded-lg text-sm transition-all duration-200 flex items-center space-x-3 ${activeView === item.id
-                      ? 'bg-gradient-to-r from-green-500/20 to-emerald-500/20 text-primary border border-primary/30 shadow-sm'
-                      : 'text-sidebar-foreground hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground border border-transparent'
-                      }`}
-                    title={item.description}
-                  >
-                    <div className={`flex-shrink-0 p-1.5 rounded-lg ${activeView === item.id ? 'bg-primary/10' : 'bg-muted/50'}`}>
-                      <NavigationIcon
-                        iconName={item.icon}
-                        className={`h-4 w-4 ${activeView === item.id ? 'text-primary' : 'text-muted-foreground'}`}
-                      />
-                    </div>
-                    <span className="truncate font-medium">{item.label}</span>
-                  </button>
-                ))
+                filteredItems.map((item) => renderMenuItem(item))
               ) : (
                 <div className="text-center py-8 text-muted-foreground">
                   <p className="text-sm">검색 결과가 없습니다</p>
@@ -253,129 +266,22 @@ const ImprovedNavigation: React.FC<ImprovedNavigationProps> = ({
           </div>
         )}
 
-        {/* Regular Menu */}
+        {/* 섹션별 메뉴 */}
         {!searchTerm && (
-          <div className="space-y-2">
-            {!isCollapsed && (
-              <div className="flex items-center gap-2 mb-3 mt-2">
-                <div className="flex-shrink-0 w-1 h-4 bg-gradient-to-b from-blue-500 to-cyan-600 rounded-full"></div>
-                <h3 className="text-xs font-semibold text-foreground uppercase tracking-wider">
-                  전체 메뉴
-                </h3>
-                <div className="flex-1 h-px bg-gradient-to-r from-border/50 to-transparent"></div>
-              </div>
-            )}
-            {menuItems.map((item) => (
-              <div key={item.id}>
-                {item.isCategory && item.subItems ? (
-                  // Category with sub-items
-                  <div className={isCollapsed ? 'group/menu relative' : ''}>
-                    <button
-                      onClick={() => toggleCategory(item.id)}
-                      className={`w-full ${isCollapsed ? 'px-0 py-3' : 'px-3 py-2'} rounded-xl text-sm font-medium transition-all duration-300 flex items-center ${isCollapsed ? 'justify-center' : 'justify-between'} text-muted-foreground hover:bg-white/5 hover:text-foreground ${!isCollapsed && 'hover:translate-x-1'}`}
-                      title={item.description}
-                    >
-                      <div className={`flex items-center ${isCollapsed ? '' : 'space-x-3'}`}>
-                        <NavigationIcon iconName={item.icon} className="h-5 w-5 text-muted-foreground" />
-                        {!isCollapsed && <span>{item.label}</span>}
-                      </div>
-                      {!isCollapsed && (
-                        expandedCategories.has(item.id)
-                          ? <ChevronDownIcon className="h-4 w-4" />
-                          : <ChevronRightIcon className="h-4 w-4" />
-                      )}
-                    </button>
-                    {/* Tooltip for collapsed state */}
-                    {isCollapsed && (
-                      <div
-                        className={`absolute left-full ml-2 top-0 px-3 py-2 bg-popover text-popover-foreground text-xs rounded-lg shadow-xl transition-all z-[100] min-w-max border border-border ${
-                          pinnedTooltip === item.id
-                            ? 'visible opacity-100'
-                            : 'invisible group-hover/menu:visible opacity-0 group-hover/menu:opacity-100'
-                        }`}
-                      >
-                        <div className="flex items-center justify-between mb-2 border-b border-border pb-1">
-                          <div className="font-semibold">{item.label}</div>
-                          {pinnedTooltip === item.id && (
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setPinnedTooltip(null);
-                              }}
-                              className="ml-2 p-0.5 hover:bg-accent rounded"
-                              title="닫기"
-                            >
-                              <XMarkIcon className="h-3 w-3" />
-                            </button>
-                          )}
-                        </div>
-                        <div className="space-y-1">
-                          {item.subItems.map((subItem) => (
-                            <button
-                              key={subItem.id}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleItemClick(subItem.id, subItem.route, subItem.isExternal);
-                              }}
-                              className="w-full text-left text-muted-foreground hover:text-popover-foreground whitespace-nowrap px-2 py-1 rounded hover:bg-accent transition-colors"
-                            >
-                              {subItem.label}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-
-                    {(!isCollapsed && expandedCategories.has(item.id)) && (
-                      <div className="ml-6 mt-1 space-y-1 border-l-2 border-sidebar-border pl-3">
-                        {item.subItems.map((subItem) => (
-                          <button
-                            key={subItem.id}
-                            onClick={() => handleItemClick(subItem.id, subItem.route, subItem.isExternal)}
-                            className={`w-full text-left px-3 py-2 rounded-xl text-sm transition-all duration-300 flex items-center space-x-3 ${activeView === subItem.id
-                              ? 'bg-gradient-to-r from-indigo-500/20 to-purple-500/20 text-indigo-300 border border-indigo-500/30 shadow-lg shadow-indigo-500/10'
-                              : 'text-muted-foreground hover:bg-white/5 hover:text-foreground hover:translate-x-1'
-                              }`}
-                            title={subItem.description}
-                          >
-                            <NavigationIcon
-                              iconName={subItem.icon}
-                              className={`h-4 w-4 ${activeView === subItem.id ? 'text-sidebar-primary-foreground' : 'text-muted-foreground'}`}
-                            />
-                            <span className="truncate">{subItem.label}</span>
-                            {subItem.isExternal && (
-                              <svg className="h-3 w-3 ml-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                              </svg>
-                            )}
-                          </button>
-                        ))}
-                      </div>
-                    )}
+          <div className="space-y-6">
+            {Object.entries(menuSections).map(([section, items]) => (
+              <div key={section}>
+                {!isCollapsed && (
+                  <div className="flex items-center gap-2 mb-2 px-1">
+                    <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                      {sectionLabels[section] || section}
+                    </h3>
+                    <div className="flex-1 h-px bg-border/50"></div>
                   </div>
-                ) : (
-                  // Regular menu item
-                  <button
-                    onClick={() => handleItemClick(item.id)}
-                    className={`w-full ${isCollapsed ? 'px-0 py-3' : 'px-3 py-2'} rounded-xl text-sm font-medium transition-all duration-300 flex items-center ${isCollapsed ? 'justify-center' : 'space-x-3'} ${activeView === item.id
-                      ? 'bg-gradient-to-r from-indigo-500/20 to-purple-500/20 text-indigo-300 border border-indigo-500/30 shadow-lg shadow-indigo-500/10'
-                      : 'text-muted-foreground hover:bg-white/5 hover:text-foreground hover:translate-x-1'
-                      } relative group`}
-                    title={item.description}
-                  >
-                    <NavigationIcon
-                      iconName={item.icon}
-                      className={`h-5 w-5 ${activeView === item.id ? 'text-sidebar-primary-foreground' : 'text-muted-foreground'}`}
-                    />
-                    {!isCollapsed && <span>{item.label}</span>}
-                    {/* Tooltip for collapsed state */}
-                    {isCollapsed && (
-                      <div className="absolute left-full ml-2 px-2 py-1 bg-popover text-popover-foreground text-xs rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 shadow-lg border border-border">
-                        {item.label}
-                      </div>
-                    )}
-                  </button>
                 )}
+                <div className="space-y-1">
+                  {items.map((item) => renderMenuItem(item))}
+                </div>
               </div>
             ))}
           </div>
