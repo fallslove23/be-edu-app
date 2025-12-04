@@ -3,12 +3,11 @@
 import React, { useState } from 'react';
 import {
   BarChart2,
-  LineChart,
-  FileDown,
-  Filter,
-  Search,
+  TrendingUp,
+  FileText,
+  Calendar,
   Download,
-  PieChart
+  ChartPie
 } from 'lucide-react';
 import PerformanceTracking from '../performance/PerformanceTracking';
 import AdvancedAnalytics from './AdvancedAnalytics';
@@ -28,23 +27,23 @@ interface TabConfig {
 const tabs: TabConfig[] = [
   {
     id: 'performance',
-    label: '성과 분석',
+    label: '성적 분석',
     icon: BarChart2,
-    description: '교육생 성과 추적 및 리포팅',
+    description: '교육생 성적 및 학습 성과 분석',
     roles: ['admin', 'manager', 'operator', 'instructor']
   },
   {
     id: 'analytics',
     label: '고급 분석',
-    icon: LineChart,
-    description: '상세 데이터 분석 및 시각화',
+    icon: TrendingUp,
+    description: '데이터 트렌드 및 통계 분석',
     roles: ['admin', 'manager']
   },
   {
     id: 'reports',
     label: '보고서 생성',
-    icon: FileDown,
-    description: '맞춤형 보고서 생성 및 내보내기',
+    icon: FileText,
+    description: '기간별 리포트 작성 및 내보내기',
     roles: ['admin', 'manager', 'operator', 'instructor']
   }
 ];
@@ -106,76 +105,62 @@ const IntegratedAnalyticsManagement: React.FC<IntegratedAnalyticsManagementProps
     <div className="min-h-screen bg-[#F2F4F6] dark:bg-gray-900 p-4 sm:p-6 pb-24 transition-colors duration-200">
       <div className="max-w-5xl mx-auto space-y-6">
         {/* 헤더 */}
-        <div className="bg-white dark:bg-gray-800 rounded-[2rem] p-6 shadow-sm border border-gray-100 dark:border-gray-700">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center space-x-3">
+            <div className="w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-500/30">
+              <ChartPie className="w-6 h-6 text-white" />
+            </div>
             <div>
-              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-2 flex items-center">
-                <div className="p-3 bg-indigo-50 dark:bg-indigo-900/30 rounded-xl mr-4">
-                  <PieChart className="w-8 h-8 text-indigo-600 dark:text-indigo-400" />
-                </div>
-                분석 및 보고서
-              </h1>
-              <p className="text-gray-500 dark:text-gray-400">{getActiveTabConfig()?.description}</p>
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">분석 및 보고서</h1>
+              <p className="text-sm text-gray-500 dark:text-gray-400">{getActiveTabConfig()?.description}</p>
             </div>
+          </div>
 
-            {/* 모바일 최적화된 필터 */}
-            <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
-              <div className="relative">
-                <select
-                  value={dateRange}
-                  onChange={(e) => setDateRange(e.target.value)}
-                  className="w-full sm:w-40 appearance-none bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-200 py-2.5 px-4 pr-8 rounded-xl leading-tight focus:outline-none focus:bg-white dark:focus:bg-gray-600 focus:border-indigo-500 transition-colors"
-                >
-                  <option value="7days">최근 7일</option>
-                  <option value="30days">최근 30일</option>
-                  <option value="3months">최근 3개월</option>
-                  <option value="6months">최근 6개월</option>
-                  <option value="1year">최근 1년</option>
-                </select>
-                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
-                  <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" /></svg>
-                </div>
-              </div>
-
-              <button
-                className="bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 text-white px-5 py-2.5 rounded-xl text-sm font-semibold whitespace-nowrap shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/30 transition-all flex items-center justify-center"
-              >
-                <Download className="h-5 w-5 inline mr-2" />
-                리포트 생성
-              </button>
-            </div>
+          {/* 기간 선택 드롭다운 */}
+          <div className="relative">
+            <select
+              value={dateRange}
+              onChange={(e) => setDateRange(e.target.value)}
+              className="appearance-none bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200 py-2 px-4 pr-8 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+            >
+              <option value="7days">최근 7일</option>
+              <option value="30days">최근 30일</option>
+              <option value="3months">최근 3개월</option>
+              <option value="6months">최근 6개월</option>
+              <option value="1year">최근 1년</option>
+            </select>
+            <Calendar className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
           </div>
         </div>
 
-        {/* 탭 네비게이션 */}
-        <div className="bg-white dark:bg-gray-800 rounded-[2rem] shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
-          <div className="border-b border-gray-100 dark:border-gray-700 overflow-x-auto scroll-touch">
-            <nav className="flex px-2 sm:px-6" aria-label="탭">
-              {availableTabs.map((tab) => {
-                const Icon = tab.icon;
-                const isActive = activeTab === tab.id;
+        {/* 탭 네비게이션 - 모바일 최적화 */}
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-1.5">
+          <div className="grid grid-cols-3 gap-1.5">
+            {availableTabs.map((tab) => {
+              const Icon = tab.icon;
+              const isActive = activeTab === tab.id;
 
-                return (
-                  <button
-                    key={tab.id}
-                    onClick={() => setActiveTab(tab.id)}
-                    className={`flex items-center space-x-2 py-4 px-4 sm:px-6 border-b-2 font-medium text-sm transition-all duration-200 whitespace-nowrap ${isActive
-                      ? 'border-indigo-500 text-indigo-600 dark:text-indigo-400'
-                      : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:border-gray-300 dark:hover:border-gray-600'
-                      }`}
-                  >
-                    <Icon className={`h-5 w-5 flex-shrink-0 transition-colors ${isActive ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-400 dark:text-gray-500 group-hover:text-gray-500 dark:group-hover:text-gray-300'}`} />
-                    <span>{tab.label}</span>
-                  </button>
-                );
-              })}
-            </nav>
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`flex flex-col items-center justify-center py-3 px-2 rounded-xl font-medium text-xs sm:text-sm transition-all duration-200 ${
+                    isActive
+                      ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-lg shadow-indigo-500/30'
+                      : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700/50'
+                  }`}
+                >
+                  <Icon className={`w-5 h-5 mb-1.5 ${isActive ? 'text-white' : 'text-gray-400'}`} />
+                  <span className="whitespace-nowrap">{tab.label}</span>
+                </button>
+              );
+            })}
           </div>
+        </div>
 
-          {/* 탭 콘텐츠 */}
-          <div className="p-6">
-            {renderTabContent()}
-          </div>
+        {/* 탭 콘텐츠 */}
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
+          {renderTabContent()}
         </div>
       </div>
     </div>
