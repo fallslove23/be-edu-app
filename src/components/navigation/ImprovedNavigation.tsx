@@ -66,9 +66,9 @@ const ImprovedNavigation: React.FC<ImprovedNavigationProps> = ({
   // Filter items based on search
   const filteredItems = searchTerm
     ? menuItems.filter(item =>
-        item.label.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (item.description && item.description.toLowerCase().includes(searchTerm.toLowerCase()))
-      )
+      item.label.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (item.description && item.description.toLowerCase().includes(searchTerm.toLowerCase()))
+    )
     : [];
 
   const handleItemClick = (itemId: string, route?: string, isExternal?: boolean) => {
@@ -113,13 +113,11 @@ const ImprovedNavigation: React.FC<ImprovedNavigationProps> = ({
       <div key={item.id} className="relative group/item">
         <button
           onClick={() => handleItemClick(item.id, item.route, item.isExternal)}
-          className={`w-full ${isCollapsed ? 'px-0 py-3' : 'px-3 py-2.5'} rounded-xl text-sm font-medium transition-all duration-200 flex items-center ${
-            isCollapsed ? 'justify-center' : 'space-x-3'
-          } ${
-            isActive
+          className={`w-full ${isCollapsed ? 'px-0 py-3' : 'px-3 py-2.5'} rounded-xl text-sm font-medium transition-all duration-200 flex items-center ${isCollapsed ? 'justify-center' : 'space-x-3'
+            } ${isActive
               ? 'bg-gradient-to-r from-indigo-500/20 to-purple-500/20 text-primary border border-primary/30 shadow-sm'
               : 'text-sidebar-foreground hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground border border-transparent'
-          }`}
+            }`}
           title={isCollapsed ? item.label : item.description}
         >
           <div className={`flex-shrink-0 ${isCollapsed ? '' : 'p-1.5 rounded-lg'} ${isActive ? 'bg-primary/10' : 'bg-muted/50'}`}>
@@ -173,14 +171,14 @@ const ImprovedNavigation: React.FC<ImprovedNavigationProps> = ({
     <div className="h-full flex flex-col bg-sidebar/80 backdrop-blur-xl border-r border-white/10 shadow-2xl">
       {/* Header */}
       <div className={`p-4 border-b border-white/10 ${isCollapsed ? 'flex flex-col items-center' : ''}`}>
-        <div className={`flex items-center ${isCollapsed ? 'justify-center mb-0' : 'space-x-3 mb-4'}`}>
-          <div className={`${isCollapsed ? 'w-10 h-10' : 'w-8 h-8'} bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl shadow-lg shadow-indigo-500/30 flex items-center justify-center`}>
-            <span className="text-white font-bold text-sm">BS</span>
+        <div className={`flex items-center ${isCollapsed ? 'justify-center mb-0' : 'gap-4 mb-6'}`}>
+          <div className={`${isCollapsed ? 'w-10 h-10' : 'w-12 h-12'} bg-[#5D5FEF] rounded-full flex items-center justify-center flex-shrink-0 shadow-lg shadow-indigo-500/20`}>
+            <span className="text-white font-bold text-lg">{user.name?.[0]}</span>
           </div>
           {!isCollapsed && (
-            <div>
-              <h2 className="font-semibold text-sidebar-foreground text-sm">학습 관리</h2>
-              <p className="text-xs text-muted-foreground">{user.name}</p>
+            <div className="flex flex-col">
+              <h2 className="font-bold text-white text-xl tracking-tight">{user.name}님</h2>
+              <span className="text-xs text-gray-400 font-medium mt-0.5">{user.role === 'admin' ? '관리자' : user.role === 'manager' ? '매니저' : '교육생'}</span>
             </div>
           )}
         </div>
