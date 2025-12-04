@@ -102,38 +102,42 @@ const IntegratedAnalyticsManagement: React.FC<IntegratedAnalyticsManagementProps
   };
 
   return (
-    <div className="min-h-screen bg-[#F2F4F6] dark:bg-gray-900 p-4 sm:p-6 pb-24 transition-colors duration-200">
-      <div className="max-w-7xl mx-auto space-y-4">
-        {/* 헤더 */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-3">
-            <div className="w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-500/30">
-              <ChartPie className="w-6 h-6 text-white" />
+    <div className="min-h-screen bg-[#F2F4F6] dark:bg-gray-900 pb-24 transition-colors duration-200">
+      {/* 헤더 - 전체 너비 배경 */}
+      <div className="bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700 mb-4">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <div className="w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-500/30">
+                <ChartPie className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900 dark:text-white">분석 및 보고서</h1>
+                <p className="text-sm text-gray-500 dark:text-gray-400">{getActiveTabConfig()?.description}</p>
+              </div>
             </div>
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">분석 및 보고서</h1>
-              <p className="text-sm text-gray-500 dark:text-gray-400">{getActiveTabConfig()?.description}</p>
-            </div>
-          </div>
 
-          {/* 기간 선택 드롭다운 */}
-          <div className="relative">
-            <select
-              value={dateRange}
-              onChange={(e) => setDateRange(e.target.value)}
-              className="appearance-none bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200 py-2 px-4 pr-8 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
-            >
-              <option value="7days">최근 7일</option>
-              <option value="30days">최근 30일</option>
-              <option value="3months">최근 3개월</option>
-              <option value="6months">최근 6개월</option>
-              <option value="1year">최근 1년</option>
-            </select>
-            <Calendar className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+            {/* 기간 선택 드롭다운 */}
+            <div className="relative">
+              <select
+                value={dateRange}
+                onChange={(e) => setDateRange(e.target.value)}
+                className="appearance-none bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-200 py-2 px-4 pr-8 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+              >
+                <option value="7days">최근 7일</option>
+                <option value="30days">최근 30일</option>
+                <option value="3months">최근 3개월</option>
+                <option value="6months">최근 6개월</option>
+                <option value="1year">최근 1년</option>
+              </select>
+              <Calendar className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+            </div>
           </div>
         </div>
+      </div>
 
-        {/* 탭 네비게이션 - 모바일 최적화 */}
+      {/* 탭 네비게이션 - 정렬된 너비 */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 mb-4">
         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-1.5">
           <div className="grid grid-cols-3 gap-1.5">
             {availableTabs.map((tab) => {
@@ -157,8 +161,10 @@ const IntegratedAnalyticsManagement: React.FC<IntegratedAnalyticsManagementProps
             })}
           </div>
         </div>
+      </div>
 
-        {/* 탭 콘텐츠 - 박스 제거하고 직접 렌더링 */}
+      {/* 탭 콘텐츠 - 정렬된 너비 */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6">
         {renderTabContent()}
       </div>
     </div>
