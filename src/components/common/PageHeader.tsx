@@ -19,7 +19,7 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
             {Icon && (
                 <div className="relative group">
                     {/* Glow effect */}
-                    <div className="absolute -inset-0.5 bg-blue-600 rounded-[1.25rem] blur opacity-30 group-hover:opacity-50 transition duration-500"></div>
+                    <div className="absolute -inset-1 bg-blue-500 rounded-[1.25rem] blur opacity-60 group-hover:opacity-80 transition duration-500"></div>
                     {/* Icon container */}
                     <div className="relative w-16 h-16 bg-[#2563EB] rounded-[1.25rem] flex items-center justify-center shadow-xl border border-white/10">
                         <Icon className="w-8 h-8 text-white" strokeWidth={2} />

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { BookOpen } from 'lucide-react';
+import { BookOpen, Book } from 'lucide-react';
 import BSCourseManagement from './BSCourseManagement';
 import AttendanceManager from '../operations/AttendanceManager';
 
@@ -17,9 +17,9 @@ const CourseManagementTabs: React.FC = () => {
       {/* 헤더 */}
       <PageHeader
         title="과정 관리"
-        description="BS 과정의 템플릿, 차수, 출석을 통합 관리합니다."
+        description="BS 과정의 템플릿, 차수 및 출석을 통합 관리합니다."
         badge="Education Management"
-        icon={BookOpen}
+        icon={Book}
       />
 
       {/* 탭 네비게이션 */}
