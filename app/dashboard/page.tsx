@@ -59,7 +59,7 @@ export default function DashboardPage() {
   const { isAuthenticated, loading, user, logout } = useAuth();
   const [activeView, setActiveView] = useState('dashboard');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(true); // 기본값: 접힌 상태
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false); // 기본값: 펼쳐진 상태
   const [darkMode, setDarkMode] = useState(false);
 
   useEffect(() => {
