@@ -4,8 +4,12 @@ import {
   EyeSlashIcon,
   ShieldCheckIcon,
   ExclamationCircleIcon,
-  LockClosedIcon
+  LockClosedIcon,
+  SunIcon,
+  MoonIcon,
+  ComputerDesktopIcon
 } from '@heroicons/react/24/outline';
+import { useTheme } from '../../contexts/ThemeContext';
 import { useAuth } from '../../contexts/AuthContext';
 
 const SecureLogin: React.FC = () => {
@@ -18,6 +22,7 @@ const SecureLogin: React.FC = () => {
   const [lockoutTime, setLockoutTime] = useState(0);
 
   const { login, loading, error } = useAuth();
+  const { theme, toggleTheme } = useTheme();
 
   // 계정 잠금 타이머
   useEffect(() => {
@@ -76,6 +81,21 @@ const SecureLogin: React.FC = () => {
         <div className="absolute top-[20%] right-[10%] w-[40%] h-[40%] rounded-full bg-purple-500/10 blur-[120px]" />
         <div className="absolute -bottom-[10%] left-[20%] w-[60%] h-[60%] rounded-full bg-indigo-500/10 blur-[120px]" />
       </div>
+
+      {/* Theme Toggle */}
+      <button
+        onClick={toggleTheme}
+        className="absolute top-4 right-4 p-2 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors z-50"
+        title={`테마 변경 (${theme === 'light' ? '라이트' : theme === 'dark' ? '다크' : '시스템 설정'})`}
+      >
+        {theme === 'light' ? (
+          <SunIcon className="w-6 h-6" />
+        ) : theme === 'dark' ? (
+          <MoonIcon className="w-6 h-6" />
+        ) : (
+          <ComputerDesktopIcon className="w-6 h-6" />
+        )}
+      </button>
 
       <div className="max-w-md w-full space-y-8 relative z-10 bg-white/70 dark:bg-gray-800/50 backdrop-blur-xl border border-white/50 dark:border-gray-700 p-8 rounded-3xl shadow-2xl">
         <div className="text-center">

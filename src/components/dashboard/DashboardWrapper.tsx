@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   Users,
   GraduationCap,
@@ -19,6 +19,7 @@ import {
   ClipboardCheck,
   TrendingUp,
   FolderOpen,
+  PieChart,
 } from 'lucide-react';
 import EnhancedDashboard from './EnhancedDashboard';
 import RolePreviewSelector from '../admin/RolePreviewSelector';
@@ -35,6 +36,21 @@ import { PageContainer } from '../common/PageContainer';
 const DashboardWrapper: React.FC<DashboardWrapperProps> = ({ onNavigate }) => {
   const { user } = useAuth();
   const isAdmin = user && ['admin', 'manager'].includes(user.role);
+  const [showMoreMenu, setShowMoreMenu] = useState(false);
+  const moreMenuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (moreMenuRef.current && !moreMenuRef.current.contains(event.target as Node)) {
+        setShowMoreMenu(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   // 교육생 대시보드 렌더링
   if (user?.role === 'trainee') {
@@ -70,13 +86,6 @@ const DashboardWrapper: React.FC<DashboardWrapperProps> = ({ onNavigate }) => {
               title="검색"
             >
               <Search className="w-6 h-6" />
-            </button>
-            <button
-              onClick={() => onNavigate?.('messages')}
-              className="p-2 text-gray-800 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-800 rounded-full transition-colors"
-              title="메시지"
-            >
-              <MessageCircle className="w-6 h-6" />
             </button>
           </div>
         </div>
@@ -119,9 +128,37 @@ const DashboardWrapper: React.FC<DashboardWrapperProps> = ({ onNavigate }) => {
                   </div>
                 </div>
               </div>
-              <button className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 rounded-full hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
-                <MoreVertical className="w-5 h-5" />
-              </button>
+              <div className="relative" ref={moreMenuRef}>
+                <button
+                  onClick={() => setShowMoreMenu(!showMoreMenu)}
+                  className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 rounded-full hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                >
+                  <MoreVertical className="w-5 h-5" />
+                </button>
+
+                {showMoreMenu && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-100 dark:border-gray-700 py-1 z-20">
+                    <button
+                      onClick={() => {
+                        setShowMoreMenu(false);
+                        window.location.reload();
+                      }}
+                      className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center gap-2"
+                    >
+                      <span>🔄</span> 새로고침
+                    </button>
+                    <button
+                      onClick={() => {
+                        setShowMoreMenu(false);
+                        onNavigate?.('analytics');
+                      }}
+                      className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center gap-2"
+                    >
+                      <span>📊</span> 상세 분석 보기
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
 
             <div className="text-center py-6">
@@ -229,13 +266,13 @@ const DashboardWrapper: React.FC<DashboardWrapperProps> = ({ onNavigate }) => {
           </button>
           <div className="h-8 w-px bg-gray-100 dark:bg-gray-700"></div>
           <button
-            onClick={() => onNavigate?.('messages')}
+            onClick={() => onNavigate?.('statistics')}
             className="flex flex-col items-center space-y-1 group"
           >
             <div className="w-10 h-10 bg-purple-50 dark:bg-purple-900/30 rounded-full flex items-center justify-center text-purple-600 dark:text-purple-400 group-hover:bg-purple-100 dark:group-hover:bg-purple-900/50 transition-colors">
-              <MessageCircle className="w-5 h-5" />
+              <PieChart className="w-5 h-5" />
             </div>
-            <span className="text-xs font-medium text-gray-700 dark:text-gray-300">메시지</span>
+            <span className="text-xs font-medium text-gray-700 dark:text-gray-300">통계</span>
           </button>
         </div>
 

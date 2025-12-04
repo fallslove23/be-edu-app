@@ -27,9 +27,9 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
   const [theme, setThemeState] = useState<Theme>(() => {
     if (typeof window !== 'undefined') {
       const savedTheme = localStorage.getItem('bs-app-theme') as Theme;
-      return savedTheme || 'light';
+      return savedTheme || 'auto';
     }
-    return 'light';
+    return 'auto';
   });
 
   const [actualTheme, setActualTheme] = useState<'light' | 'dark'>('light');
@@ -37,7 +37,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
   // 시스템 다크모드 감지
   useEffect(() => {
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    
+
     const updateActualTheme = () => {
       if (theme === 'auto') {
         setActualTheme(mediaQuery.matches ? 'dark' : 'light');
@@ -50,7 +50,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
 
     // 시스템 테마 변경 감지
     mediaQuery.addEventListener('change', updateActualTheme);
-    
+
     return () => {
       mediaQuery.removeEventListener('change', updateActualTheme);
     };
@@ -59,7 +59,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
   // 테마 변경시 DOM 클래스 업데이트
   useEffect(() => {
     const root = document.documentElement;
-    
+
     if (actualTheme === 'dark') {
       root.classList.add('dark');
     } else {

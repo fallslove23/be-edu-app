@@ -1332,16 +1332,16 @@ export default function CurriculumManager() {
     <PageContainer>
       <div className="space-y-6">
         {/* 헤더 */}
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white dark:bg-gray-800 rounded-[2rem] p-6 shadow-sm border border-gray-100 dark:border-gray-700">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-card rounded-[2rem] p-8 shadow-sm border border-border">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center">
-              <div className="p-3 bg-blue-50 rounded-xl mr-4">
-                <CalendarIcon className="w-8 h-8 text-blue-600" />
+            <h1 className="text-3xl font-bold text-foreground flex items-center gap-4">
+              <div className="p-3 bg-primary/10 rounded-2xl">
+                <CalendarIcon className="w-8 h-8 text-primary" />
               </div>
               커리큘럼 관리
             </h1>
-            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 ml-16">
-              과정 시간표 생성 및 관리
+            <p className="text-muted-foreground mt-2 ml-[4.5rem]">
+              교육 과정의 전체 일정을 계획하고 관리합니다.
             </p>
           </div>
           <button
@@ -1365,7 +1365,7 @@ export default function CurriculumManager() {
               });
               setShowCreateModal(true);
             }}
-            className="mt-4 sm:mt-0 btn-primary px-6 py-3 rounded-xl font-bold hover:shadow-xl transition-all flex items-center space-x-2"
+            className="mt-4 sm:mt-0 btn-primary px-6 py-3 rounded-xl font-bold shadow-lg shadow-primary/20 hover:shadow-xl transition-all flex items-center gap-2"
           >
             <PlusIcon className="w-5 h-5" />
             <span>새 과정 만들기</span>
@@ -1379,39 +1379,38 @@ export default function CurriculumManager() {
           </div>
         )}
 
-        <div className="grid grid-cols-12 gap-6">
+        <div className="grid grid-cols-12 gap-4 lg:gap-6">
           {/* 왼쪽: 과정 목록 */}
-          <div className="col-span-12 lg:col-span-3 bg-white dark:bg-gray-800 rounded-[2rem] shadow-sm border border-gray-100 dark:border-gray-700 p-6 h-fit">
-            <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-6 flex items-center">
-              <DocumentArrowDownIcon className="w-5 h-5 mr-2 text-gray-500" />
+          <div className="col-span-12 lg:col-span-3 bg-card rounded-[2rem] shadow-sm border border-border p-4 lg:p-6 h-[300px] lg:h-[calc(100vh-12rem)] sticky top-6 flex flex-col">
+            <h2 className="text-lg font-bold text-foreground mb-4 lg:mb-6 flex items-center gap-2 px-2">
+              <DocumentArrowDownIcon className="w-5 h-5 text-muted-foreground" />
               과정 목록
             </h2>
-            <div className="space-y-3 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
+            <div className="space-y-3 flex-1 overflow-y-auto pr-2 custom-scrollbar">
               {courseRounds.map((round) => (
                 <div
                   key={round.id}
-                  className={`relative w-full text-left px-5 py-4 rounded-2xl transition-all border ${selectedRound?.id === round.id
-                    ? 'bg-blue-50 dark:bg-blue-900/30 border-blue-200 dark:border-blue-800 shadow-sm'
-                    : 'bg-white dark:bg-gray-800 border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-gray-200 dark:hover:border-gray-600'
+                  className={`relative w-full text-left px-4 lg:px-5 py-3 lg:py-4 rounded-2xl transition-all border group ${selectedRound?.id === round.id
+                    ? 'bg-primary/5 border-primary/20 shadow-sm'
+                    : 'bg-background border-border hover:border-primary/30 hover:bg-muted/50'
                     }`}
                 >
                   <div
                     onClick={() => setSelectedRound(round)}
                     className="cursor-pointer pr-8"
                   >
-                    <div className={`font-bold text-sm ${selectedRound?.id === round.id ? 'text-blue-900 dark:text-blue-300' : 'text-gray-900 dark:text-gray-100'}`}>{round.title}</div>
-                    <div className="text-xs text-gray-500 dark:text-gray-400 mt-2 flex items-center">
-                      <CalendarIcon className="w-3 h-3 mr-1" />
-                      {new Date(round.start_date).toLocaleDateString('ko-KR')} ~{' '}
-                      {new Date(round.end_date).toLocaleDateString('ko-KR')}
+                    <div className={`font-bold text-sm ${selectedRound?.id === round.id ? 'text-primary' : 'text-foreground'}`}>{round.title}</div>
+                    <div className="text-xs text-muted-foreground mt-2 flex items-center gap-1">
+                      <CalendarIcon className="w-3 h-3" />
+                      {new Date(round.start_date).toLocaleDateString('ko-KR')}
                     </div>
-                    <div className="flex items-center gap-2 mt-2">
+                    <div className="flex items-center gap-2 mt-3">
                       <span
-                        className={`text-xs px-2.5 py-1 rounded-lg font-medium ${round.status === 'completed'
-                          ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300'
+                        className={`text-[10px] px-2 py-1 rounded-full font-medium border ${round.status === 'completed'
+                          ? 'bg-green-50 text-green-700 border-green-200 dark:bg-green-900/20 dark:text-green-300 dark:border-green-800'
                           : round.status === 'in_progress'
-                            ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300'
-                            : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
+                            ? 'bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-900/20 dark:text-blue-300 dark:border-blue-800'
+                            : 'bg-gray-50 text-gray-700 border-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700'
                           }`}
                       >
                         {round.status === 'planning'
@@ -1424,32 +1423,32 @@ export default function CurriculumManager() {
                                 ? '완료'
                                 : '취소'}
                       </span>
-                      {round.is_locked && <LockClosedIcon className="w-3 h-3 text-gray-400" />}
+                      {round.is_locked && <LockClosedIcon className="w-3 h-3 text-muted-foreground" />}
                     </div>
                   </div>
 
                   {/* 편집/삭제 버튼 */}
-                  <div className="absolute right-3 top-4 flex flex-col gap-1">
+                  <div className="absolute right-2 lg:right-3 top-2 lg:top-3 flex flex-col gap-1 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity">
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
                         handleEditRound(round);
                       }}
-                      className="p-1.5 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-900/30 text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                      className="p-1.5 rounded-lg hover:bg-background text-muted-foreground hover:text-primary border border-transparent hover:border-border transition-all shadow-sm"
                       title="편집"
                     >
-                      <PencilIcon className="w-4 h-4" />
+                      <PencilIcon className="w-3.5 h-3.5" />
                     </button>
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
                         handleDeleteRound(round.id, round.title);
                       }}
-                      className="p-1.5 rounded-lg hover:bg-red-100 dark:hover:bg-red-900/30 text-gray-400 hover:text-red-600 dark:hover:text-red-400 transition-colors disabled:opacity-30"
+                      className="p-1.5 rounded-lg hover:bg-background text-muted-foreground hover:text-destructive border border-transparent hover:border-border transition-all shadow-sm disabled:opacity-30"
                       title="삭제"
                       disabled={round.is_locked}
                     >
-                      <TrashIcon className="w-4 h-4" />
+                      <TrashIcon className="w-3.5 h-3.5" />
                     </button>
                   </div>
                 </div>
@@ -1460,25 +1459,25 @@ export default function CurriculumManager() {
           {/* 오른쪽: 시간표 그리드 */}
           <div className="col-span-12 lg:col-span-9">
             {selectedRound ? (
-              <div className="bg-white dark:bg-gray-800 rounded-[2rem] shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
+              <div className="bg-card rounded-[2rem] shadow-sm border border-border overflow-hidden flex flex-col h-[600px] lg:h-[calc(100vh-12rem)]">
                 {/* 과정 정보 헤더 */}
-                <div className="p-8 border-b border-gray-100 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-700/50">
+                <div className="p-8 border-b border-border bg-muted/30">
                   <div className="flex flex-col xl:flex-row justify-between items-start gap-6">
                     <div>
-                      <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">
+                      <h2 className="text-2xl font-bold text-foreground mb-3">
                         {selectedRound.title}
                       </h2>
-                      <div className="flex flex-wrap gap-3 text-sm text-gray-600 dark:text-gray-400">
-                        <div className="flex items-center gap-2 bg-white dark:bg-gray-800 px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-600 shadow-sm">
-                          <CalendarIcon className="w-4 h-4 text-blue-500" />
+                      <div className="flex flex-wrap gap-3 text-sm text-muted-foreground">
+                        <div className="flex items-center gap-2 bg-background px-3 py-2 rounded-xl border border-border shadow-sm">
+                          <CalendarIcon className="w-4 h-4 text-primary" />
                           {new Date(selectedRound.start_date).toLocaleDateString('ko-KR')} ~{' '}
                           {new Date(selectedRound.end_date).toLocaleDateString('ko-KR')}
                         </div>
-                        <div className="flex items-center gap-2 bg-white dark:bg-gray-800 px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-600 shadow-sm">
+                        <div className="flex items-center gap-2 bg-background px-3 py-2 rounded-xl border border-border shadow-sm">
                           <UserIcon className="w-4 h-4 text-purple-500" />
-                          강사: <span className="font-bold text-gray-900 dark:text-gray-100">{selectedRound.instructor_name}</span>
+                          강사: <span className="font-bold text-foreground">{selectedRound.instructor_name}</span>
                         </div>
-                        <div className="flex items-center gap-2 bg-white dark:bg-gray-800 px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-600 shadow-sm">
+                        <div className="flex items-center gap-2 bg-background px-3 py-2 rounded-xl border border-border shadow-sm">
                           <MapPinIcon className="w-4 h-4 text-red-500" />
                           {selectedRound.location}
                         </div>
@@ -1489,17 +1488,17 @@ export default function CurriculumManager() {
                         <>
                           <button
                             onClick={() => setShowSessionModal(true)}
-                            className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2.5 rounded-xl text-sm font-bold shadow-md hover:shadow-lg transition-all flex items-center gap-2"
+                            className="bg-primary hover:bg-primary/90 text-primary-foreground px-4 py-2.5 rounded-xl text-sm font-bold shadow-md hover:shadow-lg transition-all flex items-center gap-2"
                           >
                             <PlusIcon className="w-4 h-4" />
                             일정 추가
                           </button>
                           <button
                             onClick={() => handleToggleLock(selectedRound.id, true)}
-                            className="bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-gray-600 px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm hover:shadow transition-all flex items-center gap-2"
+                            className="bg-background hover:bg-muted text-foreground border border-border px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm hover:shadow transition-all flex items-center gap-2"
                             title="과정 확정 및 잠금"
                           >
-                            <LockClosedIcon className="w-4 h-4 text-gray-500" />
+                            <LockClosedIcon className="w-4 h-4 text-muted-foreground" />
                             확정
                           </button>
                         </>
@@ -1507,45 +1506,45 @@ export default function CurriculumManager() {
                       {selectedRound.is_locked && (
                         <button
                           onClick={() => handleToggleLock(selectedRound.id, false)}
-                          className="bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-gray-600 px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm hover:shadow transition-all flex items-center gap-2"
+                          className="bg-background hover:bg-muted text-foreground border border-border px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm hover:shadow transition-all flex items-center gap-2"
                           title="잠금 해제"
                         >
-                          <LockOpenIcon className="w-4 h-4 text-gray-500" />
+                          <LockOpenIcon className="w-4 h-4 text-muted-foreground" />
                           잠금 해제
                         </button>
                       )}
                       <button
                         onClick={() => handleDuplicateRound(selectedRound.id)}
-                        className="bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-gray-600 px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm hover:shadow transition-all flex items-center gap-2"
+                        className="bg-background hover:bg-muted text-foreground border border-border px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm hover:shadow transition-all flex items-center gap-2"
                         title="과정 복제"
                       >
-                        <DocumentArrowDownIcon className="w-4 h-4 text-gray-500" />
+                        <DocumentArrowDownIcon className="w-4 h-4 text-muted-foreground" />
                         복제
                       </button>
                       {!selectedRound.is_locked && sessions.length > 0 && (
                         <button
                           onClick={() => handleRecalculateDates(selectedRound.id)}
-                          className="bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-gray-600 px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm hover:shadow transition-all flex items-center gap-2"
+                          className="bg-background hover:bg-muted text-foreground border border-border px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm hover:shadow transition-all flex items-center gap-2"
                           title="날짜 자동 재계산 (주말/공휴일 건너뛰기)"
                         >
-                          <CalendarIcon className="w-4 h-4 text-gray-500" />
+                          <CalendarIcon className="w-4 h-4 text-muted-foreground" />
                           날짜 재계산
                         </button>
                       )}
                       {sessions.length > 0 && (
                         <button
                           onClick={handleExportToExcel}
-                          className="bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-gray-600 px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm hover:shadow transition-all flex items-center gap-2"
+                          className="bg-background hover:bg-muted text-foreground border border-border px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm hover:shadow transition-all flex items-center gap-2"
                           title="엑셀로 내보내기"
                         >
-                          <DocumentArrowDownIcon className="w-4 h-4 text-gray-500" />
+                          <DocumentArrowDownIcon className="w-4 h-4 text-muted-foreground" />
                           엑셀 내보내기
                         </button>
                       )}
                       {!selectedRound.is_locked && (
                         <>
-                          <label className="bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-gray-600 px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm hover:shadow transition-all flex items-center gap-2 cursor-pointer" title="엑셀에서 가져오기">
-                            <DocumentArrowUpIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+                          <label className="bg-background hover:bg-muted text-foreground border border-border px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm hover:shadow transition-all flex items-center gap-2 cursor-pointer" title="엑셀에서 가져오기">
+                            <DocumentArrowUpIcon className="w-4 h-4 text-muted-foreground" />
                             엑셀 가져오기
                             <input
                               type="file"
@@ -1556,10 +1555,10 @@ export default function CurriculumManager() {
                           </label>
                           <button
                             onClick={() => setShowTemplateModal(true)}
-                            className="bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-gray-600 px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm hover:shadow transition-all flex items-center gap-2"
+                            className="bg-background hover:bg-muted text-foreground border border-border px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm hover:shadow transition-all flex items-center gap-2"
                             title="템플릿에서 불러오기"
                           >
-                            <DocumentArrowDownIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+                            <DocumentArrowDownIcon className="w-4 h-4 text-muted-foreground" />
                             템플릿 불러오기
                           </button>
                         </>
@@ -1567,10 +1566,10 @@ export default function CurriculumManager() {
                       {sessions.length > 0 && !selectedRound.is_locked && (
                         <button
                           onClick={() => setShowSaveTemplateModal(true)}
-                          className="bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-gray-600 px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm hover:shadow transition-all flex items-center gap-2"
+                          className="bg-background hover:bg-muted text-foreground border border-border px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm hover:shadow transition-all flex items-center gap-2"
                           title="현재 시간표를 템플릿으로 저장"
                         >
-                          <DocumentArrowUpIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+                          <DocumentArrowUpIcon className="w-4 h-4 text-muted-foreground" />
                           템플릿 저장
                         </button>
                       )}
@@ -1579,12 +1578,12 @@ export default function CurriculumManager() {
                 </div>
 
                 {/* 시간표 그리드 */}
-                <div className="p-6 bg-gray-50/30 dark:bg-gray-700/30 min-h-[500px]">
+                <div className="p-6 bg-muted/10 flex-1 overflow-y-auto custom-scrollbar">
                   {sessions.length === 0 ? (
-                    <div className="flex flex-col items-center justify-center py-20 text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 rounded-[2rem] border border-dashed border-gray-300 dark:border-gray-600">
-                      <CalendarIcon className="w-16 h-16 text-gray-300 dark:text-gray-600 mb-4" />
-                      <p className="text-lg font-bold text-gray-900 dark:text-gray-100">아직 일정이 없습니다.</p>
-                      <p className="text-sm mt-2 text-gray-500 dark:text-gray-400">'일정 추가' 버튼을 눌러 시간표를 작성하세요.</p>
+                    <div className="flex flex-col items-center justify-center py-20 text-muted-foreground bg-background rounded-[2rem] border border-dashed border-border h-full">
+                      <CalendarIcon className="w-16 h-16 text-muted-foreground/30 mb-4" />
+                      <p className="text-lg font-bold text-foreground">아직 일정이 없습니다.</p>
+                      <p className="text-sm mt-2">'일정 추가' 버튼을 눌러 시간표를 작성하세요.</p>
                     </div>
                   ) : (
                     <div className="space-y-4">
@@ -1597,37 +1596,37 @@ export default function CurriculumManager() {
                           onDragLeave={handleDragLeave}
                           onDrop={(e) => handleDrop(e, session, index)}
                           onDragEnd={handleDragEnd}
-                          className={`flex items-center justify-between p-6 border rounded-2xl transition-all ${!selectedRound.is_locked ? 'cursor-move hover:shadow-md' : ''
-                            } ${draggedSession?.id === session.id ? 'opacity-50 ring-2 ring-blue-400' : ''
-                            } ${dragOverIndex === index ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/30 ring-2 ring-blue-200 dark:ring-blue-800' : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-500'
+                          className={`flex items-center justify-between p-6 border rounded-2xl transition-all group ${!selectedRound.is_locked ? 'cursor-move hover:shadow-md' : ''
+                            } ${draggedSession?.id === session.id ? 'opacity-50 ring-2 ring-primary/50' : ''
+                            } ${dragOverIndex === index ? 'border-primary bg-primary/5 ring-2 ring-primary/20' : 'bg-card border-border hover:border-primary/30'
                             }`}
                         >
                           <div className="flex-1">
                             <div className="flex items-center gap-6">
-                              <div className="flex flex-col items-center justify-center w-16 h-16 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-2xl font-bold border border-blue-100 dark:border-blue-800 shadow-sm">
-                                <span className="text-xs text-blue-500 dark:text-blue-400 font-bold">DAY</span>
+                              <div className="flex flex-col items-center justify-center w-16 h-16 bg-primary/10 text-primary rounded-2xl font-bold border border-primary/20 shadow-sm">
+                                <span className="text-[10px] uppercase tracking-wider opacity-70">Day</span>
                                 <span className="text-2xl">{session.day_number}</span>
                               </div>
                               <div>
-                                <div className="font-bold text-lg text-gray-900 dark:text-white flex items-center gap-2">
+                                <div className="font-bold text-lg text-foreground flex items-center gap-2">
                                   {session.title || '제목 없음'}
                                 </div>
-                                <div className="flex items-center gap-3 text-sm text-gray-500 dark:text-gray-400 mt-1.5">
-                                  <span className="flex items-center bg-gray-100 dark:bg-gray-700 px-2 py-0.5 rounded text-gray-600 dark:text-gray-300">
-                                    <CalendarIcon className="w-3 h-3 mr-1" />
+                                <div className="flex items-center gap-3 text-sm text-muted-foreground mt-2">
+                                  <span className="flex items-center bg-muted px-2.5 py-1 rounded-lg text-xs font-medium">
+                                    <CalendarIcon className="w-3.5 h-3.5 mr-1.5 opacity-70" />
                                     {new Date(session.session_date).toLocaleDateString('ko-KR')}
                                   </span>
-                                  <span className="flex items-center bg-gray-100 dark:bg-gray-700 px-2 py-0.5 rounded text-gray-600 dark:text-gray-300">
-                                    <ClockIcon className="w-3 h-3 mr-1" />
+                                  <span className="flex items-center bg-muted px-2.5 py-1 rounded-lg text-xs font-medium">
+                                    <ClockIcon className="w-3.5 h-3.5 mr-1.5 opacity-70" />
                                     {session.start_time} ~ {session.end_time}
                                   </span>
-                                  <span className="flex items-center bg-gray-100 dark:bg-gray-700 px-2 py-0.5 rounded text-gray-600 dark:text-gray-300">
-                                    <MapPinIcon className="w-3 h-3 mr-1" />
+                                  <span className="flex items-center bg-muted px-2.5 py-1 rounded-lg text-xs font-medium">
+                                    <MapPinIcon className="w-3.5 h-3.5 mr-1.5 opacity-70" />
                                     {session.classroom}
                                   </span>
                                   {session.instructor_name && (
-                                    <span className="flex items-center bg-gray-100 dark:bg-gray-700 px-2 py-0.5 rounded text-gray-600 dark:text-gray-300">
-                                      <UserIcon className="w-3 h-3 mr-1" />
+                                    <span className="flex items-center bg-muted px-2.5 py-1 rounded-lg text-xs font-medium">
+                                      <UserIcon className="w-3.5 h-3.5 mr-1.5 opacity-70" />
                                       {session.instructor_name}
                                     </span>
                                   )}
@@ -1635,19 +1634,19 @@ export default function CurriculumManager() {
                               </div>
                             </div>
                           </div>
-                          <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                             {!selectedRound.is_locked && (
                               <>
                                 <button
                                   onClick={() => openEditSessionModal(session)}
-                                  className="p-2.5 text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-xl transition-all"
+                                  className="p-2.5 text-muted-foreground hover:text-primary hover:bg-primary/10 rounded-xl transition-all"
                                   title="수정"
                                 >
                                   <PencilIcon className="w-5 h-5" />
                                 </button>
                                 <button
                                   onClick={() => handleDeleteSession(session.id)}
-                                  className="p-2.5 text-gray-500 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-xl transition-all"
+                                  className="p-2.5 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-xl transition-all"
                                   title="삭제"
                                 >
                                   <TrashIcon className="w-5 h-5" />
@@ -1655,7 +1654,7 @@ export default function CurriculumManager() {
                               </>
                             )}
                             {selectedRound.is_locked && (
-                              <div className="flex items-center gap-2 text-sm font-bold text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 px-3 py-1.5 rounded-xl">
+                              <div className="flex items-center gap-2 text-sm font-bold text-muted-foreground bg-muted px-3 py-1.5 rounded-xl">
                                 <LockClosedIcon className="w-4 h-4" />
                                 확정됨
                               </div>
@@ -1668,14 +1667,14 @@ export default function CurriculumManager() {
                 </div>
               </div>
             ) : (
-              <div className="bg-white dark:bg-gray-800 rounded-[2rem] shadow-sm border border-gray-100 dark:border-gray-700 p-12 text-center h-full flex flex-col items-center justify-center min-h-[500px]">
-                <div className="w-24 h-24 bg-gray-50 dark:bg-gray-700 rounded-full flex items-center justify-center mb-6">
-                  <CalendarIcon className="w-12 h-12 text-gray-300 dark:text-gray-500" />
+              <div className="bg-card rounded-[2rem] shadow-sm border border-border p-12 text-center h-full flex flex-col items-center justify-center min-h-[500px]">
+                <div className="w-24 h-24 bg-muted rounded-full flex items-center justify-center mb-6">
+                  <CalendarIcon className="w-12 h-12 text-muted-foreground/50" />
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+                <h3 className="text-xl font-bold text-foreground mb-2">
                   과정을 선택하세요
                 </h3>
-                <p className="text-gray-500 dark:text-gray-400 max-w-md mx-auto">
+                <p className="text-muted-foreground max-w-md mx-auto">
                   왼쪽 목록에서 과정을 선택하거나 상단의 '새 과정 만들기' 버튼을 눌러 새로운 과정을 시작해보세요.
                 </p>
               </div>

@@ -745,94 +745,111 @@ export default function IntegratedScheduleManager() {
     }
 
     return (
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow">
-        {/* 요일 헤더 */}
-        <div className="grid grid-cols-7 border-b border-gray-200 dark:border-gray-700">
-          {['일', '월', '화', '수', '목', '금', '토'].map((day, index) => (
-            <div
-              key={day}
-              className={`p-3 text-center font-medium text-sm ${index === 0
-                ? 'text-destructive dark:text-red-400'
-                : index === 6
-                  ? 'text-blue-600 dark:text-blue-400'
-                  : 'text-gray-700 dark:text-gray-300'
-                }`}
-            >
-              {day}
-            </div>
-          ))}
-        </div>
-
-        {/* 날짜 그리드 */}
-        {weeks.map((week, weekIndex) => (
-          <div key={weekIndex} className="grid grid-cols-7 border-b border-gray-200 dark:border-gray-700 last:border-b-0">
-            {week.map((day, dayIndex) => {
-              const isCurrentMonth = day.getMonth() === month;
-              const isToday = day.toDateString() === new Date().toDateString();
-              const dayEvents = getEventsForDate(day);
-
-              const isDragOver = dragOverDate?.toDateString() === day.toDateString();
-
-              return (
+      <div className="bg-card rounded-[2rem] shadow-sm border border-border overflow-hidden">
+        <div className="overflow-x-auto custom-scrollbar">
+          <div className="min-w-[800px]">
+            {/* 요일 헤더 */}
+            <div className="grid grid-cols-7 border-b border-border bg-muted/30">
+              {['일', '월', '화', '수', '목', '금', '토'].map((day, index) => (
                 <div
-                  key={dayIndex}
-                  className={`min-h-[120px] p-2 border-r border-gray-200 dark:border-gray-700 last:border-r-0 transition-colors cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-900/50 ${!isCurrentMonth ? 'bg-gray-50 dark:bg-gray-900' : ''
-                    } ${isDragOver ? 'bg-teal-50 dark:bg-teal-900/20 ring-2 ring-teal-500' : ''}`}
-                  onClick={(e) => {
-                    // 이벤트 버튼 클릭이 아닌 경우에만 날짜 클릭으로 처리
-                    if (e.target === e.currentTarget || (e.target as HTMLElement).closest('.day-number')) {
-                      handleDateCellClick(day);
-                    }
-                  }}
-                  onDragOver={(e) => handleDragOver(e, day)}
-                  onDragLeave={handleDragLeave}
-                  onDrop={(e) => handleDrop(e, day)}
+                  key={day}
+                  className={`p-4 text-center font-bold text-sm ${index === 0
+                    ? 'text-destructive'
+                    : index === 6
+                      ? 'text-blue-600 dark:text-blue-400'
+                      : 'text-muted-foreground'
+                    }`}
                 >
-                  <div
-                    className={`text-sm font-medium mb-1 day-number ${isToday
-                      ? 'inline-flex items-center justify-center w-7 h-7 bg-teal-600 text-white rounded-full'
-                      : dayIndex === 0
-                        ? 'text-destructive dark:text-red-400'
-                        : dayIndex === 6
-                          ? 'text-blue-600 dark:text-blue-400'
-                          : isCurrentMonth
-                            ? 'text-gray-900 dark:text-gray-100'
-                            : 'text-gray-400 dark:text-gray-600'
-                      }`}
-                  >
-                    {day.getDate()}
-                  </div>
-
-                  {/* 이벤트 목록 */}
-                  <div className="space-y-1">
-                    {dayEvents.slice(0, 3).map((event) => (
-                      <button
-                        key={event.id}
-                        draggable={event.type === 'schedule'}
-                        onDragStart={(e) => handleDragStart(e, event)}
-                        onDragEnd={handleDragEnd}
-                        onClick={() => {
-                          setSelectedEvent(event);
-                          setShowEventModal(true);
-                        }}
-                        className={`w-full text-left px-2 py-1 rounded text-xs truncate transition-all ${event.type === 'schedule' ? 'cursor-move hover:opacity-80 hover:shadow-md' : 'hover:opacity-80'
-                          } ${draggedEvent?.id === event.id ? 'opacity-50' : ''}`}
-                        style={{ backgroundColor: event.color || '#6366F1', color: 'white' }}
-                      >
-                        {event.title}
-                      </button>
-                    ))}
-                    {dayEvents.length > 3 && (
-                      <div className="text-xs text-gray-500 dark:text-gray-400 px-2">
-                        +{dayEvents.length - 3}개 더보기
-                      </div>
-                    )}
-                  </div>
+                  {day}
                 </div>
-              );
-            })}
+              ))}
+            </div>
+
+            {/* 날짜 그리드 */}
+            {weeks.map((week, weekIndex) => (
+              <div key={weekIndex} className="grid grid-cols-7 border-b border-border last:border-b-0 min-h-[150px]">
+                {week.map((day, dayIndex) => {
+                  const isCurrentMonth = day.getMonth() === month;
+                  const isToday = day.toDateString() === new Date().toDateString();
+                  const dayEvents = getEventsForDate(day);
+
+                  const isDragOver = dragOverDate?.toDateString() === day.toDateString();
+
+                  return (
+                    <div
+                      key={dayIndex}
+                      className={`p-2 border-r border-border last:border-r-0 transition-all cursor-pointer hover:bg-muted/30 relative group ${!isCurrentMonth ? 'bg-muted/10' : 'bg-card'
+                        } ${isDragOver ? 'bg-primary/5 ring-2 ring-inset ring-primary/50' : ''}`}
+                      onClick={(e) => {
+                        if (e.target === e.currentTarget || (e.target as HTMLElement).closest('.day-number')) {
+                          handleDateCellClick(day);
+                        }
+                      }}
+                      onDragOver={(e) => handleDragOver(e, day)}
+                      onDragLeave={handleDragLeave}
+                      onDrop={(e) => handleDrop(e, day)}
+                    >
+                      <div className="flex justify-between items-start mb-2">
+                        <div
+                          className={`text-sm font-bold w-8 h-8 flex items-center justify-center rounded-full day-number ${isToday
+                            ? 'bg-primary text-primary-foreground shadow-md'
+                            : dayIndex === 0
+                              ? 'text-destructive'
+                              : dayIndex === 6
+                                ? 'text-blue-600 dark:text-blue-400'
+                                : isCurrentMonth
+                                  ? 'text-foreground'
+                                  : 'text-muted-foreground/50'
+                            }`}
+                        >
+                          {day.getDate()}
+                        </div>
+                        {isCurrentMonth && (
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDateCellClick(day);
+                            }}
+                            className="opacity-0 group-hover:opacity-100 p-1 hover:bg-muted rounded-full text-muted-foreground transition-all"
+                          >
+                            <PlusIcon className="w-4 h-4" />
+                          </button>
+                        )}
+                      </div>
+
+                      {/* 이벤트 목록 */}
+                      <div className="space-y-1.5">
+                        {dayEvents.slice(0, 3).map((event) => (
+                          <button
+                            key={event.id}
+                            draggable={event.type === 'schedule'}
+                            onDragStart={(e) => handleDragStart(e, event)}
+                            onDragEnd={handleDragEnd}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setSelectedEvent(event);
+                              setShowEventModal(true);
+                            }}
+                            className={`w-full text-left px-2.5 py-1.5 rounded-lg text-xs truncate transition-all font-medium shadow-sm ${event.type === 'schedule' ? 'cursor-move hover:brightness-110 hover:shadow-md' : 'hover:brightness-110'
+                              } ${draggedEvent?.id === event.id ? 'opacity-50' : ''}`}
+                            style={{ backgroundColor: event.color || '#6366F1', color: 'white' }}
+                          >
+                            {event.title}
+                          </button>
+                        ))}
+                        {dayEvents.length > 3 && (
+                          <div className="text-xs text-muted-foreground px-2 font-medium hover:text-foreground">
+                            +{dayEvents.length - 3}개 더보기
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            ))}
           </div>
-        ))}
+        </div>
       </div>
     );
   };
@@ -849,106 +866,113 @@ export default function IntegratedScheduleManager() {
     }
 
     return (
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
-        {/* 요일 헤더 */}
-        <div
-          className="border-b-2 border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-900"
-          style={{
-            display: 'grid',
-            gridTemplateColumns: '80px repeat(7, 1fr)'
-          }}
-        >
-          <div className="p-4 text-center font-semibold text-sm text-gray-700 dark:text-gray-300 border-r border-gray-200 dark:border-gray-700">
-            시간
-          </div>
-          {days.map((day, index) => {
-            const isToday = day.toDateString() === new Date().toDateString();
-            const dayNames = ['일', '월', '화', '수', '목', '금', '토'];
-            return (
-              <div key={index} className="p-4 text-center border-r border-gray-200 dark:border-gray-700 last:border-r-0">
-                <div className={`text-xs font-medium mb-1 ${index === 0 ? 'text-destructive dark:text-red-400' :
-                  index === 6 ? 'text-blue-600 dark:text-blue-400' :
-                    'text-gray-600 dark:text-gray-400'
-                  }`}>
-                  {dayNames[day.getDay()]}
-                </div>
-                <div className={`text-lg font-bold ${isToday
-                  ? 'inline-flex items-center justify-center w-8 h-8 bg-teal-600 text-white rounded-full'
-                  : 'text-gray-900 dark:text-gray-100'
-                  }`}>
-                  {day.getDate()}
-                </div>
+      <div className="bg-card rounded-[2rem] shadow-sm border border-border overflow-hidden flex flex-col h-[calc(100vh-16rem)]">
+        <div className="overflow-x-auto custom-scrollbar flex-1 flex flex-col">
+          <div className="min-w-[800px] flex-1 flex flex-col">
+            {/* 요일 헤더 */}
+            <div
+              className="border-b border-border bg-muted/30"
+              style={{
+                display: 'grid',
+                gridTemplateColumns: '80px repeat(7, 1fr)'
+              }}
+            >
+              <div className="p-4 text-center font-bold text-sm text-muted-foreground border-r border-border">
+                시간
               </div>
-            );
-          })}
-        </div>
-
-        {/* 시간 그리드 */}
-        <div className="max-h-[700px] overflow-y-auto">
-          {[...Array(10)].map((_, index) => {
-            const hour = index + 9; // 09:00부터 18:00까지
-            return (
-              <div
-                key={hour}
-                className="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-900/50 transition-colors"
-                style={{
-                  display: 'grid',
-                  gridTemplateColumns: '80px repeat(7, 1fr)'
-                }}
-              >
-                <div className="p-3 text-xs font-medium text-gray-500 dark:text-gray-400 text-right pr-4 border-r border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
-                  {hour.toString().padStart(2, '0')}:00
-                </div>
-                {days.map((day, dayIndex) => {
-                  const dayEvents = getEventsForDate(day).filter((event) => {
-                    if (!event.start) return false;
-                    const eventHour = new Date(event.start).getHours();
-                    return eventHour === hour;
-                  });
-
-                  const isDragOver = dragOverDate?.toDateString() === day.toDateString() && dragOverHour === hour;
-
-                  return (
-                    <div
-                      key={dayIndex}
-                      className={`p-2 border-r border-gray-200 dark:border-gray-700 last:border-r-0 min-h-[70px] relative transition-colors cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-900/50 ${isDragOver ? 'bg-teal-50 dark:bg-teal-900/20 ring-2 ring-inset ring-teal-500' : ''
-                        }`}
-                      onClick={(e) => {
-                        // 이벤트 버튼 클릭이 아닌 경우에만 시간 셀 클릭으로 처리
-                        if (e.target === e.currentTarget || !(e.target as HTMLElement).closest('button')) {
-                          handleDateCellClick(day, hour);
-                        }
-                      }}
-                      onDragOver={(e) => handleDragOver(e, day, hour)}
-                      onDragLeave={handleDragLeave}
-                      onDrop={(e) => handleDrop(e, day, hour)}
-                    >
-                      {dayEvents.map((event) => (
-                        <button
-                          key={event.id}
-                          draggable={event.type === 'schedule'}
-                          onDragStart={(e) => handleDragStart(e, event)}
-                          onDragEnd={handleDragEnd}
-                          onClick={() => {
-                            setSelectedEvent(event);
-                            setShowEventModal(true);
-                          }}
-                          className={`w-full text-left px-2 py-1 rounded text-xs mb-1 truncate transition-all shadow-sm ${event.type === 'schedule' ? 'cursor-move hover:opacity-80 hover:shadow-md' : 'hover:opacity-80'
-                            } ${draggedEvent?.id === event.id ? 'opacity-50' : ''}`}
-                          style={{ backgroundColor: event.color || '#6366F1', color: 'white' }}
-                        >
-                          <div className="font-medium">{event.title}</div>
-                          {event.classroom && (
-                            <div className="text-[10px] opacity-90 mt-0.5">{event.classroom}</div>
-                          )}
-                        </button>
-                      ))}
+              {days.map((day, index) => {
+                const isToday = day.toDateString() === new Date().toDateString();
+                const dayNames = ['일', '월', '화', '수', '목', '금', '토'];
+                return (
+                  <div key={index} className="p-4 text-center border-r border-border last:border-r-0">
+                    <div className={`text-xs font-bold mb-1 ${index === 0 ? 'text-destructive' :
+                      index === 6 ? 'text-blue-600 dark:text-blue-400' :
+                        'text-muted-foreground'
+                      }`}>
+                      {dayNames[day.getDay()]}
                     </div>
-                  );
-                })}
-              </div>
-            );
-          })}
+                    <div className={`text-xl font-bold ${isToday
+                      ? 'inline-flex items-center justify-center w-9 h-9 bg-primary text-primary-foreground rounded-full shadow-md'
+                      : 'text-foreground'
+                      }`}>
+                      {day.getDate()}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* 시간 그리드 */}
+            <div className="flex-1 overflow-y-auto custom-scrollbar">
+              {[...Array(10)].map((_, index) => {
+                const hour = index + 9; // 09:00부터 18:00까지
+                return (
+                  <div
+                    key={hour}
+                    className="border-b border-border hover:bg-muted/10 transition-colors min-h-[100px]"
+                    style={{
+                      display: 'grid',
+                      gridTemplateColumns: '80px repeat(7, 1fr)'
+                    }}
+                  >
+                    <div className="p-3 text-xs font-bold text-muted-foreground text-right pr-4 border-r border-border bg-muted/5 sticky left-0 z-10">
+                      {hour.toString().padStart(2, '0')}:00
+                    </div>
+                    {days.map((day, dayIndex) => {
+                      const dayEvents = getEventsForDate(day).filter((event) => {
+                        if (!event.start) return false;
+                        const eventHour = new Date(event.start).getHours();
+                        return eventHour === hour;
+                      });
+
+                      const isDragOver = dragOverDate?.toDateString() === day.toDateString() && dragOverHour === hour;
+
+                      return (
+                        <div
+                          key={dayIndex}
+                          className={`p-2 border-r border-border last:border-r-0 relative transition-all cursor-pointer hover:bg-muted/30 ${isDragOver ? 'bg-primary/5 ring-2 ring-inset ring-primary/50' : ''
+                            }`}
+                          onClick={(e) => {
+                            // 이벤트 버튼 클릭이 아닌 경우에만 시간 셀 클릭으로 처리
+                            if (e.target === e.currentTarget || !(e.target as HTMLElement).closest('button')) {
+                              handleDateCellClick(day, hour);
+                            }
+                          }}
+                          onDragOver={(e) => handleDragOver(e, day, hour)}
+                          onDragLeave={handleDragLeave}
+                          onDrop={(e) => handleDrop(e, day, hour)}
+                        >
+                          {dayEvents.map((event) => (
+                            <button
+                              key={event.id}
+                              draggable={event.type === 'schedule'}
+                              onDragStart={(e) => handleDragStart(e, event)}
+                              onDragEnd={handleDragEnd}
+                              onClick={() => {
+                                setSelectedEvent(event);
+                                setShowEventModal(true);
+                              }}
+                              className={`w-full text-left px-3 py-2 rounded-xl text-xs mb-2 truncate transition-all shadow-sm border border-white/10 ${event.type === 'schedule' ? 'cursor-move hover:brightness-110 hover:shadow-md' : 'hover:brightness-110'
+                                } ${draggedEvent?.id === event.id ? 'opacity-50' : ''}`}
+                              style={{ backgroundColor: event.color || '#6366F1', color: 'white' }}
+                            >
+                              <div className="font-bold mb-0.5">{event.title}</div>
+                              {event.classroom && (
+                                <div className="text-[10px] opacity-90 flex items-center gap-1">
+                                  <MapPinIcon className="w-3 h-3" />
+                                  {event.classroom}
+                                </div>
+                              )}
+                            </button>
+                          ))}
+                        </div>
+                      );
+                    })}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -958,21 +982,21 @@ export default function IntegratedScheduleManager() {
     const dayEvents = getEventsForDate(currentDate);
 
     return (
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
+      <div className="bg-card rounded-[2rem] shadow-sm border border-border overflow-hidden flex flex-col h-[calc(100vh-16rem)]">
         {/* 날짜 헤더 */}
-        <div className="border-b-2 border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-900 p-4">
+        <div className="border-b border-border bg-muted/30 p-6">
           <div className="text-center">
-            <div className="text-sm font-medium text-gray-600 dark:text-gray-400">
+            <div className="text-sm font-bold text-muted-foreground mb-1">
               {currentDate.toLocaleDateString('ko-KR', { weekday: 'long' })}
             </div>
-            <div className="text-2xl font-bold text-gray-900 dark:text-gray-100 mt-1">
+            <div className="text-3xl font-bold text-foreground">
               {currentDate.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' })}
             </div>
           </div>
         </div>
 
         {/* 시간대별 일정 */}
-        <div className="max-h-[700px] overflow-y-auto">
+        <div className="flex-1 overflow-y-auto custom-scrollbar">
           {[...Array(14)].map((_, index) => {
             const hour = index + 8; // 08:00부터 21:00까지
             const hourEvents = dayEvents.filter((event) => {
@@ -986,16 +1010,15 @@ export default function IntegratedScheduleManager() {
             return (
               <div
                 key={hour}
-                className="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-900/50 transition-colors flex"
+                className="border-b border-border hover:bg-muted/10 transition-colors flex min-h-[120px]"
               >
-                <div className="w-24 p-4 text-sm font-medium text-gray-500 dark:text-gray-400 text-right border-r border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 flex-shrink-0">
+                <div className="w-24 p-4 text-sm font-bold text-muted-foreground text-right border-r border-border bg-muted/5 flex-shrink-0 sticky left-0">
                   {hour.toString().padStart(2, '0')}:00
                 </div>
                 <div
-                  className={`flex-1 p-4 min-h-[80px] transition-colors cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-900/50 ${isDragOver ? 'bg-teal-50 dark:bg-teal-900/20 ring-2 ring-inset ring-teal-500' : ''
+                  className={`flex-1 p-4 transition-all cursor-pointer hover:bg-muted/30 ${isDragOver ? 'bg-primary/5 ring-2 ring-inset ring-primary/50' : ''
                     }`}
                   onClick={(e) => {
-                    // 이벤트 버튼 클릭이 아닌 경우에만 시간 셀 클릭으로 처리
                     if (e.target === e.currentTarget || !(e.target as HTMLElement).closest('button')) {
                       handleDateCellClick(currentDate, hour);
                     }
@@ -1005,40 +1028,41 @@ export default function IntegratedScheduleManager() {
                   onDrop={(e) => handleDrop(e, currentDate, hour)}
                 >
                   {hourEvents.length > 0 ? (
-                    <div className="space-y-2">
+                    <div className="space-y-3">
                       {hourEvents.map((event) => (
                         <button
                           key={event.id}
                           draggable={event.type === 'schedule'}
                           onDragStart={(e) => handleDragStart(e, event)}
                           onDragEnd={handleDragEnd}
-                          onClick={() => {
+                          onClick={(e) => {
+                            e.stopPropagation();
                             setSelectedEvent(event);
                             setShowEventModal(true);
                           }}
-                          className={`w-full text-left p-3 rounded-full transition-all shadow-sm ${event.type === 'schedule' ? 'cursor-move hover:opacity-90 hover:shadow-md' : 'hover:opacity-90'
+                          className={`w-full text-left p-4 rounded-2xl transition-all shadow-sm border border-white/10 ${event.type === 'schedule' ? 'cursor-move hover:brightness-110 hover:shadow-md' : 'hover:brightness-110'
                             } ${draggedEvent?.id === event.id ? 'opacity-50' : ''}`}
                           style={{ backgroundColor: event.color || '#6366F1', color: 'white' }}
                         >
-                          <div className="font-semibold text-sm mb-1">{event.title}</div>
-                          <div className="flex items-center gap-3 text-xs opacity-90">
+                          <div className="font-bold text-base mb-1">{event.title}</div>
+                          <div className="flex flex-wrap items-center gap-3 text-xs opacity-90">
                             {event.start && event.end && (
-                              <div className="flex items-center gap-1">
-                                <ClockIcon className="w-3 h-3" />
+                              <div className="flex items-center gap-1 bg-black/10 px-2 py-1 rounded-lg">
+                                <ClockIcon className="w-3.5 h-3.5" />
                                 {new Date(event.start).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })}
                                 {' - '}
                                 {new Date(event.end).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })}
                               </div>
                             )}
                             {event.classroom && (
-                              <div className="flex items-center gap-1">
-                                <MapPinIcon className="w-3 h-3" />
+                              <div className="flex items-center gap-1 bg-black/10 px-2 py-1 rounded-lg">
+                                <MapPinIcon className="w-3.5 h-3.5" />
                                 {event.classroom}
                               </div>
                             )}
                             {event.instructor && (
-                              <div className="flex items-center gap-1">
-                                <UserIcon className="w-3 h-3" />
+                              <div className="flex items-center gap-1 bg-black/10 px-2 py-1 rounded-lg">
+                                <UserIcon className="w-3.5 h-3.5" />
                                 {event.instructor}
                               </div>
                             )}
@@ -1047,8 +1071,8 @@ export default function IntegratedScheduleManager() {
                       ))}
                     </div>
                   ) : (
-                    <div className="text-gray-400 dark:text-gray-600 text-sm text-center py-4">
-                      예정된 일정이 없습니다
+                    <div className="text-muted-foreground/30 text-sm text-center py-8 font-medium border-2 border-dashed border-border/50 rounded-xl h-full flex items-center justify-center">
+                      일정 없음
                     </div>
                   )}
                 </div>
@@ -1062,339 +1086,591 @@ export default function IntegratedScheduleManager() {
 
   return (
     <PageContainer>
-      {/* 헤더 */}
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
-          <CalendarIcon className="w-8 h-8" />
-          일정 관리
-        </h1>
-        <div className="flex gap-2">
-          <button
-            onClick={handleCheckAllConflicts}
-            className="px-4 py-2 bg-yellow-600 dark:bg-yellow-500 text-white text-sm font-medium rounded-full hover:bg-yellow-700 dark:hover:bg-yellow-600 flex items-center gap-2"
-            disabled={loading}
-          >
-            <ExclamationTriangleIcon className="w-5 h-5" />
-            충돌 점검
-          </button>
-          <button onClick={() => setShowCreateModal(true)} className="btn-primary flex items-center gap-2">
-            <PlusIcon className="w-5 h-5" />
-            과정 일정 추가
-          </button>
-          <button onClick={() => setShowPersonalEventModal(true)} className="btn-secondary flex items-center gap-2">
-            <PlusIcon className="w-5 h-5" />
-            개인 일정 추가
-          </button>
-        </div>
-      </div>
-
-      {/* 컨트롤 바 */}
-      <div className="flex justify-between items-center bg-white dark:bg-gray-800 rounded-lg shadow p-4">
-        {/* 날짜 네비게이션 */}
-        <div className="flex items-center gap-3">
-          <button onClick={navigateToday} className="btn-ghost">
-            오늘
-          </button>
-          <button onClick={navigatePrevious} className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full">
-            <ChevronLeftIcon className="w-5 h-5" />
-          </button>
-          <button onClick={navigateNext} className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full">
-            <ChevronRightIcon className="w-5 h-5" />
-          </button>
-          <span className="text-lg font-semibold text-gray-900 dark:text-gray-100 min-w-[200px] text-center">
-            {currentDate.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long' })}
-          </span>
-        </div>
-
-        {/* 뷰 모드 선택 */}
-        <div className="flex gap-2">
-          {(['month', 'week', 'day'] as ViewMode[]).map((mode) => (
+      <div className="space-y-6">
+        {/* 헤더 */}
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-card rounded-[2rem] p-8 shadow-sm border border-border">
+          <div>
+            <h1 className="text-3xl font-bold text-foreground flex items-center gap-4">
+              <div className="p-3 bg-primary/10 rounded-2xl">
+                <CalendarIcon className="w-8 h-8 text-primary" />
+              </div>
+              일정 관리
+            </h1>
+            <p className="text-muted-foreground mt-2 ml-[4.5rem]">
+              모든 교육 과정과 개인 일정을 한눈에 확인하고 관리합니다.
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-3 mt-4 sm:mt-0">
             <button
-              key={mode}
-              onClick={() => setViewMode(mode)}
-              className={`px-4 py-2 text-sm font-medium rounded-full ${viewMode === mode
-                ? 'bg-teal-600 text-white'
-                : 'text-foreground hover:bg-muted'
-                }`}
+              onClick={handleCheckAllConflicts}
+              className="px-5 py-2.5 bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-800 rounded-xl font-bold hover:bg-amber-500/20 transition-all flex items-center gap-2"
+              disabled={loading}
             >
-              {mode === 'month' ? '월간' : mode === 'week' ? '주간' : '일간'}
+              <ExclamationTriangleIcon className="w-5 h-5" />
+              충돌 점검
             </button>
-          ))}
+            <button onClick={() => setShowCreateModal(true)} className="btn-primary px-5 py-2.5 rounded-xl font-bold shadow-lg shadow-primary/20 flex items-center gap-2">
+              <PlusIcon className="w-5 h-5" />
+              과정 일정 추가
+            </button>
+            <button onClick={() => setShowPersonalEventModal(true)} className="btn-secondary px-5 py-2.5 rounded-xl font-bold flex items-center gap-2">
+              <PlusIcon className="w-5 h-5" />
+              개인 일정 추가
+            </button>
+          </div>
         </div>
-      </div>
 
-      {/* 에러 메시지 */}
-      {error && (
-        <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-6">
-          <div className="flex items-start gap-3">
-            <div className="text-2xl">⚠️</div>
-            <div>
-              <h3 className="font-semibold text-yellow-800 dark:text-yellow-200 mb-2">
-                데이터 로드 실패
-              </h3>
-              <p className="text-foreground dark:text-yellow-300 mb-3">
-                {error}
-              </p>
-              <div className="text-sm text-foreground dark:text-yellow-400">
-                <p className="font-medium mb-2">해결 방법:</p>
-                <ol className="list-decimal list-inside space-y-1">
-                  <li>Supabase SQL Editor에서 마이그레이션 파일 실행</li>
-                  <li>파일: <code className="bg-yellow-100 dark:bg-yellow-800 px-1 rounded">database/migrations/create-integrated-schedule-management.sql</code></li>
-                  <li>페이지 새로고침</li>
-                </ol>
+        {/* 컨트롤 바 */}
+        <div className="flex flex-col md:flex-row justify-between items-center bg-card rounded-2xl shadow-sm border border-border p-4 gap-4">
+          {/* 날짜 네비게이션 */}
+          <div className="flex items-center gap-4">
+            <button onClick={navigateToday} className="btn-ghost text-sm font-bold">
+              오늘
+            </button>
+            <div className="flex items-center bg-muted rounded-full p-1">
+              <button onClick={navigatePrevious} className="p-2 hover:bg-background rounded-full transition-all text-muted-foreground hover:text-foreground">
+                <ChevronLeftIcon className="w-5 h-5" />
+              </button>
+              <button onClick={navigateNext} className="p-2 hover:bg-background rounded-full transition-all text-muted-foreground hover:text-foreground">
+                <ChevronRightIcon className="w-5 h-5" />
+              </button>
+            </div>
+            <span className="text-xl font-bold text-foreground min-w-[200px] text-center">
+              {currentDate.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long' })}
+            </span>
+          </div>
+
+          {/* 뷰 모드 선택 */}
+          <div className="flex bg-muted p-1 rounded-xl">
+            {(['month', 'week', 'day'] as ViewMode[]).map((mode) => (
+              <button
+                key={mode}
+                onClick={() => setViewMode(mode)}
+                className={`px-6 py-2 text-sm font-bold rounded-lg transition-all ${viewMode === mode
+                  ? 'bg-background text-foreground shadow-sm'
+                  : 'text-muted-foreground hover:text-foreground'
+                  }`}
+              >
+                {mode === 'month' ? '월간' : mode === 'week' ? '주간' : '일간'}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* 에러 메시지 */}
+        {error && (
+          <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-6">
+            <div className="flex items-start gap-3">
+              <div className="text-2xl">⚠️</div>
+              <div>
+                <h3 className="font-semibold text-yellow-800 dark:text-yellow-200 mb-2">
+                  데이터 로드 실패
+                </h3>
+                <p className="text-foreground dark:text-yellow-300 mb-3">
+                  {error}
+                </p>
+                <div className="text-sm text-foreground dark:text-yellow-400">
+                  <p className="font-medium mb-2">해결 방법:</p>
+                  <ol className="list-decimal list-inside space-y-1">
+                    <li>Supabase SQL Editor에서 마이그레이션 파일 실행</li>
+                    <li>파일: <code className="bg-yellow-100 dark:bg-yellow-800 px-1 rounded">database/migrations/create-integrated-schedule-management.sql</code></li>
+                    <li>페이지 새로고침</li>
+                  </ol>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {/* 구글 캘린더 연동 - 향후 기능 */}
-      {/* <GoogleCalendarSync onSync={loadData} /> */}
+        {/* 구글 캘린더 연동 - 향후 기능 */}
+        {/* <GoogleCalendarSync onSync={loadData} /> */}
 
-      {/* 캘린더 */}
-      {loading ? (
-        <div className="flex items-center justify-center h-96">
-          <div className="text-gray-500 dark:text-gray-400">로딩 중...</div>
-        </div>
-      ) : !error ? (
-        <>
-          {viewMode === 'month' && renderMonthView()}
-          {viewMode === 'week' && renderWeekView()}
-          {viewMode === 'day' && renderDayView()}
-        </>
-      ) : null}
+        {/* 캘린더 */}
+        {loading ? (
+          <div className="flex items-center justify-center h-96">
+            <div className="text-gray-500 dark:text-gray-400">로딩 중...</div>
+          </div>
+        ) : !error ? (
+          <>
+            {viewMode === 'month' && renderMonthView()}
+            {viewMode === 'week' && renderWeekView()}
+            {viewMode === 'day' && renderDayView()}
+          </>
+        ) : null}
 
-      {/* 개인 일정 생성 모달 */}
-      {showPersonalEventModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onClick={() => setShowPersonalEventModal(false)}>
-          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-6">개인 일정 추가</h3>
+        {/* 개인 일정 생성 모달 */}
+        {showPersonalEventModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onClick={() => setShowPersonalEventModal(false)}>
+            <div className="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-6">개인 일정 추가</h3>
 
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  일정 제목 *
-                </label>
-                <input
-                  type="text"
-                  value={personalEventForm.title}
-                  onChange={(e) => setPersonalEventForm({ ...personalEventForm, title: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
-                  placeholder="예: 휴가, 회의"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  일정 유형
-                </label>
-                <select
-                  value={personalEventForm.event_type}
-                  onChange={(e) => setPersonalEventForm({ ...personalEventForm, event_type: e.target.value as any })}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
-                >
-                  <option value="personal">개인 일정</option>
-                  <option value="vacation">휴가</option>
-                  <option value="meeting">회의</option>
-                  <option value="holiday">공휴일</option>
-                  <option value="other">기타</option>
-                </select>
-              </div>
-
-              <div className="flex items-center gap-3">
-                <input
-                  type="checkbox"
-                  id="all-day"
-                  checked={personalEventForm.all_day}
-                  onChange={(e) => setPersonalEventForm({ ...personalEventForm, all_day: e.target.checked })}
-                  className="w-4 h-4 text-teal-600 border-gray-300 rounded focus:ring-teal-500"
-                />
-                <label htmlFor="all-day" className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                  종일 일정
-                </label>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    시작 {personalEventForm.all_day ? '날짜' : '시간'} *
+                    일정 제목 *
                   </label>
                   <input
-                    type={personalEventForm.all_day ? 'date' : 'datetime-local'}
-                    value={personalEventForm.start_time}
-                    onChange={(e) => setPersonalEventForm({ ...personalEventForm, start_time: e.target.value })}
+                    type="text"
+                    value={personalEventForm.title}
+                    onChange={(e) => setPersonalEventForm({ ...personalEventForm, title: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                    placeholder="예: 휴가, 회의"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    일정 유형
+                  </label>
+                  <select
+                    value={personalEventForm.event_type}
+                    onChange={(e) => setPersonalEventForm({ ...personalEventForm, event_type: e.target.value as any })}
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                  >
+                    <option value="personal">개인 일정</option>
+                    <option value="vacation">휴가</option>
+                    <option value="meeting">회의</option>
+                    <option value="holiday">공휴일</option>
+                    <option value="other">기타</option>
+                  </select>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <input
+                    type="checkbox"
+                    id="all-day"
+                    checked={personalEventForm.all_day}
+                    onChange={(e) => setPersonalEventForm({ ...personalEventForm, all_day: e.target.checked })}
+                    className="w-4 h-4 text-teal-600 border-gray-300 rounded focus:ring-teal-500"
+                  />
+                  <label htmlFor="all-day" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                    종일 일정
+                  </label>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      시작 {personalEventForm.all_day ? '날짜' : '시간'} *
+                    </label>
+                    <input
+                      type={personalEventForm.all_day ? 'date' : 'datetime-local'}
+                      value={personalEventForm.start_time}
+                      onChange={(e) => setPersonalEventForm({ ...personalEventForm, start_time: e.target.value })}
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                    />
+                  </div>
+
+                  {!personalEventForm.all_day && (
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        종료 시간
+                      </label>
+                      <input
+                        type="datetime-local"
+                        value={personalEventForm.end_time}
+                        onChange={(e) => setPersonalEventForm({ ...personalEventForm, end_time: e.target.value })}
+                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                      />
+                    </div>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    장소
+                  </label>
+                  <input
+                    type="text"
+                    value={personalEventForm.location}
+                    onChange={(e) => setPersonalEventForm({ ...personalEventForm, location: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                    placeholder="예: 본사 회의실"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    색상
+                  </label>
+                  <div className="flex gap-2">
+                    {['#10B981', '#6366F1', '#F59E0B', '#EF4444', '#8B5CF6', '#EC4899'].map((color) => (
+                      <button
+                        key={color}
+                        onClick={() => setPersonalEventForm({ ...personalEventForm, color })}
+                        className={`w-8 h-8 rounded-full border-2 ${personalEventForm.color === color ? 'border-gray-900 dark:border-white' : 'border-gray-300'
+                          }`}
+                        style={{ backgroundColor: color }}
+                      />
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    설명
+                  </label>
+                  <textarea
+                    value={personalEventForm.description}
+                    onChange={(e) => setPersonalEventForm({ ...personalEventForm, description: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                    rows={3}
+                    placeholder="일정 상세 내용"
+                  />
+                </div>
+              </div>
+
+              <div className="mt-6 flex justify-end gap-3">
+                <button onClick={() => setShowPersonalEventModal(false)} className="btn-secondary rounded-full">
+                  취소
+                </button>
+                <button onClick={handleCreatePersonalEvent} className="btn-primary">
+                  생성
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* 일정 생성 모달 */}
+        {showCreateModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onClick={() => setShowCreateModal(false)}>
+            <div className="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">일정 추가</h3>
+
+              {/* 워크플로우 선택 안내 */}
+              <div className="mb-6 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+                <p className="text-sm text-blue-800 dark:text-blue-300 mb-3">
+                  💡 <strong>일정 입력 방법을 선택하세요:</strong>
+                </p>
+                <div className="grid grid-cols-2 gap-3">
+                  <button
+                    onClick={() => setScheduleForm({ ...scheduleForm, course_round_id: '' })}
+                    className={`p-3 rounded-lg border-2 transition-all text-left ${scheduleForm.course_round_id === ''
+                      ? 'border-blue-600 bg-blue-100 dark:bg-blue-900/30'
+                      : 'border-gray-300 dark:border-gray-600 hover:border-blue-400'
+                      }`}
+                  >
+                    <div className="font-medium text-sm text-gray-900 dark:text-white mb-1">
+                      📝 빠른 세션 입력
+                    </div>
+                    <div className="text-xs text-gray-600 dark:text-gray-400">
+                      개별 세션만 먼저 입력<br />
+                      (나중에 과정으로 그룹화)
+                    </div>
+                  </button>
+                  <button
+                    onClick={() => {
+                      if (courseRounds.length > 0) {
+                        setScheduleForm({ ...scheduleForm, course_round_id: courseRounds[0].id });
+                      }
+                    }}
+                    className={`p-3 rounded-lg border-2 transition-all text-left ${scheduleForm.course_round_id !== ''
+                      ? 'border-blue-600 bg-blue-100 dark:bg-blue-900/30'
+                      : 'border-gray-300 dark:border-gray-600 hover:border-blue-400'
+                      }`}
+                  >
+                    <div className="font-medium text-sm text-gray-900 dark:text-white mb-1">
+                      🎯 과정 기반 입력
+                    </div>
+                    <div className="text-xs text-gray-600 dark:text-gray-400">
+                      기존 과정에 세션 추가<br />
+                      (체계적인 관리)
+                    </div>
+                  </button>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                {/* 과정 선택 (선택적) */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    과정 회차 {scheduleForm.course_round_id === '' && <span className="text-xs text-gray-500">(선택사항)</span>}
+                  </label>
+                  <select
+                    value={scheduleForm.course_round_id}
+                    onChange={(e) => setScheduleForm({ ...scheduleForm, course_round_id: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                  >
+                    <option value="">선택 안함 (독립 세션으로 생성)</option>
+                    {courseRounds.map((round: any) => (
+                      <option key={round.id} value={round.id}>
+                        {round.round_code} - {round.course_name || '제목 없음'}
+                      </option>
+                    ))}
+                  </select>
+                  {scheduleForm.course_round_id === '' && (
+                    <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
+                      ℹ️ 독립 세션으로 생성됩니다. 나중에 과정으로 그룹화할 수 있습니다.
+                    </p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    일정 제목 *
+                  </label>
+                  <input
+                    type="text"
+                    value={scheduleForm.title}
+                    onChange={(e) => setScheduleForm({ ...scheduleForm, title: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                    placeholder="예: BS 기본과정 1일차"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    과목
+                  </label>
+                  {scheduleForm.instructor_id && instructorSubjects.length > 0 ? (
+                    <>
+                      <select
+                        value={scheduleForm.subject}
+                        onChange={(e) => setScheduleForm({ ...scheduleForm, subject: e.target.value })}
+                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                      >
+                        <option value="">과목 선택</option>
+                        {instructorSubjects.map((is) => (
+                          <option key={is.subject_id} value={is.subject.name}>
+                            {is.subject.name} ({is.subject.category || '기타'})
+                          </option>
+                        ))}
+                      </select>
+                      <p className="mt-2 text-xs text-green-600 dark:text-green-400">
+                        ✓ 선택한 강사가 담당 가능한 과목 목록
+                      </p>
+                    </>
+                  ) : subjects.length > 0 ? (
+                    <>
+                      <select
+                        value={scheduleForm.subject}
+                        onChange={(e) => setScheduleForm({ ...scheduleForm, subject: e.target.value })}
+                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                      >
+                        <option value="">과목 선택 (선택사항)</option>
+                        {subjects.map((subject) => (
+                          <option key={subject.id} value={subject.name}>
+                            {subject.name} ({subject.category || '기타'})
+                          </option>
+                        ))}
+                      </select>
+                      <p className="mt-2 text-xs text-blue-600 dark:text-blue-400">
+                        💡 강사를 선택하면 해당 강사의 담당 과목만 표시됩니다
+                      </p>
+                    </>
+                  ) : (
+                    <div className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400">
+                      과목 정보가 없습니다
+                    </div>
+                  )}
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      시작 시간 *
+                    </label>
+                    <input
+                      type="datetime-local"
+                      value={scheduleForm.start_time}
+                      onChange={(e) => setScheduleForm({ ...scheduleForm, start_time: e.target.value })}
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      종료 시간 *
+                    </label>
+                    <input
+                      type="datetime-local"
+                      value={scheduleForm.end_time}
+                      onChange={(e) => setScheduleForm({ ...scheduleForm, end_time: e.target.value })}
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    강사
+                  </label>
+                  <select
+                    value={scheduleForm.instructor_id}
+                    onChange={(e) => handleInstructorChange(e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                  >
+                    <option value="">선택 안함</option>
+                    {instructors.map((instructor) => (
+                      <option key={instructor.id} value={instructor.id}>
+                        {instructor.name}
+                      </option>
+                    ))}
+                  </select>
+
+                  {/* 선택된 강사 프로필 정보 표시 */}
+                  {selectedInstructorProfile && (
+                    <div className="mt-3 p-3 bg-teal-50 dark:bg-teal-900/20 rounded-lg border border-teal-200 dark:border-teal-800">
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center gap-2">
+                          <UserIcon className="w-4 h-4 text-teal-600 dark:text-teal-400" />
+                          <span className="text-sm font-medium text-teal-900 dark:text-teal-100">강사 프로필</span>
+                        </div>
+                        {selectedInstructorProfile.rating > 0 && (
+                          <div className="flex items-center gap-1">
+                            <span className="text-foreground">⭐</span>
+                            <span className="text-sm font-medium text-teal-900 dark:text-teal-100">
+                              {selectedInstructorProfile.rating.toFixed(1)}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+
+                      {selectedInstructorProfile.bio && (
+                        <div className="text-xs text-gray-600 dark:text-gray-400 mb-2">
+                          {selectedInstructorProfile.bio}
+                        </div>
+                      )}
+
+                      {selectedInstructorProfile.total_sessions > 0 && (
+                        <div className="mt-2 text-xs text-gray-600 dark:text-gray-400">
+                          총 {selectedInstructorProfile.total_sessions}회 강의
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    교실
+                  </label>
+                  <select
+                    value={scheduleForm.classroom_id}
+                    onChange={(e) => handleClassroomChange(e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                  >
+                    <option value="">선택 안함</option>
+                    {classrooms.map((classroom) => (
+                      <option key={classroom.id} value={classroom.id}>
+                        {classroom.name}
+                        {classroom.code && ` [${classroom.code}]`}
+                        {classroom.building && ` - ${classroom.building}`}
+                        {classroom.floor && ` ${classroom.floor}층`}
+                        {` (${classroom.capacity}명)`}
+                      </option>
+                    ))}
+                  </select>
+
+                  {/* 선택된 교실 상세 정보 표시 */}
+                  {selectedClassroom && (
+                    <div className="mt-3 p-3 bg-green-500/10 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center gap-2">
+                          <MapPinIcon className="w-4 h-4 text-green-600 dark:text-green-400" />
+                          <span className="text-sm font-medium text-green-900 dark:text-green-100">교실 정보</span>
+                        </div>
+                        <span className="text-xs px-2 py-0.5 bg-green-500/10 dark:bg-green-800 text-green-800 dark:text-green-200 rounded">
+                          수용인원 {selectedClassroom.capacity}명
+                        </span>
+                      </div>
+
+                      {(selectedClassroom.building || selectedClassroom.floor) && (
+                        <div className="mb-2">
+                          <div className="text-xs text-gray-600 dark:text-gray-400 mb-1">위치</div>
+                          <div className="text-sm text-gray-900 dark:text-gray-100">
+                            {selectedClassroom.building && selectedClassroom.building}
+                            {selectedClassroom.floor && ` ${selectedClassroom.floor}층`}
+                            {selectedClassroom.location && ` - ${selectedClassroom.location}`}
+                          </div>
+                        </div>
+                      )}
+
+                      {selectedClassroom.facilities && selectedClassroom.facilities.length > 0 && (
+                        <div className="mb-2">
+                          <div className="text-xs text-gray-600 dark:text-gray-400 mb-1">시설</div>
+                          <div className="flex flex-wrap gap-1">
+                            {selectedClassroom.facilities.map((facility, idx) => (
+                              <span key={idx} className="px-2 py-0.5 bg-green-500/10 dark:bg-green-800 text-green-800 dark:text-green-200 text-xs rounded">
+                                {facility}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {selectedClassroom.equipment && selectedClassroom.equipment.length > 0 && (
+                        <div>
+                          <div className="text-xs text-gray-600 dark:text-gray-400 mb-1">장비</div>
+                          <div className="flex flex-wrap gap-1">
+                            {selectedClassroom.equipment.map((item, idx) => (
+                              <span key={idx} className="px-2 py-0.5 bg-primary/10 text-primary text-xs rounded">
+                                {item}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    설명
+                  </label>
+                  <textarea
+                    value={scheduleForm.description}
+                    onChange={(e) => setScheduleForm({ ...scheduleForm, description: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                    rows={3}
+                    placeholder="일정 상세 내용"
+                  />
+                </div>
+              </div>
+
+              <div className="mt-6 flex justify-end gap-3">
+                <button onClick={() => setShowCreateModal(false)} className="btn-secondary rounded-full">
+                  취소
+                </button>
+                <button onClick={handleCreateSchedule} className="btn-primary rounded-full">
+                  생성
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* 일정 수정 모달 */}
+        {showEditModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onClick={() => setShowEditModal(false)}>
+            <div className="bg-white dark:bg-gray-800 rounded-[2rem] p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-6">일정 수정</h3>
+
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    일정 제목 *
+                  </label>
+                  <input
+                    type="text"
+                    value={scheduleForm.title}
+                    onChange={(e) => setScheduleForm({ ...scheduleForm, title: e.target.value })}
                     className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                   />
                 </div>
 
-                {!personalEventForm.all_day && (
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                      종료 시간
-                    </label>
-                    <input
-                      type="datetime-local"
-                      value={personalEventForm.end_time}
-                      onChange={(e) => setPersonalEventForm({ ...personalEventForm, end_time: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
-                    />
-                  </div>
-                )}
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  장소
-                </label>
-                <input
-                  type="text"
-                  value={personalEventForm.location}
-                  onChange={(e) => setPersonalEventForm({ ...personalEventForm, location: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
-                  placeholder="예: 본사 회의실"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  색상
-                </label>
-                <div className="flex gap-2">
-                  {['#10B981', '#6366F1', '#F59E0B', '#EF4444', '#8B5CF6', '#EC4899'].map((color) => (
-                    <button
-                      key={color}
-                      onClick={() => setPersonalEventForm({ ...personalEventForm, color })}
-                      className={`w-8 h-8 rounded-full border-2 ${personalEventForm.color === color ? 'border-gray-900 dark:border-white' : 'border-gray-300'
-                        }`}
-                      style={{ backgroundColor: color }}
-                    />
-                  ))}
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  설명
-                </label>
-                <textarea
-                  value={personalEventForm.description}
-                  onChange={(e) => setPersonalEventForm({ ...personalEventForm, description: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
-                  rows={3}
-                  placeholder="일정 상세 내용"
-                />
-              </div>
-            </div>
-
-            <div className="mt-6 flex justify-end gap-3">
-              <button onClick={() => setShowPersonalEventModal(false)} className="btn-secondary rounded-full">
-                취소
-              </button>
-              <button onClick={handleCreatePersonalEvent} className="btn-primary">
-                생성
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* 일정 생성 모달 */}
-      {showCreateModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onClick={() => setShowCreateModal(false)}>
-          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">일정 추가</h3>
-
-            {/* 워크플로우 선택 안내 */}
-            <div className="mb-6 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
-              <p className="text-sm text-blue-800 dark:text-blue-300 mb-3">
-                💡 <strong>일정 입력 방법을 선택하세요:</strong>
-              </p>
-              <div className="grid grid-cols-2 gap-3">
-                <button
-                  onClick={() => setScheduleForm({ ...scheduleForm, course_round_id: '' })}
-                  className={`p-3 rounded-lg border-2 transition-all text-left ${scheduleForm.course_round_id === ''
-                    ? 'border-blue-600 bg-blue-100 dark:bg-blue-900/30'
-                    : 'border-gray-300 dark:border-gray-600 hover:border-blue-400'
-                    }`}
-                >
-                  <div className="font-medium text-sm text-gray-900 dark:text-white mb-1">
-                    📝 빠른 세션 입력
-                  </div>
-                  <div className="text-xs text-gray-600 dark:text-gray-400">
-                    개별 세션만 먼저 입력<br />
-                    (나중에 과정으로 그룹화)
-                  </div>
-                </button>
-                <button
-                  onClick={() => {
-                    if (courseRounds.length > 0) {
-                      setScheduleForm({ ...scheduleForm, course_round_id: courseRounds[0].id });
-                    }
-                  }}
-                  className={`p-3 rounded-lg border-2 transition-all text-left ${scheduleForm.course_round_id !== ''
-                    ? 'border-blue-600 bg-blue-100 dark:bg-blue-900/30'
-                    : 'border-gray-300 dark:border-gray-600 hover:border-blue-400'
-                    }`}
-                >
-                  <div className="font-medium text-sm text-gray-900 dark:text-white mb-1">
-                    🎯 과정 기반 입력
-                  </div>
-                  <div className="text-xs text-gray-600 dark:text-gray-400">
-                    기존 과정에 세션 추가<br />
-                    (체계적인 관리)
-                  </div>
-                </button>
-              </div>
-            </div>
-
-            <div className="space-y-4">
-              {/* 과정 선택 (선택적) */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  과정 회차 {scheduleForm.course_round_id === '' && <span className="text-xs text-gray-500">(선택사항)</span>}
-                </label>
-                <select
-                  value={scheduleForm.course_round_id}
-                  onChange={(e) => setScheduleForm({ ...scheduleForm, course_round_id: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
-                >
-                  <option value="">선택 안함 (독립 세션으로 생성)</option>
-                  {courseRounds.map((round: any) => (
-                    <option key={round.id} value={round.id}>
-                      {round.round_code} - {round.course_name || '제목 없음'}
-                    </option>
-                  ))}
-                </select>
-                {scheduleForm.course_round_id === '' && (
-                  <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
-                    ℹ️ 독립 세션으로 생성됩니다. 나중에 과정으로 그룹화할 수 있습니다.
-                  </p>
-                )}
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  일정 제목 *
-                </label>
-                <input
-                  type="text"
-                  value={scheduleForm.title}
-                  onChange={(e) => setScheduleForm({ ...scheduleForm, title: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
-                  placeholder="예: BS 기본과정 1일차"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  과목
-                </label>
-                {scheduleForm.instructor_id && instructorSubjects.length > 0 ? (
-                  <>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    과목 *
+                  </label>
+                  {scheduleForm.instructor_id && instructorSubjects.length > 0 ? (
                     <select
                       value={scheduleForm.subject}
                       onChange={(e) => setScheduleForm({ ...scheduleForm, subject: e.target.value })}
                       className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                      required
                     >
                       <option value="">과목 선택</option>
                       {instructorSubjects.map((is) => (
@@ -1403,577 +1679,336 @@ export default function IntegratedScheduleManager() {
                         </option>
                       ))}
                     </select>
-                    <p className="mt-2 text-xs text-green-600 dark:text-green-400">
-                      ✓ 선택한 강사가 담당 가능한 과목 목록
-                    </p>
-                  </>
-                ) : subjects.length > 0 ? (
-                  <>
-                    <select
-                      value={scheduleForm.subject}
-                      onChange={(e) => setScheduleForm({ ...scheduleForm, subject: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
-                    >
-                      <option value="">과목 선택 (선택사항)</option>
-                      {subjects.map((subject) => (
-                        <option key={subject.id} value={subject.name}>
-                          {subject.name} ({subject.category || '기타'})
-                        </option>
-                      ))}
-                    </select>
-                    <p className="mt-2 text-xs text-blue-600 dark:text-blue-400">
-                      💡 강사를 선택하면 해당 강사의 담당 과목만 표시됩니다
-                    </p>
-                  </>
-                ) : (
-                  <div className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400">
-                    과목 정보가 없습니다
-                  </div>
-                )}
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    시작 시간 *
-                  </label>
-                  <input
-                    type="datetime-local"
-                    value={scheduleForm.start_time}
-                    onChange={(e) => setScheduleForm({ ...scheduleForm, start_time: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    종료 시간 *
-                  </label>
-                  <input
-                    type="datetime-local"
-                    value={scheduleForm.end_time}
-                    onChange={(e) => setScheduleForm({ ...scheduleForm, end_time: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  강사
-                </label>
-                <select
-                  value={scheduleForm.instructor_id}
-                  onChange={(e) => handleInstructorChange(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
-                >
-                  <option value="">선택 안함</option>
-                  {instructors.map((instructor) => (
-                    <option key={instructor.id} value={instructor.id}>
-                      {instructor.name}
-                    </option>
-                  ))}
-                </select>
-
-                {/* 선택된 강사 프로필 정보 표시 */}
-                {selectedInstructorProfile && (
-                  <div className="mt-3 p-3 bg-teal-50 dark:bg-teal-900/20 rounded-lg border border-teal-200 dark:border-teal-800">
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="flex items-center gap-2">
-                        <UserIcon className="w-4 h-4 text-teal-600 dark:text-teal-400" />
-                        <span className="text-sm font-medium text-teal-900 dark:text-teal-100">강사 프로필</span>
-                      </div>
-                      {selectedInstructorProfile.rating > 0 && (
-                        <div className="flex items-center gap-1">
-                          <span className="text-foreground">⭐</span>
-                          <span className="text-sm font-medium text-teal-900 dark:text-teal-100">
-                            {selectedInstructorProfile.rating.toFixed(1)}
-                          </span>
-                        </div>
-                      )}
-                    </div>
-
-                    {selectedInstructorProfile.bio && (
-                      <div className="text-xs text-gray-600 dark:text-gray-400 mb-2">
-                        {selectedInstructorProfile.bio}
-                      </div>
-                    )}
-
-                    {selectedInstructorProfile.total_sessions > 0 && (
-                      <div className="mt-2 text-xs text-gray-600 dark:text-gray-400">
-                        총 {selectedInstructorProfile.total_sessions}회 강의
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  교실
-                </label>
-                <select
-                  value={scheduleForm.classroom_id}
-                  onChange={(e) => handleClassroomChange(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
-                >
-                  <option value="">선택 안함</option>
-                  {classrooms.map((classroom) => (
-                    <option key={classroom.id} value={classroom.id}>
-                      {classroom.name}
-                      {classroom.code && ` [${classroom.code}]`}
-                      {classroom.building && ` - ${classroom.building}`}
-                      {classroom.floor && ` ${classroom.floor}층`}
-                      {` (${classroom.capacity}명)`}
-                    </option>
-                  ))}
-                </select>
-
-                {/* 선택된 교실 상세 정보 표시 */}
-                {selectedClassroom && (
-                  <div className="mt-3 p-3 bg-green-500/10 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="flex items-center gap-2">
-                        <MapPinIcon className="w-4 h-4 text-green-600 dark:text-green-400" />
-                        <span className="text-sm font-medium text-green-900 dark:text-green-100">교실 정보</span>
-                      </div>
-                      <span className="text-xs px-2 py-0.5 bg-green-500/10 dark:bg-green-800 text-green-800 dark:text-green-200 rounded">
-                        수용인원 {selectedClassroom.capacity}명
-                      </span>
-                    </div>
-
-                    {(selectedClassroom.building || selectedClassroom.floor) && (
-                      <div className="mb-2">
-                        <div className="text-xs text-gray-600 dark:text-gray-400 mb-1">위치</div>
-                        <div className="text-sm text-gray-900 dark:text-gray-100">
-                          {selectedClassroom.building && selectedClassroom.building}
-                          {selectedClassroom.floor && ` ${selectedClassroom.floor}층`}
-                          {selectedClassroom.location && ` - ${selectedClassroom.location}`}
-                        </div>
-                      </div>
-                    )}
-
-                    {selectedClassroom.facilities && selectedClassroom.facilities.length > 0 && (
-                      <div className="mb-2">
-                        <div className="text-xs text-gray-600 dark:text-gray-400 mb-1">시설</div>
-                        <div className="flex flex-wrap gap-1">
-                          {selectedClassroom.facilities.map((facility, idx) => (
-                            <span key={idx} className="px-2 py-0.5 bg-green-500/10 dark:bg-green-800 text-green-800 dark:text-green-200 text-xs rounded">
-                              {facility}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-
-                    {selectedClassroom.equipment && selectedClassroom.equipment.length > 0 && (
-                      <div>
-                        <div className="text-xs text-gray-600 dark:text-gray-400 mb-1">장비</div>
-                        <div className="flex flex-wrap gap-1">
-                          {selectedClassroom.equipment.map((item, idx) => (
-                            <span key={idx} className="px-2 py-0.5 bg-primary/10 text-primary text-xs rounded">
-                              {item}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  설명
-                </label>
-                <textarea
-                  value={scheduleForm.description}
-                  onChange={(e) => setScheduleForm({ ...scheduleForm, description: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
-                  rows={3}
-                  placeholder="일정 상세 내용"
-                />
-              </div>
-            </div>
-
-            <div className="mt-6 flex justify-end gap-3">
-              <button onClick={() => setShowCreateModal(false)} className="btn-secondary rounded-full">
-                취소
-              </button>
-              <button onClick={handleCreateSchedule} className="btn-primary rounded-full">
-                생성
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* 일정 수정 모달 */}
-      {showEditModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onClick={() => setShowEditModal(false)}>
-          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-6">일정 수정</h3>
-
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  일정 제목 *
-                </label>
-                <input
-                  type="text"
-                  value={scheduleForm.title}
-                  onChange={(e) => setScheduleForm({ ...scheduleForm, title: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  과목 *
-                </label>
-                {scheduleForm.instructor_id && instructorSubjects.length > 0 ? (
-                  <select
-                    value={scheduleForm.subject}
-                    onChange={(e) => setScheduleForm({ ...scheduleForm, subject: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
-                    required
-                  >
-                    <option value="">과목 선택</option>
-                    {instructorSubjects.map((is) => (
-                      <option key={is.subject_id} value={is.subject.name}>
-                        {is.subject.name} ({is.subject.category || '기타'})
-                      </option>
-                    ))}
-                  </select>
-                ) : (
-                  <div className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400">
-                    {scheduleForm.instructor_id ? '해당 강사의 담당 과목이 없습니다' : '먼저 강사를 선택해주세요'}
-                  </div>
-                )}
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    시작 시간 *
-                  </label>
-                  <input
-                    type="datetime-local"
-                    value={scheduleForm.start_time}
-                    onChange={(e) => setScheduleForm({ ...scheduleForm, start_time: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    종료 시간 *
-                  </label>
-                  <input
-                    type="datetime-local"
-                    value={scheduleForm.end_time}
-                    onChange={(e) => setScheduleForm({ ...scheduleForm, end_time: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  강사
-                </label>
-                <select
-                  value={scheduleForm.instructor_id}
-                  onChange={(e) => handleInstructorChange(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
-                >
-                  <option value="">선택 안함</option>
-                  {instructors.map((instructor) => (
-                    <option key={instructor.id} value={instructor.id}>
-                      {instructor.name}
-                    </option>
-                  ))}
-                </select>
-
-                {/* 선택된 강사 프로필 정보 표시 */}
-                {selectedInstructorProfile && (
-                  <div className="mt-3 p-3 bg-teal-50 dark:bg-teal-900/20 rounded-lg border border-teal-200 dark:border-teal-800">
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="flex items-center gap-2">
-                        <UserIcon className="w-4 h-4 text-teal-600 dark:text-teal-400" />
-                        <span className="text-sm font-medium text-teal-900 dark:text-teal-100">강사 프로필</span>
-                      </div>
-                      {selectedInstructorProfile.rating > 0 && (
-                        <div className="flex items-center gap-1">
-                          <span className="text-foreground">⭐</span>
-                          <span className="text-sm font-medium text-teal-900 dark:text-teal-100">
-                            {selectedInstructorProfile.rating.toFixed(1)}
-                          </span>
-                        </div>
-                      )}
-                    </div>
-
-                    {selectedInstructorProfile.bio && (
-                      <div className="text-xs text-gray-600 dark:text-gray-400 mb-2">
-                        {selectedInstructorProfile.bio}
-                      </div>
-                    )}
-
-                    {selectedInstructorProfile.total_sessions > 0 && (
-                      <div className="mt-2 text-xs text-gray-600 dark:text-gray-400">
-                        총 {selectedInstructorProfile.total_sessions}회 강의
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  교실
-                </label>
-                <select
-                  value={scheduleForm.classroom_id}
-                  onChange={(e) => handleClassroomChange(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
-                >
-                  <option value="">선택 안함</option>
-                  {classrooms.map((classroom) => (
-                    <option key={classroom.id} value={classroom.id}>
-                      {classroom.name}
-                      {classroom.code && ` [${classroom.code}]`}
-                      {classroom.building && ` - ${classroom.building}`}
-                      {classroom.floor && ` ${classroom.floor}층`}
-                      {` (${classroom.capacity}명)`}
-                    </option>
-                  ))}
-                </select>
-
-                {/* 선택된 교실 상세 정보 표시 */}
-                {selectedClassroom && (
-                  <div className="mt-3 p-3 bg-green-500/10 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="flex items-center gap-2">
-                        <MapPinIcon className="w-4 h-4 text-green-600 dark:text-green-400" />
-                        <span className="text-sm font-medium text-green-900 dark:text-green-100">교실 정보</span>
-                      </div>
-                      <span className="text-xs px-2 py-0.5 bg-green-500/10 dark:bg-green-800 text-green-800 dark:text-green-200 rounded">
-                        수용인원 {selectedClassroom.capacity}명
-                      </span>
-                    </div>
-
-                    {(selectedClassroom.building || selectedClassroom.floor) && (
-                      <div className="mb-2">
-                        <div className="text-xs text-gray-600 dark:text-gray-400 mb-1">위치</div>
-                        <div className="text-sm text-gray-900 dark:text-gray-100">
-                          {selectedClassroom.building && selectedClassroom.building}
-                          {selectedClassroom.floor && ` ${selectedClassroom.floor}층`}
-                          {selectedClassroom.location && ` - ${selectedClassroom.location}`}
-                        </div>
-                      </div>
-                    )}
-
-                    {selectedClassroom.facilities && selectedClassroom.facilities.length > 0 && (
-                      <div className="mb-2">
-                        <div className="text-xs text-gray-600 dark:text-gray-400 mb-1">시설</div>
-                        <div className="flex flex-wrap gap-1">
-                          {selectedClassroom.facilities.map((facility, idx) => (
-                            <span key={idx} className="px-2 py-0.5 bg-green-500/10 dark:bg-green-800 text-green-800 dark:text-green-200 text-xs rounded">
-                              {facility}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-
-                    {selectedClassroom.equipment && selectedClassroom.equipment.length > 0 && (
-                      <div>
-                        <div className="text-xs text-gray-600 dark:text-gray-400 mb-1">장비</div>
-                        <div className="flex flex-wrap gap-1">
-                          {selectedClassroom.equipment.map((item, idx) => (
-                            <span key={idx} className="px-2 py-0.5 bg-primary/10 text-primary text-xs rounded">
-                              {item}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  설명
-                </label>
-                <textarea
-                  value={scheduleForm.description}
-                  onChange={(e) => setScheduleForm({ ...scheduleForm, description: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
-                  rows={3}
-                />
-              </div>
-            </div>
-
-            <div className="mt-6 flex justify-end gap-3">
-              <button onClick={() => setShowEditModal(false)} className="btn-secondary rounded-full">
-                취소
-              </button>
-              <button onClick={handleEditSchedule} className="btn-primary rounded-full">
-                수정
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* 이벤트 상세 모달 */}
-      {showEventModal && selectedEvent && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onClick={() => setShowEventModal(false)}>
-          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-md" onClick={(e) => e.stopPropagation()}>
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">{selectedEvent.title}</h3>
-            <div className="space-y-3">
-              <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-                <ClockIcon className="w-5 h-5" />
-                {new Date(selectedEvent.start).toLocaleString('ko-KR')}
-                {selectedEvent.end && ` - ${new Date(selectedEvent.end).toLocaleString('ko-KR')}`}
-              </div>
-              {selectedEvent.classroom && (
-                <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-                  <MapPinIcon className="w-5 h-5" />
-                  {selectedEvent.classroom}
-                </div>
-              )}
-              {selectedEvent.instructor && (
-                <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-                  <UserIcon className="w-5 h-5" />
-                  {selectedEvent.instructor}
-                </div>
-              )}
-            </div>
-            <div className="mt-6 flex justify-between">
-              {selectedEvent.type === 'schedule' && selectedEvent.editable && (
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => openEditModal(selectedEvent)}
-                    className="btn-primary"
-                  >
-                    수정
-                  </button>
-                  <button
-                    onClick={() => handleDeleteSchedule(selectedEvent.id.replace('schedule-', ''))}
-                    className="btn-danger"
-                  >
-                    삭제
-                  </button>
-                </div>
-              )}
-              <button onClick={() => setShowEventModal(false)} className="btn-secondary ml-auto rounded-full">
-                닫기
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* 충돌 알림 모달 */}
-      {showConflictModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onClick={handleConflictCancel}>
-          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
-            <div className="flex items-center gap-3 mb-6">
-              <div className="flex-shrink-0 w-12 h-12 rounded-lg bg-yellow-100 dark:bg-yellow-900/30 flex items-center justify-center">
-                <span className="text-2xl">⚠️</span>
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">일정 충돌 감지</h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400">다음 자원에서 충돌이 발견되었습니다</p>
-              </div>
-            </div>
-
-            <div className="space-y-3 mb-6">
-              {conflicts.map((conflict, idx) => (
-                <div
-                  key={idx}
-                  className={`p-4 rounded-full border-2 ${conflict.severity === 'high'
-                    ? 'bg-destructive/10 dark:bg-red-900/20 border-destructive/50 dark:border-red-800'
-                    : 'bg-yellow-50 dark:bg-yellow-900/20 border-yellow-300 dark:border-yellow-800'
-                    }`}
-                >
-                  <div className="flex items-start justify-between mb-2">
-                    <div className="flex items-center gap-2">
-                      {conflict.conflict_type === 'instructor' ? (
-                        <UserIcon className={`w-5 h-5 ${conflict.severity === 'high' ? 'text-destructive dark:text-red-400' : 'text-foreground dark:text-yellow-400'}`} />
-                      ) : (
-                        <MapPinIcon className={`w-5 h-5 ${conflict.severity === 'high' ? 'text-destructive dark:text-red-400' : 'text-foreground dark:text-yellow-400'}`} />
-                      )}
-                      <span className="font-medium text-gray-900 dark:text-gray-100">
-                        {conflict.conflict_type === 'instructor' ? '강사' : '교실'}: {conflict.resource_name}
-                      </span>
-                    </div>
-                    <span className={`px-2 py-1 text-xs font-medium rounded ${conflict.severity === 'high'
-                      ? 'bg-destructive/10 dark:bg-red-800 text-destructive dark:text-red-200'
-                      : 'bg-yellow-100 dark:bg-yellow-800 text-yellow-800 dark:text-yellow-200'
-                      }`}>
-                      {conflict.severity === 'high' ? '높음' : '보통'}
-                    </span>
-                  </div>
-
-                  {conflict.existing_schedule && (
-                    <div className="mt-2 pl-7">
-                      <div className="text-sm text-gray-600 dark:text-gray-400">
-                        <div className="font-medium text-gray-700 dark:text-gray-300 mb-1">기존 일정:</div>
-                        <div className="space-y-1">
-                          <div className="flex items-center gap-2">
-                            <CalendarIcon className="w-4 h-4" />
-                            <span>{conflict.existing_schedule.title || '제목 없음'}</span>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <ClockIcon className="w-4 h-4" />
-                            <span>
-                              {new Date(conflict.existing_schedule.start_time).toLocaleString('ko-KR', {
-                                month: 'short',
-                                day: 'numeric',
-                                hour: '2-digit',
-                                minute: '2-digit'
-                              })}
-                              {' ~ '}
-                              {new Date(conflict.existing_schedule.end_time).toLocaleString('ko-KR', {
-                                hour: '2-digit',
-                                minute: '2-digit'
-                              })}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
+                  ) : (
+                    <div className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400">
+                      {scheduleForm.instructor_id ? '해당 강사의 담당 과목이 없습니다' : '먼저 강사를 선택해주세요'}
                     </div>
                   )}
                 </div>
-              ))}
-            </div>
 
-            <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mb-6">
-              <p className="text-sm text-blue-900 dark:text-blue-100">
-                <strong>안내:</strong> 충돌이 있어도 일정을 생성할 수 있습니다. 단, 해당 자원이 이중으로 배정될 수 있으니 주의하세요.
-              </p>
-            </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      시작 시간 *
+                    </label>
+                    <input
+                      type="datetime-local"
+                      value={scheduleForm.start_time}
+                      onChange={(e) => setScheduleForm({ ...scheduleForm, start_time: e.target.value })}
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                    />
+                  </div>
 
-            <div className="flex justify-end gap-3">
-              <button
-                onClick={handleConflictCancel}
-                className="btn-secondary"
-              >
-                취소
-              </button>
-              <button
-                onClick={handleConflictProceed}
-                className="px-4 py-2 bg-yellow-600 dark:bg-yellow-500 text-white rounded-full hover:bg-yellow-700 dark:hover:bg-yellow-600"
-              >
-                충돌 무시하고 진행
-              </button>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      종료 시간 *
+                    </label>
+                    <input
+                      type="datetime-local"
+                      value={scheduleForm.end_time}
+                      onChange={(e) => setScheduleForm({ ...scheduleForm, end_time: e.target.value })}
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    강사
+                  </label>
+                  <select
+                    value={scheduleForm.instructor_id}
+                    onChange={(e) => handleInstructorChange(e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                  >
+                    <option value="">선택 안함</option>
+                    {instructors.map((instructor) => (
+                      <option key={instructor.id} value={instructor.id}>
+                        {instructor.name}
+                      </option>
+                    ))}
+                  </select>
+
+                  {/* 선택된 강사 프로필 정보 표시 */}
+                  {selectedInstructorProfile && (
+                    <div className="mt-3 p-3 bg-teal-50 dark:bg-teal-900/20 rounded-lg border border-teal-200 dark:border-teal-800">
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center gap-2">
+                          <UserIcon className="w-4 h-4 text-teal-600 dark:text-teal-400" />
+                          <span className="text-sm font-medium text-teal-900 dark:text-teal-100">강사 프로필</span>
+                        </div>
+                        {selectedInstructorProfile.rating > 0 && (
+                          <div className="flex items-center gap-1">
+                            <span className="text-foreground">⭐</span>
+                            <span className="text-sm font-medium text-teal-900 dark:text-teal-100">
+                              {selectedInstructorProfile.rating.toFixed(1)}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+
+                      {selectedInstructorProfile.bio && (
+                        <div className="text-xs text-gray-600 dark:text-gray-400 mb-2">
+                          {selectedInstructorProfile.bio}
+                        </div>
+                      )}
+
+                      {selectedInstructorProfile.total_sessions > 0 && (
+                        <div className="mt-2 text-xs text-gray-600 dark:text-gray-400">
+                          총 {selectedInstructorProfile.total_sessions}회 강의
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    교실
+                  </label>
+                  <select
+                    value={scheduleForm.classroom_id}
+                    onChange={(e) => handleClassroomChange(e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                  >
+                    <option value="">선택 안함</option>
+                    {classrooms.map((classroom) => (
+                      <option key={classroom.id} value={classroom.id}>
+                        {classroom.name}
+                        {classroom.code && ` [${classroom.code}]`}
+                        {classroom.building && ` - ${classroom.building}`}
+                        {classroom.floor && ` ${classroom.floor}층`}
+                        {` (${classroom.capacity}명)`}
+                      </option>
+                    ))}
+                  </select>
+
+                  {/* 선택된 교실 상세 정보 표시 */}
+                  {selectedClassroom && (
+                    <div className="mt-3 p-3 bg-green-500/10 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center gap-2">
+                          <MapPinIcon className="w-4 h-4 text-green-600 dark:text-green-400" />
+                          <span className="text-sm font-medium text-green-900 dark:text-green-100">교실 정보</span>
+                        </div>
+                        <span className="text-xs px-2 py-0.5 bg-green-500/10 dark:bg-green-800 text-green-800 dark:text-green-200 rounded">
+                          수용인원 {selectedClassroom.capacity}명
+                        </span>
+                      </div>
+
+                      {(selectedClassroom.building || selectedClassroom.floor) && (
+                        <div className="mb-2">
+                          <div className="text-xs text-gray-600 dark:text-gray-400 mb-1">위치</div>
+                          <div className="text-sm text-gray-900 dark:text-gray-100">
+                            {selectedClassroom.building && selectedClassroom.building}
+                            {selectedClassroom.floor && ` ${selectedClassroom.floor}층`}
+                            {selectedClassroom.location && ` - ${selectedClassroom.location}`}
+                          </div>
+                        </div>
+                      )}
+
+                      {selectedClassroom.facilities && selectedClassroom.facilities.length > 0 && (
+                        <div className="mb-2">
+                          <div className="text-xs text-gray-600 dark:text-gray-400 mb-1">시설</div>
+                          <div className="flex flex-wrap gap-1">
+                            {selectedClassroom.facilities.map((facility, idx) => (
+                              <span key={idx} className="px-2 py-0.5 bg-green-500/10 dark:bg-green-800 text-green-800 dark:text-green-200 text-xs rounded">
+                                {facility}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {selectedClassroom.equipment && selectedClassroom.equipment.length > 0 && (
+                        <div>
+                          <div className="text-xs text-gray-600 dark:text-gray-400 mb-1">장비</div>
+                          <div className="flex flex-wrap gap-1">
+                            {selectedClassroom.equipment.map((item, idx) => (
+                              <span key={idx} className="px-2 py-0.5 bg-primary/10 text-primary text-xs rounded">
+                                {item}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    설명
+                  </label>
+                  <textarea
+                    value={scheduleForm.description}
+                    onChange={(e) => setScheduleForm({ ...scheduleForm, description: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                    rows={3}
+                  />
+                </div>
+              </div>
+
+              <div className="mt-6 flex justify-end gap-3">
+                <button onClick={() => setShowEditModal(false)} className="btn-secondary rounded-full">
+                  취소
+                </button>
+                <button onClick={handleEditSchedule} className="btn-primary rounded-full">
+                  수정
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
+
+        {/* 이벤트 상세 모달 */}
+        {showEventModal && selectedEvent && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onClick={() => setShowEventModal(false)}>
+            <div className="bg-white dark:bg-gray-800 rounded-[2rem] p-6 w-full max-w-md" onClick={(e) => e.stopPropagation()}>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">{selectedEvent.title}</h3>
+              <div className="space-y-3">
+                <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                  <ClockIcon className="w-5 h-5" />
+                  {new Date(selectedEvent.start).toLocaleString('ko-KR')}
+                  {selectedEvent.end && ` - ${new Date(selectedEvent.end).toLocaleString('ko-KR')}`}
+                </div>
+                {selectedEvent.classroom && (
+                  <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                    <MapPinIcon className="w-5 h-5" />
+                    {selectedEvent.classroom}
+                  </div>
+                )}
+                {selectedEvent.instructor && (
+                  <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                    <UserIcon className="w-5 h-5" />
+                    {selectedEvent.instructor}
+                  </div>
+                )}
+              </div>
+              <div className="mt-6 flex justify-between">
+                {selectedEvent.type === 'schedule' && selectedEvent.editable && (
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => openEditModal(selectedEvent)}
+                      className="btn-primary"
+                    >
+                      수정
+                    </button>
+                    <button
+                      onClick={() => handleDeleteSchedule(selectedEvent.id.replace('schedule-', ''))}
+                      className="btn-danger"
+                    >
+                      삭제
+                    </button>
+                  </div>
+                )}
+                <button onClick={() => setShowEventModal(false)} className="btn-secondary ml-auto rounded-full">
+                  닫기
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* 충돌 알림 모달 */}
+        {showConflictModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onClick={handleConflictCancel}>
+            <div className="bg-white dark:bg-gray-800 rounded-[2rem] p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+              <div className="flex items-center gap-3 mb-6">
+                <div className="flex-shrink-0 w-12 h-12 rounded-lg bg-yellow-100 dark:bg-yellow-900/30 flex items-center justify-center">
+                  <span className="text-2xl">⚠️</span>
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">일정 충돌 감지</h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">다음 자원에서 충돌이 발견되었습니다</p>
+                </div>
+              </div>
+
+              <div className="space-y-3 mb-6">
+                {conflicts.map((conflict, idx) => (
+                  <div
+                    key={idx}
+                    className={`p-4 rounded-full border-2 ${conflict.severity === 'high'
+                      ? 'bg-destructive/10 dark:bg-red-900/20 border-destructive/50 dark:border-red-800'
+                      : 'bg-yellow-50 dark:bg-yellow-900/20 border-yellow-300 dark:border-yellow-800'
+                      }`}
+                  >
+                    <div className="flex items-start justify-between mb-2">
+                      <div className="flex items-center gap-2">
+                        {conflict.conflict_type === 'instructor' ? (
+                          <UserIcon className={`w-5 h-5 ${conflict.severity === 'high' ? 'text-destructive dark:text-red-400' : 'text-foreground dark:text-yellow-400'}`} />
+                        ) : (
+                          <MapPinIcon className={`w-5 h-5 ${conflict.severity === 'high' ? 'text-destructive dark:text-red-400' : 'text-foreground dark:text-yellow-400'}`} />
+                        )}
+                        <span className="font-medium text-gray-900 dark:text-gray-100">
+                          {conflict.conflict_type === 'instructor' ? '강사' : '교실'}: {conflict.resource_name}
+                        </span>
+                      </div>
+                      <span className={`px-2 py-1 text-xs font-medium rounded ${conflict.severity === 'high'
+                        ? 'bg-destructive/10 dark:bg-red-800 text-destructive dark:text-red-200'
+                        : 'bg-yellow-100 dark:bg-yellow-800 text-yellow-800 dark:text-yellow-200'
+                        }`}>
+                        {conflict.severity === 'high' ? '높음' : '보통'}
+                      </span>
+                    </div>
+
+                    {conflict.existing_schedule && (
+                      <div className="mt-2 pl-7">
+                        <div className="text-sm text-gray-600 dark:text-gray-400">
+                          <div className="font-medium text-gray-700 dark:text-gray-300 mb-1">기존 일정:</div>
+                          <div className="space-y-1">
+                            <div className="flex items-center gap-2">
+                              <CalendarIcon className="w-4 h-4" />
+                              <span>{conflict.existing_schedule.title || '제목 없음'}</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <ClockIcon className="w-4 h-4" />
+                              <span>
+                                {new Date(conflict.existing_schedule.start_time).toLocaleString('ko-KR', {
+                                  month: 'short',
+                                  day: 'numeric',
+                                  hour: '2-digit',
+                                  minute: '2-digit'
+                                })}
+                                {' ~ '}
+                                {new Date(conflict.existing_schedule.end_time).toLocaleString('ko-KR', {
+                                  hour: '2-digit',
+                                  minute: '2-digit'
+                                })}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+
+              <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mb-6">
+                <p className="text-sm text-blue-900 dark:text-blue-100">
+                  <strong>안내:</strong> 충돌이 있어도 일정을 생성할 수 있습니다. 단, 해당 자원이 이중으로 배정될 수 있으니 주의하세요.
+                </p>
+              </div>
+
+              <div className="flex justify-end gap-3">
+                <button
+                  onClick={handleConflictCancel}
+                  className="btn-secondary"
+                >
+                  취소
+                </button>
+                <button
+                  onClick={handleConflictProceed}
+                  className="px-4 py-2 bg-yellow-600 dark:bg-yellow-500 text-white rounded-full hover:bg-yellow-700 dark:hover:bg-yellow-600"
+                >
+                  충돌 무시하고 진행
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
     </PageContainer>
   );
 }

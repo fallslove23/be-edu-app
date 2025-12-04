@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import { useAuth } from '@/contexts/AuthContext';
+import { useTheme } from '@/contexts/ThemeContext';
 import ImprovedNavigation from '@/components/navigation/ImprovedNavigation';
 import MobileBottomNav from '@/components/navigation/MobileBottomNav';
 import {
@@ -15,6 +16,7 @@ import {
   MoonIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
+  ComputerDesktopIcon,
 } from '@heroicons/react/24/outline';
 
 // Dynamic imports with Next.js - Fixed for Next.js 15
@@ -60,10 +62,10 @@ const LoadingSpinner = () => (
 export default function DashboardPage() {
   const router = useRouter();
   const { isAuthenticated, loading, user, logout } = useAuth();
+  const { theme, toggleTheme } = useTheme();
   const [activeView, setActiveView] = useState('dashboard');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false); // 기본값: 펼쳐진 상태
-  const [darkMode, setDarkMode] = useState(false);
 
   useEffect(() => {
     if (!loading && !isAuthenticated) {
@@ -72,14 +74,8 @@ export default function DashboardPage() {
   }, [isAuthenticated, loading, router]);
 
   useEffect(() => {
-    // Load dark mode and sidebar preferences
-    const savedDarkMode = localStorage.getItem('darkMode') === 'true';
+    // Load sidebar preferences
     const savedSidebarCollapsed = localStorage.getItem('sidebarCollapsed');
-
-    setDarkMode(savedDarkMode);
-    if (savedDarkMode) {
-      document.documentElement.classList.add('dark');
-    }
 
     // 저장된 값이 없으면 기본값(true) 사용
     if (savedSidebarCollapsed !== null) {
@@ -94,16 +90,7 @@ export default function DashboardPage() {
     }
   };
 
-  const toggleDarkMode = () => {
-    const newDarkMode = !darkMode;
-    setDarkMode(newDarkMode);
-    localStorage.setItem('darkMode', String(newDarkMode));
-    if (newDarkMode) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-  };
+
 
   const toggleSidebar = () => {
     const newCollapsed = !sidebarCollapsed;
@@ -138,6 +125,7 @@ export default function DashboardPage() {
       case 'comprehensive-grades':
         return <ComprehensiveGradesPage />;
       case 'analytics':
+      case 'statistics':
         return <IntegratedAnalyticsManagement />;
       case 'schedule-management':
         return <IntegratedScheduleManager />;
@@ -286,14 +274,16 @@ export default function DashboardPage() {
               <div className="flex items-center space-x-1 sm:space-x-2">
                 {/* Dark Mode Toggle */}
                 <button
-                  onClick={toggleDarkMode}
+                  onClick={toggleTheme}
                   className="p-2 text-muted-foreground hover:bg-muted rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-primary mobile-button"
-                  title={darkMode ? '라이트 모드' : '다크 모드'}
+                  title={`테마 변경 (${theme === 'light' ? '라이트' : theme === 'dark' ? '다크' : '시스템 설정'})`}
                 >
-                  {darkMode ? (
+                  {theme === 'light' ? (
                     <SunIcon className="w-5 h-5" />
-                  ) : (
+                  ) : theme === 'dark' ? (
                     <MoonIcon className="w-5 h-5" />
+                  ) : (
+                    <ComputerDesktopIcon className="w-5 h-5" />
                   )}
                 </button>
 
