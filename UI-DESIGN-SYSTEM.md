@@ -56,6 +56,34 @@ completed → info (완료)
 cancelled → danger (취소)
 ```
 
+### 차트 색상 (Clean Slate Theme)
+
+```typescript
+// 데이터 시각화 전용 색상
+chart-1: #0f172a (Slate 900) - 메인 데이터
+chart-2: #64748b (Slate 500) - 보조 데이터
+chart-3: #334155 (Slate 700) - 강조 데이터
+chart-4: #1e293b (Slate 800) - 비교 데이터
+chart-5: #f1f5f9 (Slate 100) - 배경/그리드
+```
+
+## 📱 모바일 최적화 가이드라인
+
+### 레이아웃 전략
+- **Grid System**: 모바일에서는 기본 `grid-cols-1`을 사용하고, 태블릿(`md`) 이상에서 `grid-cols-2` 또는 `grid-cols-3`으로 확장합니다.
+- **Container**: `PageContainer` 컴포넌트를 사용하여 일관된 패딩(`p-4 sm:p-6`)을 적용합니다.
+- **Modals**: 모바일에서는 `w-full mx-4` 및 `max-h-[90vh]`를 적용하여 화면을 꽉 채우되 여백을 유지합니다.
+
+### 터치 타겟 및 입력
+- **Touch Targets**: 모든 버튼과 인터랙티브 요소는 최소 `44px` 높이를 가져야 합니다.
+- **Input Size**: 모바일에서 폰트 크기는 `16px` 이상이어야 iOS 자동 줌을 방지할 수 있습니다. (`.mobile-text`, `.mobile-input` 유틸리티 사용)
+- **Spacing**: 터치 오동작을 방지하기 위해 요소 간 충분한 간격을 유지합니다.
+
+### 다크 모드
+- 모든 컴포넌트는 `dark:` 변형을 지원해야 합니다.
+- 배경색은 `dark:bg-gray-800` 또는 `dark:bg-gray-900`을 사용합니다.
+- 텍스트는 `dark:text-white` 또는 `dark:text-gray-300`을 사용하여 가독성을 확보합니다.
+
 ## 🧩 공통 컴포넌트
 
 ### Button

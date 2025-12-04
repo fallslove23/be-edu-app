@@ -45,12 +45,17 @@
     /* Radius */
     --radius: 0.75rem;
 
-    /* Chart Colors */
-    --chart-1: 263 70% 50%;
-    --chart-2: 180 70% 40%;
-    --chart-3: 320 70% 50%;
-    --chart-4: 45 90% 50%;
-    --chart-5: 150 70% 40%;
+    /* Chart Colors - Clean Slate Theme */
+    --chart-1: 222.2 47.4% 11.2%;
+    /* Slate 900 #0f172a */
+    --chart-2: 215.4 16.3% 46.9%;
+    /* Slate 500 #64748b */
+    --chart-3: 215.3 19.3% 34.5%;
+    /* Slate 700 #334155 */
+    --chart-4: 215.3 25% 26.7%;
+    /* Slate 800 #1e293b */
+    --chart-5: 210 40% 96.1%;
+    /* Slate 100 #f1f5f9 */
 
     /* Sidebar - Light Glass */
     --sidebar: 0 0% 98%;
