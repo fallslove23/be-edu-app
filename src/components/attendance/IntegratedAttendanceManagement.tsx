@@ -27,6 +27,7 @@ import {
 } from '../../services/attendance.service';
 import { supabase } from '../../services/supabase';
 import { PageContainer } from '../common/PageContainer';
+import { PageHeader } from '../common/PageHeader';
 
 type ViewMode = 'check' | 'trainee' | 'statistics';
 
@@ -331,7 +332,7 @@ const IntegratedAttendanceManagement: React.FC = () => {
   const renderCheckView = () => {
     if (!selectedSession) {
       return (
-        <div className="text-center py-12 text-gray-500">
+        <div className="text-center py-12 text-gray-500 dark:text-gray-400">
           차수를 선택해주세요.
         </div>
       );
@@ -353,7 +354,7 @@ const IntegratedAttendanceManagement: React.FC = () => {
 
         {/* 출석 현황 요약 카드 */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
             <div className="text-sm text-gray-500 dark:text-gray-400 mb-1">총 인원</div>
             <div className="text-2xl font-bold text-gray-900 dark:text-white">{summary.total}명</div>
           </div>
@@ -373,25 +374,25 @@ const IntegratedAttendanceManagement: React.FC = () => {
         </div>
 
         {/* 일괄 처리 버튼 및 필터 */}
-        <div className="flex flex-wrap items-center justify-between gap-4">
+        <div className="flex flex-col lg:flex-row justify-between gap-4">
           <div className="flex gap-2 flex-wrap">
             <button
               onClick={() => handleBulkAttendanceCheck('present')}
-              className="btn-primary flex items-center gap-2"
+              className="btn-primary"
             >
               <CheckCircleIcon className="w-5 h-5" />
               전체 출석 처리
             </button>
             <button
               onClick={() => handleBulkAttendanceCheck('absent')}
-              className="btn-danger flex items-center gap-2"
+              className="btn-danger"
             >
               <XCircleIcon className="w-5 h-5" />
               미체크자 결석 처리
             </button>
             <button
               onClick={exportToExcel}
-              className="btn-secondary flex items-center gap-2"
+              className="btn-secondary"
             >
               <DocumentArrowDownIcon className="w-5 h-5" />
               Excel 내보내기
@@ -399,39 +400,39 @@ const IntegratedAttendanceManagement: React.FC = () => {
           </div>
 
           {/* 빠른 필터 */}
-          <div className="flex gap-2">
+          <div className="flex p-1 bg-gray-100 dark:bg-gray-700 rounded-lg overflow-x-auto">
             <button
               onClick={() => setStatusFilter('all')}
-              className={`px-3 py-1 rounded-lg text-sm font-medium transition-colors ${statusFilter === 'all'
-                ? 'bg-blue-600 text-white'
-                : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'
+              className={`px-3 py-1.5 rounded-md text-sm font-medium whitespace-nowrap transition-all ${statusFilter === 'all'
+                ? 'bg-white dark:bg-gray-600 text-blue-600 dark:text-white shadow-sm'
+                : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
                 }`}
             >
               전체 ({summary.total})
             </button>
             <button
               onClick={() => setStatusFilter('unchecked')}
-              className={`px-3 py-1 rounded-lg text-sm font-medium transition-colors ${statusFilter === 'unchecked'
-                ? 'bg-gray-600 text-white'
-                : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'
+              className={`px-3 py-1.5 rounded-md text-sm font-medium whitespace-nowrap transition-all ${statusFilter === 'unchecked'
+                ? 'bg-white dark:bg-gray-600 text-blue-600 dark:text-white shadow-sm'
+                : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
                 }`}
             >
               미체크 ({summary.unchecked})
             </button>
             <button
               onClick={() => setStatusFilter('present')}
-              className={`px-3 py-1 rounded-lg text-sm font-medium transition-colors ${statusFilter === 'present'
-                ? 'bg-emerald-600 text-white'
-                : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'
+              className={`px-3 py-1.5 rounded-md text-sm font-medium whitespace-nowrap transition-all ${statusFilter === 'present'
+                ? 'bg-white dark:bg-gray-600 text-emerald-600 dark:text-emerald-400 shadow-sm'
+                : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
                 }`}
             >
               출석 ({summary.present})
             </button>
             <button
               onClick={() => setStatusFilter('absent')}
-              className={`px-3 py-1 rounded-lg text-sm font-medium transition-colors ${statusFilter === 'absent'
-                ? 'bg-red-600 text-white'
-                : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'
+              className={`px-3 py-1.5 rounded-md text-sm font-medium whitespace-nowrap transition-all ${statusFilter === 'absent'
+                ? 'bg-white dark:bg-gray-600 text-red-600 dark:text-red-400 shadow-sm'
+                : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
                 }`}
             >
               결석 ({summary.absent})
@@ -452,66 +453,79 @@ const IntegratedAttendanceManagement: React.FC = () => {
         </div>
 
         {/* 출석 대상 목록 */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
           <div className="divide-y divide-gray-200 dark:divide-gray-700">
-            {filteredTargets.map(target => (
-              <div key={target.id} className="p-4 hover:bg-gray-50 dark:hover:bg-gray-700/50">
-                <div className="flex items-center justify-between">
-                  <div className="flex-1">
-                    <div className="font-medium text-gray-900 dark:text-white">{target.name}</div>
-                    <div className="text-sm text-gray-500 dark:text-gray-400">
-                      {target.email} {target.department && `• ${target.department}`}
+            {filteredTargets.length > 0 ? (
+              filteredTargets.map(target => (
+                <div key={target.id} className="p-4 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2">
+                        <div className="font-medium text-gray-900 dark:text-white text-lg">{target.name}</div>
+                        {target.attendance_status && (
+                          <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${getStatusColor(target.attendance_status)}`}>
+                            {getStatusLabel(target.attendance_status)}
+                          </span>
+                        )}
+                      </div>
+                      <div className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                        {target.email} {target.department && `• ${target.department}`}
+                      </div>
                     </div>
-                  </div>
 
-                  <div className="flex items-center gap-2">
-                    {/* 출석 상태 버튼 - 항상 표시하여 변경 가능 */}
-                    <div className="flex gap-1">
-                      <button
-                        onClick={() => handleAttendanceCheck(target.id, 'present')}
-                        className={`p-2 rounded-lg transition-colors ${target.attendance_status === 'present'
-                          ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-300'
-                          : 'text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/20'
-                          }`}
-                        title="출석"
-                      >
-                        <CheckCircleIcon className="w-5 h-5" />
-                      </button>
-                      <button
-                        onClick={() => handleAttendanceCheck(target.id, 'late')}
-                        className={`p-2 rounded-lg transition-colors ${target.attendance_status === 'late'
-                          ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300'
-                          : 'text-yellow-600 hover:bg-yellow-50 dark:hover:bg-yellow-900/20'
-                          }`}
-                        title="지각"
-                      >
-                        <ClockIcon className="w-5 h-5" />
-                      </button>
-                      <button
-                        onClick={() => handleAttendanceCheck(target.id, 'absent')}
-                        className={`p-2 rounded-lg transition-colors ${target.attendance_status === 'absent'
-                          ? 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300'
-                          : 'text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20'
-                          }`}
-                        title="결석"
-                      >
-                        <XCircleIcon className="w-5 h-5" />
-                      </button>
-                      <button
-                        onClick={() => handleAttendanceCheck(target.id, 'excused')}
-                        className={`p-2 rounded-lg transition-colors ${target.attendance_status === 'excused'
-                          ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300'
-                          : 'text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20'
-                          }`}
-                        title="사유결석"
-                      >
-                        <ExclamationTriangleIcon className="w-5 h-5" />
-                      </button>
+                    <div className="flex items-center gap-2">
+                      {/* 출석 상태 버튼 - 항상 표시하여 변경 가능 */}
+                      <div className="flex gap-1 p-1 bg-gray-100 dark:bg-gray-700 rounded-lg">
+                        <button
+                          onClick={() => handleAttendanceCheck(target.id, 'present')}
+                          className={`p-2 rounded-md transition-all ${target.attendance_status === 'present'
+                            ? 'bg-white dark:bg-gray-600 text-emerald-600 dark:text-emerald-400 shadow-sm'
+                            : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'
+                            }`}
+                          title="출석"
+                        >
+                          <CheckCircleIcon className="w-6 h-6" />
+                        </button>
+                        <button
+                          onClick={() => handleAttendanceCheck(target.id, 'late')}
+                          className={`p-2 rounded-md transition-all ${target.attendance_status === 'late'
+                            ? 'bg-white dark:bg-gray-600 text-yellow-600 dark:text-yellow-400 shadow-sm'
+                            : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'
+                            }`}
+                          title="지각"
+                        >
+                          <ClockIcon className="w-6 h-6" />
+                        </button>
+                        <button
+                          onClick={() => handleAttendanceCheck(target.id, 'absent')}
+                          className={`p-2 rounded-md transition-all ${target.attendance_status === 'absent'
+                            ? 'bg-white dark:bg-gray-600 text-red-600 dark:text-red-400 shadow-sm'
+                            : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'
+                            }`}
+                          title="결석"
+                        >
+                          <XCircleIcon className="w-6 h-6" />
+                        </button>
+                        <button
+                          onClick={() => handleAttendanceCheck(target.id, 'excused')}
+                          className={`p-2 rounded-md transition-all ${target.attendance_status === 'excused'
+                            ? 'bg-white dark:bg-gray-600 text-blue-600 dark:text-blue-400 shadow-sm'
+                            : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'
+                            }`}
+                          title="사유결석"
+                        >
+                          <ExclamationTriangleIcon className="w-6 h-6" />
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
+              ))
+            ) : (
+              <div className="p-12 text-center text-gray-500 dark:text-gray-400">
+                검색 결과가 없습니다.
               </div>
-            ))}
+            )}
           </div>
         </div>
       </div>
@@ -522,7 +536,7 @@ const IntegratedAttendanceManagement: React.FC = () => {
   const renderTraineeView = () => {
     if (!selectedSession) {
       return (
-        <div className="text-center py-12 text-gray-500">
+        <div className="text-center py-12 text-gray-500 dark:text-gray-400">
           차수를 선택해주세요.
         </div>
       );
@@ -530,72 +544,81 @@ const IntegratedAttendanceManagement: React.FC = () => {
 
     return (
       <div className="space-y-6">
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden">
-          <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-            <thead className="bg-gray-50 dark:bg-gray-700">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                  교육생
-                </th>
-                <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                  총 세션
-                </th>
-                <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                  출석
-                </th>
-                <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                  지각
-                </th>
-                <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                  결석
-                </th>
-                <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                  출석률
-                </th>
-                <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                  수료
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-              {traineeSummary.map(summary => (
-                <tr key={summary.trainee_id} className="hover:bg-gray-50 dark:hover:bg-gray-700/50">
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="font-medium text-gray-900 dark:text-white">{summary.trainee_name}</div>
-                    <div className="text-sm text-gray-500 dark:text-gray-400">{summary.email}</div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-900 dark:text-white">
-                    {summary.total_sessions}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-center">
-                    <span className="text-emerald-600 font-medium">{summary.present_count}</span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-center">
-                    <span className="text-yellow-600 font-medium">{summary.late_count}</span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-center">
-                    <span className="text-red-600 font-medium">{summary.absent_count}</span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-center">
-                    <span className={`font-bold ${summary.attendance_rate >= 80 ? 'text-emerald-600' : 'text-red-600'}`}>
-                      {summary.attendance_rate}%
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-center">
-                    {summary.can_complete ? (
-                      <span className="px-3 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700">
-                        가능
-                      </span>
-                    ) : (
-                      <span className="px-3 py-1 rounded-full text-xs font-medium bg-red-100 text-red-700">
-                        불가
-                      </span>
-                    )}
-                  </td>
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+              <thead className="bg-gray-50 dark:bg-gray-700/50">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    교육생
+                  </th>
+                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    총 세션
+                  </th>
+                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    출석
+                  </th>
+                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    지각
+                  </th>
+                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    결석
+                  </th>
+                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    출석률
+                  </th>
+                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    수료
+                  </th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                {traineeSummary.map(summary => (
+                  <tr key={summary.trainee_id} className="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="font-medium text-gray-900 dark:text-white">{summary.trainee_name}</div>
+                      <div className="text-sm text-gray-500 dark:text-gray-400">{summary.email}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-900 dark:text-white">
+                      {summary.total_sessions}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-center">
+                      <span className="text-emerald-600 dark:text-emerald-400 font-medium">{summary.present_count}</span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-center">
+                      <span className="text-yellow-600 dark:text-yellow-400 font-medium">{summary.late_count}</span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-center">
+                      <span className="text-red-600 dark:text-red-400 font-medium">{summary.absent_count}</span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-center">
+                      <span className={`font-bold ${summary.attendance_rate >= 80 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'}`}>
+                        {summary.attendance_rate}%
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-center">
+                      {summary.can_complete ? (
+                        <span className="px-3 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400">
+                          가능
+                        </span>
+                      ) : (
+                        <span className="px-3 py-1 rounded-full text-xs font-medium bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400">
+                          불가
+                        </span>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+                {traineeSummary.length === 0 && (
+                  <tr>
+                    <td colSpan={7} className="px-6 py-12 text-center text-gray-500 dark:text-gray-400">
+                      데이터가 없습니다.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     );
@@ -605,7 +628,7 @@ const IntegratedAttendanceManagement: React.FC = () => {
   const renderStatisticsView = () => {
     if (!selectedSession) {
       return (
-        <div className="text-center py-12 text-gray-500">
+        <div className="text-center py-12 text-gray-500 dark:text-gray-400">
           차수를 선택해주세요.
         </div>
       );
@@ -613,71 +636,80 @@ const IntegratedAttendanceManagement: React.FC = () => {
 
     return (
       <div className="space-y-6">
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden">
-          <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-            <thead className="bg-gray-50 dark:bg-gray-700">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                  날짜
-                </th>
-                <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                  등록 인원
-                </th>
-                <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                  체크 인원
-                </th>
-                <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                  출석
-                </th>
-                <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                  지각
-                </th>
-                <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                  결석
-                </th>
-                <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                  사유결석
-                </th>
-                <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                  출석률
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-              {statistics.map((stat, index) => (
-                <tr key={index} className="hover:bg-gray-50 dark:hover:bg-gray-700/50">
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="font-medium text-gray-900 dark:text-white">
-                      {format(new Date(stat.date), 'yyyy-MM-dd (EEE)', { locale: ko })}
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-900 dark:text-white">
-                    {stat.total_enrolled}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-900 dark:text-white">
-                    {stat.total_checked}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-center">
-                    <span className="text-emerald-600 font-medium">{stat.present_count}</span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-center">
-                    <span className="text-yellow-600 font-medium">{stat.late_count}</span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-center">
-                    <span className="text-red-600 font-medium">{stat.absent_count}</span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-center">
-                    <span className="text-blue-600 font-medium">{stat.excused_count}</span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-center">
-                    <span className={`font-bold ${stat.attendance_rate >= 80 ? 'text-emerald-600' : 'text-red-600'}`}>
-                      {stat.attendance_rate}%
-                    </span>
-                  </td>
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+              <thead className="bg-gray-50 dark:bg-gray-700/50">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    날짜
+                  </th>
+                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    등록 인원
+                  </th>
+                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    체크 인원
+                  </th>
+                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    출석
+                  </th>
+                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    지각
+                  </th>
+                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    결석
+                  </th>
+                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    사유결석
+                  </th>
+                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    출석률
+                  </th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                {statistics.map((stat, index) => (
+                  <tr key={index} className="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="font-medium text-gray-900 dark:text-white">
+                        {format(new Date(stat.date), 'yyyy-MM-dd (EEE)', { locale: ko })}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-900 dark:text-white">
+                      {stat.total_enrolled}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-900 dark:text-white">
+                      {stat.total_checked}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-center">
+                      <span className="text-emerald-600 dark:text-emerald-400 font-medium">{stat.present_count}</span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-center">
+                      <span className="text-yellow-600 dark:text-yellow-400 font-medium">{stat.late_count}</span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-center">
+                      <span className="text-red-600 dark:text-red-400 font-medium">{stat.absent_count}</span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-center">
+                      <span className="text-blue-600 dark:text-blue-400 font-medium">{stat.excused_count}</span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-center">
+                      <span className={`font-bold ${stat.attendance_rate >= 80 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'}`}>
+                        {stat.attendance_rate}%
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+                {statistics.length === 0 && (
+                  <tr>
+                    <td colSpan={8} className="px-6 py-12 text-center text-gray-500 dark:text-gray-400">
+                      데이터가 없습니다.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     );
@@ -685,99 +717,101 @@ const IntegratedAttendanceManagement: React.FC = () => {
 
   return (
     <PageContainer>
-      {/* 헤더 */}
-      <div>
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-          📋 통합 출석 관리
-        </h1>
-        <p className="text-gray-500 dark:text-gray-400">
-          세션 및 날짜 기반 실시간 출석 체크 및 통계
-        </p>
-      </div>
+      <div className="space-y-6">
+        {/* 헤더 */}
+        <PageHeader
+          title="통합 출석 관리"
+          description="세션 및 날짜 기반 실시간 출석 체크 및 통계"
+          badge="Attendance Management"
+        />
 
-      {/* 차수 및 날짜 선택 */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-            과정 차수
-          </label>
-          <select
-            value={selectedSession?.id || ''}
-            onChange={(e) => {
-              const session = sessions.find(s => s.id === e.target.value);
-              setSelectedSession(session || null);
-            }}
-            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-          >
-            <option value="">차수를 선택하세요</option>
-            {sessions.map(session => (
-              <option key={session.id} value={session.id}>
-                {session.session_name} ({session.session_code}) - {format(new Date(session.start_date), 'yyyy-MM-dd')}
-              </option>
-            ))}
-          </select>
+        {/* 필터 및 탭 컨테이너 */}
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 space-y-6">
+          {/* 차수 및 날짜 선택 */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                과정 차수
+              </label>
+              <select
+                value={selectedSession?.id || ''}
+                onChange={(e) => {
+                  const session = sessions.find(s => s.id === e.target.value);
+                  setSelectedSession(session || null);
+                }}
+                className="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+              >
+                <option value="">차수를 선택하세요</option>
+                {sessions.map(session => (
+                  <option key={session.id} value={session.id}>
+                    {session.session_name} ({session.session_code}) - {format(new Date(session.start_date), 'yyyy-MM-dd')}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                출석 날짜
+              </label>
+              <input
+                type="date"
+                value={selectedDate}
+                onChange={(e) => setSelectedDate(e.target.value)}
+                className="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+              />
+            </div>
+          </div>
+
+          {/* 뷰 모드 탭 */}
+          <div className="flex p-1 bg-gray-100 dark:bg-gray-700 rounded-lg w-fit">
+            <button
+              onClick={() => setViewMode('check')}
+              className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${viewMode === 'check'
+                ? 'bg-white dark:bg-gray-600 text-blue-600 dark:text-white shadow-sm'
+                : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
+                }`}
+            >
+              <CheckCircleIcon className="w-4 h-4 inline mr-2" />
+              출석 체크
+            </button>
+            <button
+              onClick={() => setViewMode('trainee')}
+              className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${viewMode === 'trainee'
+                ? 'bg-white dark:bg-gray-600 text-blue-600 dark:text-white shadow-sm'
+                : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
+                }`}
+            >
+              <UserGroupIcon className="w-4 h-4 inline mr-2" />
+              교육생별 통계
+            </button>
+            <button
+              onClick={() => setViewMode('statistics')}
+              className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${viewMode === 'statistics'
+                ? 'bg-white dark:bg-gray-600 text-blue-600 dark:text-white shadow-sm'
+                : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
+                }`}
+            >
+              <ChartBarIcon className="w-4 h-4 inline mr-2" />
+              통계
+            </button>
+          </div>
         </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-            출석 날짜
-          </label>
-          <input
-            type="date"
-            value={selectedDate}
-            onChange={(e) => setSelectedDate(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-          />
-        </div>
+        {/* 컨텐츠 */}
+        {loading ? (
+          <div className="text-center py-12">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+            <p className="text-gray-500">로딩 중...</p>
+          </div>
+        ) : (
+          <>
+            {viewMode === 'check' && renderCheckView()}
+            {viewMode === 'trainee' && renderTraineeView()}
+            {viewMode === 'statistics' && renderStatisticsView()}
+          </>
+        )}
       </div>
-
-      {/* 뷰 모드 탭 */}
-      <div className="flex gap-2 border-b border-gray-200 dark:border-gray-700">
-        <button
-          onClick={() => setViewMode('check')}
-          className={`px-4 py-2 font-medium ${viewMode === 'check'
-            ? 'text-blue-600 border-b-2 border-blue-600'
-            : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
-            }`}
-        >
-          <CheckCircleIcon className="w-5 h-5 inline mr-2" />
-          출석 체크
-        </button>
-        <button
-          onClick={() => setViewMode('trainee')}
-          className={`px-4 py-2 font-medium ${viewMode === 'trainee'
-            ? 'text-blue-600 border-b-2 border-blue-600'
-            : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
-            }`}
-        >
-          <UserGroupIcon className="w-5 h-5 inline mr-2" />
-          교육생별 통계
-        </button>
-        <button
-          onClick={() => setViewMode('statistics')}
-          className={`px-4 py-2 font-medium ${viewMode === 'statistics'
-            ? 'text-blue-600 border-b-2 border-blue-600'
-            : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
-            }`}
-        >
-          <ChartBarIcon className="w-5 h-5 inline mr-2" />
-          통계
-        </button>
-      </div>
-
-      {/* 컨텐츠 */}
-      {loading ? (
-        <div className="text-center py-12">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-500">로딩 중...</p>
-        </div>
-      ) : (
-        <>
-          {viewMode === 'check' && renderCheckView()}
-          {viewMode === 'trainee' && renderTraineeView()}
-          {viewMode === 'statistics' && renderStatisticsView()}
-        </>
-      )}
     </PageContainer>
   );
 };
