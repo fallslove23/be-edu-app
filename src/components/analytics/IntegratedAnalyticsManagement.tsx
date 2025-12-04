@@ -102,44 +102,18 @@ const IntegratedAnalyticsManagement: React.FC<IntegratedAnalyticsManagementProps
   };
 
   return (
-    <div className="min-h-screen bg-[#F2F4F6] dark:bg-gray-900 pb-24 transition-colors duration-200">
-      {/* 헤더 - 전체 너비 배경 */}
-      <div className="bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700 mb-4">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-500/30">
-                <ChartPie className="w-6 h-6 text-white" />
-              </div>
-              <div>
-                <h1 className="text-2xl font-bold text-gray-900 dark:text-white">분석 및 보고서</h1>
-                <p className="text-sm text-gray-500 dark:text-gray-400">{getActiveTabConfig()?.description}</p>
-              </div>
-            </div>
+    <PageContainer>
+      <div className="space-y-6">
+        {/* 헤더 */}
+        <PageHeader
+          title="분석 및 보고서"
+          description={getActiveTabConfig()?.description || '데이터 기반의 의사결정을 위한 분석 도구'}
+          badge="Analytics & Reports"
+        />
 
-            {/* 기간 선택 드롭다운 */}
-            <div className="relative">
-              <select
-                value={dateRange}
-                onChange={(e) => setDateRange(e.target.value)}
-                className="appearance-none bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-200 py-2 px-4 pr-8 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
-              >
-                <option value="7days">최근 7일</option>
-                <option value="30days">최근 30일</option>
-                <option value="3months">최근 3개월</option>
-                <option value="6months">최근 6개월</option>
-                <option value="1year">최근 1년</option>
-              </select>
-              <Calendar className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* 탭 네비게이션 - 정렬된 너비 */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 mb-4">
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-1.5">
-          <div className="grid grid-cols-3 gap-1.5">
+        {/* 탭 네비게이션 및 필터 */}
+        <div className="flex flex-col md:flex-row justify-between items-center gap-4 bg-white dark:bg-gray-800 p-2 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
+          <div className="flex p-1 bg-gray-100 dark:bg-gray-700 rounded-xl w-full md:w-auto overflow-x-auto">
             {availableTabs.map((tab) => {
               const Icon = tab.icon;
               const isActive = activeTab === tab.id;
@@ -148,26 +122,41 @@ const IntegratedAnalyticsManagement: React.FC<IntegratedAnalyticsManagementProps
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`flex flex-col items-center justify-center py-3 px-2 rounded-xl font-medium text-xs sm:text-sm transition-all duration-200 ${
-                    isActive
-                      ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-lg shadow-indigo-500/30'
-                      : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700/50'
-                  }`}
+                  className={`flex items-center justify-center py-2.5 px-4 rounded-lg font-medium text-sm transition-all duration-200 whitespace-nowrap ${isActive
+                      ? 'bg-white dark:bg-gray-600 text-blue-600 dark:text-blue-400 shadow-sm'
+                      : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
+                    }`}
                 >
-                  <Icon className={`w-5 h-5 mb-1.5 ${isActive ? 'text-white' : 'text-gray-400'}`} />
-                  <span className="whitespace-nowrap">{tab.label}</span>
+                  <Icon className={`w-4 h-4 mr-2 ${isActive ? 'text-blue-600 dark:text-blue-400' : 'text-gray-400'}`} />
+                  {tab.label}
                 </button>
               );
             })}
           </div>
+
+          {/* 기간 선택 드롭다운 */}
+          <div className="relative w-full md:w-auto">
+            <select
+              value={dateRange}
+              onChange={(e) => setDateRange(e.target.value)}
+              className="w-full md:w-48 appearance-none bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-200 py-2.5 px-4 pr-10 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+            >
+              <option value="7days">최근 7일</option>
+              <option value="30days">최근 30일</option>
+              <option value="3months">최근 3개월</option>
+              <option value="6months">최근 6개월</option>
+              <option value="1year">최근 1년</option>
+            </select>
+            <Calendar className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+          </div>
+        </div>
+
+        {/* 탭 콘텐츠 */}
+        <div className="min-h-[600px]">
+          {renderTabContent()}
         </div>
       </div>
-
-      {/* 탭 콘텐츠 - 정렬된 너비 */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6">
-        {renderTabContent()}
-      </div>
-    </div>
+    </PageContainer>
   );
 };
 

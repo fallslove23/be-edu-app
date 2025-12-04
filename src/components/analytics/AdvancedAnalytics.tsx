@@ -386,16 +386,16 @@ const AdvancedAnalytics: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* 헤더 */}
-      <div className="bg-white dark:bg-gray-800 rounded-[2rem] shadow-sm border border-gray-100 dark:border-gray-700 p-6">
+      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center mb-2">
-              <div className="p-3 bg-blue-50 dark:bg-blue-900/30 rounded-xl mr-4">
-                <BarChart2 className="h-8 w-8 text-blue-600 dark:text-blue-400" />
-              </div>
-              고급 학습 분석
-            </h1>
-            <p className="text-gray-600 dark:text-gray-400">학습 진도, 성과 분석 및 트렌드 리포트</p>
+          <div className="flex items-center space-x-4">
+            <div className="p-3 bg-blue-50 dark:bg-blue-900/30 rounded-xl">
+              <BarChart2 className="h-8 w-8 text-blue-600 dark:text-blue-400" />
+            </div>
+            <div>
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white">고급 학습 분석</h2>
+              <p className="text-gray-600 dark:text-gray-400 mt-1">학습 진도, 성과 분석 및 트렌드 리포트</p>
+            </div>
           </div>
 
           {/* 필터 컨트롤 */}
@@ -465,7 +465,7 @@ const AdvancedAnalytics: React.FC = () => {
       </div>
 
       {/* 탭 네비게이션 */}
-      <div className="bg-white dark:bg-gray-800 rounded-[2rem] shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
+      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
         <div className="border-b border-gray-100 dark:border-gray-700">
           <nav className="-mb-px flex space-x-8 px-8">
             {[
@@ -496,7 +496,7 @@ const AdvancedAnalytics: React.FC = () => {
         <div className="space-y-6">
           {/* 향상된 KPI 카드들 */}
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
-            <div className="bg-white dark:bg-gray-800 rounded-[2rem] shadow-sm border border-gray-100 dark:border-gray-700 p-6">
+            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-bold text-gray-500 dark:text-gray-400">총 학습자</p>
@@ -510,7 +510,7 @@ const AdvancedAnalytics: React.FC = () => {
               </div>
             </div>
 
-            <div className="bg-white dark:bg-gray-800 rounded-[2rem] shadow-sm border border-gray-100 dark:border-gray-700 p-6">
+            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-bold text-gray-500 dark:text-gray-400">평균 진도</p>
@@ -534,7 +534,7 @@ const AdvancedAnalytics: React.FC = () => {
               </div>
             </div>
 
-            <div className="bg-white dark:bg-gray-800 rounded-[2rem] shadow-sm border border-gray-100 dark:border-gray-700 p-6">
+            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-bold text-gray-500 dark:text-gray-400">평균 점수</p>
@@ -558,7 +558,7 @@ const AdvancedAnalytics: React.FC = () => {
               </div>
             </div>
 
-            <div className="bg-white dark:bg-gray-800 rounded-[2rem] shadow-sm border border-gray-100 dark:border-gray-700 p-6">
+            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-bold text-gray-500 dark:text-gray-400">완료율</p>
@@ -581,437 +581,447 @@ const AdvancedAnalytics: React.FC = () => {
                 </div>
               </div>
             </div>
-          </div>
+          </div >
 
           {/* 차트 섹션 */}
-          {viewMode === 'charts' ? (
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* 시계열 트렌드 */}
-              <div className="bg-white dark:bg-gray-800 rounded-[2rem] shadow-sm border border-gray-100 dark:border-gray-700 p-6">
-                <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-6">학습 활동 트렌드</h3>
-                <ResponsiveContainer width="100%" height={300}>
-                  <AreaChart data={analyticsData.timeSeriesData}>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={isDark ? '#374151' : '#f0f0f0'} />
-                    <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{ fill: '#9ca3af', fontSize: 12 }} />
-                    <YAxis axisLine={false} tickLine={false} tick={{ fill: '#9ca3af', fontSize: 12 }} />
-                    <Tooltip
-                      contentStyle={{
-                        backgroundColor: isDark ? '#1f2937' : '#ffffff',
-                        borderColor: isDark ? '#374151' : '#f0f0f0',
-                        color: isDark ? '#f3f4f6' : '#111827',
-                        borderRadius: '12px',
-                        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
-                      }}
-                    />
-                    <Area type="monotone" dataKey="totalActiveUsers" stackId="1" stroke="#3b82f6" fill="#3b82f6" fillOpacity={0.1} strokeWidth={2} />
-                    <Area type="monotone" dataKey="newEnrollments" stackId="1" stroke="#10b981" fill="#10b981" fillOpacity={0.1} strokeWidth={2} />
-                  </AreaChart>
-                </ResponsiveContainer>
-              </div>
+          {
+            viewMode === 'charts' ? (
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {/* 시계열 트렌드 */}
+                <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+                  <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-6">학습 활동 트렌드</h3>
+                  <ResponsiveContainer width="100%" height={300}>
+                    <AreaChart data={analyticsData.timeSeriesData}>
+                      <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={isDark ? '#374151' : '#f0f0f0'} />
+                      <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{ fill: '#9ca3af', fontSize: 12 }} />
+                      <YAxis axisLine={false} tickLine={false} tick={{ fill: '#9ca3af', fontSize: 12 }} />
+                      <Tooltip
+                        contentStyle={{
+                          backgroundColor: isDark ? '#1f2937' : '#ffffff',
+                          borderColor: isDark ? '#374151' : '#f0f0f0',
+                          color: isDark ? '#f3f4f6' : '#111827',
+                          borderRadius: '12px',
+                          boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+                        }}
+                      />
+                      <Area type="monotone" dataKey="totalActiveUsers" stackId="1" stroke="#3b82f6" fill="#3b82f6" fillOpacity={0.1} strokeWidth={2} />
+                      <Area type="monotone" dataKey="newEnrollments" stackId="1" stroke="#10b981" fill="#10b981" fillOpacity={0.1} strokeWidth={2} />
+                    </AreaChart>
+                  </ResponsiveContainer>
+                </div>
 
-              {/* 부서별 성과 */}
-              <div className="bg-white dark:bg-gray-800 rounded-[2rem] shadow-sm border border-gray-100 dark:border-gray-700 p-6">
-                <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-6">부서별 성과 분포</h3>
-                <ResponsiveContainer width="100%" height={300}>
-                  <PieChart>
-                    <Pie
-                      data={analyticsData.departmentStats}
-                      dataKey="avgScore"
-                      nameKey="department"
-                      cx="50%"
-                      cy="50%"
-                      outerRadius={100}
-                      innerRadius={60}
-                      label={({ department, avgScore }) => `${department}: ${avgScore}점`}
-                    >
-                      {analyticsData.departmentStats.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                      ))}
-                    </Pie>
-                    <Tooltip
-                      contentStyle={{
-                        backgroundColor: isDark ? '#1f2937' : '#ffffff',
-                        borderColor: isDark ? '#374151' : '#f0f0f0',
-                        color: isDark ? '#f3f4f6' : '#111827',
-                        borderRadius: '12px',
-                        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
-                      }}
-                    />
-                  </PieChart>
-                </ResponsiveContainer>
+                {/* 부서별 성과 */}
+                <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+                  <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-6">부서별 성과 분포</h3>
+                  <ResponsiveContainer width="100%" height={300}>
+                    <PieChart>
+                      <Pie
+                        data={analyticsData.departmentStats}
+                        dataKey="avgScore"
+                        nameKey="department"
+                        cx="50%"
+                        cy="50%"
+                        outerRadius={100}
+                        innerRadius={60}
+                        label={({ department, avgScore }) => `${department}: ${avgScore}점`}
+                      >
+                        {analyticsData.departmentStats.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                        ))}
+                      </Pie>
+                      <Tooltip
+                        contentStyle={{
+                          backgroundColor: isDark ? '#1f2937' : '#ffffff',
+                          borderColor: isDark ? '#374151' : '#f0f0f0',
+                          color: isDark ? '#f3f4f6' : '#111827',
+                          borderRadius: '12px',
+                          boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+                        }}
+                      />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </div>
               </div>
-            </div>
-          ) : (
-            /* 테이블 뷰 */
-            <div className="bg-white dark:bg-gray-800 rounded-[2rem] shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
-              <div className="px-8 py-6 border-b border-gray-100 dark:border-gray-700">
-                <h3 className="text-lg font-bold text-gray-900 dark:text-white">학습 진도 상세</h3>
-              </div>
-              <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-100 dark:divide-gray-700">
-                  <thead className="bg-gray-50 dark:bg-gray-900/50">
-                    <tr>
-                      <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">사용자</th>
-                      <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">부서</th>
-                      <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">과정</th>
-                      <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">진도율</th>
-                      <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">점수</th>
-                      <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">학습시간</th>
-                    </tr>
-                  </thead>
-                  <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-100 dark:divide-gray-700">
-                    {analyticsData.learningProgress.slice(0, 10).map((item, index) => (
-                      <tr key={index} className="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900 dark:text-white">
-                          {item.userName}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                          {item.department}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                          {item.courseName}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                          <div className="flex items-center">
-                            <div className="w-full bg-gray-100 dark:bg-gray-700 rounded-full h-2 mr-2">
-                              <div
-                                className="bg-blue-600 dark:bg-blue-500 h-2 rounded-full"
-                                style={{ width: `${item.progress}%` }}
-                              ></div>
-                            </div>
-                            <span className="font-bold text-blue-600 dark:text-blue-400">{item.progress}%</span>
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900 dark:text-white">
-                          {item.score}점
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                          {item.timeSpent}분
-                        </td>
+            ) : (
+              /* 테이블 뷰 */
+              <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+                <div className="px-8 py-6 border-b border-gray-100 dark:border-gray-700">
+                  <h3 className="text-lg font-bold text-gray-900 dark:text-white">학습 진도 상세</h3>
+                </div>
+                <div className="overflow-x-auto">
+                  <table className="min-w-full divide-y divide-gray-100 dark:divide-gray-700">
+                    <thead className="bg-gray-50 dark:bg-gray-900/50">
+                      <tr>
+                        <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">사용자</th>
+                        <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">부서</th>
+                        <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">과정</th>
+                        <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">진도율</th>
+                        <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">점수</th>
+                        <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">학습시간</th>
                       </tr>
+                    </thead>
+                    <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-100 dark:divide-gray-700">
+                      {analyticsData.learningProgress.slice(0, 10).map((item, index) => (
+                        <tr key={index} className="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900 dark:text-white">
+                            {item.userName}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                            {item.department}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                            {item.courseName}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                            <div className="flex items-center">
+                              <div className="w-full bg-gray-100 dark:bg-gray-700 rounded-full h-2 mr-2">
+                                <div
+                                  className="bg-blue-600 dark:bg-blue-500 h-2 rounded-full"
+                                  style={{ width: `${item.progress}%` }}
+                                ></div>
+                              </div>
+                              <span className="font-bold text-blue-600 dark:text-blue-400">{item.progress}%</span>
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900 dark:text-white">
+                            {item.score}점
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                            {item.timeSpent}분
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )
+          }
+        </div >
+      )}
+
+      {
+        activeTab === 'progress' && (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* 과정별 완료도 */}
+            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+              <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-6">과정별 완료도</h3>
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart data={analyticsData.courseCompletion}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={isDark ? '#374151' : '#f0f0f0'} />
+                  <XAxis dataKey="courseName" angle={-45} textAnchor="end" height={80} axisLine={false} tickLine={false} tick={{ fill: '#9ca3af', fontSize: 12 }} />
+                  <YAxis axisLine={false} tickLine={false} tick={{ fill: '#9ca3af', fontSize: 12 }} />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: isDark ? '#1f2937' : '#ffffff',
+                      borderColor: isDark ? '#374151' : '#f0f0f0',
+                      color: isDark ? '#f3f4f6' : '#111827',
+                      borderRadius: '12px',
+                      boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+                    }}
+                    cursor={{ fill: isDark ? '#374151' : '#f9fafb' }}
+                  />
+                  <Bar dataKey="avgProgress" fill="#3b82f6" radius={[4, 4, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+
+            {/* 부서별 진도 */}
+            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+              <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-6">부서별 학습 진도</h3>
+              <ResponsiveContainer width="100%" height={300}>
+                <PieChart>
+                  <Pie
+                    data={analyticsData.departmentStats}
+                    dataKey="avgProgress"
+                    nameKey="department"
+                    cx="50%"
+                    cy="50%"
+                    outerRadius={100}
+                    innerRadius={60}
+                    label={({ department, avgProgress }) => `${department}: ${avgProgress}%`}
+                  >
+                    {analyticsData.departmentStats.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
-                  </tbody>
-                </table>
-              </div>
+                  </Pie>
+                  <Tooltip
+                    contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}
+                  />
+                </PieChart>
+              </ResponsiveContainer>
             </div>
-          )}
-        </div>
-      )}
-
-      {activeTab === 'progress' && (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* 과정별 완료도 */}
-          <div className="bg-white dark:bg-gray-800 rounded-[2rem] shadow-sm border border-gray-100 dark:border-gray-700 p-6">
-            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-6">과정별 완료도</h3>
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={analyticsData.courseCompletion}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={isDark ? '#374151' : '#f0f0f0'} />
-                <XAxis dataKey="courseName" angle={-45} textAnchor="end" height={80} axisLine={false} tickLine={false} tick={{ fill: '#9ca3af', fontSize: 12 }} />
-                <YAxis axisLine={false} tickLine={false} tick={{ fill: '#9ca3af', fontSize: 12 }} />
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: isDark ? '#1f2937' : '#ffffff',
-                    borderColor: isDark ? '#374151' : '#f0f0f0',
-                    color: isDark ? '#f3f4f6' : '#111827',
-                    borderRadius: '12px',
-                    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
-                  }}
-                  cursor={{ fill: isDark ? '#374151' : '#f9fafb' }}
-                />
-                <Bar dataKey="avgProgress" fill="#3b82f6" radius={[4, 4, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
           </div>
+        )
+      }
 
-          {/* 부서별 진도 */}
-          <div className="bg-white dark:bg-gray-800 rounded-[2rem] shadow-sm border border-gray-100 dark:border-gray-700 p-6">
-            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-6">부서별 학습 진도</h3>
-            <ResponsiveContainer width="100%" height={300}>
-              <PieChart>
-                <Pie
-                  data={analyticsData.departmentStats}
-                  dataKey="avgProgress"
-                  nameKey="department"
-                  cx="50%"
-                  cy="50%"
-                  outerRadius={100}
-                  innerRadius={60}
-                  label={({ department, avgProgress }) => `${department}: ${avgProgress}%`}
-                >
-                  {analyticsData.departmentStats.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                  ))}
-                </Pie>
-                <Tooltip
-                  contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}
-                />
-              </PieChart>
-            </ResponsiveContainer>
+      {
+        activeTab === 'performance' && (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* 성과 레이더 차트 */}
+            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+              <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-6">종합 성과 분석</h3>
+              <ResponsiveContainer width="100%" height={300}>
+                <RadarChart data={analyticsData.performanceMetrics}>
+                  <PolarGrid stroke="#e5e7eb" />
+                  <PolarAngleAxis dataKey="category" tick={{ fill: '#6b7280', fontSize: 12, fontWeight: 500 }} />
+                  <PolarRadiusAxis domain={[0, 100]} axisLine={false} tick={false} />
+                  <Radar
+                    name="현재 성과"
+                    dataKey="score"
+                    stroke="#3b82f6"
+                    fill="#3b82f6"
+                    fillOpacity={0.4}
+                  />
+                  <Tooltip
+                    contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}
+                  />
+                </RadarChart>
+              </ResponsiveContainer>
+            </div>
+
+            {/* 부서별 성과 비교 */}
+            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+              <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-6">부서별 성과 비교</h3>
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart data={analyticsData.departmentStats}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={isDark ? '#374151' : '#f0f0f0'} />
+                  <XAxis dataKey="department" axisLine={false} tickLine={false} tick={{ fill: '#9ca3af', fontSize: 12 }} />
+                  <YAxis axisLine={false} tickLine={false} tick={{ fill: '#9ca3af', fontSize: 12 }} />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: isDark ? '#1f2937' : '#ffffff',
+                      borderColor: isDark ? '#374151' : '#f0f0f0',
+                      color: isDark ? '#f3f4f6' : '#111827',
+                      borderRadius: '12px',
+                      boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+                    }}
+                    cursor={{ fill: isDark ? '#374151' : '#f9fafb' }}
+                  />
+                  <Bar dataKey="avgScore" fill="#10b981" radius={[4, 4, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
           </div>
-        </div>
-      )}
+        )
+      }
 
-      {activeTab === 'performance' && (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* 성과 레이더 차트 */}
-          <div className="bg-white dark:bg-gray-800 rounded-[2rem] shadow-sm border border-gray-100 dark:border-gray-700 p-6">
-            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-6">종합 성과 분석</h3>
-            <ResponsiveContainer width="100%" height={300}>
-              <RadarChart data={analyticsData.performanceMetrics}>
-                <PolarGrid stroke="#e5e7eb" />
-                <PolarAngleAxis dataKey="category" tick={{ fill: '#6b7280', fontSize: 12, fontWeight: 500 }} />
-                <PolarRadiusAxis domain={[0, 100]} axisLine={false} tick={false} />
-                <Radar
-                  name="현재 성과"
-                  dataKey="score"
-                  stroke="#3b82f6"
-                  fill="#3b82f6"
-                  fillOpacity={0.4}
-                />
-                <Tooltip
-                  contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}
-                />
-              </RadarChart>
-            </ResponsiveContainer>
-          </div>
+      {
+        activeTab === 'trends' && (
+          <div className="space-y-6">
+            {/* 시계열 트렌드 */}
+            <div className="bg-white dark:bg-gray-800 rounded-[2rem] shadow-sm border border-gray-100 dark:border-gray-700 p-6">
+              <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-6">학습 활동 트렌드</h3>
+              <ResponsiveContainer width="100%" height={400}>
+                <LineChart data={analyticsData.timeSeriesData}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={isDark ? '#374151' : '#f0f0f0'} />
+                  <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{ fill: '#9ca3af', fontSize: 12 }} />
+                  <YAxis axisLine={false} tickLine={false} tick={{ fill: '#9ca3af', fontSize: 12 }} />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: isDark ? '#1f2937' : '#ffffff',
+                      borderColor: isDark ? '#374151' : '#f0f0f0',
+                      color: isDark ? '#f3f4f6' : '#111827',
+                      borderRadius: '12px',
+                      boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+                    }}
+                  />
+                  <Legend iconType="circle" />
+                  <Line type="monotone" dataKey="completions" stroke="#3b82f6" strokeWidth={3} dot={{ r: 4, fill: '#3b82f6', strokeWidth: 2, stroke: '#fff' }} name="완료" />
+                  <Line type="monotone" dataKey="newEnrollments" stroke="#10b981" strokeWidth={3} dot={{ r: 4, fill: '#10b981', strokeWidth: 2, stroke: '#fff' }} name="신규 등록" />
+                  <Line type="monotone" dataKey="totalActiveUsers" stroke="#f59e0b" strokeWidth={3} dot={{ r: 4, fill: '#f59e0b', strokeWidth: 2, stroke: '#fff' }} name="활성 사용자" />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
 
-          {/* 부서별 성과 비교 */}
-          <div className="bg-white dark:bg-gray-800 rounded-[2rem] shadow-sm border border-gray-100 dark:border-gray-700 p-6">
-            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-6">부서별 성과 비교</h3>
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={analyticsData.departmentStats}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={isDark ? '#374151' : '#f0f0f0'} />
-                <XAxis dataKey="department" axisLine={false} tickLine={false} tick={{ fill: '#9ca3af', fontSize: 12 }} />
-                <YAxis axisLine={false} tickLine={false} tick={{ fill: '#9ca3af', fontSize: 12 }} />
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: isDark ? '#1f2937' : '#ffffff',
-                    borderColor: isDark ? '#374151' : '#f0f0f0',
-                    color: isDark ? '#f3f4f6' : '#111827',
-                    borderRadius: '12px',
-                    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
-                  }}
-                  cursor={{ fill: isDark ? '#374151' : '#f9fafb' }}
-                />
-                <Bar dataKey="avgScore" fill="#10b981" radius={[4, 4, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-      )}
-
-      {activeTab === 'trends' && (
-        <div className="space-y-6">
-          {/* 시계열 트렌드 */}
-          <div className="bg-white dark:bg-gray-800 rounded-[2rem] shadow-sm border border-gray-100 dark:border-gray-700 p-6">
-            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-6">학습 활동 트렌드</h3>
-            <ResponsiveContainer width="100%" height={400}>
-              <LineChart data={analyticsData.timeSeriesData}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={isDark ? '#374151' : '#f0f0f0'} />
-                <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{ fill: '#9ca3af', fontSize: 12 }} />
-                <YAxis axisLine={false} tickLine={false} tick={{ fill: '#9ca3af', fontSize: 12 }} />
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: isDark ? '#1f2937' : '#ffffff',
-                    borderColor: isDark ? '#374151' : '#f0f0f0',
-                    color: isDark ? '#f3f4f6' : '#111827',
-                    borderRadius: '12px',
-                    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
-                  }}
-                />
-                <Legend iconType="circle" />
-                <Line type="monotone" dataKey="completions" stroke="#3b82f6" strokeWidth={3} dot={{ r: 4, fill: '#3b82f6', strokeWidth: 2, stroke: '#fff' }} name="완료" />
-                <Line type="monotone" dataKey="newEnrollments" stroke="#10b981" strokeWidth={3} dot={{ r: 4, fill: '#10b981', strokeWidth: 2, stroke: '#fff' }} name="신규 등록" />
-                <Line type="monotone" dataKey="totalActiveUsers" stroke="#f59e0b" strokeWidth={3} dot={{ r: 4, fill: '#f59e0b', strokeWidth: 2, stroke: '#fff' }} name="활성 사용자" />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-
-          {/* 활동 히트맵 */}
-          <div className="bg-white dark:bg-gray-800 rounded-[2rem] shadow-sm border border-gray-100 dark:border-gray-700 p-6">
-            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-6">요일별 시간대 활동 패턴</h3>
-            <div className="space-y-3">
-              {['월', '화', '수', '목', '금', '토', '일'].map(day => (
-                <div key={day} className="flex items-center space-x-3">
-                  <div className="w-8 text-sm font-bold text-gray-500">{day}</div>
-                  <div className="flex space-x-1 flex-1">
-                    {Array.from({ length: 24 }, (_, hour) => {
-                      const heatData = analyticsData.heatMapData.find(d => d.day === day && d.hour === hour);
-                      const activity = heatData?.activity || 0;
-                      const intensity = Math.min(activity / 100, 1);
-                      return (
-                        <div
-                          key={hour}
-                          className="flex-1 h-8 rounded-md cursor-pointer hover:ring-2 hover:ring-blue-300 transition-all"
-                          style={{
-                            backgroundColor: `rgba(59, 130, 246, ${intensity})`,
-                            opacity: Math.max(0.1, intensity)
-                          }}
-                          title={`${day} ${hour}:00 - 활동도: ${activity}%`}
-                        />
-                      );
-                    })}
+            {/* 활동 히트맵 */}
+            <div className="bg-white dark:bg-gray-800 rounded-[2rem] shadow-sm border border-gray-100 dark:border-gray-700 p-6">
+              <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-6">요일별 시간대 활동 패턴</h3>
+              <div className="space-y-3">
+                {['월', '화', '수', '목', '금', '토', '일'].map(day => (
+                  <div key={day} className="flex items-center space-x-3">
+                    <div className="w-8 text-sm font-bold text-gray-500">{day}</div>
+                    <div className="flex space-x-1 flex-1">
+                      {Array.from({ length: 24 }, (_, hour) => {
+                        const heatData = analyticsData.heatMapData.find(d => d.day === day && d.hour === hour);
+                        const activity = heatData?.activity || 0;
+                        const intensity = Math.min(activity / 100, 1);
+                        return (
+                          <div
+                            key={hour}
+                            className="flex-1 h-8 rounded-md cursor-pointer hover:ring-2 hover:ring-blue-300 transition-all"
+                            style={{
+                              backgroundColor: `rgba(59, 130, 246, ${intensity})`,
+                              opacity: Math.max(0.1, intensity)
+                            }}
+                            title={`${day} ${hour}:00 - 활동도: ${activity}%`}
+                          />
+                        );
+                      })}
+                    </div>
                   </div>
+                ))}
+                <div className="flex justify-between text-xs text-gray-400 mt-2 pl-11">
+                  <span>00:00</span>
+                  <span>06:00</span>
+                  <span>12:00</span>
+                  <span>18:00</span>
+                  <span>23:00</span>
                 </div>
-              ))}
-              <div className="flex justify-between text-xs text-gray-400 mt-2 pl-11">
-                <span>00:00</span>
-                <span>06:00</span>
-                <span>12:00</span>
-                <span>18:00</span>
-                <span>23:00</span>
               </div>
             </div>
           </div>
-        </div>
-      )}
+        )
+      }
 
-      {activeTab === 'realtime' && (
-        <div className="space-y-6">
-          {/* 실시간 제어 패널 */}
-          <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-bold text-gray-900">실시간 모니터링</h3>
-              <div className="flex items-center space-x-4">
-                <div className="flex items-center space-x-2 text-sm text-gray-500">
-                  <Clock className="h-4 w-4" />
-                  <span>마지막 업데이트: {lastUpdated.toLocaleTimeString()}</span>
+      {
+        activeTab === 'realtime' && (
+          <div className="space-y-6">
+            {/* 실시간 제어 패널 */}
+            <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 p-6">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-bold text-gray-900">실시간 모니터링</h3>
+                <div className="flex items-center space-x-4">
+                  <div className="flex items-center space-x-2 text-sm text-gray-500">
+                    <Clock className="h-4 w-4" />
+                    <span>마지막 업데이트: {lastUpdated.toLocaleTimeString()}</span>
+                  </div>
+                  <select
+                    value={refreshInterval}
+                    onChange={(e) => setRefreshInterval(Number(e.target.value))}
+                    className="border border-gray-300 rounded px-2 py-1 text-sm"
+                  >
+                    <option value={5000}>5초</option>
+                    <option value={10000}>10초</option>
+                    <option value={30000}>30초</option>
+                    <option value={60000}>1분</option>
+                    <option value={0}>수동</option>
+                  </select>
+                  <button
+                    onClick={() => {
+                      setAnalyticsData(prev => {
+                        if (!prev) return null;
+                        const newData = { ...prev };
+                        const newMetric = {
+                          timestamp: new Date().toISOString(),
+                          activeUsers: Math.floor(Math.random() * 50) + 10,
+                          newSessions: Math.floor(Math.random() * 20) + 5,
+                          completedLessons: Math.floor(Math.random() * 15) + 2,
+                          avgResponseTime: Math.floor(Math.random() * 500) + 200
+                        };
+                        newData.realTimeMetrics = [...newData.realTimeMetrics.slice(1), newMetric];
+                        return newData;
+                      });
+                      setLastUpdated(new Date());
+                    }}
+                    className="btn-primary"
+                  >
+                    <RefreshCw className="h-4 w-4" />
+                  </button>
                 </div>
-                <select
-                  value={refreshInterval}
-                  onChange={(e) => setRefreshInterval(Number(e.target.value))}
-                  className="border border-gray-300 rounded px-2 py-1 text-sm"
-                >
-                  <option value={5000}>5초</option>
-                  <option value={10000}>10초</option>
-                  <option value={30000}>30초</option>
-                  <option value={60000}>1분</option>
-                  <option value={0}>수동</option>
-                </select>
-                <button
-                  onClick={() => {
-                    setAnalyticsData(prev => {
-                      if (!prev) return null;
-                      const newData = { ...prev };
-                      const newMetric = {
-                        timestamp: new Date().toISOString(),
-                        activeUsers: Math.floor(Math.random() * 50) + 10,
-                        newSessions: Math.floor(Math.random() * 20) + 5,
-                        completedLessons: Math.floor(Math.random() * 15) + 2,
-                        avgResponseTime: Math.floor(Math.random() * 500) + 200
-                      };
-                      newData.realTimeMetrics = [...newData.realTimeMetrics.slice(1), newMetric];
-                      return newData;
-                    });
-                    setLastUpdated(new Date());
-                  }}
-                  className="btn-primary"
-                >
-                  <RefreshCw className="h-4 w-4" />
-                </button>
               </div>
             </div>
-          </div>
 
-          {/* 실시간 메트릭 카드 */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {analyticsData.realTimeMetrics.length > 0 && (
-              <>
-                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm text-gray-600">현재 활성 사용자</p>
-                      <p className="text-2xl font-bold text-blue-600">
-                        {analyticsData.realTimeMetrics[analyticsData.realTimeMetrics.length - 1].activeUsers}
-                      </p>
+            {/* 실시간 메트릭 카드 */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              {analyticsData.realTimeMetrics.length > 0 && (
+                <>
+                  <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm text-gray-600">현재 활성 사용자</p>
+                        <p className="text-2xl font-bold text-blue-600">
+                          {analyticsData.realTimeMetrics[analyticsData.realTimeMetrics.length - 1].activeUsers}
+                        </p>
+                      </div>
+                      <Users className="h-8 w-8 text-blue-500" />
                     </div>
-                    <Users className="h-8 w-8 text-blue-500" />
                   </div>
-                </div>
 
-                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm text-gray-600">신규 세션</p>
-                      <p className="text-2xl font-bold text-green-600">
-                        {analyticsData.realTimeMetrics[analyticsData.realTimeMetrics.length - 1].newSessions}
-                      </p>
+                  <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm text-gray-600">신규 세션</p>
+                        <p className="text-2xl font-bold text-green-600">
+                          {analyticsData.realTimeMetrics[analyticsData.realTimeMetrics.length - 1].newSessions}
+                        </p>
+                      </div>
+                      <TrendingUp className="h-8 w-8 text-green-500" />
                     </div>
-                    <TrendingUp className="h-8 w-8 text-green-500" />
                   </div>
-                </div>
 
-                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm text-gray-600">완료된 레슨</p>
-                      <p className="text-2xl font-bold text-purple-600">
-                        {analyticsData.realTimeMetrics[analyticsData.realTimeMetrics.length - 1].completedLessons}
-                      </p>
+                  <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm text-gray-600">완료된 레슨</p>
+                        <p className="text-2xl font-bold text-purple-600">
+                          {analyticsData.realTimeMetrics[analyticsData.realTimeMetrics.length - 1].completedLessons}
+                        </p>
+                      </div>
+                      <GraduationCap className="h-8 w-8 text-purple-500" />
                     </div>
-                    <GraduationCap className="h-8 w-8 text-purple-500" />
                   </div>
-                </div>
 
-                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm text-gray-600">평균 응답시간</p>
-                      <p className="text-2xl font-bold text-foreground">
-                        {analyticsData.realTimeMetrics[analyticsData.realTimeMetrics.length - 1].avgResponseTime}ms
-                      </p>
+                  <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm text-gray-600">평균 응답시간</p>
+                        <p className="text-2xl font-bold text-foreground">
+                          {analyticsData.realTimeMetrics[analyticsData.realTimeMetrics.length - 1].avgResponseTime}ms
+                        </p>
+                      </div>
+                      <Clock className="h-8 w-8 text-foreground" />
                     </div>
-                    <Clock className="h-8 w-8 text-foreground" />
                   </div>
-                </div>
-              </>
-            )}
-          </div>
+                </>
+              )}
+            </div>
 
-          {/* 실시간 차트 */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <h3 className="text-lg font-medium text-gray-900 mb-4">실시간 활동 (최근 24시간)</h3>
-            <ResponsiveContainer width="100%" height={400}>
-              <LineChart data={analyticsData.realTimeMetrics}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis
-                  dataKey="timestamp"
-                  tickFormatter={(value) => new Date(value).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })}
-                />
-                <YAxis />
-                <Tooltip
-                  labelFormatter={(value) => `시간: ${new Date(value).toLocaleString()}`}
-                />
-                <Legend />
-                <Line type="monotone" dataKey="activeUsers" stroke="#3b82f6" strokeWidth={2} name="활성 사용자" />
-                <Line type="monotone" dataKey="newSessions" stroke="#10b981" strokeWidth={2} name="신규 세션" />
-                <Line type="monotone" dataKey="completedLessons" stroke="#8b5cf6" strokeWidth={2} name="완료된 레슨" />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
+            {/* 실시간 차트 */}
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+              <h3 className="text-lg font-medium text-gray-900 mb-4">실시간 활동 (최근 24시간)</h3>
+              <ResponsiveContainer width="100%" height={400}>
+                <LineChart data={analyticsData.realTimeMetrics}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis
+                    dataKey="timestamp"
+                    tickFormatter={(value) => new Date(value).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })}
+                  />
+                  <YAxis />
+                  <Tooltip
+                    labelFormatter={(value) => `시간: ${new Date(value).toLocaleString()}`}
+                  />
+                  <Legend />
+                  <Line type="monotone" dataKey="activeUsers" stroke="#3b82f6" strokeWidth={2} name="활성 사용자" />
+                  <Line type="monotone" dataKey="newSessions" stroke="#10b981" strokeWidth={2} name="신규 세션" />
+                  <Line type="monotone" dataKey="completedLessons" stroke="#8b5cf6" strokeWidth={2} name="완료된 레슨" />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
 
-          {/* 성능 모니터링 */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <h3 className="text-lg font-medium text-gray-900 mb-4">시스템 성능</h3>
-            <ResponsiveContainer width="100%" height={200}>
-              <AreaChart data={analyticsData.realTimeMetrics}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis
-                  dataKey="timestamp"
-                  tickFormatter={(value) => new Date(value).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })}
-                />
-                <YAxis />
-                <Tooltip
-                  labelFormatter={(value) => `시간: ${new Date(value).toLocaleString()}`}
-                  formatter={(value) => [`${value}ms`, '응답시간']}
-                />
-                <Area type="monotone" dataKey="avgResponseTime" stroke="#f59e0b" fill="#f59e0b" fillOpacity={0.3} />
-              </AreaChart>
-            </ResponsiveContainer>
+            {/* 성능 모니터링 */}
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+              <h3 className="text-lg font-medium text-gray-900 mb-4">시스템 성능</h3>
+              <ResponsiveContainer width="100%" height={200}>
+                <AreaChart data={analyticsData.realTimeMetrics}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis
+                    dataKey="timestamp"
+                    tickFormatter={(value) => new Date(value).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })}
+                  />
+                  <YAxis />
+                  <Tooltip
+                    labelFormatter={(value) => `시간: ${new Date(value).toLocaleString()}`}
+                    formatter={(value) => [`${value}ms`, '응답시간']}
+                  />
+                  <Area type="monotone" dataKey="avgResponseTime" stroke="#f59e0b" fill="#f59e0b" fillOpacity={0.3} />
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
           </div>
-        </div>
-      )}
-    </div>
+        )
+      }
+    </div >
   );
 };
 
