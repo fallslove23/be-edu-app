@@ -16,6 +16,7 @@ const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
 }) => {
   const { user } = useAuth();
   const [mounted, setMounted] = useState(false);
+  const [showMoreMenu, setShowMoreMenu] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -25,9 +26,6 @@ const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
 
   // Get menu items for user role
   const menuItems = getMenuItemsForRole(user.role);
-
-  // State for "More" menu
-  const [showMoreMenu, setShowMoreMenu] = useState(false);
 
   // Define main navigation items for bottom nav based on role
   const getMainNavItems = (): MenuItem[] => {
