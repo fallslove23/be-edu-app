@@ -19,6 +19,7 @@ import {
   ChartBarIcon,
 } from '@heroicons/react/24/outline';
 import { PageContainer } from '../common/PageContainer';
+import { PageHeader } from '../common/PageHeader';
 import { instructorProfileService } from '../../services/instructor-profile.service';
 import { subjectService, instructorSubjectService } from '../../services/subject.service';
 import { supabase } from '../../services/supabase';
@@ -365,16 +366,15 @@ export function InstructorManagement() {
 
   return (
     <PageContainer>
-      <div className="mb-6 flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">강사 관리</h1>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-            강사 계정 및 프로필 통합 관리
-          </p>
-        </div>
+      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-6 mb-8">
+        <PageHeader
+          title="강사 관리"
+          description="강사 계정 및 프로필 통합 관리"
+          badge="Instructor Management"
+        />
         <button
           onClick={openCreateModal}
-          className="btn-primary"
+          className="btn-primary w-full lg:w-auto flex items-center justify-center gap-2"
         >
           <PlusIcon className="w-5 h-5" />
           강사 추가
@@ -735,8 +735,8 @@ export function InstructorManagement() {
                     <button
                       onClick={() => setSelectedCategory('all')}
                       className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${selectedCategory === 'all'
-                          ? 'bg-teal-600 text-white'
-                          : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                        ? 'bg-teal-600 text-white'
+                        : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
                         }`}
                     >
                       전체 ({subjects.length})
@@ -746,8 +746,8 @@ export function InstructorManagement() {
                         key={category}
                         onClick={() => setSelectedCategory(category!)}
                         className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${selectedCategory === category
-                            ? 'bg-teal-600 text-white'
-                            : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                          ? 'bg-teal-600 text-white'
+                          : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
                           }`}
                       >
                         {category} ({subjects.filter(s => s.category === category).length})
@@ -1013,8 +1013,8 @@ export function InstructorManagement() {
                             {is.subject.name}
                           </div>
                           <span className={`px-2 py-1 text-xs rounded-full ${is.proficiency_level === 'expert' ? 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200' :
-                              is.proficiency_level === 'intermediate' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200' :
-                                'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
+                            is.proficiency_level === 'intermediate' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200' :
+                              'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
                             }`}>
                             {proficiencyLevelLabels[is.proficiency_level]}
                           </span>

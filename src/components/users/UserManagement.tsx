@@ -20,6 +20,7 @@ import UserForm from './UserForm';
 import UserDetail from './UserDetail';
 import BulkImportModal from './BulkImportModal';
 import { PageContainer } from '../common/PageContainer';
+import { PageHeader } from '../common/PageHeader';
 import { UserService, CreateUserData, UpdateUserData } from '../../services/user.services';
 
 type ViewType = 'list' | 'form' | 'detail';
@@ -369,29 +370,24 @@ const UserManagement: React.FC = () => {
           )}
 
           {/* 헤더 */}
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white dark:bg-gray-800 rounded-[2rem] p-6 shadow-sm border border-gray-100 dark:border-gray-700">
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 flex items-center">
-                <div className="p-3 bg-blue-50 dark:bg-blue-900/30 rounded-xl mr-4">
-                  <Users className="w-8 h-8 text-blue-600 dark:text-blue-400" />
-                </div>
-                사용자 관리
-              </h1>
-              <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 ml-16">
-                시스템 사용자를 역할별로 관리합니다.
-              </p>
-            </div>
-            <div className="flex space-x-3 mt-4 sm:mt-0 w-full sm:w-auto">
+          {/* 헤더 */}
+          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-6 mb-8">
+            <PageHeader
+              title="사용자 관리"
+              description="시스템 사용자를 역할별로 관리합니다."
+              badge="System Administration"
+            />
+            <div className="flex space-x-3 w-full lg:w-auto">
               <button
                 onClick={() => setShowImportModal(true)}
-                className="flex-1 sm:flex-none bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-gray-600 px-4 py-3 rounded-full font-bold shadow-sm hover:shadow transition-all flex items-center justify-center space-x-2"
+                className="flex-1 lg:flex-none bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-gray-600 px-4 py-3 rounded-xl font-bold shadow-sm hover:shadow transition-all flex items-center justify-center space-x-2"
               >
                 <Upload className="w-5 h-5 text-gray-500 dark:text-gray-400" />
                 <span>일괄 불러오기</span>
               </button>
               <button
                 onClick={handleCreateUser}
-                className="flex-1 sm:flex-none btn-primary px-6 py-3 rounded-full font-bold hover:shadow-xl transition-all flex items-center justify-center space-x-2"
+                className="flex-1 lg:flex-none btn-primary px-6 py-3 rounded-xl font-bold hover:shadow-xl transition-all flex items-center justify-center space-x-2"
               >
                 <Plus className="w-5 h-5" />
                 <span>사용자 추가</span>
