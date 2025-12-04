@@ -259,9 +259,6 @@ export default function DashboardPage() {
                     <h1 className="text-base sm:text-lg font-bold text-foreground">
                       BS 학습 관리 시스템
                     </h1>
-                    <p className="text-xs text-muted-foreground">
-                      {user.role === 'admin' ? '관리자' : user.role === 'instructor' ? '강사' : '교육생'}
-                    </p>
                   </div>
                   {/* Mobile Title - Only show on small screens */}
                   <div className="sm:hidden">
@@ -287,21 +284,12 @@ export default function DashboardPage() {
                   )}
                 </button>
 
+                {/* User Info - Removed as it is now in the sidebar */}
+
                 {/* Notifications - Hidden on mobile */}
                 <button className="hidden sm:flex p-2 text-muted-foreground hover:bg-muted rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-primary">
                   <BellIcon className="w-5 h-5" />
                 </button>
-
-                {/* User Info */}
-                <div className="hidden sm:flex items-center space-x-3 pl-3 border-l border-border">
-                  <div className="text-right">
-                    <p className="text-sm font-medium text-foreground">{user.name}</p>
-                    <p className="text-xs text-muted-foreground">{user.department}</p>
-                  </div>
-                  <div className="w-8 h-8 bg-gradient-to-br from-primary to-primary/80 rounded-full flex items-center justify-center text-primary-foreground font-bold">
-                    {user.name.charAt(0)}
-                  </div>
-                </div>
 
                 {/* Logout Button */}
                 <button
