@@ -25,7 +25,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { supabase } from '../../services/supabase';
 import { useAuth } from '../../contexts/AuthContext';
-import * as XLSX from 'xlsx';
+import ExcelJS from 'exceljs';
 import { ResourceSelector } from './ResourceSelector';
 import { PageContainer } from '../common/PageContainer';
 
@@ -775,7 +775,7 @@ export default function CurriculumManager() {
   };
 
   // 엑셀 내보내기 함수
-  const handleExportToExcel = () => {
+  const handleExportToExcel = async () => {
     if (!selectedRound || sessions.length === 0) {
       alert('내보낼 일정이 없습니다.');
       return;
@@ -799,15 +799,39 @@ export default function CurriculumManager() {
       }));
 
       // 워크북 생성
-      const worksheet = XLSX.utils.json_to_sheet(excelData);
-      const workbook = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(workbook, worksheet, '시간표');
+      const workbook = new ExcelJS.Workbook();
+      const worksheet = workbook.addWorksheet('시간표');
+
+      // 컬럼 설정
+      worksheet.columns = [
+        { header: '날짜', key: '날짜', width: 15 },
+        { header: '요일', key: '요일', width: 10 },
+        { header: '과목', key: '과목', width: 30 },
+        { header: '시작시간', key: '시작시간', width: 12 },
+        { header: '종료시간', key: '종료시간', width: 12 },
+        { header: '강의실', key: '강의실', width: 15 },
+        { header: '강사', key: '강사', width: 15 },
+        { header: '상태', key: '상태', width: 12 },
+        { header: '비고', key: '비고', width: 30 },
+      ];
+
+      // 데이터 추가
+      excelData.forEach(row => {
+        worksheet.addRow(row);
+      });
 
       // 파일명 생성
       const fileName = `${selectedRound.title}_시간표_${new Date().toISOString().split('T')[0]}.xlsx`;
 
       // 파일 다운로드
-      XLSX.writeFile(workbook, fileName);
+      const buffer = await workbook.xlsx.writeBuffer();
+      const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = fileName;
+      link.click();
+      window.URL.revokeObjectURL(url);
 
       alert('엑셀 파일이 다운로드되었습니다.');
     } catch (error: any) {
@@ -836,9 +860,23 @@ export default function CurriculumManager() {
 
       // 파일 읽기
       const data = await file.arrayBuffer();
-      const workbook = XLSX.read(data);
-      const worksheet = workbook.Sheets[workbook.SheetNames[0]];
-      const jsonData = XLSX.utils.sheet_to_json(worksheet) as any[];
+      const workbook = new ExcelJS.Workbook();
+      await workbook.xlsx.load(data);
+
+      const worksheet = workbook.worksheets[0];
+      const jsonData: any[] = [];
+
+      // 첫 번째 행(헤더)을 제외하고 데이터 읽기
+      worksheet.eachRow((row, rowNumber) => {
+        if (rowNumber === 1) return; // 헤더 스킵
+
+        const rowData: any = {};
+        row.eachCell((cell, colNumber) => {
+          const header = worksheet.getRow(1).getCell(colNumber).value as string;
+          rowData[header] = cell.value;
+        });
+        jsonData.push(rowData);
+      });
 
       if (jsonData.length === 0) {
         alert('엑셀 파일에 데이터가 없습니다.');
