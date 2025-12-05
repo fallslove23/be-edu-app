@@ -13,6 +13,7 @@ import PerformanceTracking from '../performance/PerformanceTracking';
 import AdvancedAnalytics from './AdvancedAnalytics';
 import { ReportGenerator } from '../reports';
 import { PageContainer } from '../common/PageContainer';
+import { PageHeader } from '../common/PageHeader';
 
 type TabType = 'performance' | 'analytics' | 'reports';
 
@@ -123,8 +124,8 @@ const IntegratedAnalyticsManagement: React.FC<IntegratedAnalyticsManagementProps
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
                   className={`flex items-center justify-center py-2.5 px-4 rounded-lg font-medium text-sm transition-all duration-200 whitespace-nowrap ${isActive
-                      ? 'bg-white dark:bg-gray-600 text-blue-600 dark:text-blue-400 shadow-sm'
-                      : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
+                    ? 'bg-white dark:bg-gray-600 text-blue-600 dark:text-blue-400 shadow-sm'
+                    : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
                     }`}
                 >
                   <Icon className={`w-4 h-4 mr-2 ${isActive ? 'text-blue-600 dark:text-blue-400' : 'text-gray-400'}`} />
