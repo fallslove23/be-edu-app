@@ -22,27 +22,15 @@ import {
   MapPinIcon,
   UserIcon,
   XMarkIcon,
+  ChevronDownIcon,
 } from '@heroicons/react/24/outline';
 import { supabase } from '../../services/supabase';
 import { useAuth } from '../../contexts/AuthContext';
 import ExcelJS from 'exceljs';
 import { ResourceSelector } from './ResourceSelector';
 import { PageContainer } from '../common/PageContainer';
-
-// 한국 공휴일 (2025년 기준)
-const KOREAN_HOLIDAYS_2025 = [
-  '2025-01-01', // 신정
-  '2025-01-28', '2025-01-29', '2025-01-30', // 설날 연휴
-  '2025-03-01', // 삼일절
-  '2025-05-05', // 어린이날
-  '2025-05-06', // 부처님오신날
-  '2025-06-06', // 현충일
-  '2025-08-15', // 광복절
-  '2025-09-06', '2025-09-07', '2025-09-08', // 추석 연휴
-  '2025-10-03', // 개천절
-  '2025-10-09', // 한글날
-  '2025-12-25', // 크리스마스
-];
+import { PageHeader } from '../common/PageHeader';
+import { HolidayManager } from '@/lib/holidays';
 
 // 날짜 유틸리티 함수
 const isWeekend = (date: Date): boolean => {
@@ -50,28 +38,27 @@ const isWeekend = (date: Date): boolean => {
   return day === 0 || day === 6; // 일요일(0) 또는 토요일(6)
 };
 
-const isHoliday = (date: Date): boolean => {
-  const dateStr = date.toISOString().split('T')[0];
-  return KOREAN_HOLIDAYS_2025.includes(dateStr);
+const isHoliday = async (date: Date): Promise<boolean> => {
+  return await HolidayManager.isHoliday(date);
 };
 
-const getNextWorkingDay = (date: Date): Date => {
+const getNextWorkingDay = async (date: Date): Promise<Date> => {
   const nextDay = new Date(date);
   nextDay.setDate(nextDay.getDate() + 1);
 
-  while (isWeekend(nextDay) || isHoliday(nextDay)) {
+  while (isWeekend(nextDay) || await isHoliday(nextDay)) {
     nextDay.setDate(nextDay.getDate() + 1);
   }
 
   return nextDay;
 };
 
-const addWorkingDays = (startDate: Date, days: number): Date => {
+const addWorkingDays = async (startDate: Date, days: number): Promise<Date> => {
   let currentDate = new Date(startDate);
   let addedDays = 0;
 
   while (addedDays < days) {
-    currentDate = getNextWorkingDay(currentDate);
+    currentDate = await getNextWorkingDay(currentDate);
     addedDays++;
   }
 
@@ -1133,7 +1120,9 @@ export default function CurriculumManager() {
       if (!confirm(confirmMessage)) return;
 
       // 각 세션의 날짜를 재계산
-      const updatedSessions = currentSessions.map((session, index) => {
+      const updatedSessions = [];
+      for (let index = 0; index < currentSessions.length; index++) {
+        const session = currentSessions[index];
         let newDate: Date;
 
         if (index === 0) {
@@ -1141,17 +1130,15 @@ export default function CurriculumManager() {
           newDate = firstSessionDate;
         } else {
           // 이전 세션 날짜 기준으로 다음 근무일 계산
-          const prevDate = index === 0
-            ? firstSessionDate
-            : new Date(currentSessions[index - 1].session_date);
-          newDate = getNextWorkingDay(prevDate);
+          const prevDate = new Date(updatedSessions[index - 1].session_date);
+          newDate = await getNextWorkingDay(prevDate);
         }
 
-        return {
+        updatedSessions.push({
           ...session,
           session_date: newDate.toISOString().split('T')[0]
-        };
-      });
+        });
+      }
 
       // 일괄 업데이트
       for (const session of updatedSessions) {
@@ -1295,7 +1282,7 @@ export default function CurriculumManager() {
       const newSessions = [];
       for (const template of templateSessions) {
         // 주말과 휴일 건너뛰기
-        while (isWeekend(currentDate) || isHoliday(currentDate)) {
+        while (isWeekend(currentDate) || await isHoliday(currentDate)) {
           currentDate.setDate(currentDate.getDate() + 1);
         }
 
@@ -1370,18 +1357,12 @@ export default function CurriculumManager() {
     <PageContainer>
       <div className="space-y-6">
         {/* 헤더 */}
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-card rounded-[2rem] p-8 shadow-sm border border-border">
-          <div>
-            <h1 className="text-3xl font-bold text-foreground flex items-center gap-4">
-              <div className="p-3 bg-primary/10 rounded-2xl">
-                <CalendarIcon className="w-8 h-8 text-primary" />
-              </div>
-              커리큘럼 관리
-            </h1>
-            <p className="text-muted-foreground mt-2 ml-[4.5rem]">
-              교육 과정의 전체 일정을 계획하고 관리합니다.
-            </p>
-          </div>
+        <PageHeader
+          title="커리큘럼 관리"
+          description="교육 과정의 전체 일정을 계획하고 관리합니다."
+          badge="Curriculum Management"
+        />
+        <div className="flex justify-end">
           <button
             onClick={() => {
               setIsEditMode(false);
@@ -1403,7 +1384,7 @@ export default function CurriculumManager() {
               });
               setShowCreateModal(true);
             }}
-            className="mt-4 sm:mt-0 btn-primary px-6 py-3 rounded-xl font-bold shadow-lg shadow-primary/20 hover:shadow-xl transition-all flex items-center gap-2"
+            className="btn-primary px-6 py-3 rounded-xl font-bold shadow-lg shadow-primary/20 hover:shadow-xl transition-all flex items-center gap-2"
           >
             <PlusIcon className="w-5 h-5" />
             <span>새 과정 만들기</span>
@@ -1419,9 +1400,9 @@ export default function CurriculumManager() {
 
         <div className="grid grid-cols-12 gap-4 lg:gap-6">
           {/* 왼쪽: 과정 목록 */}
-          <div className="col-span-12 lg:col-span-3 bg-card rounded-[2rem] shadow-sm border border-border p-4 lg:p-6 h-[300px] lg:h-[calc(100vh-12rem)] sticky top-6 flex flex-col">
-            <h2 className="text-lg font-bold text-foreground mb-4 lg:mb-6 flex items-center gap-2 px-2">
-              <DocumentArrowDownIcon className="w-5 h-5 text-muted-foreground" />
+          <div className="col-span-12 lg:col-span-3 bg-white dark:bg-gray-800 rounded-[2rem] shadow-sm border border-gray-200 dark:border-gray-700 p-4 lg:p-6 h-[300px] lg:h-[calc(100vh-12rem)] sticky top-6 flex flex-col">
+            <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-4 lg:mb-6 flex items-center gap-2 px-2">
+              <DocumentArrowDownIcon className="w-5 h-5 text-gray-500 dark:text-gray-400" />
               과정 목록
             </h2>
             <div className="space-y-3 flex-1 overflow-y-auto pr-2 custom-scrollbar">
@@ -1429,22 +1410,22 @@ export default function CurriculumManager() {
                 <div
                   key={round.id}
                   className={`relative w-full text-left px-4 lg:px-5 py-3 lg:py-4 rounded-2xl transition-all border group ${selectedRound?.id === round.id
-                    ? 'bg-primary/5 border-primary/20 shadow-sm'
-                    : 'bg-background border-border hover:border-primary/30 hover:bg-muted/50'
+                    ? 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800 shadow-sm ring-1 ring-blue-200 dark:ring-blue-800'
+                    : 'bg-white dark:bg-gray-800 border-gray-100 dark:border-gray-700 hover:border-blue-200 dark:hover:border-blue-700 hover:bg-gray-50 dark:hover:bg-gray-700/50'
                     }`}
                 >
                   <div
                     onClick={() => setSelectedRound(round)}
                     className="cursor-pointer pr-8"
                   >
-                    <div className={`font-bold text-sm ${selectedRound?.id === round.id ? 'text-primary' : 'text-foreground'}`}>{round.title}</div>
-                    <div className="text-xs text-muted-foreground mt-2 flex items-center gap-1">
+                    <div className={`font-bold text-sm ${selectedRound?.id === round.id ? 'text-blue-700 dark:text-blue-300' : 'text-gray-900 dark:text-white'}`}>{round.title}</div>
+                    <div className="text-xs text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-1">
                       <CalendarIcon className="w-3 h-3" />
                       {new Date(round.start_date).toLocaleDateString('ko-KR')}
                     </div>
                     <div className="flex items-center gap-2 mt-3">
                       <span
-                        className={`text-[10px] px-2 py-1 rounded-full font-medium border ${round.status === 'completed'
+                        className={`text-[10px] px-2 py-1 rounded-full font-bold border ${round.status === 'completed'
                           ? 'bg-green-50 text-green-700 border-green-200 dark:bg-green-900/20 dark:text-green-300 dark:border-green-800'
                           : round.status === 'in_progress'
                             ? 'bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-900/20 dark:text-blue-300 dark:border-blue-800'
@@ -1461,7 +1442,7 @@ export default function CurriculumManager() {
                                 ? '완료'
                                 : '취소'}
                       </span>
-                      {round.is_locked && <LockClosedIcon className="w-3 h-3 text-muted-foreground" />}
+                      {round.is_locked && <LockClosedIcon className="w-3 h-3 text-gray-400" />}
                     </div>
                   </div>
 
@@ -1472,7 +1453,7 @@ export default function CurriculumManager() {
                         e.stopPropagation();
                         handleEditRound(round);
                       }}
-                      className="p-1.5 rounded-lg hover:bg-background text-muted-foreground hover:text-primary border border-transparent hover:border-border transition-all shadow-sm"
+                      className="p-1.5 rounded-lg hover:bg-white dark:hover:bg-gray-700 text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 border border-transparent hover:border-gray-200 dark:hover:border-gray-600 transition-all shadow-sm"
                       title="편집"
                     >
                       <PencilIcon className="w-3.5 h-3.5" />
@@ -1482,7 +1463,7 @@ export default function CurriculumManager() {
                         e.stopPropagation();
                         handleDeleteRound(round.id, round.title);
                       }}
-                      className="p-1.5 rounded-lg hover:bg-background text-muted-foreground hover:text-destructive border border-transparent hover:border-border transition-all shadow-sm disabled:opacity-30"
+                      className="p-1.5 rounded-lg hover:bg-white dark:hover:bg-gray-700 text-gray-400 hover:text-red-600 dark:hover:text-red-400 border border-transparent hover:border-gray-200 dark:hover:border-gray-600 transition-all shadow-sm disabled:opacity-30"
                       title="삭제"
                       disabled={round.is_locked}
                     >
@@ -1497,92 +1478,108 @@ export default function CurriculumManager() {
           {/* 오른쪽: 시간표 그리드 */}
           <div className="col-span-12 lg:col-span-9">
             {selectedRound ? (
-              <div className="bg-card rounded-[2rem] shadow-sm border border-border overflow-hidden flex flex-col h-[600px] lg:h-[calc(100vh-12rem)]">
+              <div className="bg-white dark:bg-gray-800 rounded-[2rem] shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden flex flex-col h-[600px] lg:h-[calc(100vh-12rem)]">
                 {/* 과정 정보 헤더 */}
-                <div className="p-8 border-b border-border bg-muted/30">
+                <div className="p-8 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50">
                   <div className="flex flex-col xl:flex-row justify-between items-start gap-6">
                     <div>
-                      <h2 className="text-2xl font-bold text-foreground mb-3">
+                      <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">
                         {selectedRound.title}
                       </h2>
-                      <div className="flex flex-wrap gap-3 text-sm text-muted-foreground">
-                        <div className="flex items-center gap-2 bg-background px-3 py-2 rounded-xl border border-border shadow-sm">
-                          <CalendarIcon className="w-4 h-4 text-primary" />
-                          {new Date(selectedRound.start_date).toLocaleDateString('ko-KR')} ~{' '}
-                          {new Date(selectedRound.end_date).toLocaleDateString('ko-KR')}
+                      <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
+                        <div className="flex items-center gap-1.5 bg-white dark:bg-gray-800 px-3 py-1.5 rounded-lg border border-gray-100 dark:border-gray-700 shadow-sm">
+                          <CalendarIcon className="w-4 h-4 text-blue-500" />
+                          <span>
+                            {new Date(selectedRound.start_date).toLocaleDateString('ko-KR')} ~ {new Date(selectedRound.end_date).toLocaleDateString('ko-KR')}
+                          </span>
                         </div>
-                        <div className="flex items-center gap-2 bg-background px-3 py-2 rounded-xl border border-border shadow-sm">
-                          <UserIcon className="w-4 h-4 text-purple-500" />
-                          강사: <span className="font-bold text-foreground">{selectedRound.instructor_name}</span>
-                        </div>
-                        <div className="flex items-center gap-2 bg-background px-3 py-2 rounded-xl border border-border shadow-sm">
-                          <MapPinIcon className="w-4 h-4 text-red-500" />
-                          {selectedRound.location}
-                        </div>
+                        {selectedRound.instructor_name && (
+                          <div className="flex items-center gap-1.5 bg-white dark:bg-gray-800 px-3 py-1.5 rounded-lg border border-gray-100 dark:border-gray-700 shadow-sm">
+                            <UserIcon className="w-4 h-4 text-green-500" />
+                            <span>{selectedRound.instructor_name}</span>
+                          </div>
+                        )}
+                        {selectedRound.location && (
+                          <div className="flex items-center gap-1.5 bg-white dark:bg-gray-800 px-3 py-1.5 rounded-lg border border-gray-100 dark:border-gray-700 shadow-sm">
+                            <MapPinIcon className="w-4 h-4 text-red-500" />
+                            <span>{selectedRound.location}</span>
+                          </div>
+                        )}
                       </div>
                     </div>
                     <div className="flex flex-wrap items-center gap-2 w-full xl:w-auto xl:justify-end">
-                      {!selectedRound.is_locked && (
-                        <>
-                          <button
-                            onClick={() => setShowSessionModal(true)}
-                            className="bg-primary hover:bg-primary/90 text-primary-foreground px-4 py-2.5 rounded-xl text-sm font-bold shadow-md hover:shadow-lg transition-all flex items-center gap-2"
-                          >
-                            <PlusIcon className="w-4 h-4" />
-                            일정 추가
-                          </button>
-                          <button
-                            onClick={() => handleToggleLock(selectedRound.id, true)}
-                            className="bg-background hover:bg-muted text-foreground border border-border px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm hover:shadow transition-all flex items-center gap-2"
-                            title="과정 확정 및 잠금"
-                          >
-                            <LockClosedIcon className="w-4 h-4 text-muted-foreground" />
-                            확정
-                          </button>
-                        </>
-                      )}
-                      {selectedRound.is_locked && (
+                      <button
+                        onClick={() => {
+                          setSessionForm({
+                            day_number: sessions.length + 1,
+                            title: '',
+                            subject_id: '',
+                            session_date: '',
+                            start_time: '09:00',
+                            end_time: '18:00',
+                            classroom: '',
+                            classroom_id: '',
+                            actual_instructor_id: '',
+                          });
+                          setShowSessionModal(true);
+                        }}
+                        disabled={selectedRound.is_locked}
+                        className="btn-primary px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm hover:shadow transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        <PlusIcon className="w-4 h-4" />
+                        일정 추가
+                      </button>
+                      {!selectedRound.is_locked ? (
+                        <button
+                          onClick={() => handleToggleLock(selectedRound.id, true)}
+                          className="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700 px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm hover:shadow transition-all flex items-center gap-2"
+                          title="과정 확정 및 잠금"
+                        >
+                          <LockClosedIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+                          확정
+                        </button>
+                      ) : (
                         <button
                           onClick={() => handleToggleLock(selectedRound.id, false)}
-                          className="bg-background hover:bg-muted text-foreground border border-border px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm hover:shadow transition-all flex items-center gap-2"
+                          className="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700 px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm hover:shadow transition-all flex items-center gap-2"
                           title="잠금 해제"
                         >
-                          <LockOpenIcon className="w-4 h-4 text-muted-foreground" />
+                          <LockOpenIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
                           잠금 해제
                         </button>
                       )}
                       <button
                         onClick={() => handleDuplicateRound(selectedRound.id)}
-                        className="bg-background hover:bg-muted text-foreground border border-border px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm hover:shadow transition-all flex items-center gap-2"
+                        className="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700 px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm hover:shadow transition-all flex items-center gap-2"
                         title="과정 복제"
                       >
-                        <DocumentArrowDownIcon className="w-4 h-4 text-muted-foreground" />
+                        <DocumentArrowDownIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
                         복제
                       </button>
                       {!selectedRound.is_locked && sessions.length > 0 && (
                         <button
                           onClick={() => handleRecalculateDates(selectedRound.id)}
-                          className="bg-background hover:bg-muted text-foreground border border-border px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm hover:shadow transition-all flex items-center gap-2"
+                          className="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700 px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm hover:shadow transition-all flex items-center gap-2"
                           title="날짜 자동 재계산 (주말/공휴일 건너뛰기)"
                         >
-                          <CalendarIcon className="w-4 h-4 text-muted-foreground" />
+                          <CalendarIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
                           날짜 재계산
                         </button>
                       )}
                       {sessions.length > 0 && (
                         <button
                           onClick={handleExportToExcel}
-                          className="bg-background hover:bg-muted text-foreground border border-border px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm hover:shadow transition-all flex items-center gap-2"
+                          className="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700 px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm hover:shadow transition-all flex items-center gap-2"
                           title="엑셀로 내보내기"
                         >
-                          <DocumentArrowDownIcon className="w-4 h-4 text-muted-foreground" />
+                          <DocumentArrowDownIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
                           엑셀 내보내기
                         </button>
                       )}
                       {!selectedRound.is_locked && (
                         <>
-                          <label className="bg-background hover:bg-muted text-foreground border border-border px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm hover:shadow transition-all flex items-center gap-2 cursor-pointer" title="엑셀에서 가져오기">
-                            <DocumentArrowUpIcon className="w-4 h-4 text-muted-foreground" />
+                          <label className="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700 px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm hover:shadow transition-all flex items-center gap-2 cursor-pointer" title="엑셀에서 가져오기">
+                            <DocumentArrowUpIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
                             엑셀 가져오기
                             <input
                               type="file"
@@ -1593,10 +1590,10 @@ export default function CurriculumManager() {
                           </label>
                           <button
                             onClick={() => setShowTemplateModal(true)}
-                            className="bg-background hover:bg-muted text-foreground border border-border px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm hover:shadow transition-all flex items-center gap-2"
+                            className="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700 px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm hover:shadow transition-all flex items-center gap-2"
                             title="템플릿에서 불러오기"
                           >
-                            <DocumentArrowDownIcon className="w-4 h-4 text-muted-foreground" />
+                            <DocumentArrowDownIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
                             템플릿 불러오기
                           </button>
                         </>
@@ -1604,10 +1601,10 @@ export default function CurriculumManager() {
                       {sessions.length > 0 && !selectedRound.is_locked && (
                         <button
                           onClick={() => setShowSaveTemplateModal(true)}
-                          className="bg-background hover:bg-muted text-foreground border border-border px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm hover:shadow transition-all flex items-center gap-2"
+                          className="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700 px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm hover:shadow transition-all flex items-center gap-2"
                           title="현재 시간표를 템플릿으로 저장"
                         >
-                          <DocumentArrowUpIcon className="w-4 h-4 text-muted-foreground" />
+                          <DocumentArrowUpIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
                           템플릿 저장
                         </button>
                       )}
@@ -1616,11 +1613,11 @@ export default function CurriculumManager() {
                 </div>
 
                 {/* 시간표 그리드 */}
-                <div className="p-6 bg-muted/10 flex-1 overflow-y-auto custom-scrollbar">
+                <div className="p-6 bg-gray-50/50 dark:bg-gray-900/20 flex-1 overflow-y-auto custom-scrollbar">
                   {sessions.length === 0 ? (
-                    <div className="flex flex-col items-center justify-center py-20 text-muted-foreground bg-background rounded-[2rem] border border-dashed border-border h-full">
-                      <CalendarIcon className="w-16 h-16 text-muted-foreground/30 mb-4" />
-                      <p className="text-lg font-bold text-foreground">아직 일정이 없습니다.</p>
+                    <div className="flex flex-col items-center justify-center py-20 text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 rounded-[2rem] border-2 border-dashed border-gray-200 dark:border-gray-700 h-full">
+                      <CalendarIcon className="w-16 h-16 text-gray-300 dark:text-gray-600 mb-4" />
+                      <p className="text-lg font-bold text-gray-900 dark:text-white">아직 일정이 없습니다.</p>
                       <p className="text-sm mt-2">'일정 추가' 버튼을 눌러 시간표를 작성하세요.</p>
                     </div>
                   ) : (
@@ -1635,18 +1632,18 @@ export default function CurriculumManager() {
                           onDrop={(e) => handleDrop(e, session, index)}
                           onDragEnd={handleDragEnd}
                           className={`flex items-center justify-between p-6 border rounded-2xl transition-all group ${!selectedRound.is_locked ? 'cursor-move hover:shadow-md' : ''
-                            } ${draggedSession?.id === session.id ? 'opacity-50 ring-2 ring-primary/50' : ''
-                            } ${dragOverIndex === index ? 'border-primary bg-primary/5 ring-2 ring-primary/20' : 'bg-card border-border hover:border-primary/30'
+                            } ${draggedSession?.id === session.id ? 'opacity-50 ring-2 ring-blue-500/50' : ''
+                            } ${dragOverIndex === index ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20 ring-2 ring-blue-500/20' : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-600'
                             }`}
                         >
                           <div className="flex-1">
                             <div className="flex items-center gap-6">
-                              <div className="flex flex-col items-center justify-center w-16 h-16 bg-primary/10 text-primary rounded-2xl font-bold border border-primary/20 shadow-sm">
+                              <div className="flex flex-col items-center justify-center w-16 h-16 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-2xl font-bold border border-blue-100 dark:border-blue-800 shadow-sm">
                                 <span className="text-[10px] uppercase tracking-wider opacity-70">Day</span>
                                 <span className="text-2xl">{session.day_number}</span>
                               </div>
                               <div>
-                                <div className="font-bold text-lg text-foreground flex items-center gap-2">
+                                <div className="font-bold text-lg text-gray-900 dark:text-white flex items-center gap-2">
                                   {session.title || '제목 없음'}
                                 </div>
                                 <div className="flex items-center gap-3 text-sm text-muted-foreground mt-2">
@@ -1705,14 +1702,14 @@ export default function CurriculumManager() {
                 </div>
               </div>
             ) : (
-              <div className="bg-card rounded-[2rem] shadow-sm border border-border p-12 text-center h-full flex flex-col items-center justify-center min-h-[500px]">
-                <div className="w-24 h-24 bg-muted rounded-full flex items-center justify-center mb-6">
-                  <CalendarIcon className="w-12 h-12 text-muted-foreground/50" />
+              <div className="bg-white dark:bg-gray-800 rounded-[2rem] shadow-sm border border-gray-200 dark:border-gray-700 p-12 text-center h-full flex flex-col items-center justify-center min-h-[500px]">
+                <div className="w-24 h-24 bg-gray-50 dark:bg-gray-700 rounded-full flex items-center justify-center mb-6">
+                  <CalendarIcon className="w-12 h-12 text-gray-300 dark:text-gray-500" />
                 </div>
-                <h3 className="text-xl font-bold text-foreground mb-2">
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
                   과정을 선택하세요
                 </h3>
-                <p className="text-muted-foreground max-w-md mx-auto">
+                <p className="text-gray-500 dark:text-gray-400 max-w-md mx-auto">
                   왼쪽 목록에서 과정을 선택하거나 상단의 '새 과정 만들기' 버튼을 눌러 새로운 과정을 시작해보세요.
                 </p>
               </div>
@@ -1722,9 +1719,9 @@ export default function CurriculumManager() {
 
         {/* 과정 생성/편집 모달 */}
         {showCreateModal && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white dark:bg-gray-800 rounded-[2rem] p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-              <div className="flex justify-between items-center mb-6">
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4" onClick={() => setShowCreateModal(false)}>
+            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto border border-gray-200 dark:border-gray-700" onClick={(e) => e.stopPropagation()}>
+              <div className="p-6 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center">
                 <h2 className="text-xl font-bold text-gray-900 dark:text-white">
                   {isEditMode ? '과정 편집' : '새 과정 만들기'}
                 </h2>
@@ -1734,96 +1731,106 @@ export default function CurriculumManager() {
                     setIsEditMode(false);
                     setEditingRoundId(null);
                   }}
-                  className="text-gray-400 hover:text-gray-600"
+                  className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors"
                 >
-                  <XMarkIcon className="w-6 h-6" />
+                  <XMarkIcon className="w-5 h-5 text-gray-500 dark:text-gray-400" />
                 </button>
               </div>
 
-              <div className="space-y-4">
+              <div className="p-6 space-y-5">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    과정명 *
+                  <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
+                    과정명 <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="text"
                     value={roundForm.title}
                     onChange={(e) => setRoundForm({ ...roundForm, title: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                    className="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                     placeholder="예: 2025년 1기 BS 영업 과정"
                   />
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                      시작일 *
+                    <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
+                      시작일 <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="date"
                       value={roundForm.start_date}
                       onChange={(e) => setRoundForm({ ...roundForm, start_date: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                      className="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                      종료일 *
+                    <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
+                      종료일 <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="date"
                       value={roundForm.end_date}
                       onChange={(e) => setRoundForm({ ...roundForm, end_date: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                      className="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    운영 담당자 *
+                  <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
+                    운영 담당자 <span className="text-red-500">*</span>
                   </label>
-                  <select
-                    value={roundForm.manager_id}
-                    onChange={(e) => {
-                      const manager = managers.find((m) => m.id === e.target.value);
-                      setRoundForm({
-                        ...roundForm,
-                        manager_id: e.target.value,
-                        manager_name: manager?.name || '',
-                      });
-                    }}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                  >
-                    <option value="">선택</option>
-                    {managers.map((manager) => (
-                      <option key={manager.id} value={manager.id}>
-                        {manager.name} ({manager.email})
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                      장소 *
-                    </label>
+                  <div className="relative">
                     <select
-                      value={roundForm.location}
-                      onChange={(e) => setRoundForm({ ...roundForm, location: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                      value={roundForm.manager_id}
+                      onChange={(e) => {
+                        const manager = managers.find((m) => m.id === e.target.value);
+                        setRoundForm({
+                          ...roundForm,
+                          manager_id: e.target.value,
+                          manager_name: manager?.name || '',
+                        });
+                      }}
+                      className="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none transition-all"
                     >
-                      <option value="">강의실을 선택하세요</option>
-                      {classrooms.map((classroom) => (
-                        <option key={classroom.id} value={classroom.name}>
-                          {classroom.name} (위치: {classroom.location || '미지정'}, 수용: {classroom.capacity}명)
+                      <option value="">선택</option>
+                      {managers.map((manager) => (
+                        <option key={manager.id} value={manager.id}>
+                          {manager.name} ({manager.email})
                         </option>
                       ))}
                     </select>
+                    <div className="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none text-gray-500 dark:text-gray-400">
+                      <ChevronDownIcon className="w-4 h-4" />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
+                      장소 <span className="text-red-500">*</span>
+                    </label>
+                    <div className="relative">
+                      <select
+                        value={roundForm.location}
+                        onChange={(e) => setRoundForm({ ...roundForm, location: e.target.value })}
+                        className="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none transition-all"
+                      >
+                        <option value="">강의실을 선택하세요</option>
+                        {classrooms.map((classroom) => (
+                          <option key={classroom.id} value={classroom.name}>
+                            {classroom.name} (위치: {classroom.location || '미지정'}, 수용: {classroom.capacity}명)
+                          </option>
+                        ))}
+                      </select>
+                      <div className="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none text-gray-500 dark:text-gray-400">
+                        <ChevronDownIcon className="w-4 h-4" />
+                      </div>
+                    </div>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
                       입과 인원
                     </label>
                     <input
@@ -1832,41 +1839,41 @@ export default function CurriculumManager() {
                       onChange={(e) =>
                         setRoundForm({ ...roundForm, max_trainees: parseInt(e.target.value) })
                       }
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                      className="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                       min="1"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
                     설명
                   </label>
                   <textarea
                     value={roundForm.description}
                     onChange={(e) => setRoundForm({ ...roundForm, description: e.target.value })}
                     rows={3}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                    className="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                     placeholder="과정에 대한 설명을 입력하세요"
                   />
                 </div>
               </div>
 
-              <div className="mt-6 flex justify-end gap-3">
+              <div className="p-6 border-t border-gray-100 dark:border-gray-700 flex justify-end gap-3 bg-gray-50 dark:bg-gray-800/50">
                 <button
                   onClick={() => {
                     setShowCreateModal(false);
                     setIsEditMode(false);
                     setEditingRoundId(null);
                   }}
-                  className="px-4 py-2 text-foreground hover:bg-muted rounded-full"
+                  className="px-6 py-2.5 rounded-xl font-bold text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
                 >
                   취소
                 </button>
                 <button
                   onClick={handleCreateRound}
                   disabled={!roundForm.title || !roundForm.start_date || !roundForm.end_date}
-                  className="px-4 py-2 bg-primary text-primary-foreground rounded-full hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-6 py-2.5 rounded-xl font-bold bg-blue-600 text-white hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-500 shadow-lg shadow-blue-500/30 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none"
                 >
                   {isEditMode ? '수정' : '생성'}
                 </button>
@@ -1877,22 +1884,22 @@ export default function CurriculumManager() {
 
         {/* 일정 추가 모달 */}
         {showSessionModal && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white dark:bg-gray-800 rounded-[2rem] p-6 w-full max-w-3xl max-h-[90vh] overflow-y-auto">
-              <div className="flex justify-between items-center mb-6">
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4" onClick={() => setShowSessionModal(false)}>
+            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl w-full max-w-3xl max-h-[90vh] overflow-y-auto border border-gray-200 dark:border-gray-700" onClick={(e) => e.stopPropagation()}>
+              <div className="p-6 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center">
                 <h2 className="text-xl font-bold text-gray-900 dark:text-white">일정 추가</h2>
                 <button
                   onClick={() => setShowSessionModal(false)}
-                  className="text-gray-400 hover:text-gray-600"
+                  className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors"
                 >
-                  <XMarkIcon className="w-6 h-6" />
+                  <XMarkIcon className="w-5 h-5 text-gray-500 dark:text-gray-400" />
                 </button>
               </div>
 
-              <div className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
+              <div className="p-6 space-y-5">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
                       일차
                     </label>
                     <input
@@ -1901,121 +1908,135 @@ export default function CurriculumManager() {
                       onChange={(e) =>
                         setSessionForm({ ...sessionForm, day_number: parseInt(e.target.value) })
                       }
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                      className="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                       min="1"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                      날짜 *
+                    <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
+                      날짜 <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="date"
                       value={sessionForm.session_date}
                       onChange={(e) => setSessionForm({ ...sessionForm, session_date: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                      className="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
                     제목
                   </label>
                   <input
                     type="text"
                     value={sessionForm.title}
                     onChange={(e) => setSessionForm({ ...sessionForm, title: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                    className="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                     placeholder="예: BS 영업 기초"
                   />
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                      시작 시간 *
+                    <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
+                      시작 시간 <span className="text-red-500">*</span>
                     </label>
-                    <select
-                      value={sessionForm.start_time}
-                      onChange={(e) => setSessionForm({ ...sessionForm, start_time: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                    >
-                      <option value="09:00">오전 09:00</option>
-                      <option value="09:30">오전 09:30</option>
-                      <option value="10:00">오전 10:00</option>
-                      <option value="10:30">오전 10:30</option>
-                      <option value="11:00">오전 11:00</option>
-                      <option value="11:30">오전 11:30</option>
-                      <option value="12:00">오후 12:00</option>
-                      <option value="12:30">오후 12:30</option>
-                      <option value="13:00">오후 01:00</option>
-                      <option value="13:30">오후 01:30</option>
-                      <option value="14:00">오후 02:00</option>
-                      <option value="14:30">오후 02:30</option>
-                      <option value="15:00">오후 03:00</option>
-                      <option value="15:30">오후 03:30</option>
-                      <option value="16:00">오후 04:00</option>
-                      <option value="16:30">오후 04:30</option>
-                      <option value="17:00">오후 05:00</option>
-                      <option value="17:30">오후 05:30</option>
-                      <option value="18:00">오후 06:00</option>
-                    </select>
+                    <div className="relative">
+                      <select
+                        value={sessionForm.start_time}
+                        onChange={(e) => setSessionForm({ ...sessionForm, start_time: e.target.value })}
+                        className="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none transition-all"
+                      >
+                        <option value="09:00">오전 09:00</option>
+                        <option value="09:30">오전 09:30</option>
+                        <option value="10:00">오전 10:00</option>
+                        <option value="10:30">오전 10:30</option>
+                        <option value="11:00">오전 11:00</option>
+                        <option value="11:30">오전 11:30</option>
+                        <option value="12:00">오후 12:00</option>
+                        <option value="12:30">오후 12:30</option>
+                        <option value="13:00">오후 01:00</option>
+                        <option value="13:30">오후 01:30</option>
+                        <option value="14:00">오후 02:00</option>
+                        <option value="14:30">오후 02:30</option>
+                        <option value="15:00">오후 03:00</option>
+                        <option value="15:30">오후 03:30</option>
+                        <option value="16:00">오후 04:00</option>
+                        <option value="16:30">오후 04:30</option>
+                        <option value="17:00">오후 05:00</option>
+                        <option value="17:30">오후 05:30</option>
+                        <option value="18:00">오후 06:00</option>
+                      </select>
+                      <div className="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none text-gray-500 dark:text-gray-400">
+                        <ChevronDownIcon className="w-4 h-4" />
+                      </div>
+                    </div>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                      종료 시간 *
+                    <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
+                      종료 시간 <span className="text-red-500">*</span>
                     </label>
-                    <select
-                      value={sessionForm.end_time}
-                      onChange={(e) => setSessionForm({ ...sessionForm, end_time: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                    >
-                      <option value="09:00">오전 09:00</option>
-                      <option value="09:30">오전 09:30</option>
-                      <option value="10:00">오전 10:00</option>
-                      <option value="10:30">오전 10:30</option>
-                      <option value="11:00">오전 11:00</option>
-                      <option value="11:30">오전 11:30</option>
-                      <option value="12:00">오후 12:00</option>
-                      <option value="12:30">오후 12:30</option>
-                      <option value="13:00">오후 01:00</option>
-                      <option value="13:30">오후 01:30</option>
-                      <option value="14:00">오후 02:00</option>
-                      <option value="14:30">오후 02:30</option>
-                      <option value="15:00">오후 03:00</option>
-                      <option value="15:30">오후 03:30</option>
-                      <option value="16:00">오후 04:00</option>
-                      <option value="16:30">오후 04:30</option>
-                      <option value="17:00">오후 05:00</option>
-                      <option value="17:30">오후 05:30</option>
-                      <option value="18:00">오후 06:00</option>
-                    </select>
+                    <div className="relative">
+                      <select
+                        value={sessionForm.end_time}
+                        onChange={(e) => setSessionForm({ ...sessionForm, end_time: e.target.value })}
+                        className="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none transition-all"
+                      >
+                        <option value="09:00">오전 09:00</option>
+                        <option value="09:30">오전 09:30</option>
+                        <option value="10:00">오전 10:00</option>
+                        <option value="10:30">오전 10:30</option>
+                        <option value="11:00">오전 11:00</option>
+                        <option value="11:30">오전 11:30</option>
+                        <option value="12:00">오후 12:00</option>
+                        <option value="12:30">오후 12:30</option>
+                        <option value="13:00">오후 01:00</option>
+                        <option value="13:30">오후 01:30</option>
+                        <option value="14:00">오후 02:00</option>
+                        <option value="14:30">오후 02:30</option>
+                        <option value="15:00">오후 03:00</option>
+                        <option value="15:30">오후 03:30</option>
+                        <option value="16:00">오후 04:00</option>
+                        <option value="16:30">오후 04:30</option>
+                        <option value="17:00">오후 05:00</option>
+                        <option value="17:30">오후 05:30</option>
+                        <option value="18:00">오후 06:00</option>
+                      </select>
+                      <div className="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none text-gray-500 dark:text-gray-400">
+                        <ChevronDownIcon className="w-4 h-4" />
+                      </div>
+                    </div>
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
                     과목 (선택)
                   </label>
-                  <select
-                    value={sessionForm.subject_id}
-                    onChange={(e) => setSessionForm({ ...sessionForm, subject_id: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                  >
-                    <option value="">선택</option>
-                    {subjects.map((subject) => (
-                      <option key={subject.id} value={subject.id}>
-                        {subject.name}
-                      </option>
-                    ))}
-                  </select>
+                  <div className="relative">
+                    <select
+                      value={sessionForm.subject_id}
+                      onChange={(e) => setSessionForm({ ...sessionForm, subject_id: e.target.value })}
+                      className="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none transition-all"
+                    >
+                      <option value="">선택</option>
+                      {subjects.map((subject) => (
+                        <option key={subject.id} value={subject.id}>
+                          {subject.name}
+                        </option>
+                      ))}
+                    </select>
+                    <div className="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none text-gray-500 dark:text-gray-400">
+                      <ChevronDownIcon className="w-4 h-4" />
+                    </div>
+                  </div>
                 </div>
 
                 {/* ResourceSelector 통합 */}
-                {/* ResourceSelector 통합 */}
-                <div className="border-t pt-4 mt-4">
-                  <h3 className="text-lg font-semibold mb-4">자원 선택</h3>
+                <div className="border-t border-gray-100 dark:border-gray-700 pt-4 mt-4">
+                  <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">자원 선택</h3>
                   <ResourceSelector
                     sessionDate={sessionForm.session_date}
                     startTime={sessionForm.start_time}
@@ -2040,10 +2061,10 @@ export default function CurriculumManager() {
                 </div>
               </div>
 
-              <div className="mt-6 flex justify-end gap-3">
+              <div className="p-6 border-t border-gray-100 dark:border-gray-700 flex justify-end gap-3 bg-gray-50 dark:bg-gray-800/50">
                 <button
                   onClick={() => setShowSessionModal(false)}
-                  className="px-4 py-2 text-foreground hover:bg-muted rounded-full"
+                  className="px-6 py-2.5 rounded-xl font-bold text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
                 >
                   취소
                 </button>
@@ -2052,7 +2073,7 @@ export default function CurriculumManager() {
                   disabled={
                     !sessionForm.session_date || !sessionForm.start_time || !sessionForm.end_time || !sessionForm.classroom_id
                   }
-                  className="px-4 py-2 bg-primary text-primary-foreground rounded-full hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-6 py-2.5 rounded-xl font-bold bg-blue-600 text-white hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-500 shadow-lg shadow-blue-500/30 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none"
                 >
                   추가
                 </button>
@@ -2063,25 +2084,28 @@ export default function CurriculumManager() {
 
         {/* 일정 수정 모달 */}
         {showEditModal && selectedSession && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white dark:bg-gray-800 rounded-[2rem] p-6 w-full max-w-3xl max-h-[90vh] overflow-y-auto">
-              <div className="flex justify-between items-center mb-6">
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4" onClick={() => {
+            setShowEditModal(false);
+            setSelectedSession(null);
+          }}>
+            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl w-full max-w-3xl max-h-[90vh] overflow-y-auto border border-gray-200 dark:border-gray-700" onClick={(e) => e.stopPropagation()}>
+              <div className="p-6 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center">
                 <h2 className="text-xl font-bold text-gray-900 dark:text-white">일정 수정</h2>
                 <button
                   onClick={() => {
                     setShowEditModal(false);
                     setSelectedSession(null);
                   }}
-                  className="text-gray-400 hover:text-gray-600"
+                  className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors"
                 >
-                  <XMarkIcon className="w-6 h-6" />
+                  <XMarkIcon className="w-5 h-5 text-gray-500 dark:text-gray-400" />
                 </button>
               </div>
 
-              <div className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
+              <div className="p-6 space-y-5">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
                       일차
                     </label>
                     <input
@@ -2090,121 +2114,135 @@ export default function CurriculumManager() {
                       onChange={(e) =>
                         setSessionForm({ ...sessionForm, day_number: parseInt(e.target.value) })
                       }
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                      className="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                       min="1"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                      날짜 *
+                    <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
+                      날짜 <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="date"
                       value={sessionForm.session_date}
                       onChange={(e) => setSessionForm({ ...sessionForm, session_date: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                      className="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
                     제목
                   </label>
                   <input
                     type="text"
                     value={sessionForm.title}
                     onChange={(e) => setSessionForm({ ...sessionForm, title: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                    className="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                     placeholder="예: BS 영업 기초"
                   />
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                      시작 시간 *
+                    <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
+                      시작 시간 <span className="text-red-500">*</span>
                     </label>
-                    <select
-                      value={sessionForm.start_time}
-                      onChange={(e) => setSessionForm({ ...sessionForm, start_time: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                    >
-                      <option value="09:00">오전 09:00</option>
-                      <option value="09:30">오전 09:30</option>
-                      <option value="10:00">오전 10:00</option>
-                      <option value="10:30">오전 10:30</option>
-                      <option value="11:00">오전 11:00</option>
-                      <option value="11:30">오전 11:30</option>
-                      <option value="12:00">오후 12:00</option>
-                      <option value="12:30">오후 12:30</option>
-                      <option value="13:00">오후 01:00</option>
-                      <option value="13:30">오후 01:30</option>
-                      <option value="14:00">오후 02:00</option>
-                      <option value="14:30">오후 02:30</option>
-                      <option value="15:00">오후 03:00</option>
-                      <option value="15:30">오후 03:30</option>
-                      <option value="16:00">오후 04:00</option>
-                      <option value="16:30">오후 04:30</option>
-                      <option value="17:00">오후 05:00</option>
-                      <option value="17:30">오후 05:30</option>
-                      <option value="18:00">오후 06:00</option>
-                    </select>
+                    <div className="relative">
+                      <select
+                        value={sessionForm.start_time}
+                        onChange={(e) => setSessionForm({ ...sessionForm, start_time: e.target.value })}
+                        className="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none transition-all"
+                      >
+                        <option value="09:00">오전 09:00</option>
+                        <option value="09:30">오전 09:30</option>
+                        <option value="10:00">오전 10:00</option>
+                        <option value="10:30">오전 10:30</option>
+                        <option value="11:00">오전 11:00</option>
+                        <option value="11:30">오전 11:30</option>
+                        <option value="12:00">오후 12:00</option>
+                        <option value="12:30">오후 12:30</option>
+                        <option value="13:00">오후 01:00</option>
+                        <option value="13:30">오후 01:30</option>
+                        <option value="14:00">오후 02:00</option>
+                        <option value="14:30">오후 02:30</option>
+                        <option value="15:00">오후 03:00</option>
+                        <option value="15:30">오후 03:30</option>
+                        <option value="16:00">오후 04:00</option>
+                        <option value="16:30">오후 04:30</option>
+                        <option value="17:00">오후 05:00</option>
+                        <option value="17:30">오후 05:30</option>
+                        <option value="18:00">오후 06:00</option>
+                      </select>
+                      <div className="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none text-gray-500 dark:text-gray-400">
+                        <ChevronDownIcon className="w-4 h-4" />
+                      </div>
+                    </div>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                      종료 시간 *
+                    <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
+                      종료 시간 <span className="text-red-500">*</span>
                     </label>
-                    <select
-                      value={sessionForm.end_time}
-                      onChange={(e) => setSessionForm({ ...sessionForm, end_time: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                    >
-                      <option value="09:00">오전 09:00</option>
-                      <option value="09:30">오전 09:30</option>
-                      <option value="10:00">오전 10:00</option>
-                      <option value="10:30">오전 10:30</option>
-                      <option value="11:00">오전 11:00</option>
-                      <option value="11:30">오전 11:30</option>
-                      <option value="12:00">오후 12:00</option>
-                      <option value="12:30">오후 12:30</option>
-                      <option value="13:00">오후 01:00</option>
-                      <option value="13:30">오후 01:30</option>
-                      <option value="14:00">오후 02:00</option>
-                      <option value="14:30">오후 02:30</option>
-                      <option value="15:00">오후 03:00</option>
-                      <option value="15:30">오후 03:30</option>
-                      <option value="16:00">오후 04:00</option>
-                      <option value="16:30">오후 04:30</option>
-                      <option value="17:00">오후 05:00</option>
-                      <option value="17:30">오후 05:30</option>
-                      <option value="18:00">오후 06:00</option>
-                    </select>
+                    <div className="relative">
+                      <select
+                        value={sessionForm.end_time}
+                        onChange={(e) => setSessionForm({ ...sessionForm, end_time: e.target.value })}
+                        className="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none transition-all"
+                      >
+                        <option value="09:00">오전 09:00</option>
+                        <option value="09:30">오전 09:30</option>
+                        <option value="10:00">오전 10:00</option>
+                        <option value="10:30">오전 10:30</option>
+                        <option value="11:00">오전 11:00</option>
+                        <option value="11:30">오전 11:30</option>
+                        <option value="12:00">오후 12:00</option>
+                        <option value="12:30">오후 12:30</option>
+                        <option value="13:00">오후 01:00</option>
+                        <option value="13:30">오후 01:30</option>
+                        <option value="14:00">오후 02:00</option>
+                        <option value="14:30">오후 02:30</option>
+                        <option value="15:00">오후 03:00</option>
+                        <option value="15:30">오후 03:30</option>
+                        <option value="16:00">오후 04:00</option>
+                        <option value="16:30">오후 04:30</option>
+                        <option value="17:00">오후 05:00</option>
+                        <option value="17:30">오후 05:30</option>
+                        <option value="18:00">오후 06:00</option>
+                      </select>
+                      <div className="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none text-gray-500 dark:text-gray-400">
+                        <ChevronDownIcon className="w-4 h-4" />
+                      </div>
+                    </div>
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
                     과목 (선택)
                   </label>
-                  <select
-                    value={sessionForm.subject_id}
-                    onChange={(e) => setSessionForm({ ...sessionForm, subject_id: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                  >
-                    <option value="">선택</option>
-                    {subjects.map((subject) => (
-                      <option key={subject.id} value={subject.id}>
-                        {subject.name}
-                      </option>
-                    ))}
-                  </select>
+                  <div className="relative">
+                    <select
+                      value={sessionForm.subject_id}
+                      onChange={(e) => setSessionForm({ ...sessionForm, subject_id: e.target.value })}
+                      className="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none transition-all"
+                    >
+                      <option value="">선택</option>
+                      {subjects.map((subject) => (
+                        <option key={subject.id} value={subject.id}>
+                          {subject.name}
+                        </option>
+                      ))}
+                    </select>
+                    <div className="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none text-gray-500 dark:text-gray-400">
+                      <ChevronDownIcon className="w-4 h-4" />
+                    </div>
+                  </div>
                 </div>
 
                 {/* ResourceSelector 통합 */}
-                {/* ResourceSelector 통합 */}
-                <div className="border-t pt-4 mt-4">
-                  <h3 className="text-lg font-semibold mb-4">자원 선택</h3>
+                <div className="border-t border-gray-100 dark:border-gray-700 pt-4 mt-4">
+                  <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">자원 선택</h3>
                   <ResourceSelector
                     sessionDate={sessionForm.session_date}
                     startTime={sessionForm.start_time}
@@ -2229,22 +2267,22 @@ export default function CurriculumManager() {
                 </div>
               </div>
 
-              <div className="mt-6 flex justify-end gap-3">
+              <div className="p-6 border-t border-gray-100 dark:border-gray-700 flex justify-end gap-3 bg-gray-50 dark:bg-gray-800/50">
                 <button
                   onClick={() => {
                     setShowEditModal(false);
                     setSelectedSession(null);
                   }}
-                  className="px-4 py-2 text-foreground hover:bg-muted rounded-full"
+                  className="px-6 py-2.5 rounded-xl font-bold text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
                 >
                   취소
                 </button>
                 <button
                   onClick={handleUpdateSession}
                   disabled={
-                    !sessionForm.session_date || !sessionForm.start_time || !sessionForm.end_time || !sessionForm.classroom
+                    !sessionForm.session_date || !sessionForm.start_time || !sessionForm.end_time || !sessionForm.classroom_id
                   }
-                  className="px-4 py-2 bg-primary text-primary-foreground rounded-full hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-6 py-2.5 rounded-xl font-bold bg-blue-600 text-white hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-500 shadow-lg shadow-blue-500/30 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none"
                 >
                   수정
                 </button>
@@ -2255,72 +2293,87 @@ export default function CurriculumManager() {
 
         {/* 템플릿 저장 모달 */}
         {showSaveTemplateModal && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white dark:bg-gray-800 rounded-[2rem] p-6 w-full max-w-md">
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">템플릿으로 저장</h2>
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4" onClick={() => {
+            setShowSaveTemplateModal(false);
+            setTemplateForm({ name: '', description: '', category: '' });
+          }}>
+            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl w-full max-w-md border border-gray-200 dark:border-gray-700" onClick={(e) => e.stopPropagation()}>
+              <div className="p-6 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center">
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white">템플릿으로 저장</h2>
+                <button
+                  onClick={() => {
+                    setShowSaveTemplateModal(false);
+                    setTemplateForm({ name: '', description: '', category: '' });
+                  }}
+                  className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors"
+                >
+                  <XMarkIcon className="w-5 h-5 text-gray-500 dark:text-gray-400" />
+                </button>
+              </div>
 
-              <div className="space-y-4">
+              <div className="p-6 space-y-5">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    템플릿 이름 *
+                  <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
+                    템플릿 이름 <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="text"
                     value={templateForm.name}
                     onChange={(e) => setTemplateForm({ ...templateForm, name: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                    className="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                     placeholder="예: 기본 BS 영업 과정"
                     required
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
                     카테고리
                   </label>
                   <input
                     type="text"
                     value={templateForm.category}
                     onChange={(e) => setTemplateForm({ ...templateForm, category: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                    className="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                     placeholder="예: BS 영업"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
                     설명
                   </label>
                   <textarea
                     value={templateForm.description}
                     onChange={(e) => setTemplateForm({ ...templateForm, description: e.target.value })}
                     rows={3}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                    className="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                     placeholder="템플릿에 대한 설명을 입력하세요"
                   />
                 </div>
 
-                <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-                  <p className="text-sm text-blue-800 dark:text-blue-300">
-                    현재 {sessions.length}개의 일정이 템플릿으로 저장됩니다.
+                <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-100 dark:border-blue-800">
+                  <p className="text-sm text-blue-800 dark:text-blue-300 flex items-center gap-2">
+                    <span className="text-lg">💡</span>
+                    현재 <strong>{sessions.length}</strong>개의 일정이 템플릿으로 저장됩니다.
                   </p>
                 </div>
               </div>
 
-              <div className="mt-6 flex justify-end gap-3">
+              <div className="p-6 border-t border-gray-100 dark:border-gray-700 flex justify-end gap-3 bg-gray-50 dark:bg-gray-800/50">
                 <button
                   onClick={() => {
                     setShowSaveTemplateModal(false);
                     setTemplateForm({ name: '', description: '', category: '' });
                   }}
-                  className="px-4 py-2 text-foreground hover:bg-muted rounded-full"
+                  className="px-6 py-2.5 rounded-xl font-bold text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
                 >
                   취소
                 </button>
                 <button
                   onClick={handleSaveAsTemplate}
                   disabled={!templateForm.name}
-                  className="px-4 py-2 bg-pink-600 text-white rounded-full hover:bg-pink-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-6 py-2.5 rounded-xl font-bold bg-pink-600 text-white hover:bg-pink-700 shadow-lg shadow-pink-500/30 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none"
                 >
                   저장
                 </button>
@@ -2331,79 +2384,91 @@ export default function CurriculumManager() {
 
         {/* 템플릿 불러오기 모달 */}
         {showTemplateModal && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white dark:bg-gray-800 rounded-[2rem] p-6 w-full max-w-2xl max-h-[80vh] overflow-y-auto">
-              <div className="flex items-center justify-between mb-4">
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4" onClick={() => setShowTemplateModal(false)}>
+            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl w-full max-w-2xl max-h-[80vh] overflow-y-auto border border-gray-200 dark:border-gray-700" onClick={(e) => e.stopPropagation()}>
+              <div className="p-6 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center">
                 <h2 className="text-xl font-bold text-gray-900 dark:text-white">템플릿 선택</h2>
                 <button
                   onClick={() => setShowTemplateModal(false)}
-                  className="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+                  className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors"
                 >
-                  <XMarkIcon className="w-6 h-6" />
+                  <XMarkIcon className="w-5 h-5 text-gray-500 dark:text-gray-400" />
                 </button>
               </div>
 
-              {templates.length === 0 ? (
-                <div className="text-center py-12 text-gray-500">
-                  저장된 템플릿이 없습니다.
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  {templates.map((template) => (
-                    <div
-                      key={template.id}
-                      className="p-4 border border-gray-200 dark:border-gray-700 rounded-xl hover:border-indigo-500 dark:hover:border-indigo-400 transition-colors cursor-pointer"
-                      onClick={() => handleLoadFromTemplate(template.id)}
-                    >
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2">
-                            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                              {template.name}
-                            </h3>
-                            {template.is_default && (
-                              <span className="px-2 py-1 text-xs bg-indigo-100 dark:bg-indigo-900 text-indigo-800 dark:text-indigo-300 rounded">
-                                기본
+              <div className="p-6">
+                {templates.length === 0 ? (
+                  <div className="text-center py-12 text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-800/50 rounded-xl border border-dashed border-gray-200 dark:border-gray-700">
+                    <DocumentArrowDownIcon className="w-12 h-12 mx-auto mb-3 text-gray-300 dark:text-gray-600" />
+                    <p>저장된 템플릿이 없습니다.</p>
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    {templates.map((template) => (
+                      <div
+                        key={template.id}
+                        className="p-5 border border-gray-200 dark:border-gray-700 rounded-xl hover:border-blue-500 dark:hover:border-blue-400 hover:shadow-md transition-all cursor-pointer bg-white dark:bg-gray-800 group"
+                        onClick={() => handleLoadFromTemplate(template.id)}
+                      >
+                        <div className="flex items-start justify-between">
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2 mb-2">
+                              <h3 className="text-lg font-bold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                                {template.name}
+                              </h3>
+                              {template.is_default && (
+                                <span className="px-2 py-0.5 text-xs font-bold bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-full">
+                                  기본
+                                </span>
+                              )}
+                              {template.category && (
+                                <span className="px-2 py-0.5 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded-full">
+                                  {template.category}
+                                </span>
+                              )}
+                            </div>
+                            {template.description && (
+                              <p className="text-sm text-gray-600 dark:text-gray-400 mb-3 line-clamp-2">
+                                {template.description}
+                              </p>
+                            )}
+                            <div className="flex items-center gap-4 text-xs font-medium text-gray-500 dark:text-gray-400">
+                              <span className="flex items-center gap-1">
+                                <DocumentArrowDownIcon className="w-3.5 h-3.5" />
+                                {template.session_count}차시
                               </span>
-                            )}
-                            {template.category && (
-                              <span className="px-2 py-1 text-xs bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded">
-                                {template.category}
+                              {template.total_hours && (
+                                <span className="flex items-center gap-1">
+                                  <ClockIcon className="w-3.5 h-3.5" />
+                                  {template.total_hours.toFixed(1)}시간
+                                </span>
+                              )}
+                              <span className="flex items-center gap-1">
+                                <span className="text-xs">🔄</span>
+                                {template.usage_count}회 사용
                               </span>
-                            )}
+                            </div>
                           </div>
-                          {template.description && (
-                            <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                              {template.description}
-                            </p>
-                          )}
-                          <div className="mt-2 flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400">
-                            <span>📚 {template.session_count}차시</span>
-                            {template.total_hours && (
-                              <span>⏱️ {template.total_hours.toFixed(1)}시간</span>
-                            )}
-                            <span>🔄 {template.usage_count}회 사용</span>
-                          </div>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleLoadFromTemplate(template.id);
+                            }}
+                            className="ml-4 px-4 py-2 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 rounded-xl hover:bg-blue-100 dark:hover:bg-blue-900/40 text-sm font-bold transition-colors"
+                          >
+                            불러오기
+                          </button>
                         </div>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleLoadFromTemplate(template.id);
-                          }}
-                          className="ml-4 px-4 py-2 bg-primary text-primary-foreground rounded-full hover:bg-primary/90 text-sm"
-                        >
-                          불러오기
-                        </button>
                       </div>
-                    </div>
-                  ))}
-                </div>
-              )}
+                    ))}
+                  </div>
+                )}
+              </div>
 
-              <div className="mt-6 flex justify-end">
+              <div className="p-6 border-t border-gray-100 dark:border-gray-700 flex justify-end bg-gray-50 dark:bg-gray-800/50">
                 <button
                   onClick={() => setShowTemplateModal(false)}
-                  className="px-4 py-2 text-foreground hover:bg-muted rounded-full"
+                  className="px-6 py-2.5 rounded-xl font-bold text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
                 >
                   닫기
                 </button>
@@ -2412,6 +2477,6 @@ export default function CurriculumManager() {
           </div>
         )}
       </div>
-    </PageContainer>
+    </PageContainer >
   );
 }
