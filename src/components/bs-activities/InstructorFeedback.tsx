@@ -175,58 +175,58 @@ const InstructorFeedback: React.FC<InstructorFeedbackProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-lg shadow-xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
+    <div className="fixed inset-0 bg-black/50 dark:bg-black/70 z-50 flex items-center justify-center p-4">
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
         {/* 헤더 */}
-        <div className="flex justify-between items-center p-6 border-b border-gray-200">
+        <div className="flex justify-between items-center p-6 border-b border-gray-200 dark:border-gray-700">
           <div>
-            <h2 className="text-xl font-semibold text-gray-900">강사 피드백</h2>
-            <p className="text-sm text-gray-600 mt-1">
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-white">강사 피드백</h2>
+            <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
               {activity.trainee_name} | {activity.clinic_name} | {activity.visit_date}
             </p>
           </div>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+            className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors"
           >
-            <XMarkIcon className="w-6 h-6" />
+            <XMarkIcon className="w-6 h-6 text-gray-600 dark:text-gray-400" />
           </button>
         </div>
 
         {/* 내용 */}
         <div className="flex-1 overflow-y-auto p-6 space-y-8">
           {/* 전체 평가 */}
-          <div className="bg-blue-50 p-4 rounded-lg">
-            <h3 className="text-lg font-medium text-gray-900 mb-3">전체 평가</h3>
+          <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg border border-blue-100 dark:border-blue-800">
+            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-3">전체 평가</h3>
             <div className="flex items-center space-x-4">
-              <span className="text-sm font-medium text-gray-700">평점:</span>
+              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">평점:</span>
               <RatingStars
                 rating={overallRating}
                 onRatingChange={setOverallRating}
                 readonly={readonly}
                 size="lg"
               />
-              <span className="text-sm text-gray-600">({overallRating}/5)</span>
+              <span className="text-sm text-gray-600 dark:text-gray-400">({overallRating}/5)</span>
             </div>
           </div>
 
           {/* 활동별 상세 피드백 */}
           <div>
-            <h3 className="text-lg font-medium text-gray-900 mb-4">활동별 상세 피드백</h3>
+            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">활동별 상세 피드백</h3>
             <div className="space-y-6">
               {activity.activities.map((activityDetail, index) => {
                 const feedback = activityFeedbacks.find(f => f.activity_detail_id === activityDetail.id);
                 const [newSuggestion, setNewSuggestion] = useState('');
-                
+
                 return (
-                  <div key={activityDetail.id} className="border border-gray-200 rounded-lg p-4">
+                  <div key={activityDetail.id} className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 bg-gray-50 dark:bg-gray-900/50">
                     <div className="flex justify-between items-start mb-3">
                       <div>
-                        <h4 className="font-medium text-gray-900">{activityDetail.title}</h4>
-                        <p className="text-sm text-gray-600">{activityDetail.description}</p>
+                        <h4 className="font-medium text-gray-900 dark:text-white">{activityDetail.title}</h4>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">{activityDetail.description}</p>
                       </div>
                       <div className="flex items-center space-x-2">
-                        <span className="text-sm font-medium text-gray-700">평점:</span>
+                        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">평점:</span>
                         <RatingStars
                           rating={feedback?.rating || 0}
                           onRatingChange={(rating) => updateActivityFeedback(activityDetail.id, 'rating', rating)}
@@ -237,7 +237,7 @@ const InstructorFeedback: React.FC<InstructorFeedbackProps> = ({
 
                     <div className="space-y-3">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                           코멘트
                         </label>
                         <textarea
@@ -246,22 +246,22 @@ const InstructorFeedback: React.FC<InstructorFeedbackProps> = ({
                           placeholder="이 활동에 대한 피드백을 작성하세요"
                           rows={3}
                           readOnly={readonly}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
+                          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
                         />
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                           구체적 제안사항
                         </label>
                         <div className="space-y-2">
                           {feedback?.specific_suggestions.map((suggestion, suggestionIndex) => (
-                            <div key={suggestionIndex} className="flex items-center justify-between bg-gray-50 px-3 py-2 rounded">
-                              <span className="text-sm">{suggestion}</span>
+                            <div key={suggestionIndex} className="flex items-center justify-between bg-white dark:bg-gray-800 px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-700">
+                              <span className="text-sm text-gray-900 dark:text-white">{suggestion}</span>
                               {!readonly && (
                                 <button
                                   onClick={() => removeSuggestionFromActivity(activityDetail.id, suggestionIndex)}
-                                  className="text-destructive hover:text-destructive"
+                                  className="text-destructive hover:text-destructive/80 dark:text-red-400 dark:hover:text-red-300"
                                 >
                                   <TrashIcon className="w-4 h-4" />
                                 </button>
@@ -275,7 +275,7 @@ const InstructorFeedback: React.FC<InstructorFeedbackProps> = ({
                                 value={newSuggestion}
                                 onChange={(e) => setNewSuggestion(e.target.value)}
                                 placeholder="새 제안사항 추가"
-                                className="flex-1 px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                 onKeyPress={(e) => {
                                   if (e.key === 'Enter') {
                                     addSuggestionToActivity(activityDetail.id, newSuggestion);
@@ -288,7 +288,7 @@ const InstructorFeedback: React.FC<InstructorFeedbackProps> = ({
                                   addSuggestionToActivity(activityDetail.id, newSuggestion);
                                   setNewSuggestion('');
                                 }}
-                                className="btn-primary"
+                                className="btn-primary shrink-0"
                               >
                                 <PlusIcon className="w-4 h-4" />
                               </button>
@@ -307,15 +307,15 @@ const InstructorFeedback: React.FC<InstructorFeedbackProps> = ({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* 잘한 점 */}
             <div>
-              <h3 className="text-lg font-medium text-gray-900 mb-3">잘한 점</h3>
+              <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-3">잘한 점</h3>
               <div className="space-y-2">
                 {strengths.map((strength, index) => (
-                  <div key={index} className="flex items-center justify-between bg-green-500/10 px-3 py-2 rounded">
-                    <span className="text-sm">{strength}</span>
+                  <div key={index} className="flex items-center justify-between bg-green-500/10 dark:bg-green-900/20 border border-green-200 dark:border-green-800 px-3 py-2 rounded-lg">
+                    <span className="text-sm text-gray-900 dark:text-white">{strength}</span>
                     {!readonly && (
                       <button
                         onClick={() => removeFromList(strengths, setStrengths, index)}
-                        className="text-destructive hover:text-destructive"
+                        className="text-destructive hover:text-destructive/80 dark:text-red-400 dark:hover:text-red-300 shrink-0"
                       >
                         <TrashIcon className="w-4 h-4" />
                       </button>
@@ -323,41 +323,33 @@ const InstructorFeedback: React.FC<InstructorFeedbackProps> = ({
                   </div>
                 ))}
                 {!readonly && (
-                  <div className="flex space-x-2">
-                    <input
-                      type="text"
-                      value={newStrength}
-                      onChange={(e) => setNewStrength(e.target.value)}
-                      placeholder="잘한 점 추가"
-                      className="flex-1 px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                      onKeyPress={(e) => {
-                        if (e.key === 'Enter') {
-                          addToList(strengths, setStrengths, newStrength, setNewStrength);
-                        }
-                      }}
-                    />
-                    <button
-                      onClick={() => addToList(strengths, setStrengths, newStrength, setNewStrength)}
-                      className="btn-success"
-                    >
-                      <PlusIcon className="w-4 h-4" />
-                    </button>
-                  </div>
+                  <input
+                    type="text"
+                    value={newStrength}
+                    onChange={(e) => setNewStrength(e.target.value)}
+                    placeholder="잘한 점 추가 (Enter로 추가)"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                    onKeyPress={(e) => {
+                      if (e.key === 'Enter') {
+                        addToList(strengths, setStrengths, newStrength, setNewStrength);
+                      }
+                    }}
+                  />
                 )}
               </div>
             </div>
 
             {/* 개선할 점 */}
             <div>
-              <h3 className="text-lg font-medium text-gray-900 mb-3">개선할 점</h3>
+              <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-3">개선할 점</h3>
               <div className="space-y-2">
                 {improvements.map((improvement, index) => (
-                  <div key={index} className="flex items-center justify-between bg-orange-500/10 px-3 py-2 rounded">
-                    <span className="text-sm">{improvement}</span>
+                  <div key={index} className="flex items-center justify-between bg-orange-500/10 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800 px-3 py-2 rounded-lg">
+                    <span className="text-sm text-gray-900 dark:text-white">{improvement}</span>
                     {!readonly && (
                       <button
                         onClick={() => removeFromList(improvements, setImprovements, index)}
-                        className="text-destructive hover:text-destructive"
+                        className="text-destructive hover:text-destructive/80 dark:text-red-400 dark:hover:text-red-300 shrink-0"
                       >
                         <TrashIcon className="w-4 h-4" />
                       </button>
@@ -365,41 +357,33 @@ const InstructorFeedback: React.FC<InstructorFeedbackProps> = ({
                   </div>
                 ))}
                 {!readonly && (
-                  <div className="flex space-x-2">
-                    <input
-                      type="text"
-                      value={newImprovement}
-                      onChange={(e) => setNewImprovement(e.target.value)}
-                      placeholder="개선할 점 추가"
-                      className="flex-1 px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                      onKeyPress={(e) => {
-                        if (e.key === 'Enter') {
-                          addToList(improvements, setImprovements, newImprovement, setNewImprovement);
-                        }
-                      }}
-                    />
-                    <button
-                      onClick={() => addToList(improvements, setImprovements, newImprovement, setNewImprovement)}
-                      className="btn-warning"
-                    >
-                      <PlusIcon className="w-4 h-4" />
-                    </button>
-                  </div>
+                  <input
+                    type="text"
+                    value={newImprovement}
+                    onChange={(e) => setNewImprovement(e.target.value)}
+                    placeholder="개선할 점 추가 (Enter로 추가)"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                    onKeyPress={(e) => {
+                      if (e.key === 'Enter') {
+                        addToList(improvements, setImprovements, newImprovement, setNewImprovement);
+                      }
+                    }}
+                  />
                 )}
               </div>
             </div>
 
             {/* 제안사항 */}
             <div>
-              <h3 className="text-lg font-medium text-gray-900 mb-3">제안사항</h3>
+              <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-3">제안사항</h3>
               <div className="space-y-2">
                 {suggestions.map((suggestion, index) => (
-                  <div key={index} className="flex items-center justify-between bg-blue-50 px-3 py-2 rounded">
-                    <span className="text-sm">{suggestion}</span>
+                  <div key={index} className="flex items-center justify-between bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 px-3 py-2 rounded-lg">
+                    <span className="text-sm text-gray-900 dark:text-white">{suggestion}</span>
                     {!readonly && (
                       <button
                         onClick={() => removeFromList(suggestions, setSuggestions, index)}
-                        className="text-destructive hover:text-destructive"
+                        className="text-destructive hover:text-destructive/80 dark:text-red-400 dark:hover:text-red-300 shrink-0"
                       >
                         <TrashIcon className="w-4 h-4" />
                       </button>
@@ -407,41 +391,33 @@ const InstructorFeedback: React.FC<InstructorFeedbackProps> = ({
                   </div>
                 ))}
                 {!readonly && (
-                  <div className="flex space-x-2">
-                    <input
-                      type="text"
-                      value={newSuggestion}
-                      onChange={(e) => setNewSuggestion(e.target.value)}
-                      placeholder="제안사항 추가"
-                      className="flex-1 px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                      onKeyPress={(e) => {
-                        if (e.key === 'Enter') {
-                          addToList(suggestions, setSuggestions, newSuggestion, setNewSuggestion);
-                        }
-                      }}
-                    />
-                    <button
-                      onClick={() => addToList(suggestions, setSuggestions, newSuggestion, setNewSuggestion)}
-                      className="btn-primary"
-                    >
-                      <PlusIcon className="w-4 h-4" />
-                    </button>
-                  </div>
+                  <input
+                    type="text"
+                    value={newSuggestion}
+                    onChange={(e) => setNewSuggestion(e.target.value)}
+                    placeholder="제안사항 추가 (Enter로 추가)"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    onKeyPress={(e) => {
+                      if (e.key === 'Enter') {
+                        addToList(suggestions, setSuggestions, newSuggestion, setNewSuggestion);
+                      }
+                    }}
+                  />
                 )}
               </div>
             </div>
 
             {/* 다음 목표 */}
             <div>
-              <h3 className="text-lg font-medium text-gray-900 mb-3">다음 목표</h3>
+              <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-3">다음 목표</h3>
               <div className="space-y-2">
                 {nextGoals.map((goal, index) => (
-                  <div key={index} className="flex items-center justify-between bg-purple-50 px-3 py-2 rounded">
-                    <span className="text-sm">{goal}</span>
+                  <div key={index} className="flex items-center justify-between bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 px-3 py-2 rounded-lg">
+                    <span className="text-sm text-gray-900 dark:text-white">{goal}</span>
                     {!readonly && (
                       <button
                         onClick={() => removeFromList(nextGoals, setNextGoals, index)}
-                        className="text-destructive hover:text-destructive"
+                        className="text-destructive hover:text-destructive/80 dark:text-red-400 dark:hover:text-red-300 shrink-0"
                       >
                         <TrashIcon className="w-4 h-4" />
                       </button>
@@ -449,26 +425,18 @@ const InstructorFeedback: React.FC<InstructorFeedbackProps> = ({
                   </div>
                 ))}
                 {!readonly && (
-                  <div className="flex space-x-2">
-                    <input
-                      type="text"
-                      value={newGoal}
-                      onChange={(e) => setNewGoal(e.target.value)}
-                      placeholder="다음 목표 추가"
-                      className="flex-1 px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                      onKeyPress={(e) => {
-                        if (e.key === 'Enter') {
-                          addToList(nextGoals, setNextGoals, newGoal, setNewGoal);
-                        }
-                      }}
-                    />
-                    <button
-                      onClick={() => addToList(nextGoals, setNextGoals, newGoal, setNewGoal)}
-                      className="btn-purple"
-                    >
-                      <PlusIcon className="w-4 h-4" />
-                    </button>
-                  </div>
+                  <input
+                    type="text"
+                    value={newGoal}
+                    onChange={(e) => setNewGoal(e.target.value)}
+                    placeholder="다음 목표 추가 (Enter로 추가)"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                    onKeyPress={(e) => {
+                      if (e.key === 'Enter') {
+                        addToList(nextGoals, setNextGoals, newGoal, setNewGoal);
+                      }
+                    }}
+                  />
                 )}
               </div>
             </div>
@@ -477,16 +445,16 @@ const InstructorFeedback: React.FC<InstructorFeedbackProps> = ({
 
         {/* 하단 버튼 */}
         {!readonly && (
-          <div className="flex justify-end space-x-3 p-6 border-t border-gray-200">
+          <div className="flex justify-end space-x-3 p-6 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50">
             <button
               onClick={onClose}
-              className="px-4 py-2 text-gray-700 bg-gray-100 rounded-full hover:bg-gray-200 transition-colors"
+              className="px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
             >
               취소
             </button>
             <button
               onClick={handleSave}
-              className="btn-primary"
+              className="btn-primary flex items-center"
             >
               <CheckIcon className="w-4 h-4 mr-2" />
               피드백 저장
