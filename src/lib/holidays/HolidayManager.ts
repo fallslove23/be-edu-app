@@ -5,7 +5,7 @@
  * Provides caching, validation, and flexible querying.
  */
 
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/services/supabase';
 
 export interface Holiday {
   id: string;
