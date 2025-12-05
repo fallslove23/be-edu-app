@@ -28,6 +28,7 @@ import { ReportService } from '../../services/report.services';
 import type { StudentReport } from '../../types/report.types';
 import toast from 'react-hot-toast';
 import ExcelJS from 'exceljs';
+import { Badge } from '../common/Badge';
 import { PageContainer } from '../common/PageContainer';
 import { PageHeader } from '../common/PageHeader';
 
@@ -1131,13 +1132,12 @@ const TraineeManagement: React.FC = () => {
                         <div className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{trainee.phone}</div>
                       </td>
                       <td className="px-6 py-5 whitespace-nowrap">
-                        <span className={`px-3 py-1 inline-flex text-xs leading-5 font-bold rounded-full border ${trainee.status === 'active' ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 border-green-200 dark:border-green-800' :
-                          trainee.status === 'inactive' ? 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-600' :
-                            trainee.status === 'graduated' ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800' :
-                              'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 border-red-200 dark:border-red-800'
-                          }`}>
+                        <Badge
+                          status={trainee.status}
+                          size="sm"
+                        >
                           {traineeStatusLabels[trainee.status]}
-                        </span>
+                        </Badge>
                       </td>
                       <td className="px-6 py-5 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                         {new Date(trainee.created_at).toLocaleDateString('ko-KR')}

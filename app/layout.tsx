@@ -3,6 +3,7 @@
 import '../src/index.css'
 import { AuthProvider } from '@/contexts/AuthContext'
 import { ThemeProvider } from '@/contexts/ThemeContext'
+import { Modal } from '@/components/common/Modal'
 
 export default function RootLayout({
   children,
@@ -32,6 +33,7 @@ export default function RootLayout({
         <ThemeProvider>
           <AuthProvider>
             {children}
+            <Modal />
           </AuthProvider>
         </ThemeProvider>
       </body>

@@ -19,6 +19,7 @@ import {
 import { useAuth } from '../../contexts/AuthContext';
 import { PageContainer } from '../common/PageContainer';
 import { PageHeader } from '../common/PageHeader';
+import { Badge } from '../common/Badge';
 import { Calculator, Calendar, CheckCircle, Clock, DollarSign, FileText, History, Search, User, X } from 'lucide-react';
 
 interface CourseRound {
@@ -202,18 +203,7 @@ const InstructorPaymentManagement: React.FC = () => {
     }
   };
 
-  const getPaymentStatusColor = (status: string): string => {
-    switch (status) {
-      case 'pending':
-        return 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300';
-      case 'completed':
-        return 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300';
-      case 'cancelled':
-        return 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300';
-      default:
-        return 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300';
-    }
-  };
+  // Removed getPaymentStatusColor - now using Badge component
 
   return (
     <PageContainer>
@@ -500,13 +490,9 @@ const InstructorPaymentManagement: React.FC = () => {
                             {payment.payment_method || '-'}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-center">
-                            <span
-                              className={`px-2.5 py-1 rounded-full text-xs font-bold ${getPaymentStatusColor(
-                                payment.payment_status
-                              )}`}
-                            >
+                            <Badge status={payment.payment_status} size="sm">
                               {getPaymentStatusLabel(payment.payment_status)}
-                            </span>
+                            </Badge>
                           </td>
                           <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
                             {payment.notes || '-'}
