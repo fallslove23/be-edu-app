@@ -15,6 +15,7 @@ import {
   FolderIcon
 } from '@heroicons/react/24/outline';
 import { PageContainer } from '../common/PageContainer';
+import modal from '@/lib/modal';
 import {
   CommonCodeService,
   CommonCodeGroup,
@@ -131,7 +132,7 @@ export function CommonCodeManagement() {
       }
 
       cancelEdit();
-      alert('코드가 수정되었습니다.');
+      await modal.success('성공', '코드가 수정되었습니다.');
     } catch (err: any) {
       console.error('코드 수정 실패:', err);
       setError(err.message || '코드 수정에 실패했습니다.');
@@ -154,7 +155,7 @@ export function CommonCodeManagement() {
   const addNewCode = async () => {
     if (!selectedGroup) return;
     if (!newCodeForm.code || !newCodeForm.name) {
-      alert('코드와 이름은 필수입니다.');
+      await modal.error('입력 오류', '코드와 이름은 필수입니다.');
       return;
     }
 
@@ -175,7 +176,7 @@ export function CommonCodeManagement() {
 
       setShowAddForm(false);
       setNewCodeForm({ code: '', name: '', description: '', sort_order: 0 });
-      alert('코드가 추가되었습니다.');
+      await modal.success('성공', '코드가 추가되었습니다.');
     } catch (err: any) {
       console.error('코드 추가 실패:', err);
       setError(err.message || '코드 추가에 실패했습니다.');
@@ -185,11 +186,11 @@ export function CommonCodeManagement() {
   // 코드 삭제 (비활성화)
   const deleteCode = async (code: CommonCode) => {
     if (code.is_system) {
-      alert('시스템 코드는 삭제할 수 없습니다.');
+      await modal.error('삭제 불가', '시스템 코드는 삭제할 수 없습니다.');
       return;
     }
 
-    if (!confirm(`'${code.name}' 코드를 삭제하시겠습니까?`)) {
+    if (!(await modal.confirmDelete(`'${code.name}' 코드`))) {
       return;
     }
 
@@ -202,7 +203,7 @@ export function CommonCodeManagement() {
         await loadCodes(selectedGroup.code);
       }
 
-      alert('코드가 삭제되었습니다.');
+      await modal.success('성공', '코드가 삭제되었습니다.');
     } catch (err: any) {
       console.error('코드 삭제 실패:', err);
       setError(err.message || '코드 삭제에 실패했습니다.');
@@ -212,7 +213,7 @@ export function CommonCodeManagement() {
   // 코드 활성화/비활성화 토글
   const toggleCodeActive = async (code: CommonCode) => {
     if (code.is_system && code.is_active) {
-      alert('시스템 코드는 비활성화할 수 없습니다.');
+      await modal.error('비활성화 불가', '시스템 코드는 비활성화할 수 없습니다.');
       return;
     }
 

@@ -20,6 +20,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { PageContainer } from '../common/PageContainer';
 import { PageHeader } from '../common/PageHeader';
 import { Badge } from '../common/Badge';
+import modal from '@/lib/modal';
 import { Calculator, Calendar, CheckCircle, Clock, DollarSign, FileText, History, Search, User, X } from 'lucide-react';
 
 interface CourseRound {
@@ -75,7 +76,7 @@ const InstructorPaymentManagement: React.FC = () => {
       setSummaries(data);
     } catch (error) {
       console.error('집계 로드 실패:', error);
-      alert('강사 집계 정보를 불러오는데 실패했습니다.');
+      await modal.error('로드 실패', '강사 집계 정보를 불러오는데 실패했습니다.');
     } finally {
       setLoading(false);
     }
@@ -94,22 +95,22 @@ const InstructorPaymentManagement: React.FC = () => {
 
   const handleUpdateSummaries = async () => {
     if (!selectedCourse) {
-      alert('과정을 선택해주세요.');
+      await modal.error('선택 필요', '과정을 선택해주세요.');
       return;
     }
 
-    if (!confirm('선택한 과정의 강사 집계를 업데이트하시겠습니까?')) {
+    if (!(await modal.confirm('업데이트 확인', '선택한 과정의 강사 집계를 업데이트하시겠습니까?'))) {
       return;
     }
 
     setLoading(true);
     try {
       const count = await instructorPaymentService.updateInstructorSummaries(selectedCourse);
-      alert(`${count}명의 강사 집계가 업데이트되었습니다.`);
+      await modal.success('업데이트 완료', `${count}명의 강사 집계가 업데이트되었습니다.`);
       loadSummaries();
     } catch (error) {
       console.error('집계 업데이트 실패:', error);
-      alert('집계 업데이트에 실패했습니다.');
+      await modal.error('업데이트 실패', '집계 업데이트에 실패했습니다.');
     } finally {
       setLoading(false);
     }
@@ -119,7 +120,7 @@ const InstructorPaymentManagement: React.FC = () => {
     if (!user?.id) return;
 
     const action = isFinalized ? '취소' : '확정';
-    if (!confirm(`강사료를 ${action}하시겠습니까?`)) {
+    if (!(await modal.confirm(`${action} 확인`, `강사료를 ${action}하시겠습니까?`))) {
       return;
     }
 
@@ -129,11 +130,11 @@ const InstructorPaymentManagement: React.FC = () => {
       } else {
         await instructorPaymentService.finalizeSummary(summaryId, user.id);
       }
-      alert(`강사료가 ${action}되었습니다.`);
+      await modal.success('성공', `강사료가 ${action}되었습니다.`);
       loadSummaries();
     } catch (error) {
       console.error('확정 처리 실패:', error);
-      alert(`확정 처리에 실패했습니다.`);
+      await modal.error('처리 실패', `확정 처리에 실패했습니다.`);
     }
   };
 
@@ -165,13 +166,13 @@ const InstructorPaymentManagement: React.FC = () => {
         created_by: user.id
       });
 
-      alert('지급 이력이 생성되었습니다.');
+      await modal.success('성공', '지급 이력이 생성되었습니다.');
       setShowPaymentModal(false);
       setSelectedSummary(null);
       loadPaymentHistory();
     } catch (error) {
       console.error('지급 이력 생성 실패:', error);
-      alert('지급 이력 생성에 실패했습니다.');
+      await modal.error('생성 실패', '지급 이력 생성에 실패했습니다.');
     }
   };
 

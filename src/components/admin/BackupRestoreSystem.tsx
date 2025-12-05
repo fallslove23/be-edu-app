@@ -16,6 +16,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { useNotifications, createBackupCompleteNotification, createRestoreCompleteNotification } from '../../hooks/useNotifications';
 import { PageContainer } from '../common/PageContainer';
+import modal from '@/lib/modal';
 
 interface BackupItem {
   id: string;
@@ -187,7 +188,7 @@ const BackupRestoreSystem: React.FC = () => {
   };
 
   const restoreBackup = async (backup: BackupItem) => {
-    if (!window.confirm(`"${backup.name}" 백업으로 복원하시겠습니까?\n\n현재 데이터는 모두 덮어씌워집니다. 이 작업은 되돌릴 수 없습니다.`)) {
+    if (!(await modal.confirm('백업 복원 확인', `"${backup.name}" 백업으로 복원하시겠습니까?\n\n현재 데이터는 모두 덮어씌워집니다. 이 작업은 되돌릴 수 없습니다.`, 'error'))) {
       return;
     }
 
@@ -200,18 +201,18 @@ const BackupRestoreSystem: React.FC = () => {
       // 성공 알림
       addNotification(createRestoreCompleteNotification(backup.name));
 
-      alert('복원이 성공적으로 완료되었습니다. 페이지를 새로고침합니다.');
+      await modal.success('복원 완료', '복원이 성공적으로 완료되었습니다. 페이지를 새로고침합니다.');
       window.location.reload();
 
     } catch (error) {
-      alert('복원 중 오류가 발생했습니다. 시스템 관리자에게 문의하세요.');
+      await modal.error('복원 실패', '복원 중 오류가 발생했습니다. 시스템 관리자에게 문의하세요.');
     } finally {
       setProcessing(null);
     }
   };
 
-  const deleteBackup = (backupId: string) => {
-    if (window.confirm('이 백업을 삭제하시겠습니까? 삭제된 백업은 복구할 수 없습니다.')) {
+  const deleteBackup = async (backupId: string) => {
+    if (await modal.confirmDelete('백업')) {
       setBackups(prev => prev.filter(backup => backup.id !== backupId));
     }
   };
@@ -673,9 +674,9 @@ const BackupRestoreSystem: React.FC = () => {
 
               <div className="border-t border-gray-100 dark:border-gray-700 pt-6 flex justify-end">
                 <button
-                  onClick={() => {
+                  onClick={async () => {
                     // 설정 저장 로직
-                    alert('백업 설정이 저장되었습니다.');
+                    await modal.success('저장 완료', '백업 설정이 저장되었습니다.');
                   }}
                   className="btn-primary"
                 >

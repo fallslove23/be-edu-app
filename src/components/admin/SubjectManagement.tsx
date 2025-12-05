@@ -16,6 +16,7 @@ import {
   XMarkIcon
 } from '@heroicons/react/24/outline';
 import { PageContainer } from '../common/PageContainer';
+import modal from '@/lib/modal';
 import { subjectService, instructorSubjectService } from '../../services/subject.service';
 import type { Subject, SubjectCreate } from '../../types/integrated-schedule.types';
 
@@ -70,7 +71,7 @@ export function SubjectManagement() {
     try {
       setError(null);
       await subjectService.create(form);
-      alert('과목이 생성되었습니다.');
+      await modal.success('성공', '과목이 생성되었습니다.');
       setShowCreateModal(false);
       setForm({ name: '', description: '', category: '' });
       await loadData();
@@ -87,7 +88,7 @@ export function SubjectManagement() {
     try {
       setError(null);
       await subjectService.update(selectedSubject.id, form);
-      alert('과목이 수정되었습니다.');
+      await modal.success('성공', '과목이 수정되었습니다.');
       setShowEditModal(false);
       setSelectedSubject(null);
       await loadData();
@@ -99,12 +100,12 @@ export function SubjectManagement() {
 
   // 과목 삭제
   const handleDelete = async (id: string, name: string) => {
-    if (!confirm(`"${name}" 과목을 삭제하시겠습니까?`)) return;
+    if (!(await modal.confirmDelete(`"${name}" 과목`))) return;
 
     try {
       setError(null);
       await subjectService.delete(id);
-      alert('과목이 삭제되었습니다.');
+      await modal.success('성공', '과목이 삭제되었습니다.');
       await loadData();
     } catch (error: any) {
       console.error('Failed to delete subject:', error);

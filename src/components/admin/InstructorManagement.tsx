@@ -26,6 +26,7 @@ import { instructorProfileService } from '../../services/instructor-profile.serv
 import { subjectService, instructorSubjectService } from '../../services/subject.service';
 import { supabase } from '../../services/supabase';
 import { InstructorPhotoUpload } from '../common/InstructorPhotoUpload';
+import modal from '@/lib/modal';
 import type {
   InstructorProfile,
   Subject,
@@ -176,7 +177,7 @@ export function InstructorManagement() {
 
       if (userError) throw userError;
 
-      alert('강사 계정이 생성되었습니다.');
+      await modal.success('성공', '강사 계정이 생성되었습니다.');
       setShowCreateModal(false);
       setUserForm({ name: '', email: '', password: '', phone: '' });
       await loadData();
@@ -204,7 +205,7 @@ export function InstructorManagement() {
 
       if (updateError) throw updateError;
 
-      alert('강사 정보가 수정되었습니다.');
+      await modal.success('성공', '강사 정보가 수정되었습니다.');
       setShowEditModal(false);
       setSelectedInstructor(null);
       await loadData();
@@ -260,7 +261,7 @@ export function InstructorManagement() {
       }
       console.log('✅ 새 과목 추가 완료');
 
-      alert('프로필이 저장되었습니다.');
+      await modal.success('성공', '프로필이 저장되었습니다.');
       setShowProfileModal(false);
       setSelectedInstructor(null);
       setSelectedSubjects(new Map());
