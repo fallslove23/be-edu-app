@@ -27,7 +27,7 @@ import { TraineeService } from '../../services/trainee.services';
 import { ReportService } from '../../services/report.services';
 import type { StudentReport } from '../../types/report.types';
 import toast from 'react-hot-toast';
-import * as XLSX from 'xlsx';
+import ExcelJS from 'exceljs';
 import { PageContainer } from '../common/PageContainer';
 import { PageHeader } from '../common/PageHeader';
 
@@ -146,28 +146,37 @@ const TraineeManagement: React.FC = () => {
   };
 
   // 엑셀 파일 처리 함수들
-  const handleExcelFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleExcelFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      try {
-        const data = new Uint8Array(e.target?.result as ArrayBuffer);
-        const workbook = XLSX.read(data, { type: 'array' });
-        const sheetName = workbook.SheetNames[0];
-        const worksheet = workbook.Sheets[sheetName];
-        const jsonData = XLSX.utils.sheet_to_json(worksheet);
+    try {
+      const data = await file.arrayBuffer();
+      const workbook = new ExcelJS.Workbook();
+      await workbook.xlsx.load(data);
 
-        console.log('📊 엑셀 데이터 파싱 완료:', jsonData);
-        setExcelData(jsonData);
-        toast.success('엑셀 파일을 성공적으로 불러왔습니다.');
-      } catch (error) {
-        console.error('엑셀 파일 파싱 오류:', error);
-        toast.error('엑셀 파일을 읽는 중 오류가 발생했습니다.');
-      }
-    };
-    reader.readAsArrayBuffer(file);
+      const worksheet = workbook.worksheets[0];
+      const jsonData: any[] = [];
+
+      // 첫 번째 행(헤더)을 제외하고 데이터 읽기
+      worksheet.eachRow((row, rowNumber) => {
+        if (rowNumber === 1) return; // 헤더 스킵
+
+        const rowData: any = {};
+        row.eachCell((cell, colNumber) => {
+          const header = worksheet.getRow(1).getCell(colNumber).value as string;
+          rowData[header] = cell.value;
+        });
+        jsonData.push(rowData);
+      });
+
+      console.log('📊 엑셀 데이터 파싱 완료:', jsonData);
+      setExcelData(jsonData);
+      toast.success('엑셀 파일을 성공적으로 불러왔습니다.');
+    } catch (error) {
+      console.error('엑셀 파일 파싱 오류:', error);
+      toast.error('엑셀 파일을 읽는 중 오류가 발생했습니다.');
+    }
   };
 
   const processExcelData = async () => {
@@ -222,26 +231,47 @@ const TraineeManagement: React.FC = () => {
     }
   };
 
-  const downloadExcelTemplate = () => {
-    const templateData = [
-      {
-        '이름': '홍길동',
-        '이메일': 'hong@company.com',
-        '사번': 'EMP001',
-        '부서': '영업팀',
-        '직급': '사원',
-        '연락처': '010-1234-5678',
-        '입사일': '2024-01-15',
-        '비상연락처_이름': '홍어머니',
-        '비상연락처_관계': '어머니',
-        '비상연락처_전화': '010-9876-5432'
-      }
+  const downloadExcelTemplate = async () => {
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet('교육생목록');
+
+    // 헤더 추가
+    worksheet.columns = [
+      { header: '이름', key: '이름', width: 10 },
+      { header: '이메일', key: '이메일', width: 25 },
+      { header: '사번', key: '사번', width: 12 },
+      { header: '부서', key: '부서', width: 15 },
+      { header: '직급', key: '직급', width: 10 },
+      { header: '연락처', key: '연락처', width: 15 },
+      { header: '입사일', key: '입사일', width: 12 },
+      { header: '비상연락처_이름', key: '비상연락처_이름', width: 12 },
+      { header: '비상연락처_관계', key: '비상연락처_관계', width: 10 },
+      { header: '비상연락처_전화', key: '비상연락처_전화', width: 15 },
     ];
 
-    const ws = XLSX.utils.json_to_sheet(templateData);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, '교육생목록');
-    XLSX.writeFile(wb, '교육생_등록_템플릿.xlsx');
+    // 샘플 데이터 추가
+    worksheet.addRow({
+      '이름': '홍길동',
+      '이메일': 'hong@company.com',
+      '사번': 'EMP001',
+      '부서': '영업팀',
+      '직급': '사원',
+      '연락처': '010-1234-5678',
+      '입사일': '2024-01-15',
+      '비상연락처_이름': '홍어머니',
+      '비상연락처_관계': '어머니',
+      '비상연락처_전화': '010-9876-5432'
+    });
+
+    // 파일 다운로드
+    const buffer = await workbook.xlsx.writeBuffer();
+    const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = '교육생_등록_템플릿.xlsx';
+    link.click();
+    window.URL.revokeObjectURL(url);
     toast.success('템플릿 파일이 다운로드되었습니다.');
   };
 

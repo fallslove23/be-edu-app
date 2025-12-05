@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
-import * as XLSX from 'xlsx';
+import ExcelJS from 'exceljs';
 import {
   XMarkIcon,
   DocumentArrowUpIcon,
@@ -49,54 +49,59 @@ const BulkUploadModal: React.FC<BulkUploadModalProps> = ({
   const [currentStep, setCurrentStep] = useState<'upload' | 'review' | 'processing'>('upload');
 
   // 템플릿 다운로드 함수
-  const downloadTemplate = useCallback(() => {
-    const templateData = [
-      {
-        '이름': '김영희',
-        '이메일': 'kim.younghee@company.com',
-        '전화번호': '010-1234-5678',
-        '사번': 'EMP001',
-        '부서': '영업팀',
-        '직급': '주임',
-        '입사일': '2023-03-15',
-        '비상연락처_이름': '김부모',
-        '비상연락처_관계': '부모',
-        '비상연락처_전화': '010-9876-5432'
-      },
-      {
-        '이름': '박철수',
-        '이메일': 'park.chulsoo@company.com',
-        '전화번호': '010-2345-6789',
-        '사번': 'EMP002',
-        '부서': '마케팅팀',
-        '직급': '대리',
-        '입사일': '2022-08-20',
-        '비상연락처_이름': '박배우자',
-        '비상연락처_관계': '배우자',
-        '비상연락처_전화': '010-8765-4321'
-      }
+  const downloadTemplate = useCallback(async () => {
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet('교육생목록');
+
+    // 헤더 추가
+    worksheet.columns = [
+      { header: '이름', key: '이름', width: 10 },
+      { header: '이메일', key: '이메일', width: 25 },
+      { header: '전화번호', key: '전화번호', width: 15 },
+      { header: '사번', key: '사번', width: 12 },
+      { header: '부서', key: '부서', width: 15 },
+      { header: '직급', key: '직급', width: 10 },
+      { header: '입사일', key: '입사일', width: 12 },
+      { header: '비상연락처_이름', key: '비상연락처_이름', width: 12 },
+      { header: '비상연락처_관계', key: '비상연락처_관계', width: 10 },
+      { header: '비상연락처_전화', key: '비상연락처_전화', width: 15 },
     ];
 
-    const ws = XLSX.utils.json_to_sheet(templateData);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, '교육생목록');
-    
-    // 컬럼 너비 설정
-    const colWidths = [
-      { wch: 10 }, // 이름
-      { wch: 25 }, // 이메일
-      { wch: 15 }, // 전화번호
-      { wch: 12 }, // 사번
-      { wch: 15 }, // 부서
-      { wch: 10 }, // 직급
-      { wch: 12 }, // 입사일
-      { wch: 12 }, // 비상연락처_이름
-      { wch: 10 }, // 비상연락처_관계
-      { wch: 15 }  // 비상연락처_전화
-    ];
-    ws['!cols'] = colWidths;
+    // 샘플 데이터 추가
+    worksheet.addRow({
+      '이름': '김영희',
+      '이메일': 'kim.younghee@company.com',
+      '전화번호': '010-1234-5678',
+      '사번': 'EMP001',
+      '부서': '영업팀',
+      '직급': '주임',
+      '입사일': '2023-03-15',
+      '비상연락처_이름': '김부모',
+      '비상연락처_관계': '부모',
+      '비상연락처_전화': '010-9876-5432'
+    });
+    worksheet.addRow({
+      '이름': '박철수',
+      '이메일': 'park.chulsoo@company.com',
+      '전화번호': '010-2345-6789',
+      '사번': 'EMP002',
+      '부서': '마케팅팀',
+      '직급': '대리',
+      '입사일': '2022-08-20',
+      '비상연락처_이름': '박배우자',
+      '비상연락처_관계': '배우자',
+      '비상연락처_전화': '010-8765-4321'
+    });
 
-    XLSX.writeFile(wb, '교육생_업로드_템플릿.xlsx');
+    // 파일 다운로드
+    const buffer = await workbook.xlsx.writeBuffer();
+    const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = '교육생_업로드_템플릿.xlsx';
+    link.click();
+    window.URL.revokeObjectURL(url);
   }, []);
 
   // 데이터 검증 함수
@@ -175,14 +180,28 @@ const BulkUploadModal: React.FC<BulkUploadModalProps> = ({
     if (acceptedFiles.length === 0) return;
 
     const file = acceptedFiles[0];
-    
+
     try {
       setIsProcessing(true);
-      
+
       const data = await file.arrayBuffer();
-      const workbook = XLSX.read(data);
-      const worksheet = workbook.Sheets[workbook.SheetNames[0]];
-      const jsonData = XLSX.utils.sheet_to_json<ExcelRowData>(worksheet);
+      const workbook = new ExcelJS.Workbook();
+      await workbook.xlsx.load(data);
+
+      const worksheet = workbook.worksheets[0];
+      const jsonData: ExcelRowData[] = [];
+
+      // 첫 번째 행(헤더)을 제외하고 데이터 읽기
+      worksheet.eachRow((row, rowNumber) => {
+        if (rowNumber === 1) return; // 헤더 스킵
+
+        const rowData: any = {};
+        row.eachCell((cell, colNumber) => {
+          const header = worksheet.getRow(1).getCell(colNumber).value as string;
+          rowData[header] = cell.value;
+        });
+        jsonData.push(rowData);
+      });
 
       if (jsonData.length === 0) {
         toast.error('파일에 데이터가 없습니다.');
@@ -203,9 +222,9 @@ const BulkUploadModal: React.FC<BulkUploadModalProps> = ({
       const traineeData = convertToTraineeData(jsonData);
       setUploadData(traineeData);
       setCurrentStep('review');
-      
+
       toast.success(`${traineeData.length}명의 교육생 데이터를 성공적으로 읽어왔습니다.`);
-      
+
     } catch (error) {
       console.error('파일 처리 중 오류:', error);
       toast.error('파일을 읽는 중 오류가 발생했습니다.');
