@@ -16,6 +16,7 @@ import {
   ClipboardList,
   BookOpen
 } from 'lucide-react';
+import { Badge } from '../common/Badge';
 
 interface DailyProgress {
   day: number;
@@ -328,12 +329,12 @@ const PerformanceTracking: React.FC = () => {
                               {isCompleted && <CheckCircle className="h-4 w-4 text-green-500 dark:text-green-400" />}
                               {isBehind && <AlertTriangle className="h-4 w-4 text-red-500 dark:text-red-400" />}
                             </div>
-                            <span className={`text-xs px-2 py-1 rounded-full font-medium ${day.completion_rate >= 80 ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400' :
-                              day.completion_rate >= 50 ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400' :
-                                'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400'
-                              }`}>
+                            <Badge
+                              variant={day.completion_rate >= 80 ? 'success' : day.completion_rate >= 50 ? 'warning' : 'error'}
+                              size="sm"
+                            >
                               {day.completion_rate}%
-                            </span>
+                            </Badge>
                           </div>
 
                           <div className="text-xs text-gray-500 dark:text-gray-400 mb-3 font-medium">{day.date}</div>

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Target, BarChart2, Plus, TrendingUp } from 'lucide-react';
 
 import { PageContainer } from '../common/PageContainer';
+import { Badge } from '../common/Badge';
 
 const SimpleExamManagement: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'overview' | 'create' | 'results'>('overview');
@@ -83,13 +84,10 @@ const SimpleExamManagement: React.FC = () => {
                         </div>
                         <div className="flex items-center space-x-4">
                           <span className="text-sm text-gray-500 font-medium">{exam.students}명 참여</span>
-                          <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-bold ${exam.status === 'active' ? 'bg-green-100 text-green-700' :
-                            exam.status === 'scheduled' ? 'bg-blue-100 text-blue-700' :
-                              'bg-gray-100 text-gray-600'
-                            }`}>
+                          <Badge status={exam.status} size="sm">
                             {exam.status === 'active' ? '진행중' :
                               exam.status === 'scheduled' ? '예정' : '완료'}
-                          </span>
+                          </Badge>
                         </div>
                       </div>
                     ))}

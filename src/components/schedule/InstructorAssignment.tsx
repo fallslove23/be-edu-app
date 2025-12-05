@@ -11,6 +11,7 @@ import {
 } from '@heroicons/react/24/outline';
 import type { Course, Schedule, Instructor, ScheduleConflict } from '../../types/schedule.types';
 import toast from 'react-hot-toast';
+import { Badge } from '../common/Badge';
 
 interface InstructorAssignmentProps {
   course: Course;
@@ -281,9 +282,7 @@ const InstructorAssignment: React.FC<InstructorAssignmentProps> = ({
                     <div className="flex items-center space-x-2">
                       <h4 className="text-sm font-bold text-gray-900 dark:text-white">{schedule.title}</h4>
                       {hasConflict && (
-                        <span className="inline-flex px-2 py-0.5 text-xs font-bold rounded-md bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 border border-red-200 dark:border-red-800">
-                          충돌
-                        </span>
+                        <Badge variant="error" size="sm">충돌</Badge>
                       )}
                     </div>
 
