@@ -15,6 +15,7 @@ import {
   AcademicCapIcon
 } from '@heroicons/react/24/outline';
 import toast from 'react-hot-toast';
+import { Badge } from '../common/Badge';
 import type { BSActivity, ActivityDetail, ActivityType, ActivityPhoto } from '../../types/bs-activities.types';
 import { ACTIVITY_TYPE_CONFIG } from '../../types/bs-activities.types';
 
@@ -308,13 +309,13 @@ const BSActivityJournal: React.FC<BSActivityJournalProps> = ({
       completionDate, inspectionProduct, inspectionCount, summary, detailedActivity,
       learningReflection, specialNotes, onSubmit]);
 
-  const getStatusColor = (status: string) => {
+  const getStatusVariant = (status: string): 'inactive' | 'info' | 'warning' | 'success' => {
     switch (status) {
-      case 'draft': return 'bg-gray-100 text-gray-700';
-      case 'submitted': return 'bg-blue-100 text-blue-700';
-      case 'reviewed': return 'bg-yellow-100 text-orange-700';
-      case 'approved': return 'bg-green-500/10 text-green-700';
-      default: return 'bg-gray-100 text-gray-700';
+      case 'draft': return 'inactive';
+      case 'submitted': return 'info';
+      case 'reviewed': return 'warning';
+      case 'approved': return 'success';
+      default: return 'inactive';
     }
   };
 
@@ -328,12 +329,12 @@ const BSActivityJournal: React.FC<BSActivityJournalProps> = ({
             <p className="text-gray-600">치과 방문 활동 및 학습 내용 기록</p>
           </div>
           {formData.status && (
-            <span className={`px-3 py-1 text-sm font-medium rounded-full ${getStatusColor(formData.status)}`}>
+            <Badge variant={getStatusVariant(formData.status)} size="sm">
               {formData.status === 'draft' && '작성 중'}
               {formData.status === 'submitted' && '제출 완료'}
               {formData.status === 'reviewed' && '검토 완료'}
               {formData.status === 'approved' && '승인 완료'}
-            </span>
+            </Badge>
           )}
         </div>
 

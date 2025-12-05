@@ -18,7 +18,9 @@ import {
 import { PageContainer } from '../common/PageContainer';
 import { PageHeader } from '../common/PageHeader';
 import toast from 'react-hot-toast';
+import modal from '@/lib/modal';
 import { useAuth } from '../../contexts/AuthContext';
+import { Badge } from '../common/Badge';
 import BSActivityJournal from './BSActivityJournal';
 import InstructorFeedback from './InstructorFeedback';
 import StudentActivityInput from './StudentActivityInput';
@@ -235,8 +237,8 @@ const BSActivityManagementDesktop: React.FC = () => {
   }, [selectedActivity, viewMode]);
 
   // 활동 삭제
-  const handleDeleteActivity = useCallback((activityId: string) => {
-    if (window.confirm('정말로 이 활동 일지를 삭제하시겠습니까?')) {
+  const handleDeleteActivity = useCallback(async (activityId: string) => {
+    if (await modal.confirmDelete('활동 일지')) {
       setActivities(prev => prev.filter(a => a.id !== activityId));
       if (selectedActivity?.id === activityId) {
         setSelectedActivity(null);
@@ -264,30 +266,30 @@ const BSActivityManagementDesktop: React.FC = () => {
     toast.success('피드백이 저장되었습니다.');
   }, [selectedActivity]);
 
-  // 상태별 색상
-  const getStatusColor = (status: string) => {
+  // Status mapping for Badge component
+  const getStatusVariant = (status: string): 'inactive' | 'info' | 'warning' | 'success' => {
     switch (status) {
-      case 'draft': return 'bg-gray-100 text-gray-700 border-gray-200';
-      case 'submitted': return 'bg-blue-100 text-blue-700 border-blue-200';
-      case 'reviewed': return 'bg-yellow-100 text-orange-700 border-yellow-200';
-      case 'approved': return 'bg-green-500/10 text-green-700 border-green-200';
-      default: return 'bg-gray-100 text-gray-700 border-gray-200';
+      case 'draft': return 'inactive';
+      case 'submitted': return 'info';
+      case 'reviewed': return 'warning';
+      case 'approved': return 'success';
+      default: return 'inactive';
     }
   };
 
-  // 활동 유형별 아이콘 색상
-  const getActivityTypeColor = (type: ActivityType) => {
+  // Activity type mapping for Badge component
+  const getActivityTypeVariant = (type: ActivityType): 'info' | 'success' | 'inactive' | 'warning' => {
     const config = ACTIVITY_TYPE_CONFIG[type];
     switch (config.color) {
-      case 'blue': return 'bg-blue-100 text-blue-600';
-      case 'green': return 'bg-green-500/10 text-green-700';
-      case 'purple': return 'bg-purple-100 text-purple-600';
-      case 'indigo': return 'bg-indigo-100 text-indigo-600';
-      case 'cyan': return 'bg-cyan-100 text-cyan-600';
-      case 'orange': return 'bg-orange-500/10 text-orange-700';
-      case 'pink': return 'bg-destructive/10 text-destructive';
-      case 'yellow': return 'bg-yellow-100 text-orange-600';
-      default: return 'bg-gray-100 text-gray-600';
+      case 'blue': return 'info';
+      case 'green': return 'success';
+      case 'purple': return 'inactive';
+      case 'indigo': return 'info';
+      case 'cyan': return 'info';
+      case 'orange': return 'warning';
+      case 'pink': return 'inactive';
+      case 'yellow': return 'warning';
+      default: return 'inactive';
     }
   };
 
@@ -404,9 +406,9 @@ const BSActivityManagementDesktop: React.FC = () => {
                             <h3 className="text-lg font-semibold text-gray-900 dark:text-white truncate">
                               {activity.clinic_name}
                             </h3>
-                            <span className={`px-2 py-1 text-xs font-medium rounded-full border ${getStatusColor(activity.status)}`}>
+                            <Badge variant={getStatusVariant(activity.status)} size="sm">
                               {ACTIVITY_STATUS_LABELS[activity.status]}
-                            </span>
+                            </Badge>
                           </div>
 
                           <div className="flex items-center space-x-4 text-sm text-gray-600 dark:text-gray-400 mb-2">
@@ -429,17 +431,18 @@ const BSActivityManagementDesktop: React.FC = () => {
                           {/* 활동 유형 태그 */}
                           <div className="flex flex-wrap gap-2 mt-3">
                             {Array.from(new Set(activity.activities.map(a => a.type))).slice(0, 3).map(type => (
-                              <span
+                              <Badge
                                 key={type}
-                                className={`px-2 py-1 text-xs rounded-full ${getActivityTypeColor(type)}`}
+                                variant={getActivityTypeVariant(type)}
+                                size="sm"
                               >
                                 {ACTIVITY_TYPE_CONFIG[type].icon} {ACTIVITY_TYPE_CONFIG[type].label}
-                              </span>
+                              </Badge>
                             ))}
                             {Array.from(new Set(activity.activities.map(a => a.type))).length > 3 && (
-                              <span className="px-2 py-1 text-xs text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 rounded-full">
+                              <Badge variant="inactive" size="sm">
                                 +{Array.from(new Set(activity.activities.map(a => a.type))).length - 3}개 더
-                              </span>
+                              </Badge>
                             )}
                           </div>
                         </div>
