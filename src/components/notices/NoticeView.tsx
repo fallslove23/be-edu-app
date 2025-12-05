@@ -4,8 +4,8 @@ import {
   MagnifyingGlassIcon,
   ClockIcon,
   UserIcon,
-  StarIcon,
-  EyeIcon
+  EyeIcon,
+  ArrowLeftIcon
 } from '@heroicons/react/24/outline';
 import { StarIcon as StarSolidIcon } from '@heroicons/react/24/solid';
 import { format, parseISO } from 'date-fns';
@@ -118,13 +118,13 @@ const NoticeView: React.FC = () => {
   const getPriorityClass = (priority: string) => {
     switch (priority) {
       case 'high':
-        return 'bg-destructive/10 text-destructive';
+        return 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400 border-red-200 dark:border-red-800';
       case 'medium':
-        return 'bg-yellow-100 text-yellow-800';
+        return 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 border-amber-200 dark:border-amber-800';
       case 'low':
-        return 'bg-green-500/10 text-green-700';
+        return 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 border-blue-200 dark:border-blue-800';
       default:
-        return 'bg-gray-100 text-gray-800';
+        return 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-400 border-gray-200 dark:border-gray-700';
     }
   };
 
@@ -144,135 +144,162 @@ const NoticeView: React.FC = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <div className="animate-spin rounded-lg h-8 w-8 border-b-2 border-blue-600"></div>
-        <span className="ml-2 text-gray-600">공지사항을 불러오는 중...</span>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 dark:border-blue-400"></div>
+        <span className="ml-3 text-gray-600 dark:text-gray-400">공지사항을 불러오는 중...</span>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-4xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
+      <div className="max-w-4xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         {/* 헤더 */}
         <div className="mb-8">
-          <h1 className="text-2xl font-bold text-gray-900 flex items-center">
-            <MegaphoneIcon className="h-8 w-8 mr-3 text-blue-600" />
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white flex items-center">
+            <MegaphoneIcon className="h-9 w-9 mr-3 text-blue-600 dark:text-blue-400" />
             공지사항
           </h1>
-          <p className="mt-1 text-sm text-gray-600">
+          <p className="mt-2 text-gray-600 dark:text-gray-400">
             최신 교육 소식과 중요 안내사항을 확인하세요.
           </p>
         </div>
 
         {/* 검색 */}
-        <div className="mb-6">
-          <div className="relative">
-            <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-            <input
-              type="text"
-              placeholder="공지사항 검색..."
-              className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
+        {!selectedNotice && (
+          <div className="mb-8">
+            <div className="relative">
+              <MagnifyingGlassIcon className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 dark:text-gray-500" />
+              <input
+                type="text"
+                placeholder="공지사항 검색..."
+                className="w-full pl-12 pr-4 py-3.5 border border-gray-300 dark:border-gray-700 rounded-full bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm transition-all"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
           </div>
-        </div>
+        )}
 
         {/* 공지사항 목록 */}
         {selectedNotice ? (
           // 상세 보기
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-            <div className="p-6 border-b border-gray-200">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+            <div className="p-6 sm:p-8 border-b border-gray-200 dark:border-gray-700">
               <button
                 onClick={() => setSelectedNotice(null)}
-                className="text-blue-600 hover:text-blue-800 text-sm mb-4"
+                className="flex items-center text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 text-sm font-medium mb-6 transition-colors"
               >
-                ← 목록으로 돌아가기
+                <ArrowLeftIcon className="h-4 w-4 mr-1" />
+                목록으로 돌아가기
               </button>
+
               <div className="flex items-start justify-between">
                 <div className="flex-1">
-                  <div className="flex items-center space-x-2 mb-2">
+                  <div className="flex items-center gap-2 mb-3">
                     {selectedNotice.is_pinned && (
-                      <StarSolidIcon className="h-5 w-5 text-foreground" />
+                      <span className="bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 text-xs font-semibold px-2.5 py-1 rounded-md flex items-center">
+                        <StarSolidIcon className="h-3 w-3 mr-1" />
+                        고정
+                      </span>
                     )}
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${getPriorityClass(selectedNotice.priority)}`}>
+                    <span className={`px-2.5 py-1 rounded-md text-xs font-semibold border ${getPriorityClass(selectedNotice.priority)}`}>
                       {getPriorityLabel(selectedNotice.priority)}
                     </span>
                   </div>
-                  <h1 className="text-2xl font-bold text-gray-900 mb-4">
+
+                  <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-6 leading-tight">
                     {selectedNotice.title}
                   </h1>
-                  <div className="flex items-center space-x-4 text-sm text-gray-500 mb-6">
+
+                  <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500 dark:text-gray-400 pb-2">
                     <span className="flex items-center">
-                      <UserIcon className="h-4 w-4 mr-1" />
+                      <UserIcon className="h-4 w-4 mr-1.5" />
                       {selectedNotice.created_by}
                     </span>
                     <span className="flex items-center">
-                      <ClockIcon className="h-4 w-4 mr-1" />
+                      <ClockIcon className="h-4 w-4 mr-1.5" />
                       {format(parseISO(selectedNotice.created_at), 'yyyy년 MM월 dd일 HH:mm', { locale: ko })}
                     </span>
                     <span className="flex items-center">
-                      <EyeIcon className="h-4 w-4 mr-1" />
+                      <EyeIcon className="h-4 w-4 mr-1.5" />
                       {selectedNotice.views}회 조회
                     </span>
                   </div>
                 </div>
               </div>
             </div>
-            <div className="p-6">
-              <div className="prose max-w-none">
-                <p className="text-gray-800 leading-relaxed whitespace-pre-wrap">
+
+            <div className="p-6 sm:p-8 bg-white dark:bg-gray-800">
+              <div className="prose dark:prose-invert max-w-none">
+                <p className="text-gray-800 dark:text-gray-200 leading-relaxed whitespace-pre-wrap text-base sm:text-lg">
                   {selectedNotice.content}
                 </p>
               </div>
+            </div>
+
+            <div className="px-6 sm:px-8 py-4 bg-gray-50 dark:bg-gray-700/30 border-t border-gray-200 dark:border-gray-700 flex justify-end">
+              <button
+                onClick={() => setSelectedNotice(null)}
+                className="px-6 py-2.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-full hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors font-medium shadow-sm"
+              >
+                닫기
+              </button>
             </div>
           </div>
         ) : (
           // 목록 보기
           <div className="space-y-4">
             {sortedNotices.length === 0 ? (
-              <div className="text-center py-12 text-gray-500">
-                <MegaphoneIcon className="h-12 w-12 mx-auto mb-4 text-gray-300" />
-                <p>등록된 공지사항이 없습니다.</p>
+              <div className="text-center py-16 bg-white dark:bg-gray-800 rounded-2xl border border-dashed border-gray-300 dark:border-gray-700">
+                <MegaphoneIcon className="h-12 w-12 mx-auto mb-4 text-gray-300 dark:text-gray-600" />
+                <p className="text-gray-500 dark:text-gray-400 font-medium">등록된 공지사항이 없습니다.</p>
+                {searchTerm && <p className="text-gray-400 dark:text-gray-500 text-sm mt-1">검색어를 변경해보세요.</p>}
               </div>
             ) : (
               sortedNotices.map((notice) => (
                 <div
                   key={notice.id}
-                  className="bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow cursor-pointer"
+                  className={`bg-white dark:bg-gray-800 rounded-2xl shadow-sm border p-6 hover:shadow-md transition-all duration-200 cursor-pointer group ${notice.is_pinned
+                      ? 'border-blue-200 dark:border-blue-800 bg-blue-50/30 dark:bg-blue-900/10'
+                      : 'border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-700'
+                    }`}
                   onClick={() => setSelectedNotice(notice)}
                 >
-                  <div className="p-6">
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <div className="flex items-center space-x-2 mb-2">
-                          {notice.is_pinned && (
-                            <StarSolidIcon className="h-5 w-5 text-foreground" />
-                          )}
-                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${getPriorityClass(notice.priority)}`}>
-                            {getPriorityLabel(notice.priority)}
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-3">
+                        {notice.is_pinned && (
+                          <span className="bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 text-xs font-semibold px-2 py-1 rounded-md flex items-center">
+                            <StarSolidIcon className="h-3 w-3 mr-1" />
+                            고정
                           </span>
-                        </div>
-                        <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                          {notice.title}
-                        </h3>
-                        <p className="text-gray-600 text-sm mb-3 line-clamp-2">
-                          {notice.content}
-                        </p>
-                        <div className="flex items-center space-x-4 text-xs text-gray-500">
-                          <span className="flex items-center">
-                            <UserIcon className="h-3 w-3 mr-1" />
-                            {notice.created_by}
-                          </span>
-                          <span className="flex items-center">
-                            <ClockIcon className="h-3 w-3 mr-1" />
-                            {format(parseISO(notice.created_at), 'MM/dd HH:mm', { locale: ko })}
-                          </span>
-                          <span className="flex items-center">
-                            <EyeIcon className="h-3 w-3 mr-1" />
-                            {notice.views}
-                          </span>
-                        </div>
+                        )}
+                        <span className={`px-2 py-1 rounded-md text-xs font-semibold border ${getPriorityClass(notice.priority)}`}>
+                          {getPriorityLabel(notice.priority)}
+                        </span>
+                      </div>
+
+                      <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                        {notice.title}
+                      </h3>
+
+                      <p className="text-gray-600 dark:text-gray-400 text-sm mb-4 line-clamp-2">
+                        {notice.content}
+                      </p>
+
+                      <div className="flex items-center space-x-4 text-xs text-gray-500 dark:text-gray-500">
+                        <span className="flex items-center">
+                          <UserIcon className="h-3.5 w-3.5 mr-1" />
+                          {notice.created_by}
+                        </span>
+                        <span className="flex items-center">
+                          <ClockIcon className="h-3.5 w-3.5 mr-1" />
+                          {format(parseISO(notice.created_at), 'MM/dd HH:mm', { locale: ko })}
+                        </span>
+                        <span className="flex items-center">
+                          <EyeIcon className="h-3.5 w-3.5 mr-1" />
+                          {notice.views}
+                        </span>
                       </div>
                     </div>
                   </div>
