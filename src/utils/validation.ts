@@ -17,10 +17,10 @@ export interface ScoreValidationRules {
 }
 
 export interface StudentValidationRules {
-  nameMinLength: number;
-  nameMaxLength: number;
-  emailRequired: boolean;
-  phoneRequired: boolean;
+  nameMinLength?: number;
+  nameMaxLength?: number;
+  emailRequired?: boolean;
+  phoneRequired?: boolean;
 }
 
 // 기본 검증 규칙
@@ -62,7 +62,7 @@ export const validateScore = (
 
   // 숫자 변환
   const numScore = typeof score === 'string' ? parseFloat(score) : score;
-  
+
   // 숫자 유효성 체크
   if (isNaN(numScore)) {
     result.errors.push('유효한 숫자를 입력해주세요.');
@@ -118,12 +118,12 @@ export const validateStudentName = (
 
   const trimmedName = name.trim();
 
-  if (trimmedName.length < rules.nameMinLength) {
+  if (rules.nameMinLength !== undefined && trimmedName.length < rules.nameMinLength) {
     result.errors.push(`이름은 최소 ${rules.nameMinLength}자 이상이어야 합니다.`);
     result.isValid = false;
   }
 
-  if (trimmedName.length > rules.nameMaxLength) {
+  if (rules.nameMaxLength !== undefined && trimmedName.length > rules.nameMaxLength) {
     result.errors.push(`이름은 최대 ${rules.nameMaxLength}자까지 입력 가능합니다.`);
     result.isValid = false;
   }
@@ -185,7 +185,7 @@ export const validatePhone = (phone: string | null | undefined, required: boolea
 
   // 전화번호 정규화 (숫자만 추출)
   const normalizedPhone = phone.replace(/[^0-9]/g, '');
-  
+
   if (normalizedPhone.length < 10 || normalizedPhone.length > 11) {
     result.errors.push('올바른 전화번호 형식을 입력해주세요. (10-11자리 숫자)');
     result.isValid = false;
@@ -197,7 +197,7 @@ export const validatePhone = (phone: string | null | undefined, required: boolea
 /**
  * CSV 데이터 유효성 검사
  */
-export const validateCsvData = (data: any[]): ValidationResult => {
+export const validateCsvData = (data: Record<string, unknown>[]): ValidationResult => {
   const result: ValidationResult = {
     isValid: true,
     errors: [],
@@ -213,7 +213,7 @@ export const validateCsvData = (data: any[]): ValidationResult => {
   // 필수 컬럼 체크
   const requiredColumns = ['Round', 'Course ID', 'Student Name', 'Theory Score', 'Practical Score'];
   const headers = Object.keys(data[0] || {});
-  
+
   const missingColumns = requiredColumns.filter(col => !headers.includes(col));
   if (missingColumns.length > 0) {
     result.errors.push(`필수 컬럼이 누락되었습니다: ${missingColumns.join(', ')}`);
@@ -229,20 +229,20 @@ export const validateCsvData = (data: any[]): ValidationResult => {
     let rowValid = true;
 
     // 이름 검증
-    const nameValidation = validateStudentName(row['Student Name']);
+    const nameValidation = validateStudentName(row['Student Name'] as string);
     if (!nameValidation.isValid) {
       result.errors.push(`${rowIndex}행: ${nameValidation.errors.join(', ')}`);
       rowValid = false;
     }
 
     // 점수 검증
-    const theoryValidation = validateScore(row['Theory Score']);
+    const theoryValidation = validateScore(row['Theory Score'] as string | number);
     if (!theoryValidation.isValid) {
       result.errors.push(`${rowIndex}행 이론점수: ${theoryValidation.errors.join(', ')}`);
       rowValid = false;
     }
 
-    const practicalValidation = validateScore(row['Practical Score']);
+    const practicalValidation = validateScore(row['Practical Score'] as string | number);
     if (!practicalValidation.isValid) {
       result.errors.push(`${rowIndex}행 실기점수: ${practicalValidation.errors.join(', ')}`);
       rowValid = false;
@@ -268,7 +268,7 @@ export const validateCsvData = (data: any[]): ValidationResult => {
 /**
  * 일괄 점수 검증
  */
-export const validateScoresBatch = (scores: { [key: string]: any }): ValidationResult => {
+export const validateScoresBatch = (scores: Record<string, unknown>): ValidationResult => {
   const result: ValidationResult = {
     isValid: true,
     errors: [],
@@ -276,10 +276,11 @@ export const validateScoresBatch = (scores: { [key: string]: any }): ValidationR
   };
 
   const scoreFields = ['theoryScore', 'practicalScore', 'bsActivityScore', 'attitudeScore'];
-  
+
   scoreFields.forEach(field => {
-    if (scores[field] !== undefined && scores[field] !== null && scores[field] !== '') {
-      const validation = validateScore(scores[field]);
+    const value = scores[field];
+    if (value !== undefined && value !== null && value !== '') {
+      const validation = validateScore(value as string | number);
       if (!validation.isValid) {
         result.errors.push(`${field}: ${validation.errors.join(', ')}`);
         result.isValid = false;
@@ -372,7 +373,7 @@ export const validateFile = (file: File, allowedTypes: string[] = ['text/csv'], 
  */
 export const sanitizeInput = (input: string): string => {
   if (!input) return '';
-  
+
   return input
     .replace(/[<>]/g, '') // HTML 태그 제거
     .replace(/javascript:/gi, '') // JavaScript 프로토콜 제거
@@ -383,7 +384,7 @@ export const sanitizeInput = (input: string): string => {
 /**
  * 종합 데이터 검증
  */
-export const validateCompleteData = (data: any): ValidationResult => {
+export const validateCompleteData = (data: Record<string, unknown>): ValidationResult => {
   const result: ValidationResult = {
     isValid: true,
     errors: [],
@@ -401,7 +402,7 @@ export const validateCompleteData = (data: any): ValidationResult => {
 
   // 각 필드별 상세 검증
   if (data.studentName) {
-    const nameValidation = validateStudentName(data.studentName);
+    const nameValidation = validateStudentName(data.studentName as string);
     if (!nameValidation.isValid) {
       result.errors.push(...nameValidation.errors);
       result.isValid = false;
@@ -410,7 +411,7 @@ export const validateCompleteData = (data: any): ValidationResult => {
   }
 
   if (data.email) {
-    const emailValidation = validateEmail(data.email);
+    const emailValidation = validateEmail(data.email as string);
     if (!emailValidation.isValid) {
       result.errors.push(...emailValidation.errors);
       result.isValid = false;

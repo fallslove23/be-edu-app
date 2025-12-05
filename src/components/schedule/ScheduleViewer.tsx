@@ -449,7 +449,7 @@ const ScheduleViewer: React.FC<ScheduleViewerProps> = ({
   const EmptyDayCard: React.FC<{ date: Date }> = ({ date }) => (
     <button
       onClick={() => openAddModal(date.toISOString().split('T')[0])}
-      className="w-full bg-secondary border-2 border-dashed border-border rounded-lg p-4 text-center hover:bg-accent/10 hover:border-accent transition-colors cursor-pointer"
+      className="w-full bg-secondary border-2 border-dashed border-border rounded-xl p-4 text-center hover:bg-accent/10 hover:border-accent transition-colors cursor-pointer"
     >
       <div className="text-muted-foreground text-sm flex items-center justify-center gap-2">
         <PlusIcon className="w-4 h-4" />
@@ -500,7 +500,7 @@ const ScheduleViewer: React.FC<ScheduleViewerProps> = ({
       )}
 
       {/* 헤더 */}
-      <div className="bg-card rounded-lg shadow-sm border border-border p-4 sm:p-6">
+      <div className="bg-card rounded-2xl shadow-sm border border-border p-4 sm:p-6">
         {/* Breadcrumb Navigation */}
         <BreadcrumbNav
           items={[
@@ -579,11 +579,11 @@ const ScheduleViewer: React.FC<ScheduleViewerProps> = ({
           const dayNames = ['일', '월', '화', '수', '목', '금', '토'];
 
           return (
-            <div key={index} className="bg-card rounded-lg shadow-sm border border-border overflow-hidden">
+            <div key={index} className="bg-card rounded-2xl shadow-sm border border-border overflow-hidden">
               {/* 날짜 헤더 */}
               <div className={`p-3 border-b border-border ${isToday(day)
-                  ? 'bg-accent border-accent'
-                  : 'bg-secondary'
+                ? 'bg-accent border-accent'
+                : 'bg-secondary'
                 }`}>
                 <div className="flex items-center justify-between">
                   <div className={`text-sm font-medium ${isToday(day) ? 'text-accent-foreground' : 'text-muted-foreground'
@@ -591,12 +591,12 @@ const ScheduleViewer: React.FC<ScheduleViewerProps> = ({
                     {dayNames[day.getDay()]}요일
                   </div>
                   <div className={`text-lg font-bold ${isToday(day)
-                      ? 'text-accent-foreground'
-                      : day.getDay() === 0
-                        ? 'text-destructive'
-                        : day.getDay() === 6
-                          ? 'text-primary'
-                          : 'text-card-foreground'
+                    ? 'text-accent-foreground'
+                    : day.getDay() === 0
+                      ? 'text-destructive'
+                      : day.getDay() === 6
+                        ? 'text-primary'
+                        : 'text-card-foreground'
                     }`}>
                     {day.getDate()}
                   </div>
@@ -619,7 +619,7 @@ const ScheduleViewer: React.FC<ScheduleViewerProps> = ({
       </div>
 
       {/* 범례 */}
-      <div className="bg-card rounded-lg shadow-sm border border-border p-4 sm:p-6">
+      <div className="bg-card rounded-2xl shadow-sm border border-border p-4 sm:p-6">
         <h3 className="text-sm font-semibold text-card-foreground mb-3">상태 범례</h3>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           <div className="flex items-center space-x-2">
@@ -645,7 +645,7 @@ const ScheduleViewer: React.FC<ScheduleViewerProps> = ({
 
       {/* 통계 카드 */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-primary text-primary-foreground rounded-lg p-4 shadow-sm">
+        <div className="bg-primary text-primary-foreground rounded-2xl p-4 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-primary-foreground/80 text-sm">이번 주 전체</p>
@@ -655,7 +655,7 @@ const ScheduleViewer: React.FC<ScheduleViewerProps> = ({
           </div>
         </div>
 
-        <div className="bg-accent text-accent-foreground rounded-lg p-4 shadow-sm">
+        <div className="bg-accent text-accent-foreground rounded-2xl p-4 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-accent-foreground/80 text-sm">진행 중</p>
@@ -669,7 +669,7 @@ const ScheduleViewer: React.FC<ScheduleViewerProps> = ({
           </div>
         </div>
 
-        <div className="bg-secondary text-secondary-foreground rounded-lg p-4 shadow-sm">
+        <div className="bg-secondary text-secondary-foreground rounded-2xl p-4 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-secondary-foreground/80 text-sm">완료됨</p>
@@ -681,7 +681,7 @@ const ScheduleViewer: React.FC<ScheduleViewerProps> = ({
           </div>
         </div>
 
-        <div className="bg-muted text-muted-foreground rounded-lg p-4 shadow-sm">
+        <div className="bg-muted text-muted-foreground rounded-2xl p-4 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-muted-foreground/80 text-sm">강의실</p>
@@ -696,8 +696,8 @@ const ScheduleViewer: React.FC<ScheduleViewerProps> = ({
 
       {/* 세션 상세 모달 */}
       {showDetailModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
             {/* 모달 헤더 */}
             <div className="sticky top-0 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 p-6 flex items-center justify-between z-10">
               <div>
@@ -735,7 +735,7 @@ const ScheduleViewer: React.FC<ScheduleViewerProps> = ({
               ) : sessionDetails ? (
                 <div className="space-y-6">
                   {/* 기본 정보 */}
-                  <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-5 border border-gray-200 dark:border-gray-700">
+                  <div className="bg-gray-50 dark:bg-gray-900 rounded-xl p-5 border border-gray-200 dark:border-gray-700">
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
                       <CalendarIcon className="w-5 h-5 mr-2 text-primary" />
                       기본 정보
@@ -785,7 +785,7 @@ const ScheduleViewer: React.FC<ScheduleViewerProps> = ({
 
                   {/* 커리큘럼 정보 */}
                   {sessionDetails.course_rounds?.course_templates?.curriculum && (
-                    <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-5 border border-blue-200 dark:border-blue-800">
+                    <div className="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-5 border border-blue-200 dark:border-blue-800">
                       <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
                         <BookOpenIcon className="w-5 h-5 mr-2 text-blue-600" />
                         커리큘럼 정보
@@ -826,7 +826,7 @@ const ScheduleViewer: React.FC<ScheduleViewerProps> = ({
                   )}
 
                   {/* 교육생 목록 */}
-                  <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-5 border border-green-200 dark:border-green-800">
+                  <div className="bg-green-50 dark:bg-green-900/20 rounded-xl p-5 border border-green-200 dark:border-green-800">
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
                       <UserIcon className="w-5 h-5 mr-2 text-green-600" />
                       교육생 목록 ({sessionDetails.trainees?.length || 0}명)
@@ -860,7 +860,7 @@ const ScheduleViewer: React.FC<ScheduleViewerProps> = ({
 
                   {/* 메모 */}
                   {sessionDetails.notes && (
-                    <div className="bg-yellow-50 dark:bg-yellow-900/20 rounded-lg p-5 border border-yellow-200 dark:border-yellow-800">
+                    <div className="bg-yellow-50 dark:bg-yellow-900/20 rounded-xl p-5 border border-yellow-200 dark:border-yellow-800">
                       <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">
                         📝 메모
                       </h3>
@@ -896,8 +896,8 @@ const ScheduleViewer: React.FC<ScheduleViewerProps> = ({
 
       {/* 일정 추가 모달 */}
       {showAddModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
             {/* 모달 헤더 */}
             <div className="sticky top-0 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 p-6 flex items-center justify-between z-10">
               <h2 className="text-xl font-bold text-gray-900 dark:text-white flex items-center">
@@ -922,7 +922,7 @@ const ScheduleViewer: React.FC<ScheduleViewerProps> = ({
                 <select
                   value={scheduleForm.round_id}
                   onChange={(e) => setScheduleForm({ ...scheduleForm, round_id: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                 >
                   <option value="">선택하세요</option>
                   {courseRounds.map(round => (
@@ -941,7 +941,7 @@ const ScheduleViewer: React.FC<ScheduleViewerProps> = ({
                 <select
                   value={scheduleForm.subject_id}
                   onChange={(e) => setScheduleForm({ ...scheduleForm, subject_id: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                 >
                   <option value="">선택하세요</option>
                   {subjects.map(subject => (
@@ -962,7 +962,7 @@ const ScheduleViewer: React.FC<ScheduleViewerProps> = ({
                   value={scheduleForm.title}
                   onChange={(e) => setScheduleForm({ ...scheduleForm, title: e.target.value })}
                   placeholder="예: 1일차 강의"
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                 />
               </div>
 
@@ -975,7 +975,7 @@ const ScheduleViewer: React.FC<ScheduleViewerProps> = ({
                   type="date"
                   value={scheduleForm.session_date}
                   onChange={(e) => setScheduleForm({ ...scheduleForm, session_date: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                 />
               </div>
 
@@ -988,7 +988,7 @@ const ScheduleViewer: React.FC<ScheduleViewerProps> = ({
                   <select
                     value={scheduleForm.start_time}
                     onChange={(e) => setScheduleForm({ ...scheduleForm, start_time: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                   >
                     <option value="09:00">오전 09:00</option>
                     <option value="09:30">오전 09:30</option>
@@ -1018,7 +1018,7 @@ const ScheduleViewer: React.FC<ScheduleViewerProps> = ({
                   <select
                     value={scheduleForm.end_time}
                     onChange={(e) => setScheduleForm({ ...scheduleForm, end_time: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                   >
                     <option value="09:00">오전 09:00</option>
                     <option value="09:30">오전 09:30</option>

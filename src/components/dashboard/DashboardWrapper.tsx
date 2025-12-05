@@ -26,12 +26,12 @@ import RolePreviewSelector from '../admin/RolePreviewSelector';
 import TraineeDashboard from '../trainee/TraineeDashboard';
 import InstructorDashboard from '../instructor/InstructorDashboard';
 import { useAuth } from '../../contexts/AuthContext';
+import { PageContainer } from '../common/PageContainer';
+import { PageHeader } from '../common/PageHeader';
 
 interface DashboardWrapperProps {
   onNavigate?: (view: string) => void;
 }
-
-import { PageContainer } from '../common/PageContainer';
 
 const DashboardWrapper: React.FC<DashboardWrapperProps> = ({ onNavigate }) => {
   const { user } = useAuth();
@@ -67,25 +67,22 @@ const DashboardWrapper: React.FC<DashboardWrapperProps> = ({ onNavigate }) => {
     <div className="min-h-screen bg-[#F2F4F6] dark:bg-gray-900 p-4 sm:p-6 pb-24 transition-colors duration-200">
       <div className="max-w-5xl mx-auto space-y-6">
         {/* Header Section */}
-        <div className="flex items-center justify-between mb-2">
-          <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-indigo-600 rounded-full flex items-center justify-center text-white font-bold text-sm">
-              {user?.name?.[0] || 'A'}
-            </div>
-            <h1 className="text-xl font-bold text-gray-900 dark:text-white">
-              {user?.name || '관리자'}님
-            </h1>
-          </div>
-          <div className="flex items-center space-x-2">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <PageHeader
+            title={`${user?.name || '관리자'}님`}
+            description="오늘도 즐거운 하루 되세요!"
+            badge={user?.role === 'admin' ? '관리자' : '매니저'}
+          />
+          <div className="flex items-center gap-3">
             {/* 역할 미리보기 버튼 */}
             {isAdmin && <RolePreviewSelector />}
 
             <button
               onClick={() => onNavigate?.('search')}
-              className="p-2 text-gray-800 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-800 rounded-full transition-colors"
+              className="p-2 text-gray-800 dark:text-gray-200 hover:bg-white dark:hover:bg-gray-800 rounded-full transition-all shadow-sm hover:shadow-md bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm"
               title="검색"
             >
-              <Search className="w-6 h-6" />
+              <Search className="w-5 h-5" />
             </button>
           </div>
         </div>

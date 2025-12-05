@@ -303,6 +303,7 @@ export interface TraineeExamHistory {
   passed?: boolean;
   submitted_at?: string;
   time_spent_minutes?: number;
+  status?: AttemptStatus;
 }
 
 // ========================================
@@ -396,6 +397,14 @@ export interface GradeExamAttemptData {
   attempt_id: string;
   graded_by: string;
   manual_scores?: Record<string, number>; // question_id -> points_earned
+  feedback?: string;
+}
+
+export interface ManualGradeResponseData {
+  attempt_id: string;
+  response_id: string;
+  is_correct: boolean;
+  points_earned: number;
   feedback?: string;
 }
 

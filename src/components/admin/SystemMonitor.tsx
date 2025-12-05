@@ -12,8 +12,6 @@ import {
   UserIcon,
   ArrowTrendingUpIcon,
   ArrowTrendingDownIcon,
-  Cog6ToothIcon,
-  EyeIcon,
   PauseIcon,
   PlayIcon
 } from '@heroicons/react/24/outline';
@@ -56,7 +54,6 @@ const SystemMonitor: React.FC = () => {
     requestsPerMinute: 0
   });
   const [isMonitoring, setIsMonitoring] = useState(true);
-  const [selectedTimeRange, setSelectedTimeRange] = useState<'1h' | '6h' | '24h' | '7d'>('1h');
   const [autoRefresh, setAutoRefresh] = useState(5); // seconds
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -280,10 +277,10 @@ const SystemMonitor: React.FC = () => {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'good': return 'text-green-600 bg-green-500/10';
-      case 'warning': return 'text-orange-600 bg-yellow-100';
-      case 'critical': return 'text-destructive bg-destructive/10';
-      default: return 'text-gray-600 bg-gray-100';
+      case 'good': return 'text-green-600 dark:text-green-400 bg-green-500/10 dark:bg-green-900/30';
+      case 'warning': return 'text-orange-600 dark:text-orange-400 bg-yellow-100 dark:bg-yellow-900/30';
+      case 'critical': return 'text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-900/30';
+      default: return 'text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-gray-700';
     }
   };
 
@@ -298,22 +295,22 @@ const SystemMonitor: React.FC = () => {
 
   const getTrendIcon = (trend: string) => {
     switch (trend) {
-      case 'up': return <ArrowTrendingUpIcon className="h-4 w-4 text-destructive" />;
-      case 'down': return <ArrowTrendingDownIcon className="h-4 w-4 text-green-500" />;
-      case 'stable': return <div className="h-4 w-4 bg-gray-400 rounded-lg"></div>;
+      case 'up': return <ArrowTrendingUpIcon className="h-4 w-4 text-red-500 dark:text-red-400" />;
+      case 'down': return <ArrowTrendingDownIcon className="h-4 w-4 text-green-500 dark:text-green-400" />;
+      case 'stable': return <div className="h-4 w-4 bg-gray-400 dark:bg-gray-500 rounded-lg"></div>;
       default: return null;
     }
   };
 
   const getMetricIcon = (id: string) => {
     switch (id) {
-      case 'cpu': return <CpuChipIcon className="h-6 w-6 text-blue-600" />;
-      case 'memory': return <ServerIcon className="h-6 w-6 text-green-600" />;
-      case 'disk': return <CircleStackIcon className="h-6 w-6 text-purple-600" />;
-      case 'network': return <GlobeAltIcon className="h-6 w-6 text-orange-600" />;
-      case 'response_time': return <ClockIcon className="h-6 w-6 text-indigo-600" />;
-      case 'error_rate': return <ExclamationTriangleIcon className="h-6 w-6 text-destructive" />;
-      default: return <ChartBarIcon className="h-6 w-6 text-gray-600" />;
+      case 'cpu': return <CpuChipIcon className="h-6 w-6 text-blue-600 dark:text-blue-400" />;
+      case 'memory': return <ServerIcon className="h-6 w-6 text-green-600 dark:text-green-400" />;
+      case 'disk': return <CircleStackIcon className="h-6 w-6 text-purple-600 dark:text-purple-400" />;
+      case 'network': return <GlobeAltIcon className="h-6 w-6 text-orange-600 dark:text-orange-400" />;
+      case 'response_time': return <ClockIcon className="h-6 w-6 text-indigo-600 dark:text-indigo-400" />;
+      case 'error_rate': return <ExclamationTriangleIcon className="h-6 w-6 text-red-600 dark:text-red-400" />;
+      default: return <ChartBarIcon className="h-6 w-6 text-gray-600 dark:text-gray-400" />;
     }
   };
 
@@ -336,7 +333,7 @@ const SystemMonitor: React.FC = () => {
           return (
             <div
               key={index}
-              className="bg-blue-500 w-2 opacity-70"
+              className="bg-blue-500 dark:bg-blue-400 w-2 opacity-70 rounded-t-sm"
               style={{ height: `${Math.max(height, 10)}%` }}
             />
           );
@@ -349,11 +346,11 @@ const SystemMonitor: React.FC = () => {
     <PageContainer>
       <div className="space-y-6">
         {/* 헤더 */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900 mb-2">📊 시스템 모니터</h1>
-              <p className="text-gray-600">
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">📊 시스템 모니터</h1>
+              <p className="text-gray-600 dark:text-gray-400">
                 실시간 시스템 성능 및 리소스 사용량을 모니터링합니다.
               </p>
             </div>
@@ -361,7 +358,7 @@ const SystemMonitor: React.FC = () => {
               <select
                 value={autoRefresh}
                 onChange={(e) => setAutoRefresh(Number(e.target.value))}
-                className="border border-gray-300 rounded px-3 py-1 text-sm"
+                className="border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
               >
                 <option value={1}>1초마다</option>
                 <option value={5}>5초마다</option>
@@ -370,7 +367,9 @@ const SystemMonitor: React.FC = () => {
               </select>
               <button
                 onClick={() => setIsMonitoring(!isMonitoring)}
-                className={`px-4 py-2 rounded-lg text-white flex items-center space-x-2 ${isMonitoring ? 'btn-danger' : 'btn-primary'
+                className={`px-4 py-2 rounded-lg text-white flex items-center space-x-2 transition-all ${isMonitoring
+                  ? 'bg-red-500 hover:bg-red-600 shadow-sm hover:shadow'
+                  : 'bg-blue-600 hover:bg-blue-700 shadow-sm hover:shadow'
                   }`}
               >
                 {isMonitoring ? (
@@ -391,70 +390,80 @@ const SystemMonitor: React.FC = () => {
 
         {/* 연결 정보 */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 hover:shadow-md transition-shadow">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">활성 사용자</p>
-                <p className="text-2xl font-bold text-blue-600">{connectionInfo.activeUsers}</p>
+                <p className="text-sm font-medium text-gray-500 dark:text-gray-400">활성 사용자</p>
+                <p className="text-2xl font-bold text-blue-600 dark:text-blue-400 mt-1">{connectionInfo.activeUsers}</p>
               </div>
-              <UserIcon className="h-8 w-8 text-blue-500" />
+              <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-xl">
+                <UserIcon className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+              </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 hover:shadow-md transition-shadow">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">총 세션</p>
-                <p className="text-2xl font-bold text-green-600">{connectionInfo.totalSessions}</p>
+                <p className="text-sm font-medium text-gray-500 dark:text-gray-400">총 세션</p>
+                <p className="text-2xl font-bold text-green-600 dark:text-green-400 mt-1">{connectionInfo.totalSessions}</p>
               </div>
-              <ServerIcon className="h-8 w-8 text-green-500" />
+              <div className="p-3 bg-green-50 dark:bg-green-900/20 rounded-xl">
+                <ServerIcon className="h-6 w-6 text-green-600 dark:text-green-400" />
+              </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 hover:shadow-md transition-shadow">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">평균 응답</p>
-                <p className="text-2xl font-bold text-purple-600">{connectionInfo.avgResponseTime}ms</p>
+                <p className="text-sm font-medium text-gray-500 dark:text-gray-400">평균 응답</p>
+                <p className="text-2xl font-bold text-purple-600 dark:text-purple-400 mt-1">{connectionInfo.avgResponseTime}ms</p>
               </div>
-              <ClockIcon className="h-8 w-8 text-purple-500" />
+              <div className="p-3 bg-purple-50 dark:bg-purple-900/20 rounded-xl">
+                <ClockIcon className="h-6 w-6 text-purple-600 dark:text-purple-400" />
+              </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 hover:shadow-md transition-shadow">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">요청/분</p>
-                <p className="text-2xl font-bold text-orange-600">{connectionInfo.requestsPerMinute}</p>
+                <p className="text-sm font-medium text-gray-500 dark:text-gray-400">요청/분</p>
+                <p className="text-2xl font-bold text-orange-600 dark:text-orange-400 mt-1">{connectionInfo.requestsPerMinute}</p>
               </div>
-              <BoltIcon className="h-8 w-8 text-orange-500" />
+              <div className="p-3 bg-orange-50 dark:bg-orange-900/20 rounded-xl">
+                <BoltIcon className="h-6 w-6 text-orange-600 dark:text-orange-400" />
+              </div>
             </div>
           </div>
         </div>
 
         {/* 성능 메트릭 */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-          <div className="px-6 py-4 border-b border-gray-200">
-            <h3 className="text-lg font-medium text-gray-900">시스템 성능 메트릭</h3>
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
+          <div className="px-6 py-4 border-b border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
+            <h3 className="text-lg font-bold text-gray-900 dark:text-white">시스템 성능 메트릭</h3>
           </div>
 
           <div className="p-6">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {metrics.map((metric) => (
-                <div key={metric.id} className="border border-gray-200 rounded-lg p-4">
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="flex items-center space-x-2">
-                      {getMetricIcon(metric.id)}
-                      <span className="font-medium text-gray-900">{metric.name}</span>
+                <div key={metric.id} className="border border-gray-200 dark:border-gray-700 rounded-2xl p-5 hover:shadow-md transition-all bg-white dark:bg-gray-800">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center space-x-3">
+                      <div className="p-2 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+                        {getMetricIcon(metric.id)}
+                      </div>
+                      <span className="font-bold text-gray-900 dark:text-white">{metric.name}</span>
                     </div>
                     {getTrendIcon(metric.trend)}
                   </div>
 
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="text-2xl font-bold text-gray-900">
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="text-3xl font-bold text-gray-900 dark:text-white">
                       {metric.value}{metric.unit}
                     </span>
-                    <span className={`inline-flex items-center space-x-1 px-2 py-1 rounded-lg text-xs font-medium ${getStatusColor(metric.status)}`}>
+                    <span className={`inline-flex items-center space-x-1 px-2.5 py-1 rounded-full text-xs font-bold ${getStatusColor(metric.status)}`}>
                       {getStatusIcon(metric.status)}
                       <span>
                         {metric.status === 'good' ? '양호' :
@@ -463,15 +472,15 @@ const SystemMonitor: React.FC = () => {
                     </span>
                   </div>
 
-                  <div className="mb-2">
-                    <div className="flex justify-between text-xs text-gray-500 mb-1">
+                  <div className="mb-4">
+                    <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mb-1.5 font-medium">
                       <span>0</span>
                       <span>임계값: {metric.threshold}{metric.unit}</span>
                     </div>
-                    <div className="w-full bg-gray-200 rounded-lg h-2">
+                    <div className="w-full bg-gray-100 dark:bg-gray-700 rounded-full h-2.5 overflow-hidden">
                       <div
-                        className={`h-2 rounded-lg ${metric.status === 'critical' ? 'bg-red-500' :
-                            metric.status === 'warning' ? 'bg-yellow-500' : 'bg-green-500'
+                        className={`h-2.5 rounded-full transition-all duration-500 ${metric.status === 'critical' ? 'bg-red-500' :
+                          metric.status === 'warning' ? 'bg-orange-500' : 'bg-green-500'
                           }`}
                         style={{
                           width: `${Math.min(100, (metric.value / (metric.id === 'response_time' ? 1000 : 100)) * 100)}%`
@@ -480,8 +489,8 @@ const SystemMonitor: React.FC = () => {
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs text-gray-500">최근 추이</span>
+                  <div className="flex items-center justify-between pt-2 border-t border-gray-50 dark:border-gray-700/50">
+                    <span className="text-xs font-medium text-gray-400 dark:text-gray-500">최근 추이</span>
                     <MiniChart data={metric.history} />
                   </div>
                 </div>
@@ -491,43 +500,43 @@ const SystemMonitor: React.FC = () => {
         </div>
 
         {/* 시스템 알림 */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-          <div className="px-6 py-4 border-b border-gray-200">
-            <div className="flex justify-between items-center">
-              <h3 className="text-lg font-medium text-gray-900">
-                시스템 알림 ({alerts.filter(a => !a.resolved).length})
-              </h3>
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
+          <div className="px-6 py-4 border-b border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 flex justify-between items-center">
+            <h3 className="text-lg font-bold text-gray-900 dark:text-white">
+              시스템 알림 ({alerts.filter(a => !a.resolved).length})
+            </h3>
+            {alerts.length > 0 && (
               <button
                 onClick={() => setAlerts([])}
-                className="btn-ghost text-sm"
+                className="text-sm font-medium text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors"
               >
                 모두 지우기
               </button>
-            </div>
+            )}
           </div>
 
-          <div className="divide-y divide-gray-200">
+          <div className="divide-y divide-gray-100 dark:divide-gray-700">
             {alerts.slice(0, 5).map((alert) => (
-              <div key={alert.id} className={`p-4 ${alert.resolved ? 'opacity-50' : ''}`}>
+              <div key={alert.id} className={`p-6 transition-colors hover:bg-gray-50 dark:hover:bg-gray-700/50 ${alert.resolved ? 'opacity-50' : ''}`}>
                 <div className="flex items-start justify-between">
-                  <div className="flex items-start space-x-3">
-                    <div className={`p-1 rounded-lg ${alert.type === 'error' ? 'bg-destructive/10' :
-                        alert.type === 'warning' ? 'bg-yellow-100' : 'bg-blue-100'
+                  <div className="flex items-start space-x-4">
+                    <div className={`p-2 rounded-xl flex-shrink-0 ${alert.type === 'error' ? 'bg-red-50 dark:bg-red-900/20' :
+                      alert.type === 'warning' ? 'bg-orange-50 dark:bg-orange-900/20' : 'bg-blue-50 dark:bg-blue-900/20'
                       }`}>
-                      <ExclamationTriangleIcon className={`h-4 w-4 ${alert.type === 'error' ? 'text-destructive' :
-                          alert.type === 'warning' ? 'text-orange-600' : 'text-blue-600'
+                      <ExclamationTriangleIcon className={`h-5 w-5 ${alert.type === 'error' ? 'text-red-600 dark:text-red-400' :
+                        alert.type === 'warning' ? 'text-orange-600 dark:text-orange-400' : 'text-blue-600 dark:text-blue-400'
                         }`} />
                     </div>
-                    <div className="flex-1">
-                      <h4 className="text-sm font-medium text-gray-900">{alert.title}</h4>
-                      <p className="text-sm text-gray-600 mt-1">{alert.message}</p>
-                      <p className="text-xs text-gray-500 mt-2">{formatDate(alert.timestamp)}</p>
+                    <div className="flex-1 min-w-0">
+                      <h4 className="text-sm font-bold text-gray-900 dark:text-white">{alert.title}</h4>
+                      <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">{alert.message}</p>
+                      <p className="text-xs text-gray-400 dark:text-gray-500 mt-2 font-medium">{formatDate(alert.timestamp)}</p>
                     </div>
                   </div>
                   {!alert.resolved && (
                     <button
                       onClick={() => resolveAlert(alert.id)}
-                      className="btn-ghost text-sm text-blue-600 hover:text-blue-900"
+                      className="ml-4 px-3 py-1.5 text-xs font-bold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-colors"
                     >
                       해결됨
                     </button>
@@ -537,10 +546,12 @@ const SystemMonitor: React.FC = () => {
             ))}
 
             {alerts.length === 0 && (
-              <div className="p-8 text-center">
-                <CheckCircleIcon className="h-12 w-12 text-green-500 mx-auto mb-3" />
-                <h4 className="text-lg font-medium text-gray-900 mb-1">모든 시스템이 정상입니다</h4>
-                <p className="text-gray-600">현재 활성화된 알림이 없습니다.</p>
+              <div className="p-12 text-center">
+                <div className="w-16 h-16 bg-green-50 dark:bg-green-900/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <CheckCircleIcon className="h-8 w-8 text-green-500 dark:text-green-400" />
+                </div>
+                <h4 className="text-lg font-bold text-gray-900 dark:text-white mb-1">모든 시스템이 정상입니다</h4>
+                <p className="text-gray-500 dark:text-gray-400">현재 활성화된 알림이 없습니다.</p>
               </div>
             )}
           </div>

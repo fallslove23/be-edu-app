@@ -5,6 +5,7 @@ import { CategoryService } from '../../services/resource.services';
 import type { Category, CreateCategoryData, UpdateCategoryData } from '../../types/resource.types';
 import { CATEGORY_COLORS, CATEGORY_ICONS } from '../../types/resource.types';
 import { PageContainer } from '../common/PageContainer';
+import { PlusIcon, PencilIcon, TrashIcon, XMarkIcon } from '@heroicons/react/24/outline';
 
 export const CategoryManagement: React.FC = () => {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -132,29 +133,38 @@ export const CategoryManagement: React.FC = () => {
   const renderCategoryTree = (parentCategories: Category[], level = 0) => {
     return parentCategories.map((category) => (
       <div key={category.id} style={{ marginLeft: `${level * 24}px` }}>
-        <div className="flex items-center justify-between p-4 bg-card hover:bg-accent rounded-lg mb-2 transition-colors">
+        <div className="flex items-center justify-between p-4 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded-xl mb-2 transition-colors border border-gray-100 dark:border-gray-700 shadow-sm">
           <div className="flex items-center gap-4 flex-1">
             <div
-              className="w-4 h-4 rounded"
+              className="w-4 h-4 rounded-full shadow-sm"
               style={{ backgroundColor: category.color }}
             />
             <div className="flex-1">
               <div className="flex items-center gap-2">
-                <h3 className="font-semibold text-card-foreground">{category.name}</h3>
+                <h3 className="font-bold text-gray-900 dark:text-white">{category.name}</h3>
                 {!category.is_active && (
-                  <span className="text-xs px-2 py-1 bg-muted text-muted-foreground rounded">
+                  <span className="text-xs px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 rounded-full font-medium">
                     비활성
                   </span>
                 )}
               </div>
               {category.description && (
-                <p className="text-sm text-muted-foreground mt-1">{category.description}</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{category.description}</p>
               )}
-              <div className="flex items-center gap-4 mt-2 text-xs text-muted-foreground">
-                <span>아이콘: {category.icon}</span>
-                <span>순서: {category.display_order}</span>
+              <div className="flex items-center gap-4 mt-2 text-xs text-gray-400 dark:text-gray-500 font-medium">
+                <span className="flex items-center gap-1">
+                  <span className="w-1 h-1 bg-gray-300 rounded-full"></span>
+                  아이콘: {category.icon}
+                </span>
+                <span className="flex items-center gap-1">
+                  <span className="w-1 h-1 bg-gray-300 rounded-full"></span>
+                  순서: {category.display_order}
+                </span>
                 {category.children && category.children.length > 0 && (
-                  <span>하위 카테고리: {category.children.length}개</span>
+                  <span className="flex items-center gap-1">
+                    <span className="w-1 h-1 bg-gray-300 rounded-full"></span>
+                    하위 카테고리: {category.children.length}개
+                  </span>
                 )}
               </div>
             </div>
@@ -162,35 +172,37 @@ export const CategoryManagement: React.FC = () => {
           <div className="flex items-center gap-2">
             <button
               onClick={() => startEdit(category)}
-              className="btn-outline py-1 h-auto text-sm"
+              className="btn-ghost p-2 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg"
+              title="수정"
             >
-              수정
+              <PencilIcon className="h-4 w-4" />
             </button>
             <button
               onClick={() => setDeleteConfirmId(category.id)}
-              className="btn-danger py-1 h-auto text-sm"
+              className="btn-ghost p-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg"
+              title="삭제"
             >
-              삭제
+              <TrashIcon className="h-4 w-4" />
             </button>
           </div>
         </div>
 
         {/* Render children recursively */}
         {category.children && category.children.length > 0 && (
-          <div className="ml-6 border-l-2 border-border pl-2">
+          <div className="ml-6 border-l-2 border-gray-100 dark:border-gray-700 pl-2">
             {renderCategoryTree(category.children, level + 1)}
           </div>
         )}
 
         {/* Delete confirmation modal */}
         {deleteConfirmId === category.id && (
-          <div className="fixed inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center z-50">
-            <div className="bg-card p-6 rounded-lg shadow-lg max-w-md w-full mx-4">
-              <h3 className="text-lg font-semibold text-card-foreground mb-2">카테고리 삭제</h3>
-              <p className="text-muted-foreground mb-4">
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-2xl max-w-md w-full border border-gray-100 dark:border-gray-700">
+              <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">카테고리 삭제</h3>
+              <p className="text-gray-600 dark:text-gray-300 mb-4">
                 &quot;{category.name}&quot; 카테고리를 삭제하시겠습니까?
                 {category.children && category.children.length > 0 && (
-                  <span className="block mt-2 text-destructive font-medium">
+                  <span className="block mt-2 text-red-600 dark:text-red-400 font-bold bg-red-50 dark:bg-red-900/20 p-3 rounded-xl">
                     ⚠️ 이 카테고리는 {category.children.length}개의 하위 카테고리를 가지고 있습니다.
                   </span>
                 )}
@@ -223,7 +235,7 @@ export const CategoryManagement: React.FC = () => {
     return (
       <PageContainer>
         <div className="flex items-center justify-center p-8">
-          <div className="text-muted-foreground">로딩 중...</div>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 dark:border-blue-400"></div>
         </div>
       </PageContainer>
     );
@@ -233,33 +245,36 @@ export const CategoryManagement: React.FC = () => {
     <PageContainer>
       <div className="space-y-6">
         {/* Header */}
-        <div className="flex items-center justify-between">
-          <div>
-            <h2 className="text-2xl font-bold text-card-foreground">카테고리 관리</h2>
-            <p className="text-muted-foreground mt-1">
-              과정 카테고리를 추가, 수정, 삭제할 수 있습니다.
-            </p>
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">카테고리 관리</h2>
+              <p className="text-gray-500 dark:text-gray-400 mt-1">
+                과정 카테고리를 추가, 수정, 삭제할 수 있습니다.
+              </p>
+            </div>
+            <button
+              onClick={() => setIsFormOpen(true)}
+              className="btn-primary flex items-center"
+            >
+              <PlusIcon className="h-5 w-5 mr-2" />
+              카테고리 추가
+            </button>
           </div>
-          <button
-            onClick={() => setIsFormOpen(true)}
-            className="btn-primary"
-          >
-            + 카테고리 추가
-          </button>
         </div>
 
         {/* Error message */}
         {error && (
-          <div className="p-4 bg-destructive/10 border border-destructive/20 rounded-lg">
-            <p className="text-destructive">{error}</p>
+          <div className="p-4 bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-800 rounded-xl">
+            <p className="text-red-600 dark:text-red-400 font-medium">{error}</p>
           </div>
         )}
 
         {/* Category list */}
         <div className="space-y-2">
           {rootCategories.length === 0 ? (
-            <div className="text-center p-8 bg-card rounded-lg">
-              <p className="text-muted-foreground">등록된 카테고리가 없습니다.</p>
+            <div className="text-center p-12 bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700">
+              <p className="text-gray-500 dark:text-gray-400">등록된 카테고리가 없습니다.</p>
             </div>
           ) : (
             renderCategoryTree(rootCategories)
@@ -268,36 +283,44 @@ export const CategoryManagement: React.FC = () => {
 
         {/* Form modal */}
         {isFormOpen && (
-          <div className="fixed inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center z-50">
-            <div className="bg-card p-6 rounded-lg shadow-lg max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
-              <h3 className="text-xl font-semibold text-card-foreground mb-4">
-                {editingCategory ? '카테고리 수정' : '카테고리 추가'}
-              </h3>
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-gray-100 dark:border-gray-700">
+              <div className="flex justify-between items-center mb-6">
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+                  {editingCategory ? '카테고리 수정' : '카테고리 추가'}
+                </h3>
+                <button
+                  onClick={resetForm}
+                  className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                >
+                  <XMarkIcon className="h-6 w-6" />
+                </button>
+              </div>
 
-              <div className="space-y-4">
+              <div className="space-y-6">
                 {/* Name */}
                 <div>
-                  <label className="block text-sm font-medium text-card-foreground mb-1">
-                    카테고리 이름 <span className="text-destructive">*</span>
+                  <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
+                    카테고리 이름 <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="text"
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="w-full px-3 py-2 bg-background border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
+                    className="w-full px-4 py-3 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-gray-900 dark:text-white"
                     placeholder="예: BS 영업"
                   />
                 </div>
 
                 {/* Parent Category */}
                 <div>
-                  <label className="block text-sm font-medium text-card-foreground mb-1">
+                  <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
                     상위 카테고리
                   </label>
                   <select
                     value={formData.parent_id || ''}
                     onChange={(e) => setFormData({ ...formData, parent_id: e.target.value || null })}
-                    className="w-full px-3 py-2 bg-background border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
+                    className="w-full px-4 py-3 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-gray-900 dark:text-white appearance-none"
                   >
                     <option value="">없음 (최상위 카테고리)</option>
                     {rootCategories.map((cat) => (
@@ -310,13 +333,13 @@ export const CategoryManagement: React.FC = () => {
 
                 {/* Description */}
                 <div>
-                  <label className="block text-sm font-medium text-card-foreground mb-1">
+                  <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
                     설명
                   </label>
                   <textarea
                     value={formData.description}
                     onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                    className="w-full px-3 py-2 bg-background border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
+                    className="w-full px-4 py-3 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-gray-900 dark:text-white"
                     rows={3}
                     placeholder="카테고리에 대한 설명을 입력하세요"
                   />
@@ -324,17 +347,20 @@ export const CategoryManagement: React.FC = () => {
 
                 {/* Color picker */}
                 <div>
-                  <label className="block text-sm font-medium text-card-foreground mb-1">
+                  <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
                     색상
                   </label>
-                  <div className="flex gap-2 flex-wrap">
+                  <div className="flex gap-3 flex-wrap p-4 bg-gray-50 dark:bg-gray-700/30 rounded-xl border border-gray-100 dark:border-gray-600">
                     {CATEGORY_COLORS.map((color) => (
                       <button
                         key={color}
                         onClick={() => setFormData({ ...formData, color })}
-                        className={`w-10 h-10 rounded-full border-2 transition-all ${formData.color === color ? 'border-primary scale-110' : 'border-border'
+                        className={`w-10 h-10 rounded-full border-2 transition-all ${formData.color === color
+                          ? 'border-blue-500 scale-110 shadow-md ring-2 ring-blue-200 dark:ring-blue-900'
+                          : 'border-transparent hover:scale-105'
                           }`}
                         style={{ backgroundColor: color }}
+                        title={color}
                       />
                     ))}
                   </div>
@@ -342,53 +368,56 @@ export const CategoryManagement: React.FC = () => {
 
                 {/* Icon picker */}
                 <div>
-                  <label className="block text-sm font-medium text-card-foreground mb-1">
+                  <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
                     아이콘
                   </label>
-                  <select
-                    value={formData.icon}
-                    onChange={(e) => setFormData({ ...formData, icon: e.target.value })}
-                    className="w-full px-3 py-2 bg-background border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
-                  >
+                  <div className="grid grid-cols-6 gap-2 p-4 bg-gray-50 dark:bg-gray-700/30 rounded-xl border border-gray-100 dark:border-gray-600 max-h-40 overflow-y-auto">
                     {CATEGORY_ICONS.map((icon) => (
-                      <option key={icon} value={icon}>
+                      <button
+                        key={icon}
+                        onClick={() => setFormData({ ...formData, icon })}
+                        className={`text-2xl p-2 rounded-lg transition-all ${formData.icon === icon
+                          ? 'bg-white dark:bg-gray-600 shadow-sm ring-2 ring-blue-500'
+                          : 'hover:bg-white dark:hover:bg-gray-600'
+                          }`}
+                      >
                         {icon}
-                      </option>
+                      </button>
                     ))}
-                  </select>
+                  </div>
                 </div>
 
                 {/* Display order */}
                 <div>
-                  <label className="block text-sm font-medium text-card-foreground mb-1">
+                  <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
                     표시 순서
                   </label>
                   <input
                     type="number"
                     value={formData.display_order}
                     onChange={(e) => setFormData({ ...formData, display_order: parseInt(e.target.value) || 0 })}
-                    className="w-full px-3 py-2 bg-background border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
+                    className="w-full px-4 py-3 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-gray-900 dark:text-white"
                     min={0}
                   />
                 </div>
 
                 {/* Active status */}
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-3 p-4 bg-gray-50 dark:bg-gray-700/30 rounded-xl border border-gray-100 dark:border-gray-600">
                   <input
                     type="checkbox"
                     id="is_active"
                     checked={formData.is_active}
                     onChange={(e) => setFormData({ ...formData, is_active: e.target.checked })}
-                    className="w-4 h-4 rounded border-input"
+                    className="w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                   />
-                  <label htmlFor="is_active" className="text-sm font-medium text-card-foreground">
-                    활성화
+                  <label htmlFor="is_active" className="text-sm font-bold text-gray-700 dark:text-gray-300 cursor-pointer">
+                    활성화 상태로 설정
                   </label>
                 </div>
               </div>
 
               {/* Form actions */}
-              <div className="flex justify-end gap-2 mt-6">
+              <div className="flex justify-end gap-3 mt-8 pt-6 border-t border-gray-100 dark:border-gray-700">
                 <button
                   onClick={resetForm}
                   className="btn-outline"
@@ -400,7 +429,7 @@ export const CategoryManagement: React.FC = () => {
                   disabled={!formData.name.trim()}
                   className="btn-primary"
                 >
-                  {editingCategory ? '수정' : '추가'}
+                  {editingCategory ? '수정 완료' : '카테고리 추가'}
                 </button>
               </div>
             </div>

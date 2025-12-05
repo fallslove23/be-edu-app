@@ -19,7 +19,7 @@ import {
 import { useAuth } from '../../contexts/AuthContext';
 import { PageContainer } from '../common/PageContainer';
 import { PageHeader } from '../common/PageHeader';
-import { Calculator, Calendar, CheckCircle, Clock, DollarSign, FileText, History, Search, User } from 'lucide-react';
+import { Calculator, Calendar, CheckCircle, Clock, DollarSign, FileText, History, Search, User, X } from 'lucide-react';
 
 interface CourseRound {
   id: string;
@@ -205,13 +205,13 @@ const InstructorPaymentManagement: React.FC = () => {
   const getPaymentStatusColor = (status: string): string => {
     switch (status) {
       case 'pending':
-        return 'bg-yellow-100 text-yellow-800';
+        return 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300';
       case 'completed':
-        return 'bg-green-500/10 text-green-700';
+        return 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300';
       case 'cancelled':
-        return 'bg-destructive/10 text-destructive';
+        return 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300';
       default:
-        return 'bg-gray-100 text-gray-800';
+        return 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300';
     }
   };
 
@@ -225,7 +225,7 @@ const InstructorPaymentManagement: React.FC = () => {
         />
 
         {/* 과정 선택 및 액션 */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
           <div className="flex flex-col md:flex-row md:items-end gap-4">
             <div className="flex-1">
               <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
@@ -245,7 +245,7 @@ const InstructorPaymentManagement: React.FC = () => {
                   ))}
                 </select>
                 <div className="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none text-gray-500 dark:text-gray-400">
-                  <Search className="w-4 h-4" />
+                  <Search className="w-5 h-5" />
                 </div>
               </div>
             </div>
@@ -254,14 +254,14 @@ const InstructorPaymentManagement: React.FC = () => {
               disabled={!selectedCourse || loading}
               className="btn-primary py-3 px-6 rounded-xl flex items-center justify-center whitespace-nowrap"
             >
-              <Calculator className="w-4 h-4 mr-2" />
+              <Calculator className="w-5 h-5 mr-2" />
               집계 업데이트
             </button>
           </div>
         </div>
 
         {/* 탭 네비게이션 */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
           <div className="border-b border-gray-100 dark:border-gray-700">
             <nav className="flex">
               <button
@@ -272,7 +272,7 @@ const InstructorPaymentManagement: React.FC = () => {
                   }`}
               >
                 <div className="flex items-center justify-center">
-                  <FileText className="w-4 h-4 mr-2" />
+                  <FileText className="w-5 h-5 mr-2" />
                   강사 집계
                 </div>
               </button>
@@ -284,7 +284,7 @@ const InstructorPaymentManagement: React.FC = () => {
                   }`}
               >
                 <div className="flex items-center justify-center">
-                  <History className="w-4 h-4 mr-2" />
+                  <History className="w-5 h-5 mr-2" />
                   지급 이력
                 </div>
               </button>
@@ -296,17 +296,17 @@ const InstructorPaymentManagement: React.FC = () => {
             <div className="p-6">
               {loading ? (
                 <div className="text-center py-12">
-                  <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+                  <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 dark:border-blue-400"></div>
                   <p className="mt-4 text-gray-500 dark:text-gray-400">데이터를 불러오는 중입니다...</p>
                 </div>
               ) : summaries.length === 0 ? (
                 <div className="text-center py-12 text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-900/50 rounded-xl border border-dashed border-gray-200 dark:border-gray-700">
                   <Calculator className="w-12 h-12 mx-auto text-gray-300 dark:text-gray-600 mb-3" />
-                  <p>집계 데이터가 없습니다.</p>
+                  <p className="font-medium">집계 데이터가 없습니다.</p>
                   <p className="text-sm mt-1">과정을 선택하고 "집계 업데이트" 버튼을 클릭하세요.</p>
                 </div>
               ) : (
-                <div className="overflow-hidden rounded-xl border border-gray-200 dark:border-gray-700">
+                <div className="overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-700">
                   <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                     <thead className="bg-gray-50 dark:bg-gray-900/50">
                       <tr>
@@ -345,7 +345,7 @@ const InstructorPaymentManagement: React.FC = () => {
                     <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                       {summaries.map((summary) => (
                         <tr key={summary.id} className="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900 dark:text-white">
                             <div className="flex items-center">
                               <User className="w-4 h-4 mr-2 text-gray-400" />
                               {summary.instructor_id}
@@ -361,22 +361,22 @@ const InstructorPaymentManagement: React.FC = () => {
                               {getInstructorTypeLabel(summary.instructor_type)}
                             </span>
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-600 dark:text-gray-300">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-600 dark:text-gray-300 font-mono">
                             {formatHours(summary.total_lecture_hours)}
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-600 dark:text-gray-300">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-600 dark:text-gray-300 font-mono">
                             {formatHours(summary.total_practice_hours)}
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-right font-bold text-gray-900 dark:text-white">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-right font-bold text-gray-900 dark:text-white font-mono">
                             {formatHours(summary.total_hours)}
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-600 dark:text-gray-300">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-600 dark:text-gray-300 font-mono">
                             {summary.session_count}
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-600 dark:text-gray-300">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-600 dark:text-gray-300 font-mono">
                             {formatCurrency(summary.hourly_rate)}
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-right font-bold text-blue-600 dark:text-blue-400">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-right font-bold text-blue-600 dark:text-blue-400 font-mono">
                             {formatCurrency(summary.total_payment)}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-center">
@@ -430,10 +430,10 @@ const InstructorPaymentManagement: React.FC = () => {
               {paymentHistory.length === 0 ? (
                 <div className="text-center py-12 text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-900/50 rounded-xl border border-dashed border-gray-200 dark:border-gray-700">
                   <History className="w-12 h-12 mx-auto text-gray-300 dark:text-gray-600 mb-3" />
-                  <p>지급 이력이 없습니다.</p>
+                  <p className="font-medium">지급 이력이 없습니다.</p>
                 </div>
               ) : (
-                <div className="overflow-hidden rounded-xl border border-gray-200 dark:border-gray-700">
+                <div className="overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-700">
                   <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                     <thead className="bg-gray-50 dark:bg-gray-900/50">
                       <tr>
@@ -472,28 +472,28 @@ const InstructorPaymentManagement: React.FC = () => {
                     <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                       {paymentHistory.map((payment) => (
                         <tr key={payment.id} className="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white font-medium">
                             <div className="flex items-center">
                               <Calendar className="w-4 h-4 mr-2 text-gray-400" />
                               {payment.payment_date}
                             </div>
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white font-bold">
                             {payment.instructor_id}
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-600 dark:text-gray-300">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-600 dark:text-gray-300 font-mono">
                             {payment.lecture_hours ? formatHours(payment.lecture_hours) : '-'}
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-600 dark:text-gray-300">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-600 dark:text-gray-300 font-mono">
                             {payment.practice_hours ? formatHours(payment.practice_hours) : '-'}
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-right font-medium text-gray-900 dark:text-white">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-right font-medium text-gray-900 dark:text-white font-mono">
                             {payment.total_hours ? formatHours(payment.total_hours) : '-'}
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-600 dark:text-gray-300">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-600 dark:text-gray-300 font-mono">
                             {payment.hourly_rate ? formatCurrency(payment.hourly_rate) : '-'}
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-right font-bold text-blue-600 dark:text-blue-400">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-right font-bold text-blue-600 dark:text-blue-400 font-mono">
                             {formatCurrency(payment.payment_amount)}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
@@ -522,10 +522,19 @@ const InstructorPaymentManagement: React.FC = () => {
 
           {/* 지급 등록 모달 */}
           {showPaymentModal && selectedSummary && (
-            <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-              <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl w-full max-w-md overflow-hidden border border-gray-200 dark:border-gray-700">
-                <div className="p-6 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center">
+            <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+              <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-md overflow-hidden border border-gray-100 dark:border-gray-700">
+                <div className="p-6 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center bg-gray-50 dark:bg-gray-800/50">
                   <h3 className="text-xl font-bold text-gray-900 dark:text-white">강사료 지급 등록</h3>
+                  <button
+                    onClick={() => {
+                      setShowPaymentModal(false);
+                      setSelectedSummary(null);
+                    }}
+                    className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                  >
+                    <X className="w-6 h-6" />
+                  </button>
                 </div>
 
                 <form onSubmit={handleSubmitPayment} className="p-6 space-y-5">
@@ -538,9 +547,9 @@ const InstructorPaymentManagement: React.FC = () => {
                         type="date"
                         name="payment_date"
                         required
-                        className="w-full p-3 pl-10 border border-gray-200 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                        className="w-full p-3 pl-10 border border-gray-200 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white font-medium"
                       />
-                      <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                      <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                     </div>
                   </div>
 
@@ -548,15 +557,22 @@ const InstructorPaymentManagement: React.FC = () => {
                     <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
                       지급 방법
                     </label>
-                    <select
-                      name="payment_method"
-                      className="w-full p-3 border border-gray-200 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white appearance-none"
-                    >
-                      <option value="">선택하세요</option>
-                      <option value="계좌이체">계좌이체</option>
-                      <option value="현금">현금</option>
-                      <option value="기타">기타</option>
-                    </select>
+                    <div className="relative">
+                      <select
+                        name="payment_method"
+                        className="w-full p-3 border border-gray-200 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white appearance-none font-medium"
+                      >
+                        <option value="">선택하세요</option>
+                        <option value="계좌이체">계좌이체</option>
+                        <option value="현금">현금</option>
+                        <option value="기타">기타</option>
+                      </select>
+                      <div className="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none text-gray-500 dark:text-gray-400">
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                      </div>
+                    </div>
                   </div>
 
                   <div>
@@ -570,7 +586,7 @@ const InstructorPaymentManagement: React.FC = () => {
                         disabled
                         className="w-full p-3 pl-10 border border-gray-200 dark:border-gray-600 rounded-xl bg-gray-50 dark:bg-gray-900/50 text-gray-500 dark:text-gray-400 font-bold"
                       />
-                      <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                      <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                     </div>
                   </div>
 
@@ -584,20 +600,20 @@ const InstructorPaymentManagement: React.FC = () => {
                     />
                   </div>
 
-                  <div className="flex gap-3 pt-2">
+                  <div className="flex gap-3 pt-4 border-t border-gray-100 dark:border-gray-700">
                     <button
                       type="button"
                       onClick={() => {
                         setShowPaymentModal(false);
                         setSelectedSummary(null);
                       }}
-                      className="flex-1 py-3 px-4 rounded-xl font-bold border border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                      className="flex-1 btn-outline py-3"
                     >
                       취소
                     </button>
                     <button
                       type="submit"
-                      className="flex-1 py-3 px-4 rounded-xl font-bold bg-blue-600 text-white hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-500 transition-colors shadow-lg shadow-blue-500/30"
+                      className="flex-1 btn-primary py-3"
                     >
                       등록하기
                     </button>

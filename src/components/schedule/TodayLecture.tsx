@@ -9,7 +9,8 @@ import {
   CheckCircleIcon,
   CalendarDaysIcon,
   PhoneIcon,
-  ChevronRightIcon
+  ChevronRightIcon,
+  XMarkIcon
 } from '@heroicons/react/24/outline';
 import { useAuth } from '../../contexts/AuthContext';
 
@@ -47,8 +48,8 @@ interface TodayLectureProps {
   date?: string; // YYYY-MM-DD 형식
 }
 
-const TodayLecture: React.FC<TodayLectureProps> = ({ 
-  date = new Date().toISOString().split('T')[0] 
+const TodayLecture: React.FC<TodayLectureProps> = ({
+  date = new Date().toISOString().split('T')[0]
 }) => {
   const { user } = useAuth();
   const [lectures, setLectures] = useState<LectureInfo[]>([]);
@@ -59,7 +60,7 @@ const TodayLecture: React.FC<TodayLectureProps> = ({
     const generateSampleLectures = (): LectureInfo[] => {
       const today = new Date(date);
       const isToday = date === new Date().toISOString().split('T')[0];
-      
+
       if (today.getDay() === 0 || today.getDay() === 6) {
         // 주말에는 강의 없음
         return [];
@@ -155,11 +156,11 @@ const TodayLecture: React.FC<TodayLectureProps> = ({
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'scheduled': return 'text-blue-600 bg-blue-100';
-      case 'ongoing': return 'text-green-600 bg-green-500/10';
-      case 'completed': return 'text-gray-600 bg-gray-100';
-      case 'cancelled': return 'text-destructive bg-destructive/10';
-      default: return 'text-gray-600 bg-gray-100';
+      case 'scheduled': return 'text-blue-600 bg-blue-100 dark:bg-blue-900/30 dark:text-blue-300';
+      case 'ongoing': return 'text-green-600 bg-green-500/10 dark:bg-green-900/30 dark:text-green-300';
+      case 'completed': return 'text-gray-600 bg-gray-100 dark:bg-gray-700 dark:text-gray-400';
+      case 'cancelled': return 'text-destructive bg-destructive/10 dark:bg-red-900/30 dark:text-red-300';
+      default: return 'text-gray-600 bg-gray-100 dark:bg-gray-700 dark:text-gray-400';
     }
   };
 
@@ -177,9 +178,9 @@ const TodayLecture: React.FC<TodayLectureProps> = ({
     const date = new Date(dateString);
     const today = new Date();
     const isToday = dateString === today.toISOString().split('T')[0];
-    
-    return isToday ? '오늘' : date.toLocaleDateString('ko-KR', { 
-      month: 'long', 
+
+    return isToday ? '오늘' : date.toLocaleDateString('ko-KR', {
+      month: 'long',
       day: 'numeric',
       weekday: 'short'
     });
@@ -188,22 +189,22 @@ const TodayLecture: React.FC<TodayLectureProps> = ({
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-lg h-8 w-8 border-b-2 border-blue-600"></div>
-        <span className="ml-2">강의 일정을 불러오는 중...</span>
+        <div className="animate-spin rounded-xl h-8 w-8 border-b-2 border-blue-600 dark:border-blue-400"></div>
+        <span className="ml-2 text-gray-500 dark:text-gray-400">강의 일정을 불러오는 중...</span>
       </div>
     );
   }
 
   if (lectures.length === 0) {
     return (
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
+      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-8">
         <div className="text-center">
-          <CalendarDaysIcon className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-900 mb-2">
+          <CalendarDaysIcon className="h-16 w-16 text-gray-400 dark:text-gray-500 mx-auto mb-4" />
+          <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
             {formatDate(date)} 강의 일정이 없습니다
           </h3>
-          <p className="text-gray-600">
-            {date === new Date().toISOString().split('T')[0] ? 
+          <p className="text-gray-600 dark:text-gray-400">
+            {date === new Date().toISOString().split('T')[0] ?
               '오늘은 강의가 없는 날입니다. 복습이나 과제를 진행해보세요.' :
               '해당 날짜에는 예정된 강의가 없습니다.'
             }
@@ -216,21 +217,21 @@ const TodayLecture: React.FC<TodayLectureProps> = ({
   return (
     <div className="space-y-6">
       {/* 헤더 */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2 flex items-center">
               📚 {formatDate(date)} 강의 일정
             </h1>
-            <p className="text-gray-600">
+            <p className="text-gray-600 dark:text-gray-400">
               총 {lectures.length}개의 강의가 예정되어 있습니다.
             </p>
           </div>
-          <div className="text-right">
-            <div className="text-sm text-gray-500">
-              {new Date().toLocaleDateString('ko-KR', { 
-                year: 'numeric', 
-                month: 'long', 
+          <div className="text-right hidden sm:block">
+            <div className="text-sm font-medium text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 px-3 py-1.5 rounded-xl">
+              {new Date().toLocaleDateString('ko-KR', {
+                year: 'numeric',
+                month: 'long',
                 day: 'numeric',
                 weekday: 'long'
               })}
@@ -244,66 +245,71 @@ const TodayLecture: React.FC<TodayLectureProps> = ({
         {lectures.map((lecture) => (
           <div
             key={lecture.id}
-            className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow cursor-pointer"
+            className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 hover:shadow-md transition-all cursor-pointer group"
             onClick={() => setSelectedLecture(lecture)}
           >
             {/* 강의 헤더 */}
             <div className="flex items-start justify-between mb-4">
               <div>
                 <div className="flex items-center space-x-2 mb-2">
-                  <span className="text-sm font-medium text-blue-600 bg-blue-50 px-2 py-1 rounded">
+                  <span className="text-sm font-bold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 px-2.5 py-1 rounded-lg">
                     {lecture.courseCode}
                   </span>
-                  <span className={`text-xs font-medium px-2 py-1 rounded-full ${getStatusColor(lecture.status)}`}>
+                  <span className={`text-xs font-bold px-2.5 py-1 rounded-lg ${getStatusColor(lecture.status)}`}>
                     {getStatusLabel(lecture.status)}
                   </span>
                 </div>
-                <h3 className="text-lg font-medium text-gray-900 mb-1">
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                   {lecture.courseName}
                 </h3>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-gray-600 dark:text-gray-400">
                   {lecture.session}차시 / {lecture.totalSessions}차시
                 </p>
               </div>
-              <ChevronRightIcon className="h-5 w-5 text-gray-400" />
+              <div className="p-2 bg-gray-50 dark:bg-gray-700 rounded-full group-hover:bg-blue-50 dark:group-hover:bg-blue-900/30 transition-colors">
+                <ChevronRightIcon className="h-5 w-5 text-gray-400 dark:text-gray-500 group-hover:text-blue-600 dark:group-hover:text-blue-400" />
+              </div>
             </div>
 
             {/* 시간 및 장소 */}
-            <div className="space-y-2 mb-4">
-              <div className="flex items-center text-sm text-gray-600">
-                <ClockIcon className="h-4 w-4 mr-2" />
-                <span>{lecture.startTime} - {lecture.endTime}</span>
+            <div className="space-y-3 mb-5">
+              <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
+                <ClockIcon className="h-4 w-4 mr-2.5 text-gray-400 dark:text-gray-500" />
+                <span className="font-medium">{lecture.startTime} - {lecture.endTime}</span>
               </div>
-              <div className="flex items-center text-sm text-gray-600">
-                <MapPinIcon className="h-4 w-4 mr-2" />
-                <span>{lecture.room} {lecture.building && `(${lecture.building})`}</span>
+              <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
+                <MapPinIcon className="h-4 w-4 mr-2.5 text-gray-400 dark:text-gray-500" />
+                <span className="font-medium">{lecture.room} {lecture.building && `(${lecture.building})`}</span>
               </div>
             </div>
 
             {/* 강사 및 운영자 */}
-            <div className="space-y-2 mb-4">
-              <div className="flex items-center text-sm text-gray-600">
-                <UserIcon className="h-4 w-4 mr-2" />
-                <span>강사: {lecture.instructor.name}</span>
+            <div className="grid grid-cols-2 gap-4 mb-5 p-3 bg-gray-50 dark:bg-gray-700/50 rounded-xl">
+              <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
+                <UserIcon className="h-4 w-4 mr-2 text-gray-400 dark:text-gray-500" />
+                <span className="truncate">강사: <span className="font-medium text-gray-900 dark:text-white">{lecture.instructor.name}</span></span>
               </div>
-              <div className="flex items-center text-sm text-gray-600">
-                <CogIcon className="h-4 w-4 mr-2" />
-                <span>운영: {lecture.operator.name}</span>
+              <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
+                <CogIcon className="h-4 w-4 mr-2 text-gray-400 dark:text-gray-500" />
+                <span className="truncate">운영: <span className="font-medium text-gray-900 dark:text-white">{lecture.operator.name}</span></span>
               </div>
             </div>
 
             {/* 주요 주제 미리보기 */}
             <div className="mb-4">
-              <div className="flex items-center text-sm font-medium text-gray-700 mb-2">
+              <div className="flex items-center text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
                 <BookOpenIcon className="h-4 w-4 mr-2" />
                 오늘의 주제
               </div>
-              <div className="text-sm text-gray-600">
+              <div className="space-y-1">
                 {lecture.topics.slice(0, 2).map((topic, index) => (
-                  <div key={index} className="ml-6">• {topic}</div>
+                  <div key={index} className="flex items-start text-sm text-gray-600 dark:text-gray-400">
+                    <span className="mr-2 text-gray-400">•</span>
+                    <span>{topic}</span>
+                  </div>
                 ))}
                 {lecture.topics.length > 2 && (
-                  <div className="ml-6 text-gray-500">
+                  <div className="ml-4 text-xs font-medium text-gray-500 dark:text-gray-500 mt-1">
                     외 {lecture.topics.length - 2}개 주제
                   </div>
                 )}
@@ -312,10 +318,10 @@ const TodayLecture: React.FC<TodayLectureProps> = ({
 
             {/* 중요 공지사항 */}
             {lecture.announcement && (
-              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+              <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-xl p-3">
                 <div className="flex items-start">
-                  <ExclamationCircleIcon className="h-4 w-4 text-foreground mr-2 mt-0.5" />
-                  <div className="text-sm text-yellow-800">
+                  <ExclamationCircleIcon className="h-4 w-4 text-yellow-600 dark:text-yellow-400 mr-2 mt-0.5" />
+                  <div className="text-sm text-yellow-800 dark:text-yellow-200">
                     <strong>공지:</strong> {lecture.announcement}
                   </div>
                 </div>
@@ -327,74 +333,74 @@ const TodayLecture: React.FC<TodayLectureProps> = ({
 
       {/* 상세 모달 */}
       {selectedLecture && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50" onClick={() => setSelectedLecture(null)}>
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-gray-100 dark:border-gray-700" onClick={(e) => e.stopPropagation()}>
             <div className="p-6">
               {/* 모달 헤더 */}
-              <div className="flex items-center justify-between mb-6">
+              <div className="flex items-start justify-between mb-6 pb-6 border-b border-gray-100 dark:border-gray-700">
                 <div>
-                  <div className="flex items-center space-x-2 mb-2">
-                    <span className="text-sm font-medium text-blue-600 bg-blue-50 px-2 py-1 rounded">
+                  <div className="flex items-center space-x-2 mb-3">
+                    <span className="text-sm font-bold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 px-2.5 py-1 rounded-lg">
                       {selectedLecture.courseCode}
                     </span>
-                    <span className={`text-xs font-medium px-2 py-1 rounded-full ${getStatusColor(selectedLecture.status)}`}>
+                    <span className={`text-xs font-bold px-2.5 py-1 rounded-lg ${getStatusColor(selectedLecture.status)}`}>
                       {getStatusLabel(selectedLecture.status)}
                     </span>
                   </div>
-                  <h2 className="text-xl font-bold text-gray-900">
+                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-1">
                     {selectedLecture.courseName}
                   </h2>
-                  <p className="text-gray-600">
+                  <p className="text-gray-600 dark:text-gray-400 font-medium">
                     {selectedLecture.session}차시 / {selectedLecture.totalSessions}차시
                   </p>
                 </div>
                 <button
                   onClick={() => setSelectedLecture(null)}
-                  className="text-gray-400 hover:text-gray-600"
+                  className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors"
                 >
-                  ✕
+                  <XMarkIcon className="h-6 w-6" />
                 </button>
               </div>
 
               {/* 기본 정보 */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                 <div className="space-y-4">
-                  <h3 className="font-medium text-gray-900 border-b pb-2">시간 및 장소</h3>
-                  <div className="space-y-2">
-                    <div className="flex items-center text-sm">
-                      <ClockIcon className="h-4 w-4 mr-2 text-gray-400" />
-                      <span>{selectedLecture.startTime} - {selectedLecture.endTime}</span>
+                  <h3 className="font-bold text-gray-900 dark:text-white border-b border-gray-100 dark:border-gray-700 pb-2">시간 및 장소</h3>
+                  <div className="space-y-3 bg-gray-50 dark:bg-gray-700/30 p-4 rounded-xl">
+                    <div className="flex items-center text-sm text-gray-700 dark:text-gray-300">
+                      <ClockIcon className="h-5 w-5 mr-3 text-gray-400 dark:text-gray-500" />
+                      <span className="font-medium">{selectedLecture.startTime} - {selectedLecture.endTime}</span>
                     </div>
-                    <div className="flex items-center text-sm">
-                      <MapPinIcon className="h-4 w-4 mr-2 text-gray-400" />
-                      <span>{selectedLecture.room} {selectedLecture.building && `(${selectedLecture.building})`}</span>
+                    <div className="flex items-center text-sm text-gray-700 dark:text-gray-300">
+                      <MapPinIcon className="h-5 w-5 mr-3 text-gray-400 dark:text-gray-500" />
+                      <span className="font-medium">{selectedLecture.room} {selectedLecture.building && `(${selectedLecture.building})`}</span>
                     </div>
                   </div>
                 </div>
 
                 <div className="space-y-4">
-                  <h3 className="font-medium text-gray-900 border-b pb-2">담당자 정보</h3>
-                  <div className="space-y-2">
+                  <h3 className="font-bold text-gray-900 dark:text-white border-b border-gray-100 dark:border-gray-700 pb-2">담당자 정보</h3>
+                  <div className="space-y-3 bg-gray-50 dark:bg-gray-700/30 p-4 rounded-xl">
                     <div>
-                      <div className="flex items-center text-sm mb-1">
-                        <UserIcon className="h-4 w-4 mr-2 text-gray-400" />
+                      <div className="flex items-center text-sm mb-1 text-gray-900 dark:text-white">
+                        <UserIcon className="h-5 w-5 mr-3 text-gray-400 dark:text-gray-500" />
                         <span className="font-medium">강사: {selectedLecture.instructor.name}</span>
                       </div>
                       {selectedLecture.instructor.phone && (
-                        <div className="flex items-center text-sm text-gray-600 ml-6">
-                          <PhoneIcon className="h-3 w-3 mr-1" />
+                        <div className="flex items-center text-sm text-gray-500 dark:text-gray-400 ml-8">
+                          <PhoneIcon className="h-3 w-3 mr-1.5" />
                           {selectedLecture.instructor.phone}
                         </div>
                       )}
                     </div>
                     <div>
-                      <div className="flex items-center text-sm mb-1">
-                        <CogIcon className="h-4 w-4 mr-2 text-gray-400" />
+                      <div className="flex items-center text-sm mb-1 text-gray-900 dark:text-white">
+                        <CogIcon className="h-5 w-5 mr-3 text-gray-400 dark:text-gray-500" />
                         <span className="font-medium">운영: {selectedLecture.operator.name}</span>
                       </div>
                       {selectedLecture.operator.phone && (
-                        <div className="flex items-center text-sm text-gray-600 ml-6">
-                          <PhoneIcon className="h-3 w-3 mr-1" />
+                        <div className="flex items-center text-sm text-gray-500 dark:text-gray-400 ml-8">
+                          <PhoneIcon className="h-3 w-3 mr-1.5" />
                           {selectedLecture.operator.phone}
                         </div>
                       )}
@@ -404,26 +410,29 @@ const TodayLecture: React.FC<TodayLectureProps> = ({
               </div>
 
               {/* 학습 내용 */}
-              <div className="mb-6">
-                <h3 className="font-medium text-gray-900 border-b pb-2 mb-4">📖 학습 주제</h3>
-                <div className="space-y-2">
+              <div className="mb-8">
+                <h3 className="font-bold text-gray-900 dark:text-white border-b border-gray-100 dark:border-gray-700 pb-2 mb-4 flex items-center">
+                  <BookOpenIcon className="h-5 w-5 mr-2 text-blue-500" />
+                  학습 주제
+                </h3>
+                <div className="grid grid-cols-1 gap-2">
                   {selectedLecture.topics.map((topic, index) => (
-                    <div key={index} className="flex items-center text-sm">
-                      <CheckCircleIcon className="h-4 w-4 mr-2 text-green-500" />
-                      <span>{topic}</span>
+                    <div key={index} className="flex items-center text-sm p-3 bg-blue-50 dark:bg-blue-900/10 rounded-xl border border-blue-100 dark:border-blue-800/30">
+                      <CheckCircleIcon className="h-5 w-5 mr-3 text-blue-500 dark:text-blue-400" />
+                      <span className="text-gray-800 dark:text-gray-200 font-medium">{topic}</span>
                     </div>
                   ))}
                 </div>
               </div>
 
               {/* 준비물 */}
-              <div className="mb-6">
-                <h3 className="font-medium text-gray-900 border-b pb-2 mb-4">🎒 준비물</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+              <div className="mb-8">
+                <h3 className="font-bold text-gray-900 dark:text-white border-b border-gray-100 dark:border-gray-700 pb-2 mb-4">🎒 준비물</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   {selectedLecture.materials.map((material, index) => (
-                    <div key={index} className="flex items-center text-sm bg-gray-50 p-2 rounded">
-                      <span className="text-blue-600 mr-2">•</span>
-                      <span>{material}</span>
+                    <div key={index} className="flex items-center text-sm bg-gray-50 dark:bg-gray-700/50 p-3 rounded-xl border border-gray-100 dark:border-gray-700">
+                      <span className="w-2 h-2 rounded-full bg-blue-500 mr-3"></span>
+                      <span className="text-gray-700 dark:text-gray-300">{material}</span>
                     </div>
                   ))}
                 </div>
@@ -431,20 +440,20 @@ const TodayLecture: React.FC<TodayLectureProps> = ({
 
               {/* 과제 */}
               {selectedLecture.homework && (
-                <div className="mb-6">
-                  <h3 className="font-medium text-gray-900 border-b pb-2 mb-4">📝 과제</h3>
-                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                    <p className="text-sm text-blue-900">{selectedLecture.homework}</p>
+                <div className="mb-8">
+                  <h3 className="font-bold text-gray-900 dark:text-white border-b border-gray-100 dark:border-gray-700 pb-2 mb-4">📝 과제</h3>
+                  <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-5">
+                    <p className="text-sm font-medium text-blue-900 dark:text-blue-100">{selectedLecture.homework}</p>
                   </div>
                 </div>
               )}
 
               {/* 공지사항 */}
               {selectedLecture.announcement && (
-                <div className="mb-6">
-                  <h3 className="font-medium text-gray-900 border-b pb-2 mb-4">📢 공지사항</h3>
-                  <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-                    <p className="text-sm text-yellow-900">{selectedLecture.announcement}</p>
+                <div className="mb-8">
+                  <h3 className="font-bold text-gray-900 dark:text-white border-b border-gray-100 dark:border-gray-700 pb-2 mb-4">📢 공지사항</h3>
+                  <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-xl p-5">
+                    <p className="text-sm font-medium text-yellow-900 dark:text-yellow-100">{selectedLecture.announcement}</p>
                   </div>
                 </div>
               )}
@@ -452,12 +461,21 @@ const TodayLecture: React.FC<TodayLectureProps> = ({
               {/* 평가 방법 */}
               {selectedLecture.evaluationMethod && (
                 <div className="mb-6">
-                  <h3 className="font-medium text-gray-900 border-b pb-2 mb-4">📊 평가 방법</h3>
-                  <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
-                    <p className="text-sm text-purple-900">{selectedLecture.evaluationMethod}</p>
+                  <h3 className="font-bold text-gray-900 dark:text-white border-b border-gray-100 dark:border-gray-700 pb-2 mb-4">📊 평가 방법</h3>
+                  <div className="bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-xl p-5">
+                    <p className="text-sm font-medium text-purple-900 dark:text-purple-100">{selectedLecture.evaluationMethod}</p>
                   </div>
                 </div>
               )}
+            </div>
+            {/* 모달 하단 버튼 */}
+            <div className="sticky bottom-0 p-4 bg-gray-50 dark:bg-gray-800 border-t border-gray-100 dark:border-gray-700 flex justify-end">
+              <button
+                onClick={() => setSelectedLecture(null)}
+                className="btn-secondary"
+              >
+                닫기
+              </button>
             </div>
           </div>
         </div>

@@ -22,9 +22,12 @@ import {
   VideoCameraIcon,
   MicrophoneIcon,
   PresentationChartBarIcon,
-  PlusIcon
+  PlusIcon,
+  XMarkIcon
 } from '@heroicons/react/24/outline';
 import toast from 'react-hot-toast';
+import { PageContainer } from '@/components/common/PageContainer';
+import { PageHeader } from '@/components/common/PageHeader';
 
 interface Material {
   id: string;
@@ -293,111 +296,94 @@ const MaterialsLibrary: React.FC = () => {
   });
 
   return (
-    <div className="space-y-6 p-6">
+    <div className="space-y-6">
       {/* 헤더 */}
-      <div className="bg-card rounded-lg border border-border p-6">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
-          <div>
-            <h1 className="text-2xl font-bold text-card-foreground mb-2">📚 교육 자료 라이브러리</h1>
-            <p className="text-muted-foreground">
-              강의 자료, 참고 문서, 과제 등을 체계적으로 관리합니다.
-            </p>
-          </div>
-          <div className="flex items-center space-x-3">
-            <button
-              onClick={() => setViewMode(viewMode === 'grid' ? 'list' : 'grid')}
-              className="btn-neutral p-2 rounded-lg"
-            >
-              {viewMode === 'grid' ? '목록' : '격자'}
-            </button>
-            <button
-              onClick={() => setShowUploadModal(true)}
-              className="bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-full flex items-center space-x-2 transition-colors"
-            >
-              <CloudArrowUpIcon className="h-4 w-4" />
-              <span>업로드</span>
-            </button>
-          </div>
+      <PageHeader
+        title="📚 교육 자료 라이브러리"
+        description="강의 자료, 참고 문서, 과제 등을 체계적으로 관리합니다."
+      >
+        <div className="flex items-center space-x-3">
+          <button
+            onClick={() => setViewMode(viewMode === 'grid' ? 'list' : 'grid')}
+            className="btn-secondary"
+          >
+            {viewMode === 'grid' ? '목록 보기' : '격자 보기'}
+          </button>
+          <button
+            onClick={() => setShowUploadModal(true)}
+            className="btn-primary flex items-center gap-2"
+          >
+            <CloudArrowUpIcon className="h-4 w-4" />
+            <span>자료 업로드</span>
+          </button>
         </div>
-      </div>
+      </PageHeader>
 
       {/* 검색 */}
-      <div className="bg-card rounded-lg border border-border p-6">
+      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
         <div className="relative">
-          <MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <MagnifyingGlassIcon className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
           <input
             type="text"
             placeholder="파일명, 태그로 검색..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 border border-input rounded-lg bg-background text-foreground focus:ring-2 focus:ring-ring transition-all"
+            className="w-full pl-12 pr-4 py-3 border border-gray-200 dark:border-gray-600 rounded-xl bg-gray-50 dark:bg-gray-700/50 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
           />
         </div>
       </div>
 
       {/* 필터 */}
-      <div className="bg-white rounded-lg shadow-md border border-gray-100 p-6">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-          <select
-            id="category-filter"
-            value={selectedCategory}
-            onChange={(e) => setSelectedCategory(e.target.value)}
-            className="flex-1 sm:w-64 border-2 border-gray-200 rounded-lg px-6 py-3.5 text-base bg-white text-gray-700 font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all shadow-sm hover:border-gray-300 appearance-none cursor-pointer"
-            style={{
-              backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`,
-              backgroundPosition: 'right 0.75rem center',
-              backgroundRepeat: 'no-repeat',
-              backgroundSize: '1.5em 1.5em',
-              paddingRight: '2.5rem'
-            }}
-          >
-            <option value="all">모든 카테고리</option>
-            <option value="lecture">강의자료</option>
-            <option value="reference">참고자료</option>
-            <option value="assignment">과제</option>
-            <option value="exam">시험</option>
-            <option value="template">템플릿</option>
-          </select>
+      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="relative">
+            <select
+              id="category-filter"
+              value={selectedCategory}
+              onChange={(e) => setSelectedCategory(e.target.value)}
+              className="w-full appearance-none border border-gray-200 dark:border-gray-600 rounded-xl px-4 py-3 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+            >
+              <option value="all">모든 카테고리</option>
+              <option value="lecture">강의자료</option>
+              <option value="reference">참고자료</option>
+              <option value="assignment">과제</option>
+              <option value="exam">시험</option>
+              <option value="template">템플릿</option>
+            </select>
+            <FunnelIcon className="absolute right-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none" />
+          </div>
 
-          <select
-            id="type-filter"
-            value={selectedType}
-            onChange={(e) => setSelectedType(e.target.value)}
-            className="flex-1 sm:w-64 border-2 border-gray-200 rounded-lg px-6 py-3.5 text-base bg-white text-gray-700 font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all shadow-sm hover:border-gray-300 appearance-none cursor-pointer"
-            style={{
-              backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`,
-              backgroundPosition: 'right 0.75rem center',
-              backgroundRepeat: 'no-repeat',
-              backgroundSize: '1.5em 1.5em',
-              paddingRight: '2.5rem'
-            }}
-          >
-            <option value="all">모든 타입</option>
-            <option value="document">문서</option>
-            <option value="presentation">프레젠테이션</option>
-            <option value="video">동영상</option>
-            <option value="audio">오디오</option>
-            <option value="image">이미지</option>
-          </select>
+          <div className="relative">
+            <select
+              id="type-filter"
+              value={selectedType}
+              onChange={(e) => setSelectedType(e.target.value)}
+              className="w-full appearance-none border border-gray-200 dark:border-gray-600 rounded-xl px-4 py-3 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+            >
+              <option value="all">모든 타입</option>
+              <option value="document">문서</option>
+              <option value="presentation">프레젠테이션</option>
+              <option value="video">동영상</option>
+              <option value="audio">오디오</option>
+              <option value="image">이미지</option>
+            </select>
+            <DocumentIcon className="absolute right-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none" />
+          </div>
 
-          <select
-            id="sort-filter"
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value as any)}
-            className="flex-1 sm:w-64 border-2 border-gray-200 rounded-lg px-6 py-3.5 text-base bg-white text-gray-700 font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all shadow-sm hover:border-gray-300 appearance-none cursor-pointer"
-            style={{
-              backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`,
-              backgroundPosition: 'right 0.75rem center',
-              backgroundRepeat: 'no-repeat',
-              backgroundSize: '1.5em 1.5em',
-              paddingRight: '2.5rem'
-            }}
-          >
-            <option value="date">업로드순</option>
-            <option value="name">이름순</option>
-            <option value="size">크기순</option>
-            <option value="downloads">다운로드순</option>
-          </select>
+          <div className="relative">
+            <select
+              id="sort-filter"
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value as any)}
+              className="w-full appearance-none border border-gray-200 dark:border-gray-600 rounded-xl px-4 py-3 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+            >
+              <option value="date">업로드순</option>
+              <option value="name">이름순</option>
+              <option value="size">크기순</option>
+              <option value="downloads">다운로드순</option>
+            </select>
+            <ClockIcon className="absolute right-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none" />
+          </div>
         </div>
 
         {selectedMaterials.size > 0 && (
@@ -426,9 +412,9 @@ const MaterialsLibrary: React.FC = () => {
       </div>
 
       {/* 폴더 목록 */}
-      <div className="bg-card rounded-lg border border-border">
-        <div className="px-6 py-4 border-b border-border">
-          <h3 className="text-lg font-medium text-card-foreground">폴더</h3>
+      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700">
+        <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+          <h3 className="text-lg font-bold text-gray-900 dark:text-white">폴더</h3>
         </div>
 
         <div className="p-6">
@@ -437,18 +423,20 @@ const MaterialsLibrary: React.FC = () => {
               <div
                 key={folder.id}
                 onClick={() => setCurrentFolderId(folder.id)}
-                className="p-4 border border-border rounded-lg cursor-pointer hover:bg-muted/50 transition-colors"
+                className="p-4 border border-gray-200 dark:border-gray-700 rounded-xl cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 hover:border-blue-300 dark:hover:border-blue-700 transition-all bg-white dark:bg-gray-800"
               >
                 <div className="flex items-center space-x-3 mb-3">
-                  <FolderIcon className="h-8 w-8 text-accent" />
+                  <div className="p-2 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                    <FolderIcon className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+                  </div>
                   <div className="flex-1 min-w-0">
-                    <h4 className="font-medium text-card-foreground truncate">
+                    <h4 className="font-bold text-gray-900 dark:text-white truncate">
                       {folder.name}
                     </h4>
                   </div>
                 </div>
 
-                <div className="text-sm text-muted-foreground space-y-1">
+                <div className="text-sm text-gray-500 dark:text-gray-400 space-y-1">
                   <div>파일: {folder.materialsCount}개</div>
                   <div>하위폴더: {folder.subFoldersCount}개</div>
                   <div>{new Date(folder.createdDate).toLocaleDateString('ko-KR')}</div>
@@ -460,10 +448,10 @@ const MaterialsLibrary: React.FC = () => {
       </div>
 
       {/* 자료 목록 */}
-      <div className="bg-card rounded-lg border border-border">
-        <div className="px-6 py-4 border-b border-border">
+      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700">
+        <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
           <div className="flex items-center justify-between">
-            <h3 className="text-lg font-medium text-card-foreground">
+            <h3 className="text-lg font-bold text-gray-900 dark:text-white">
               교육 자료 ({filteredMaterials.length})
             </h3>
             <div className="flex items-center space-x-2">
@@ -490,9 +478,9 @@ const MaterialsLibrary: React.FC = () => {
               {filteredMaterials.map((material) => (
                 <div
                   key={material.id}
-                  className={`border rounded-2xl p-4 transition-all cursor-pointer ${selectedMaterials.has(material.id)
-                      ? 'border-primary bg-primary/5'
-                      : 'border-border hover:border-primary/50'
+                  className={`border rounded-2xl p-4 transition-all cursor-pointer group bg-white dark:bg-gray-800 ${selectedMaterials.has(material.id)
+                    ? 'border-primary bg-primary/5 dark:bg-primary/10'
+                    : 'border-gray-200 dark:border-gray-700 hover:border-primary/50 hover:shadow-md'
                     }`}
                   onClick={() => toggleMaterialSelection(material.id)}
                 >
@@ -509,8 +497,8 @@ const MaterialsLibrary: React.FC = () => {
                         className="p-1 rounded hover:bg-muted transition-colors"
                       >
                         <StarIcon className={`h-4 w-4 ${material.isFavorite
-                            ? 'text-accent fill-current'
-                            : 'text-muted-foreground'
+                          ? 'text-accent fill-current'
+                          : 'text-muted-foreground'
                           }`} />
                       </button>
                       <input
@@ -523,7 +511,7 @@ const MaterialsLibrary: React.FC = () => {
                     </div>
                   </div>
 
-                  <h4 className="font-medium text-card-foreground mb-2 truncate" title={material.name}>
+                  <h4 className="font-bold text-gray-900 dark:text-white mb-2 truncate" title={material.name}>
                     {material.name}
                   </h4>
 
@@ -561,13 +549,13 @@ const MaterialsLibrary: React.FC = () => {
                     )}
                   </div>
 
-                  <div className="mt-3 pt-3 border-t border-border flex justify-between">
-                    <button className="text-sm text-primary hover:text-primary/80 flex items-center space-x-1 transition-colors rounded-full">
-                      <EyeIcon className="h-3 w-3" />
+                  <div className="mt-4 pt-3 border-t border-gray-100 dark:border-gray-700 flex justify-between">
+                    <button className="text-sm text-primary hover:text-primary/80 flex items-center space-x-1 transition-colors rounded-xl px-2 py-1 hover:bg-primary/10">
+                      <EyeIcon className="h-4 w-4" />
                       <span>미리보기</span>
                     </button>
-                    <button className="text-sm text-muted-foreground hover:text-foreground flex items-center space-x-1 transition-colors rounded-full">
-                      <CloudArrowDownIcon className="h-3 w-3" />
+                    <button className="text-sm text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white flex items-center space-x-1 transition-colors rounded-xl px-2 py-1 hover:bg-gray-100 dark:hover:bg-gray-700">
+                      <CloudArrowDownIcon className="h-4 w-4" />
                       <span>다운로드</span>
                     </button>
                   </div>
@@ -580,8 +568,8 @@ const MaterialsLibrary: React.FC = () => {
                 <div
                   key={material.id}
                   className={`border rounded-2xl p-4 transition-colors cursor-pointer ${selectedMaterials.has(material.id)
-                      ? 'border-primary bg-primary/5'
-                      : 'border-border hover:bg-muted/50'
+                    ? 'border-primary bg-primary/5'
+                    : 'border-border hover:bg-muted/50'
                     }`}
                   onClick={() => toggleMaterialSelection(material.id)}
                 >
@@ -654,31 +642,37 @@ const MaterialsLibrary: React.FC = () => {
 
       {/* 업로드 모달 */}
       {showUploadModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-card rounded-lg max-w-md w-full border border-border">
-            <div className="px-6 py-4 border-b border-border">
-              <h3 className="text-lg font-medium text-card-foreground">파일 업로드</h3>
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl w-full max-w-md border border-gray-200 dark:border-gray-700 shadow-2xl animate-in fade-in zoom-in duration-200">
+            <div className="px-6 py-4 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center">
+              <h3 className="text-lg font-bold text-gray-900 dark:text-white">파일 업로드</h3>
+              <button
+                onClick={() => setShowUploadModal(false)}
+                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+              >
+                <XMarkIcon className="h-6 w-6" />
+              </button>
             </div>
 
             <div className="p-6">
-              <div className="border-2 border-dashed border-border rounded-lg p-8 text-center">
-                <CloudArrowUpIcon className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-                <p className="text-muted-foreground mb-2">
+              <div className="border-2 border-dashed border-gray-200 dark:border-gray-700 rounded-xl p-8 text-center bg-gray-50 dark:bg-gray-800/50 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors cursor-pointer">
+                <CloudArrowUpIcon className="mx-auto h-12 w-12 text-gray-400 dark:text-gray-500 mb-4" />
+                <p className="text-gray-600 dark:text-gray-300 font-medium mb-2">
                   파일을 드래그하여 놓거나 클릭하여 선택하세요
                 </p>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-sm text-gray-500 dark:text-gray-400">
                   최대 100MB, 모든 파일 형식 지원
                 </p>
-                <button className="mt-4 bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-full transition-colors">
+                <button className="mt-4 btn-primary">
                   파일 선택
                 </button>
               </div>
             </div>
 
-            <div className="px-6 py-4 border-t border-border flex justify-end space-x-3">
+            <div className="px-6 py-4 border-t border-gray-100 dark:border-gray-700 flex justify-end space-x-3 bg-gray-50 dark:bg-gray-800/50 rounded-b-2xl">
               <button
                 onClick={() => setShowUploadModal(false)}
-                className="btn-neutral px-4 py-2 text-sm font-medium rounded-full"
+                className="btn-secondary"
               >
                 취소
               </button>
@@ -687,7 +681,7 @@ const MaterialsLibrary: React.FC = () => {
                   setShowUploadModal(false);
                   toast.success('파일이 업로드되었습니다.');
                 }}
-                className="bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 text-sm font-medium rounded-full transition-colors"
+                className="btn-primary"
               >
                 업로드
               </button>

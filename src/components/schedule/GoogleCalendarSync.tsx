@@ -157,7 +157,7 @@ export default function GoogleCalendarSync({ onSync }: GoogleCalendarSyncProps) 
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-6">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3">
           <CalendarIcon className="w-6 h-6 text-gray-700 dark:text-gray-300" />
@@ -173,7 +173,7 @@ export default function GoogleCalendarSync({ onSync }: GoogleCalendarSyncProps) 
       </div>
 
       {error && (
-        <div className="mb-4 p-3 bg-destructive/10 dark:bg-red-900/20 border border-destructive/50 dark:border-red-800 rounded-lg">
+        <div className="mb-4 p-3 bg-destructive/10 dark:bg-red-900/20 border border-destructive/50 dark:border-red-800 rounded-xl">
           <p className="text-sm text-destructive dark:text-red-300">{error}</p>
         </div>
       )}
@@ -215,7 +215,7 @@ export default function GoogleCalendarSync({ onSync }: GoogleCalendarSyncProps) 
               <button
                 onClick={handleDisconnect}
                 disabled={isLoading}
-                className="px-4 py-2 bg-destructive text-destructive-foreground rounded-full hover:bg-destructive/90 disabled:opacity-50"
+                className="px-4 py-2 bg-destructive text-destructive-foreground rounded-xl hover:bg-destructive/90 disabled:opacity-50"
               >
                 연동 해제
               </button>
@@ -224,7 +224,7 @@ export default function GoogleCalendarSync({ onSync }: GoogleCalendarSyncProps) 
         </div>
 
         {!isConnected && (
-          <div className="mt-4 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+          <div className="mt-4 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl">
             <h4 className="text-sm font-semibold text-blue-900 dark:text-blue-100 mb-2">
               설정 방법
             </h4>

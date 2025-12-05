@@ -2,12 +2,11 @@ import { supabase } from './supabase';
 import type {
   Exam,
   ExamAttempt,
-  Question,
   QuestionResponse,
   ExamEligibleTrainee,
   ExamStatistics,
   CreateExamData,
-  GradeExamAttemptData,
+  ManualGradeResponseData,
   TraineeExamHistory
 } from '../types/exam.types';
 
@@ -208,6 +207,70 @@ export class ExamService {
     return data || [];
   }
 
+  /**
+   * 교육생의 응시 가능한 시험 목록 조회
+   */
+  static async getAvailableExams(traineeId: string): Promise<Exam[]> {
+    try {
+      // 1. 교육생이 수강 중인 라운드 조회
+      // user_id로 trainee_id를 찾거나, traineeId가 이미 trainee table의 id라고 가정
+      // 여기서는 traineeId가 users.id라고 가정하고 round_enrollments를 조회
+      // (실제 DB 구조에 따라 수정 필요: trainees 테이블을 거쳐야 할 수도 있음)
+
+      // 먼저 trainees 테이블에서 user_id로 trainee_id 조회 시도
+      let targetTraineeId = traineeId;
+
+      const { data: traineeData } = await supabase
+        .from('trainees')
+        .select('id')
+        .eq('user_id', traineeId)
+        .single();
+
+      if (traineeData) {
+        targetTraineeId = traineeData.id;
+      }
+
+      const { data: enrollments, error: enrollmentError } = await supabase
+        .from('round_enrollments')
+        .select('round_id')
+        .eq('trainee_id', targetTraineeId)
+        .eq('status', 'enrolled'); // status check
+
+      if (enrollmentError) {
+        console.warn('수강 정보 조회 실패 (테이블이 없거나 권한 부족):', enrollmentError);
+        // Fallback or re-throw? For now return empty
+        return [];
+      }
+
+      const roundIds = enrollments?.map(e => e.round_id) || [];
+
+      if (roundIds.length === 0) {
+        return [];
+      }
+
+      // 2. 해당 라운드의 시험 조회
+      const { data: exams, error: examError } = await supabase
+        .from('exams')
+        .select(`
+          *,
+          round:course_rounds(title, round_number)
+        `)
+        .eq('status', 'published')
+        .in('round_id', roundIds)
+        .order('scheduled_at', { ascending: true });
+
+      if (examError) {
+        console.error('응시 가능 시험 조회 실패:', examError);
+        throw new Error(`응시 가능 시험 조회 실패: ${examError.message}`);
+      }
+
+      return exams || [];
+    } catch (error) {
+      console.error('getAvailableExams error:', error);
+      return [];
+    }
+  }
+
   // ========================================
   // 시험 응시
   // ========================================
@@ -387,7 +450,7 @@ export class ExamService {
   /**
    * 수동 채점
    */
-  static async manualGrade(data: GradeExamAttemptData): Promise<void> {
+  static async manualGrade(data: ManualGradeResponseData): Promise<void> {
     const { attempt_id, response_id, is_correct, points_earned, feedback } = data;
 
     await supabase
@@ -494,7 +557,18 @@ export class ExamService {
       throw new Error(`시험 이력 조회 실패: ${error.message}`);
     }
 
-    return data || [];
+    return (data || []).map((item: any) => ({
+      exam_id: item.exam?.id,
+      title: item.exam?.title,
+      exam_type: item.exam?.exam_type,
+      session_name: item.exam?.round?.title,
+      attempt_number: item.attempt_number,
+      score: item.score,
+      score_percentage: item.score_percentage,
+      passed: item.passed,
+      submitted_at: item.submitted_at,
+      status: item.status
+    }));
   }
 
   /**

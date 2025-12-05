@@ -5,6 +5,7 @@
  */
 
 import { useEffect } from 'react';
+import { PageContainer } from '../common/PageContainer';
 
 export default function InstructorProfileManagement() {
   useEffect(() => {
@@ -18,15 +19,18 @@ export default function InstructorProfileManagement() {
   }, []);
 
   return (
-    <div className="p-6 bg-white dark:bg-gray-800 rounded-lg shadow">
-      <div className="text-center">
-        <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
-          강사 관리로 이동 중...
-        </h2>
-        <p className="text-gray-600 dark:text-gray-400">
-          강사 프로필 관리가 강사 관리 페이지로 통합되었습니다.
-        </p>
+    <PageContainer>
+      <div className="flex items-center justify-center min-h-[50vh]">
+        <div className="text-center bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700 max-w-md w-full">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 dark:border-blue-400 mx-auto mb-6"></div>
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+            강사 관리로 이동 중...
+          </h2>
+          <p className="text-gray-500 dark:text-gray-400 font-medium">
+            강사 프로필 관리가 강사 관리 페이지로 통합되었습니다.
+          </p>
+        </div>
       </div>
-    </div>
+    </PageContainer>
   );
 }

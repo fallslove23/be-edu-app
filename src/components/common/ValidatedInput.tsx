@@ -20,7 +20,7 @@ interface ValidatedInputProps {
   decimals?: number;
   showValidation?: boolean;
   validateOnChange?: boolean;
-  customRules?: any;
+  customRules?: Record<string, unknown>;
 }
 
 const ValidatedInput: React.FC<ValidatedInputProps> = ({
@@ -184,10 +184,10 @@ const ValidatedInput: React.FC<ValidatedInputProps> = ({
           required={required}
           {...getNumberProps()}
           className={`
-            w-full px-3 py-2 border border-input rounded-full
-            focus:ring-2 focus:ring-ring/20 focus:border-ring
-            disabled:bg-muted disabled:cursor-not-allowed
-            bg-background text-foreground
+            w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-xl
+            focus:ring-2 focus:ring-primary/20 focus:border-primary
+            disabled:bg-gray-100 dark:disabled:bg-gray-800 disabled:text-gray-500 dark:disabled:text-gray-400 disabled:cursor-not-allowed
+            bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100
             ${getValidationClass()}
             ${className}
           `}

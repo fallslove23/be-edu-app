@@ -1,4 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { ExamService } from '@/services/exam.services';
+import { useAuth } from '@/contexts/AuthContext';
+import { examTypeLabels } from '@/services/exam.services';
+import { PageContainer } from '@/components/common/PageContainer';
+import { PageHeader } from '@/components/common/PageHeader';
 import {
   PencilSquareIcon,
   ClockIcon,
@@ -12,7 +17,7 @@ interface MyExam {
   id: string;
   title: string;
   course: string;
-  type: '이론' | '실습';
+  type: string;
   status: 'available' | 'in_progress' | 'completed' | 'missed';
   score?: number;
   max_score: number;
@@ -25,62 +30,68 @@ interface MyExam {
 }
 
 const MyExams: React.FC = () => {
-  const [exams] = useState<MyExam[]>([
-    {
-      id: '1',
-      title: '영업 기초 이론 평가',
-      course: 'BS 영업 기초 과정',
-      type: '이론',
-      status: 'available',
-      max_score: 100,
-      attempts: 0,
-      max_attempts: 3,
-      duration: 60,
-      due_date: '2024-08-25T18:00:00Z',
-      passed: false
-    },
-    {
-      id: '2',
-      title: 'CRM 시스템 활용 평가',
-      course: 'CRM 시스템 활용',
-      type: '이론',
-      status: 'completed',
-      score: 85,
-      max_score: 100,
-      attempts: 2,
-      max_attempts: 3,
-      duration: 45,
-      due_date: '2024-01-30T18:00:00Z',
-      completed_at: '2024-01-28T15:30:00Z',
-      passed: true
-    },
-    {
-      id: '3',
-      title: '고객 응대 시뮬레이션',
-      course: 'BS 영업 기초 과정',
-      type: '실습',
-      status: 'in_progress',
-      max_score: 100,
-      attempts: 1,
-      max_attempts: 2,
-      duration: 90,
-      due_date: '2024-08-30T18:00:00Z',
-      passed: false
-    },
-    {
-      id: '4',
-      title: '월말 종합 평가',
-      course: 'BS 영업 기초 과정',
-      type: '이론',
-      status: 'missed',
-      max_score: 100,
-      attempts: 0,
-      max_attempts: 1,
-      duration: 120,
-      due_date: '2024-07-31T18:00:00Z',
-      passed: false
-    }
-  ]);
+  const { user } = useAuth();
+  const [exams, setExams] = useState<MyExam[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchExams = async () => {
+      if (!user) return;
+      try {
+        setLoading(true);
+        // 1. Available exams (metadata)
+        const available = await ExamService.getAvailableExams(user.id);
+        // 2. Attempts history
+        const history = await ExamService.getTraineeExamHistory(user.id);
+
+        console.log('Available exams:', available);
+        console.log('History:', history);
+
+        // Merge
+        const merged: MyExam[] = available.map(exam => {
+          // Find attempts for this exam
+          const attempts = history.filter(h => h.exam_id === exam.id);
+          // history is sorted desc by submitted_at, so first one is latest
+          const latestAttempt = attempts[0];
+
+          let status: MyExam['status'] = 'available';
+          if (latestAttempt) {
+            if (latestAttempt.status === 'in_progress') status = 'in_progress';
+            else if (latestAttempt.status === 'graded' || latestAttempt.status === 'submitted') status = 'completed';
+          } else {
+            // Check if missed (past due date)
+            if (exam.available_until && new Date(exam.available_until) < new Date()) {
+              status = 'missed';
+            }
+          }
+
+          return {
+            id: exam.id,
+            title: exam.title,
+            course: exam.round?.title || exam.course_name || '과정 정보 없음',
+            type: examTypeLabels[exam.exam_type] || exam.exam_type,
+            status,
+            score: latestAttempt?.score,
+            max_score: exam.total_points,
+            attempts: attempts.length,
+            max_attempts: exam.max_attempts,
+            duration: exam.duration_minutes,
+            due_date: exam.available_until || exam.scheduled_at || new Date().toISOString(),
+            completed_at: latestAttempt?.submitted_at,
+            passed: latestAttempt?.passed || false
+          };
+        });
+
+        setExams(merged);
+      } catch (err) {
+        console.error('Failed to fetch exams:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchExams();
+  }, [user]);
 
   const getStatusInfo = (exam: MyExam) => {
     const isOverdue = new Date(exam.due_date) < new Date();
@@ -110,171 +121,166 @@ const MyExams: React.FC = () => {
   const passedExams = completedExams.filter(e => e.passed);
 
   return (
-    <div className="space-y-6">
-      {/* 헤더 */}
-      {/* 헤더 */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center">
-              <PencilSquareIcon className="h-6 w-6 mr-2 text-gray-900 dark:text-white" />
-              시험 응시
-            </h1>
-            <p className="text-gray-600 dark:text-gray-400">예정된 시험에 응시하고 결과를 확인하세요.</p>
-          </div>
-        </div>
-      </div>
+    <PageContainer>
+      <div className="space-y-6">
+        {/* 헤더 */}
+        <PageHeader
+          title="시험 응시"
+          description="예정된 시험에 응시하고 결과를 확인하세요."
+        />
 
-      {/* 통계 카드 */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-          <div className="flex items-center">
-            <div className="flex-shrink-0">
-              <PencilSquareIcon className="h-8 w-8 text-blue-600 dark:text-blue-400" />
-            </div>
-            <div className="ml-4">
-              <p className="text-sm font-medium text-gray-500 dark:text-gray-400">응시 가능</p>
-              <p className="text-2xl font-semibold text-gray-900 dark:text-white">{availableExams.length}</p>
+        {/* 통계 카드 */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 transform hover:scale-105 transition-transform duration-200">
+            <div className="flex items-center">
+              <div className="flex-shrink-0 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-xl">
+                <PencilSquareIcon className="h-8 w-8 text-blue-600 dark:text-blue-400" />
+              </div>
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-500 dark:text-gray-400">응시 가능</p>
+                <p className="text-2xl font-bold text-gray-900 dark:text-white">{availableExams.length}</p>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-          <div className="flex items-center">
-            <div className="flex-shrink-0">
-              <CheckCircleIcon className="h-8 w-8 text-green-600 dark:text-green-400" />
-            </div>
-            <div className="ml-4">
-              <p className="text-sm font-medium text-gray-500 dark:text-gray-400">완료</p>
-              <p className="text-2xl font-semibold text-gray-900 dark:text-white">{completedExams.length}</p>
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 transform hover:scale-105 transition-transform duration-200">
+            <div className="flex items-center">
+              <div className="flex-shrink-0 p-3 bg-green-50 dark:bg-green-900/20 rounded-xl">
+                <CheckCircleIcon className="h-8 w-8 text-green-600 dark:text-green-400" />
+              </div>
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-500 dark:text-gray-400">완료</p>
+                <p className="text-2xl font-bold text-gray-900 dark:text-white">{completedExams.length}</p>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-          <div className="flex items-center">
-            <div className="flex-shrink-0">
-              <TrophyIcon className="h-8 w-8 text-foreground dark:text-gray-300" />
-            </div>
-            <div className="ml-4">
-              <p className="text-sm font-medium text-gray-500 dark:text-gray-400">합격률</p>
-              <p className="text-2xl font-semibold text-gray-900 dark:text-white">
-                {completedExams.length > 0 ? Math.round((passedExams.length / completedExams.length) * 100) : 0}%
-              </p>
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 transform hover:scale-105 transition-transform duration-200">
+            <div className="flex items-center">
+              <div className="flex-shrink-0 p-3 bg-orange-50 dark:bg-orange-900/20 rounded-xl">
+                <TrophyIcon className="h-8 w-8 text-yellow-500 dark:text-yellow-400" />
+              </div>
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-500 dark:text-gray-400">합격률</p>
+                <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                  {completedExams.length > 0 ? Math.round((passedExams.length / completedExams.length) * 100) : 0}%
+                </p>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-          <div className="flex items-center">
-            <div className="flex-shrink-0">
-              <TrophyIcon className="h-8 w-8 text-purple-600 dark:text-purple-400" />
-            </div>
-            <div className="ml-4">
-              <p className="text-sm font-medium text-gray-500 dark:text-gray-400">평균 점수</p>
-              <p className="text-2xl font-semibold text-gray-900 dark:text-white">
-                {completedExams.length > 0
-                  ? Math.round(completedExams.reduce((sum, e) => sum + (e.score || 0), 0) / completedExams.length)
-                  : 0
-                }
-              </p>
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 transform hover:scale-105 transition-transform duration-200">
+            <div className="flex items-center">
+              <div className="flex-shrink-0 p-3 bg-purple-50 dark:bg-purple-900/20 rounded-xl">
+                <TrophyIcon className="h-8 w-8 text-purple-600 dark:text-purple-400" />
+              </div>
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-500 dark:text-gray-400">평균 점수</p>
+                <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                  {completedExams.length > 0
+                    ? Math.round(completedExams.reduce((sum, e) => sum + (e.score || 0), 0) / completedExams.length)
+                    : 0
+                  }
+                </p>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      {/* 시험 목록 */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-        <div className="p-6 border-b border-gray-200 dark:border-gray-700">
-          <h2 className="text-lg font-medium text-gray-900 dark:text-white">시험 목록</h2>
-        </div>
-        <div className="divide-y divide-gray-200 dark:divide-gray-700">
-          {exams.map((exam) => {
-            const statusInfo = getStatusInfo(exam);
-            const StatusIcon = statusInfo.icon;
-            const isOverdue = new Date(exam.due_date) < new Date();
+        {/* 시험 목록 */}
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700">
+          <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700 font-bold">
+            <h2 className="text-lg text-gray-900 dark:text-white">시험 목록</h2>
+          </div>
+          <div className="divide-y divide-gray-200 dark:divide-gray-700">
+            {exams.map((exam) => {
+              const statusInfo = getStatusInfo(exam);
+              const StatusIcon = statusInfo.icon;
+              const isOverdue = new Date(exam.due_date) < new Date();
 
-            return (
-              <div key={exam.id} className="p-6 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <div className="flex items-center space-x-3 mb-2">
-                      <h3 className="text-lg font-medium text-gray-900 dark:text-white">{exam.title}</h3>
-                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${statusInfo.color}`}>
-                        <StatusIcon className="h-3 w-3 mr-1" />
-                        {statusInfo.label}
-                      </span>
-                      <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${exam.type === '이론' ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300' : 'bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300'
-                        }`}>
-                        {exam.type}
-                      </span>
+              return (
+                <div key={exam.id} className="p-6 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors group">
+                  <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex flex-wrap items-center gap-2 mb-2">
+                        <h3 className="text-lg font-bold text-gray-900 dark:text-white">{exam.title}</h3>
+                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold ${statusInfo.color}`}>
+                          <StatusIcon className="h-3 w-3 mr-1" />
+                          {statusInfo.label}
+                        </span>
+                        <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium border border-blue-100 dark:border-blue-800 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400`}>
+                          {exam.type}
+                        </span>
+                      </div>
+
+                      <p className="text-gray-600 dark:text-gray-400 mb-4">{exam.course}</p>
+
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-y-2 gap-x-6 text-sm text-gray-500 dark:text-gray-400">
+                        <div className="flex items-center">
+                          <ClockIcon className="h-4 w-4 mr-1.5 text-gray-400" />
+                          {exam.duration}분
+                        </div>
+                        <div className="flex items-center">
+                          <CalendarIcon className="h-4 w-4 mr-1.5 text-gray-400" />
+                          {new Date(exam.due_date).toLocaleDateString('ko-KR')}
+                        </div>
+                        <div>
+                          응시 횟수: <span className="font-medium text-gray-900 dark:text-white">{exam.attempts}/{exam.max_attempts}</span>
+                        </div>
+                        {exam.score !== undefined && (
+                          <div>
+                            점수: <span className="font-medium text-gray-900 dark:text-white">{exam.score}/{exam.max_score}</span>
+                          </div>
+                        )}
+                      </div>
                     </div>
 
-                    <p className="text-gray-600 dark:text-gray-400 mb-3">{exam.course}</p>
-
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-gray-500 dark:text-gray-400 mb-4">
-                      <div className="flex items-center">
-                        <ClockIcon className="h-4 w-4 mr-1" />
-                        {exam.duration}분
-                      </div>
-                      <div className="flex items-center">
-                        <CalendarIcon className="h-4 w-4 mr-1" />
-                        {new Date(exam.due_date).toLocaleDateString('ko-KR')}
-                      </div>
-                      <div>
-                        응시 횟수: {exam.attempts}/{exam.max_attempts}
-                      </div>
-                      {exam.score && (
-                        <div>
-                          점수: {exam.score}/{exam.max_score}
-                        </div>
+                    <div className="flex flex-row sm:flex-col gap-2 w-full sm:w-auto shrink-0">
+                      {exam.status === 'available' && !isOverdue && exam.attempts < exam.max_attempts && (
+                        <button className="btn-primary w-full sm:w-auto text-sm py-2">
+                          시험 응시
+                        </button>
+                      )}
+                      {exam.status === 'in_progress' && (
+                        <button className="btn-success w-full sm:w-auto text-sm py-2">
+                          계속 응시
+                        </button>
+                      )}
+                      {exam.status === 'completed' && exam.attempts < exam.max_attempts && !exam.passed && (
+                        <button className="btn-warning w-full sm:w-auto text-sm py-2">
+                          재응시
+                        </button>
+                      )}
+                      {exam.status === 'completed' && (
+                        <button className="btn-secondary w-full sm:w-auto text-sm py-2">
+                          결과 보기
+                        </button>
                       )}
                     </div>
-
-                    {exam.completed_at && (
-                      <div className="text-sm text-gray-500 dark:text-gray-400">
-                        완료일: {new Date(exam.completed_at).toLocaleString('ko-KR')}
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="ml-6 flex flex-col space-y-2">
-                    {exam.status === 'available' && !isOverdue && exam.attempts < exam.max_attempts && (
-                      <button className="btn-primary rounded-full">
-                        시험 응시
-                      </button>
-                    )}
-                    {exam.status === 'in_progress' && (
-                      <button className="btn-success rounded-full">
-                        계속 응시
-                      </button>
-                    )}
-                    {exam.status === 'completed' && exam.attempts < exam.max_attempts && !exam.passed && (
-                      <button className="btn-warning rounded-full">
-                        재응시
-                      </button>
-                    )}
-                    {exam.status === 'completed' && (
-                      <button className="border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 px-4 py-2 rounded-full hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
-                        결과 보기
-                      </button>
-                    )}
                   </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
-      </div>
 
-      {exams.length === 0 && (
-        <div className="text-center py-12 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-          <PencilSquareIcon className="mx-auto h-12 w-12 text-gray-400 dark:text-gray-600" />
-          <h3 className="mt-2 text-sm font-medium text-gray-900 dark:text-white">예정된 시험이 없습니다</h3>
-          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">새로운 시험이 등록되면 알려드리겠습니다.</p>
-        </div>
-      )}
-    </div>
+        {loading ? (
+          <div className="flex justify-center py-20">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+          </div>
+        ) : exams.length === 0 && (
+          <div className="text-center py-20 bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700">
+            <div className="w-20 h-20 bg-gray-50 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-6">
+              <PencilSquareIcon className="h-10 w-10 text-gray-400 dark:text-gray-500" />
+            </div>
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">예정된 시험이 없습니다</h3>
+            <p className="text-gray-500 dark:text-gray-400 max-w-sm mx-auto leading-relaxed">
+              새로운 시험이 등록되면 이 페이지와 알림 센터를 통해 알려드리겠습니다.
+            </p>
+          </div>
+        )}
+      </div>
+    </PageContainer>
   );
 };
 

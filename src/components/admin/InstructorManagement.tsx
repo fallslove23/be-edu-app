@@ -17,6 +17,8 @@ import {
   StarIcon,
   PhoneIcon,
   ChartBarIcon,
+  MagnifyingGlassIcon,
+  XMarkIcon,
 } from '@heroicons/react/24/outline';
 import { PageContainer } from '../common/PageContainer';
 import { PageHeader } from '../common/PageHeader';
@@ -358,7 +360,8 @@ export function InstructorManagement() {
     return (
       <PageContainer>
         <div className="flex items-center justify-center h-64">
-          <div className="text-gray-500">로딩 중...</div>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 dark:border-blue-400"></div>
+          <span className="ml-2 text-gray-600 dark:text-gray-400">로딩 중...</span>
         </div>
       </PageContainer>
     );
@@ -382,214 +385,241 @@ export function InstructorManagement() {
       </div>
 
       {error && (
-        <div className="mb-4 p-4 bg-destructive/10 dark:bg-red-900/20 border border-destructive/50 dark:border-red-800 rounded-lg">
-          <p className="text-sm text-destructive dark:text-red-400">{error}</p>
+        <div className="mb-4 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl">
+          <p className="text-sm text-red-600 dark:text-red-400 font-medium">{error}</p>
         </div>
       )}
 
       {/* 강사 목록 */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
-        <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-          <thead className="bg-gray-50 dark:bg-gray-900">
-            <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                강사 정보
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                담당 과목
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                강의 통계
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                평가
-              </th>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                작업
-              </th>
-            </tr>
-          </thead>
-          <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-            {instructors.map((instructor) => (
-              <tr key={instructor.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
-                <td className="px-6 py-4">
-                  <div className="flex items-center gap-3">
-                    <div className="flex-shrink-0 h-10 w-10 rounded-full overflow-hidden bg-teal-100 dark:bg-teal-900 flex items-center justify-center">
-                      {instructor.profile?.profile_photo_url ? (
-                        <img
-                          src={instructor.profile.profile_photo_url}
-                          alt={instructor.name}
-                          className="h-full w-full object-cover"
-                        />
-                      ) : (
-                        <UserIcon className="h-6 w-6 text-teal-600 dark:text-teal-400" />
-                      )}
-                    </div>
-                    <div>
-                      <div className="text-sm font-medium text-gray-900 dark:text-white">
-                        {instructor.name}
-                      </div>
-                      <div className="text-sm text-gray-500 dark:text-gray-400">
-                        {instructor.email}
-                      </div>
-                      {instructor.phone && (
-                        <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
-                          <PhoneIcon className="w-3 h-3" />
-                          {instructor.phone}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </td>
-                <td className="px-6 py-4">
-                  {instructor.subjects && instructor.subjects.length > 0 ? (
-                    <div className="flex flex-wrap gap-1">
-                      {instructor.subjects.slice(0, 3).map((is) => (
-                        <span
-                          key={is.id}
-                          className="inline-flex items-center px-2 py-1 rounded-lg text-xs bg-primary/10 text-primary"
-                        >
-                          {is.subject.name}
-                        </span>
-                      ))}
-                      {instructor.subjects.length > 3 && (
-                        <span className="text-xs text-gray-500">+{instructor.subjects.length - 3}</span>
-                      )}
-                    </div>
-                  ) : (
-                    <span className="text-sm text-gray-400">과목 없음</span>
-                  )}
-                </td>
-                <td className="px-6 py-4">
-                  {instructor.stats ? (
-                    <div className="text-sm">
-                      <div className="text-gray-900 dark:text-white">
-                        {instructor.stats.total_sessions}회 강의
-                      </div>
-                      <div className="text-gray-500 dark:text-gray-400">
-                        주평균 {instructor.stats.avg_hours_per_week?.toFixed(1) || 0}시간
-                      </div>
-                    </div>
-                  ) : (
-                    <span className="text-sm text-gray-400">통계 없음</span>
-                  )}
-                </td>
-                <td className="px-6 py-4">
-                  {instructor.profile && (
-                    <div className="flex items-center gap-2">
-                      <StarIcon className="w-5 h-5 text-foreground" />
-                      <span className="text-sm font-medium text-gray-900 dark:text-white">
-                        {instructor.profile.rating.toFixed(1)}
-                      </span>
-                      <span className="text-xs text-gray-500 dark:text-gray-400">
-                        ({instructor.profile.total_sessions}회)
-                      </span>
-                    </div>
-                  )}
-                </td>
-                <td className="px-6 py-4 text-right">
-                  <div className="flex items-center justify-end gap-2">
-                    <button
-                      onClick={() => {
-                        setSelectedInstructor(instructor);
-                        setShowDetailModal(true);
-                      }}
-                      className="btn-outline py-1 h-auto text-sm"
-                      title="상세 정보"
-                    >
-                      상세보기
-                    </button>
-                    <button
-                      onClick={() => openEditModal(instructor)}
-                      className="btn-ghost p-2 h-auto"
-                      title="계정 수정"
-                    >
-                      <PencilIcon className="w-5 h-5" />
-                    </button>
-                    <button
-                      onClick={() => openProfileModal(instructor)}
-                      className="btn-secondary py-1 h-auto text-sm"
-                    >
-                      {instructor.profile ? '프로필 수정' : '프로필 생성'}
-                    </button>
-                  </div>
-                </td>
+      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+            <thead className="bg-gray-50 dark:bg-gray-900/50">
+              <tr>
+                <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                  강사 정보
+                </th>
+                <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                  담당 과목
+                </th>
+                <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                  강의 통계
+                </th>
+                <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                  평가
+                </th>
+                <th className="px-6 py-4 text-right text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                  작업
+                </th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+              {instructors.map((instructor) => (
+                <tr key={instructor.id} className="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                  <td className="px-6 py-4">
+                    <div className="flex items-center gap-4">
+                      <div className="flex-shrink-0 h-12 w-12 rounded-full overflow-hidden bg-teal-100 dark:bg-teal-900/30 flex items-center justify-center border-2 border-white dark:border-gray-700 shadow-sm">
+                        {instructor.profile?.profile_photo_url ? (
+                          <img
+                            src={instructor.profile.profile_photo_url}
+                            alt={instructor.name}
+                            className="h-full w-full object-cover"
+                          />
+                        ) : (
+                          <UserIcon className="h-6 w-6 text-teal-600 dark:text-teal-400" />
+                        )}
+                      </div>
+                      <div>
+                        <div className="text-sm font-bold text-gray-900 dark:text-white">
+                          {instructor.name}
+                        </div>
+                        <div className="text-sm text-gray-500 dark:text-gray-400">
+                          {instructor.email}
+                        </div>
+                        {instructor.phone && (
+                          <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                            <PhoneIcon className="w-3 h-3" />
+                            {instructor.phone}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4">
+                    {instructor.subjects && instructor.subjects.length > 0 ? (
+                      <div className="flex flex-wrap gap-1.5">
+                        {instructor.subjects.slice(0, 3).map((is) => (
+                          <span
+                            key={is.id}
+                            className="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-bold bg-teal-50 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300 border border-teal-100 dark:border-teal-800"
+                          >
+                            {is.subject.name}
+                          </span>
+                        ))}
+                        {instructor.subjects.length > 3 && (
+                          <span className="inline-flex items-center px-2 py-1 rounded-lg text-xs font-bold bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-600">
+                            +{instructor.subjects.length - 3}
+                          </span>
+                        )}
+                      </div>
+                    ) : (
+                      <span className="text-sm text-gray-400 dark:text-gray-500 italic">과목 없음</span>
+                    )}
+                  </td>
+                  <td className="px-6 py-4">
+                    {instructor.stats ? (
+                      <div className="text-sm">
+                        <div className="font-bold text-gray-900 dark:text-white">
+                          {instructor.stats.total_sessions}회 강의
+                        </div>
+                        <div className="text-gray-500 dark:text-gray-400 text-xs mt-0.5 font-medium">
+                          주평균 {instructor.stats.avg_hours_per_week?.toFixed(1) || 0}시간
+                        </div>
+                      </div>
+                    ) : (
+                      <span className="text-sm text-gray-400 dark:text-gray-500 italic">통계 없음</span>
+                    )}
+                  </td>
+                  <td className="px-6 py-4">
+                    {instructor.profile && (
+                      <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-1 bg-yellow-50 dark:bg-yellow-900/20 px-2.5 py-1 rounded-lg border border-yellow-100 dark:border-yellow-800">
+                          <StarIcon className="w-4 h-4 text-yellow-500 fill-yellow-500" />
+                          <span className="text-sm font-bold text-gray-900 dark:text-white">
+                            {instructor.profile.rating.toFixed(1)}
+                          </span>
+                        </div>
+                        <span className="text-xs text-gray-500 dark:text-gray-400 font-medium">
+                          ({instructor.profile.total_sessions}회)
+                        </span>
+                      </div>
+                    )}
+                  </td>
+                  <td className="px-6 py-4 text-right">
+                    <div className="flex items-center justify-end gap-2">
+                      <button
+                        onClick={() => {
+                          setSelectedInstructor(instructor);
+                          setShowDetailModal(true);
+                        }}
+                        className="btn-outline py-1.5 px-3 h-auto text-xs"
+                        title="상세 정보"
+                      >
+                        상세보기
+                      </button>
+                      <button
+                        onClick={() => openEditModal(instructor)}
+                        className="p-2 h-auto rounded-lg text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors"
+                        title="계정 수정"
+                      >
+                        <PencilIcon className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={() => openProfileModal(instructor)}
+                        className="btn-secondary py-1.5 px-3 h-auto text-xs"
+                      >
+                        {instructor.profile ? '프로필 수정' : '프로필 생성'}
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
 
         {instructors.length === 0 && (
-          <div className="text-center py-12">
-            <UserIcon className="mx-auto h-12 w-12 text-gray-400" />
-            <h3 className="mt-2 text-sm font-medium text-gray-900 dark:text-white">강사가 없습니다</h3>
-            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-              새로운 강사를 추가해주세요.
+          <div className="text-center py-16 bg-white dark:bg-gray-800">
+            <div className="bg-gray-50 dark:bg-gray-700 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
+              <UserIcon className="h-10 w-10 text-gray-300 dark:text-gray-500" />
+            </div>
+            <h3 className="text-lg font-bold text-gray-900 dark:text-white">강사가 없습니다</h3>
+            <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+              새로운 강사를 추가하여 교육 과정을 운영해보세요.
             </p>
+            <button
+              onClick={openCreateModal}
+              className="mt-6 btn-primary"
+            >
+              <PlusIcon className="w-5 h-5 mr-2" />
+              첫 강사 추가하기
+            </button>
           </div>
         )}
       </div>
 
       {/* 계정 생성 모달 */}
       {showCreateModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-md">
-            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">강사 계정 생성</h2>
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-md overflow-hidden border border-gray-100 dark:border-gray-700 animate-in fade-in zoom-in duration-200">
+            <div className="px-6 py-4 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center bg-gray-50 dark:bg-gray-800/50">
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white">강사 계정 생성</h2>
+              <button
+                onClick={() => setShowCreateModal(false)}
+                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+              >
+                <XMarkIcon className="w-6 h-6" />
+              </button>
+            </div>
 
-            <div className="space-y-4">
+            <div className="p-6 space-y-5">
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  이름 *
+                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
+                  이름 <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
                   value={userForm.name}
                   onChange={(e) => setUserForm({ ...userForm, name: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                  className="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
+                  placeholder="강사 이름 입력"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  이메일 *
+                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
+                  이메일 <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="email"
                   value={userForm.email}
                   onChange={(e) => setUserForm({ ...userForm, email: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                  className="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
+                  placeholder="email@example.com"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  비밀번호 *
+                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
+                  비밀번호 <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="password"
                   value={userForm.password}
                   onChange={(e) => setUserForm({ ...userForm, password: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                  className="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
+                  placeholder="비밀번호 입력"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
                   전화번호
                 </label>
                 <input
                   type="tel"
                   value={userForm.phone}
                   onChange={(e) => setUserForm({ ...userForm, phone: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                  className="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
+                  placeholder="010-0000-0000"
                 />
               </div>
             </div>
 
-            <div className="mt-6 flex justify-end gap-3">
+            <div className="px-6 py-4 bg-gray-50 dark:bg-gray-800/50 border-t border-gray-100 dark:border-gray-700 flex justify-end gap-3">
               <button
                 onClick={() => setShowCreateModal(false)}
                 className="btn-outline"
@@ -600,7 +630,7 @@ export function InstructorManagement() {
                 onClick={handleCreateAccount}
                 className="btn-primary"
               >
-                생성
+                계정 생성
               </button>
             </div>
           </div>
@@ -609,49 +639,60 @@ export function InstructorManagement() {
 
       {/* 계정 수정 모달 */}
       {showEditModal && selectedInstructor && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-md">
-            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">강사 정보 수정</h2>
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-md overflow-hidden border border-gray-100 dark:border-gray-700 animate-in fade-in zoom-in duration-200">
+            <div className="px-6 py-4 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center bg-gray-50 dark:bg-gray-800/50">
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white">강사 정보 수정</h2>
+              <button
+                onClick={() => {
+                  setShowEditModal(false);
+                  setSelectedInstructor(null);
+                }}
+                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+              >
+                <XMarkIcon className="w-6 h-6" />
+              </button>
+            </div>
 
-            <div className="space-y-4">
+            <div className="p-6 space-y-5">
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  이름 *
+                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
+                  이름 <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
                   value={userForm.name}
                   onChange={(e) => setUserForm({ ...userForm, name: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                  className="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  이메일 *
+                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
+                  이메일 <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="email"
                   value={userForm.email}
                   onChange={(e) => setUserForm({ ...userForm, email: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                  className="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
                   전화번호
                 </label>
                 <input
                   type="tel"
                   value={userForm.phone}
                   onChange={(e) => setUserForm({ ...userForm, phone: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                  className="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
                 />
               </div>
             </div>
 
-            <div className="mt-6 flex justify-end gap-3">
+            <div className="px-6 py-4 bg-gray-50 dark:bg-gray-800/50 border-t border-gray-100 dark:border-gray-700 flex justify-end gap-3">
               <button
                 onClick={() => {
                   setShowEditModal(false);
@@ -665,7 +706,7 @@ export function InstructorManagement() {
                 onClick={handleUpdateAccount}
                 className="btn-primary"
               >
-                수정
+                수정 완료
               </button>
             </div>
           </div>
@@ -674,14 +715,14 @@ export function InstructorManagement() {
 
       {/* 프로필 생성/수정 모달 */}
       {showProfileModal && selectedInstructor && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 overflow-y-auto">
-          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-3xl my-8">
-            <div className="flex items-center justify-between mb-6">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-hidden border border-gray-100 dark:border-gray-700 flex flex-col animate-in fade-in zoom-in duration-200">
+            <div className="px-6 py-4 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center bg-gray-50 dark:bg-gray-800/50 flex-shrink-0">
               <div>
                 <h2 className="text-xl font-bold text-gray-900 dark:text-white">
                   프로필 {selectedInstructor.profile ? '수정' : '생성'}
                 </h2>
-                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5 font-medium">
                   {selectedInstructor.name} ({selectedInstructor.email})
                 </p>
               </div>
@@ -691,26 +732,26 @@ export function InstructorManagement() {
                   setSelectedInstructor(null);
                   setSelectedSubjects(new Map());
                 }}
-                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
               >
-                <XCircleIcon className="w-6 h-6" />
+                <XMarkIcon className="w-6 h-6" />
               </button>
             </div>
 
-            <div className="space-y-6 max-h-[70vh] overflow-y-auto pr-2">
+            <div className="p-6 space-y-6 overflow-y-auto flex-1">
               {/* 강의 가능 과목 */}
               <div>
                 <div className="flex items-center justify-between mb-3">
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    강의 가능 과목 *
+                  <label className="block text-sm font-bold text-gray-700 dark:text-gray-300">
+                    강의 가능 과목 <span className="text-red-500">*</span>
                   </label>
                   {selectedSubjects.size > 0 && (
-                    <span className="text-xs text-teal-600 dark:text-teal-400 font-medium">
+                    <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300">
                       {selectedSubjects.size}개 선택됨
                     </span>
                   )}
                 </div>
-                <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">
+                <p className="text-xs text-gray-500 dark:text-gray-400 mb-4 bg-blue-50 dark:bg-blue-900/10 p-3 rounded-lg border border-blue-100 dark:border-blue-800">
                   이 강사가 강의할 수 있는 과목을 선택하세요. 과목은 자원 관리에서 미리 등록되어야 합니다.
                 </p>
 
@@ -718,25 +759,23 @@ export function InstructorManagement() {
                 <div className="mb-4 space-y-3">
                   {/* 검색창 */}
                   <div className="relative">
+                    <MagnifyingGlassIcon className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
                     <input
                       type="text"
                       value={subjectSearchTerm}
                       onChange={(e) => setSubjectSearchTerm(e.target.value)}
                       placeholder="과목명 또는 카테고리 검색..."
-                      className="w-full px-4 py-2 pl-10 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                      className="w-full pl-11 pr-4 py-3 border border-gray-200 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all font-medium"
                     />
-                    <svg className="absolute left-3 top-2.5 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
                   </div>
 
                   {/* 카테고리 필터 */}
                   <div className="flex flex-wrap gap-2">
                     <button
                       onClick={() => setSelectedCategory('all')}
-                      className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${selectedCategory === 'all'
-                        ? 'bg-teal-600 text-white'
-                        : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                      className={`px-3 py-1.5 rounded-lg text-sm font-bold transition-all ${selectedCategory === 'all'
+                        ? 'bg-teal-600 text-white shadow-md'
+                        : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
                         }`}
                     >
                       전체 ({subjects.length})
@@ -745,9 +784,9 @@ export function InstructorManagement() {
                       <button
                         key={category}
                         onClick={() => setSelectedCategory(category!)}
-                        className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${selectedCategory === category
-                          ? 'bg-teal-600 text-white'
-                          : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                        className={`px-3 py-1.5 rounded-lg text-sm font-bold transition-all ${selectedCategory === category
+                          ? 'bg-teal-600 text-white shadow-md'
+                          : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
                           }`}
                       >
                         {category} ({subjects.filter(s => s.category === category).length})
@@ -758,41 +797,42 @@ export function InstructorManagement() {
 
                 {/* 선택된 과목 (상단 고정) */}
                 {selectedSubjectsList.length > 0 && (
-                  <div className="mb-4 p-4 bg-teal-50 dark:bg-teal-900/20 rounded-lg border border-teal-200 dark:border-teal-800">
-                    <div className="text-sm font-semibold text-gray-900 dark:text-white mb-3">
-                      ✓ 선택된 과목 ({selectedSubjectsList.length}개)
+                  <div className="mb-4 p-4 bg-teal-50 dark:bg-teal-900/20 rounded-xl border border-teal-100 dark:border-teal-800 animate-in fade-in slide-in-from-top-2 duration-300">
+                    <div className="text-sm font-bold text-teal-900 dark:text-teal-100 mb-3 flex items-center">
+                      <CheckCircleIcon className="w-5 h-5 mr-2" />
+                      선택된 과목 ({selectedSubjectsList.length}개)
                     </div>
-                    <div className="space-y-2 max-h-60 overflow-y-auto">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2 max-h-40 overflow-y-auto pr-1">
                       {selectedSubjectsList.map((subject) => (
                         <div
                           key={subject.id}
-                          className="p-3 bg-white dark:bg-gray-700 rounded-lg border border-teal-300 dark:border-teal-700"
+                          className="p-3 bg-white dark:bg-gray-800 rounded-lg border border-teal-200 dark:border-teal-700 shadow-sm flex items-center justify-between group"
                         >
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-2">
-                              <AcademicCapIcon className="w-5 h-5 text-teal-600 dark:text-teal-400 flex-shrink-0" />
-                              <div>
-                                <span className="text-sm font-medium text-gray-900 dark:text-white">
-                                  {subject.name}
-                                </span>
-                                {subject.category && (
-                                  <div className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
-                                    📚 {subject.category}
-                                  </div>
-                                )}
-                              </div>
+                          <div className="flex items-center gap-2 min-w-0">
+                            <div className="w-8 h-8 rounded-lg bg-teal-100 dark:bg-teal-900/50 flex items-center justify-center flex-shrink-0">
+                              <AcademicCapIcon className="w-4 h-4 text-teal-600 dark:text-teal-400" />
                             </div>
-                            <button
-                              onClick={() => {
-                                const newMap = new Map(selectedSubjects);
-                                newMap.delete(subject.id);
-                                setSelectedSubjects(newMap);
-                              }}
-                              className="ml-2 text-gray-400 hover:text-red-600 dark:hover:text-red-400 flex-shrink-0"
-                            >
-                              <XCircleIcon className="w-5 h-5" />
-                            </button>
+                            <div className="min-w-0">
+                              <div className="text-sm font-bold text-gray-900 dark:text-white truncate">
+                                {subject.name}
+                              </div>
+                              {subject.category && (
+                                <div className="text-xs text-gray-500 dark:text-gray-400 truncate font-medium">
+                                  {subject.category}
+                                </div>
+                              )}
+                            </div>
                           </div>
+                          <button
+                            onClick={() => {
+                              const newMap = new Map(selectedSubjects);
+                              newMap.delete(subject.id);
+                              setSelectedSubjects(newMap);
+                            }}
+                            className="ml-2 text-gray-400 hover:text-red-500 dark:hover:text-red-400 transition-colors p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"
+                          >
+                            <XMarkIcon className="w-5 h-5" />
+                          </button>
                         </div>
                       ))}
                     </div>
@@ -801,32 +841,39 @@ export function InstructorManagement() {
 
                 {/* 미선택 과목 목록 */}
                 <div>
-                  <div className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-                    과목 선택 ({unselectedSubjectsList.length}개)
+                  <div className="text-sm font-bold text-gray-700 dark:text-gray-300 mb-3 flex items-center justify-between">
+                    <span>과목 선택 ({unselectedSubjectsList.length}개)</span>
+                    <span className="text-xs text-gray-500 font-normal">터치하여 선택/해제</span>
                   </div>
-                  <div className="space-y-2 max-h-96 overflow-y-auto border border-gray-200 dark:border-gray-700 rounded-lg p-3">
+                  <div className="space-y-2 max-h-60 overflow-y-auto border border-gray-200 dark:border-gray-700 rounded-xl p-3 bg-gray-50/50 dark:bg-gray-800/50">
                     {unselectedSubjectsList.length > 0 ? (
-                      unselectedSubjectsList.map((subject) => (
-                        <div
-                          key={subject.id}
-                          onClick={() => toggleSubject(subject.id)}
-                          className="p-3 border-2 border-gray-200 dark:border-gray-700 rounded-lg cursor-pointer hover:border-teal-400 dark:hover:border-teal-600 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all"
-                        >
-                          <div className="flex items-center gap-2">
-                            <AcademicCapIcon className="w-5 h-5 text-gray-400" />
-                            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                              {subject.name}
-                            </span>
-                          </div>
-                          {subject.category && (
-                            <div className="text-xs text-gray-500 dark:text-gray-400 mt-1 ml-7">
-                              📚 {subject.category}
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                        {unselectedSubjectsList.map((subject) => (
+                          <div
+                            key={subject.id}
+                            onClick={() => toggleSubject(subject.id)}
+                            className="p-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg cursor-pointer hover:border-teal-500 dark:hover:border-teal-500 hover:ring-1 hover:ring-teal-500 transition-all group"
+                          >
+                            <div className="flex items-center gap-3">
+                              <div className="w-8 h-8 rounded-lg bg-gray-100 dark:bg-gray-700 group-hover:bg-teal-50 dark:group-hover:bg-teal-900/30 flex items-center justify-center transition-colors">
+                                <AcademicCapIcon className="w-4 h-4 text-gray-400 group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors" />
+                              </div>
+                              <div>
+                                <div className="text-sm font-bold text-gray-900 dark:text-white group-hover:text-teal-700 dark:group-hover:text-teal-300 transition-colors">
+                                  {subject.name}
+                                </div>
+                                {subject.category && (
+                                  <div className="text-xs text-gray-500 dark:text-gray-400 font-medium">
+                                    {subject.category}
+                                  </div>
+                                )}
+                              </div>
                             </div>
-                          )}
-                        </div>
-                      ))
+                          </div>
+                        ))}
+                      </div>
                     ) : (
-                      <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+                      <div className="text-center py-12 text-gray-500 dark:text-gray-400 font-medium">
                         {subjectSearchTerm || selectedCategory !== 'all'
                           ? '검색 결과가 없습니다.'
                           : '모든 과목이 선택되었습니다.'}
@@ -834,57 +881,57 @@ export function InstructorManagement() {
                     )}
                   </div>
                 </div>
-
-                <p className="mt-3 text-xs text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-900/50 p-3 rounded-lg">
-                  💡 <strong>사용 방법:</strong><br />
-                  • 검색창이나 카테고리로 과목을 필터링하세요<br />
-                  • 과목을 클릭하여 선택하고 숙련도를 설정하세요<br />
-                  • 선택된 과목은 상단에 표시되며 X 버튼으로 제거할 수 있습니다
-                </p>
               </div>
 
               {/* 강사 사진 */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-3">
                   강사 프로필 사진
                 </label>
-                <InstructorPhotoUpload
-                  userId={selectedInstructor.id}
-                  currentPhotoUrl={selectedInstructor.profile?.profile_photo_url}
-                  onUploadSuccess={(photoUrl) => {
-                    // 성공 시 프로필 새로고침
-                    console.log('✅ 사진 업로드 성공:', photoUrl);
-                    loadData();
-                  }}
-                  onUploadError={(error) => {
-                    console.error('❌ 사진 업로드 실패:', error);
-                    alert(`사진 업로드 실패: ${error.message}`);
-                  }}
-                />
+                <div className="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-4 border border-gray-200 dark:border-gray-700">
+                  <InstructorPhotoUpload
+                    userId={selectedInstructor.id}
+                    currentPhotoUrl={selectedInstructor.profile?.profile_photo_url}
+                    onUploadSuccess={(photoUrl) => {
+                      // 성공 시 프로필 새로고침
+                      console.log('✅ 사진 업로드 성공:', photoUrl);
+                      loadData();
+                    }}
+                    onUploadError={(error) => {
+                      console.error('❌ 사진 업로드 실패:', error);
+                      alert(`사진 업로드 실패: ${error.message}`);
+                    }}
+                  />
+                </div>
               </div>
 
               {/* 소개 */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
                   강사 소개
                 </label>
                 <textarea
                   value={profileForm.bio || ''}
                   onChange={(e) => setProfileForm({ ...profileForm, bio: e.target.value })}
                   rows={5}
-                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-teal-500 focus:border-transparent resize-none"
+                  className="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-teal-500 focus:border-transparent resize-none transition-all placeholder-gray-400"
                   placeholder="강사님의 경력, 전문 분야, 강의 스타일 등을 소개해주세요&#10;&#10;예시:&#10;- 10년 경력의 BS 영업 전문 강사&#10;- 실무 중심의 체계적인 교육&#10;- 수강생 개별 맞춤 피드백 제공"
                 />
-                <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
-                  {profileForm.bio?.length || 0} / 500자
-                </p>
+                <div className="flex justify-end mt-1">
+                  <span className="text-xs text-gray-500 dark:text-gray-400 font-medium">
+                    {profileForm.bio?.length || 0} / 500자
+                  </span>
+                </div>
               </div>
             </div>
 
-            <div className="mt-6 flex items-center justify-between pt-4 border-t border-gray-200 dark:border-gray-700">
+            <div className="px-6 py-4 bg-gray-50 dark:bg-gray-800/50 border-t border-gray-100 dark:border-gray-700 flex justify-between items-center flex-shrink-0">
               <div className="text-sm text-gray-500 dark:text-gray-400">
                 {selectedSubjects.size === 0 && (
-                  <span className="text-amber-600 dark:text-amber-400">⚠️ 최소 1개 이상의 과목을 선택해주세요</span>
+                  <span className="flex items-center text-amber-600 dark:text-amber-400 font-bold">
+                    <XCircleIcon className="w-5 h-5 mr-1" />
+                    최소 1개 이상의 과목을 선택해주세요
+                  </span>
                 )}
               </div>
               <div className="flex gap-3">
@@ -913,30 +960,28 @@ export function InstructorManagement() {
 
       {/* 강사 상세보기 모달 */}
       {showDetailModal && selectedInstructor && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white dark:bg-gray-800 rounded-lg w-full max-w-4xl max-h-[90vh] overflow-y-auto">
-            <div className="p-6 border-b border-gray-200 dark:border-gray-700 sticky top-0 bg-white dark:bg-gray-800 z-10">
-              <div className="flex items-center justify-between">
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">강사 상세 정보</h2>
-                <button
-                  onClick={() => setShowDetailModal(false)}
-                  className="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
-                >
-                  <XCircleIcon className="w-6 h-6" />
-                </button>
-              </div>
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden border border-gray-100 dark:border-gray-700 flex flex-col animate-in fade-in zoom-in duration-200">
+            <div className="px-6 py-4 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center bg-gray-50 dark:bg-gray-800/50 flex-shrink-0">
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white">강사 상세 정보</h2>
+              <button
+                onClick={() => setShowDetailModal(false)}
+                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+              >
+                <XMarkIcon className="w-6 h-6" />
+              </button>
             </div>
 
-            <div className="p-6 space-y-6">
+            <div className="p-6 space-y-6 overflow-y-auto flex-1">
               {/* 기본 정보 섹션 */}
-              <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-6">
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-                  <UserIcon className="w-5 h-5" />
+              <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm">
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                  <UserIcon className="w-5 h-5 text-teal-600 dark:text-teal-400" />
                   기본 정보
                 </h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="flex items-center gap-4">
-                    <div className="flex-shrink-0 h-20 w-20 rounded-full overflow-hidden bg-teal-100 dark:bg-teal-900 flex items-center justify-center">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="flex items-center gap-5">
+                    <div className="flex-shrink-0 h-24 w-24 rounded-full overflow-hidden bg-teal-100 dark:bg-teal-900/30 flex items-center justify-center border-4 border-white dark:border-gray-700 shadow-md">
                       {selectedInstructor.profile?.profile_photo_url ? (
                         <img
                           src={selectedInstructor.profile.profile_photo_url}
@@ -944,51 +989,53 @@ export function InstructorManagement() {
                           className="h-full w-full object-cover"
                         />
                       ) : (
-                        <UserIcon className="h-12 w-12 text-teal-600 dark:text-teal-400" />
+                        <UserIcon className="h-10 w-10 text-teal-600 dark:text-teal-400" />
                       )}
                     </div>
                     <div>
-                      <div className="text-xl font-bold text-gray-900 dark:text-white">
+                      <div className="text-2xl font-bold text-gray-900 dark:text-white">
                         {selectedInstructor.name}
                       </div>
-                      <div className="text-sm text-gray-600 dark:text-gray-400">
+                      <div className="text-sm text-gray-600 dark:text-gray-400 mt-1 flex items-center font-medium">
+                        <span className="w-20 inline-block font-bold">이메일</span>
                         {selectedInstructor.email}
                       </div>
                       {selectedInstructor.phone && (
-                        <div className="flex items-center gap-1 text-sm text-gray-600 dark:text-gray-400 mt-1">
-                          <PhoneIcon className="w-4 h-4" />
+                        <div className="text-sm text-gray-600 dark:text-gray-400 mt-1 flex items-center font-medium">
+                          <span className="w-20 inline-block font-bold">전화번호</span>
                           {selectedInstructor.phone}
                         </div>
                       )}
                     </div>
                   </div>
                   {selectedInstructor.profile && (
-                    <div className="flex items-center gap-3">
-                      <div className="flex items-center gap-2 bg-white dark:bg-gray-800 px-4 py-2 rounded-lg">
-                        <StarIcon className="w-6 h-6 text-yellow-500" />
-                        <div>
+                    <div className="flex items-center justify-center md:justify-end gap-4">
+                      <div className="bg-yellow-50 dark:bg-yellow-900/20 px-5 py-3 rounded-2xl border border-yellow-100 dark:border-yellow-800 text-center">
+                        <div className="flex items-center justify-center gap-1 mb-1">
+                          <StarIcon className="w-5 h-5 text-yellow-500 fill-yellow-500" />
                           <div className="text-2xl font-bold text-gray-900 dark:text-white">
                             {selectedInstructor.profile.rating.toFixed(1)}
                           </div>
-                          <div className="text-xs text-gray-500 dark:text-gray-400">
-                            평점
-                          </div>
+                        </div>
+                        <div className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+                          평점
                         </div>
                       </div>
-                      <div className="bg-white dark:bg-gray-800 px-4 py-2 rounded-lg">
-                        <div className="text-2xl font-bold text-gray-900 dark:text-white">
+                      <div className="bg-blue-50 dark:bg-blue-900/20 px-5 py-3 rounded-2xl border border-blue-100 dark:border-blue-800 text-center">
+                        <div className="text-2xl font-bold text-gray-900 dark:text-white mb-1">
                           {selectedInstructor.profile.total_sessions}
                         </div>
-                        <div className="text-xs text-gray-500 dark:text-gray-400">
-                          총 강의 횟수
+                        <div className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+                          총 강의
                         </div>
                       </div>
                     </div>
                   )}
                 </div>
                 {selectedInstructor.profile?.bio && (
-                  <div className="mt-4 p-3 bg-white dark:bg-gray-800 rounded-lg">
-                    <p className="text-sm text-gray-700 dark:text-gray-300">
+                  <div className="mt-6 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl border border-gray-100 dark:border-gray-700">
+                    <h4 className="text-sm font-bold text-gray-900 dark:text-white mb-2">소개</h4>
+                    <p className="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-line leading-relaxed font-medium">
                       {selectedInstructor.profile.bio}
                     </p>
                   </div>
@@ -996,9 +1043,9 @@ export function InstructorManagement() {
               </div>
 
               {/* 담당 과목 섹션 */}
-              <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-6">
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-                  <AcademicCapIcon className="w-5 h-5" />
+              <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm">
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                  <AcademicCapIcon className="w-5 h-5 text-teal-600 dark:text-teal-400" />
                   담당 과목
                 </h3>
                 {selectedInstructor.subjects && selectedInstructor.subjects.length > 0 ? (
@@ -1006,24 +1053,24 @@ export function InstructorManagement() {
                     {selectedInstructor.subjects.map((is) => (
                       <div
                         key={is.id}
-                        className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-600"
+                        className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-4 border border-gray-100 dark:border-gray-700 hover:border-teal-200 dark:hover:border-teal-700 transition-colors"
                       >
                         <div className="flex items-center justify-between mb-2">
-                          <div className="font-medium text-gray-900 dark:text-white">
+                          <div className="font-bold text-gray-900 dark:text-white flex items-center gap-2">
                             {is.subject.name}
                           </div>
-                          <span className={`px-2 py-1 text-xs rounded-full ${is.proficiency_level === 'expert' ? 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200' :
-                            is.proficiency_level === 'intermediate' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200' :
-                              'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
+                          <span className={`px-2.5 py-1 text-xs font-bold rounded-full ${is.proficiency_level === 'expert' ? 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300' :
+                            is.proficiency_level === 'intermediate' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300' :
+                              'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300'
                             }`}>
                             {proficiencyLevelLabels[is.proficiency_level]}
                           </span>
                         </div>
-                        <div className="text-xs text-gray-500 dark:text-gray-400">
+                        <div className="text-xs font-bold text-gray-500 dark:text-gray-400 mb-2">
                           {is.subject.category}
                         </div>
                         {is.subject.description && (
-                          <div className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+                          <div className="text-sm text-gray-600 dark:text-gray-300 line-clamp-2 font-medium">
                             {is.subject.description}
                           </div>
                         )}
@@ -1031,7 +1078,7 @@ export function InstructorManagement() {
                     ))}
                   </div>
                 ) : (
-                  <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+                  <div className="text-center py-12 text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-700/30 rounded-xl border border-dashed border-gray-200 dark:border-gray-700 font-medium">
                     담당 과목이 없습니다
                   </div>
                 )}
@@ -1039,42 +1086,42 @@ export function InstructorManagement() {
 
               {/* 강의 통계 섹션 */}
               {selectedInstructor.stats && (
-                <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-6">
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-                    <ChartBarIcon className="w-5 h-5" />
+                <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm">
+                  <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                    <ChartBarIcon className="w-5 h-5 text-teal-600 dark:text-teal-400" />
                     강의 통계
                   </h3>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div className="bg-white dark:bg-gray-800 rounded-lg p-4">
-                      <div className="text-2xl font-bold text-blue-600">
+                    <div className="bg-blue-50 dark:bg-blue-900/10 rounded-xl p-4 border border-blue-100 dark:border-blue-800/30">
+                      <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
                         {selectedInstructor.stats.total_sessions}
                       </div>
-                      <div className="text-xs text-gray-600 dark:text-gray-400 mt-1">
+                      <div className="text-xs font-bold text-blue-600/70 dark:text-blue-400/70 mt-1">
                         총 강의 횟수
                       </div>
                     </div>
-                    <div className="bg-white dark:bg-gray-800 rounded-lg p-4">
-                      <div className="text-2xl font-bold text-green-600">
+                    <div className="bg-green-50 dark:bg-green-900/10 rounded-xl p-4 border border-green-100 dark:border-green-800/30">
+                      <div className="text-2xl font-bold text-green-600 dark:text-green-400">
                         {selectedInstructor.stats.total_hours.toFixed(1)}h
                       </div>
-                      <div className="text-xs text-gray-600 dark:text-gray-400 mt-1">
+                      <div className="text-xs font-bold text-green-600/70 dark:text-green-400/70 mt-1">
                         총 강의 시간
                       </div>
                     </div>
-                    <div className="bg-white dark:bg-gray-800 rounded-lg p-4">
-                      <div className="text-2xl font-bold text-purple-600">
+                    <div className="bg-purple-50 dark:bg-purple-900/10 rounded-xl p-4 border border-purple-100 dark:border-purple-800/30">
+                      <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">
                         {selectedInstructor.stats.avg_hours_per_week?.toFixed(1) || 0}h
                       </div>
-                      <div className="text-xs text-gray-600 dark:text-gray-400 mt-1">
+                      <div className="text-xs font-bold text-purple-600/70 dark:text-purple-400/70 mt-1">
                         주평균 시간
                       </div>
                     </div>
-                    <div className="bg-white dark:bg-gray-800 rounded-lg p-4">
-                      <div className="text-2xl font-bold text-orange-600">
-                        {selectedInstructor.stats.active_courses}
+                    <div className="bg-orange-50 dark:bg-orange-900/10 rounded-xl p-4 border border-orange-100 dark:border-orange-800/30">
+                      <div className="text-2xl font-bold text-orange-600 dark:text-orange-400">
+                        {selectedInstructor.stats.weeks_taught}
                       </div>
-                      <div className="text-xs text-gray-600 dark:text-gray-400 mt-1">
-                        진행 중 과정
+                      <div className="text-xs font-bold text-orange-600/70 dark:text-orange-400/70 mt-1">
+                        강의 활동 주간
                       </div>
                     </div>
                   </div>
@@ -1082,7 +1129,7 @@ export function InstructorManagement() {
               )}
             </div>
 
-            <div className="p-6 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700 flex justify-between items-center">
+            <div className="px-6 py-4 border-t border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 flex justify-between items-center flex-shrink-0">
               <div className="flex gap-2">
                 <button
                   onClick={() => {
@@ -1091,7 +1138,7 @@ export function InstructorManagement() {
                   }}
                   className="btn-outline"
                 >
-                  <PencilIcon className="w-4 h-4" />
+                  <PencilIcon className="w-4 h-4 mr-2" />
                   계정 수정
                 </button>
                 <button
@@ -1101,7 +1148,7 @@ export function InstructorManagement() {
                   }}
                   className="btn-primary"
                 >
-                  <UserIcon className="w-4 h-4" />
+                  <UserIcon className="w-4 h-4 mr-2" />
                   {selectedInstructor.profile ? '프로필 수정' : '프로필 생성'}
                 </button>
               </div>
@@ -1109,7 +1156,6 @@ export function InstructorManagement() {
                 onClick={() => setShowDetailModal(false)}
                 className="btn-outline"
               >
-                <XCircleIcon className="w-4 h-4" />
                 닫기
               </button>
             </div>

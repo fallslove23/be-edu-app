@@ -155,7 +155,7 @@ export function ResourceSelector({
                   <button
                     key={instructor.id}
                     onClick={() => onInstructorChange(instructor.id)}
-                    className="w-full text-left px-3 py-2 text-sm bg-white dark:bg-gray-800 rounded-full hover:bg-purple-100 dark:hover:bg-purple-900/30 transition-colors"
+                    className="w-full text-left px-3 py-2 text-sm bg-white dark:bg-gray-800 rounded-xl hover:bg-purple-100 dark:hover:bg-purple-900/30 transition-colors"
                   >
                     <span className="font-medium">{instructor.name}</span>
                     <span className="text-gray-600 dark:text-gray-400 ml-2">
@@ -177,7 +177,7 @@ export function ResourceSelector({
                   <button
                     key={classroom.id}
                     onClick={() => onClassroomChange(classroom.id)}
-                    className="px-3 py-1 text-sm bg-white dark:bg-gray-800 rounded-full hover:bg-purple-100 dark:hover:bg-purple-900/30 transition-colors"
+                    className="px-3 py-1 text-sm bg-white dark:bg-gray-800 rounded-xl hover:bg-purple-100 dark:hover:bg-purple-900/30 transition-colors"
                   >
                     {classroom.name}
                   </button>
@@ -202,8 +202,8 @@ export function ResourceSelector({
             <div
               key={instructor.id}
               className={`p-3 border rounded-xl transition-all cursor-pointer ${selectedInstructorId === instructor.id
-                  ? 'border-primary bg-primary/5'
-                  : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
+                ? 'border-primary bg-primary/5'
+                : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
                 }`}
               onClick={() => onInstructorChange(instructor.id)}
             >
@@ -234,7 +234,7 @@ export function ResourceSelector({
                       setShowInstructorConflicts(instructor.id === selectedInstructorId ? !showInstructorConflicts : true);
                       onInstructorChange(instructor.id);
                     }}
-                    className="px-3 py-1 text-xs bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 rounded-full hover:bg-red-200 dark:hover:bg-red-900/50"
+                    className="px-3 py-1 text-xs bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 rounded-xl hover:bg-red-200 dark:hover:bg-red-900/50"
                   >
                     충돌 보기
                   </button>
@@ -295,8 +295,8 @@ export function ResourceSelector({
             <div
               key={classroom.id}
               className={`p-3 border rounded-xl transition-all cursor-pointer ${selectedClassroomId === classroom.id
-                  ? 'border-primary bg-primary/5'
-                  : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
+                ? 'border-primary bg-primary/5'
+                : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
                 }`}
               onClick={() => onClassroomChange(classroom.id)}
             >

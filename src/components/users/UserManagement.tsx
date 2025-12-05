@@ -12,7 +12,10 @@ import {
   Phone,
   Mail,
   Building2,
-  Trash2
+  Trash2,
+  CheckCircle,
+  XCircle,
+  Clock
 } from 'lucide-react';
 import type { User, UserRole, UserStatus } from '../../types/auth.types';
 import { roleLabels, userStatusLabels } from '../../types/auth.types';
@@ -56,131 +59,6 @@ const UserManagement: React.FC = () => {
       setLoading(false);
     }
   };
-
-  // 기존 Mock data 제거
-  /*
-  useEffect(() => {
-    const mockUsers: User[] = [
-      // 관리자
-      {
-        id: '1',
-        name: '김관리',
-        email: 'admin@company.com',
-        phone: '010-1111-1111',
-        employee_id: 'ADMIN001',
-        role: 'admin',
-        department: 'IT팀',
-        position: '팀장',
-        hire_date: '2020-01-01',
-        status: 'active',
-        created_at: '2024-01-01T09:00:00Z',
-        updated_at: '2024-01-01T09:00:00Z',
-        last_login: '2024-08-11T09:00:00Z'
-      },
-      // 조직장
-      {
-        id: '2',
-        name: '박조직',
-        email: 'manager@company.com',
-        phone: '010-2222-2222',
-        employee_id: 'MGR001',
-        role: 'manager',
-        department: '영업본부',
-        position: '본부장',
-        hire_date: '2019-03-01',
-        status: 'active',
-        created_at: '2024-01-02T09:00:00Z',
-        updated_at: '2024-01-02T09:00:00Z',
-        last_login: '2024-08-10T16:30:00Z'
-      },
-      // 운영
-      {
-        id: '3',
-        name: '이운영',
-        email: 'operator@company.com',
-        phone: '010-3333-3333',
-        employee_id: 'OPR001',
-        role: 'operator',
-        department: '교육운영팀',
-        position: '주임',
-        hire_date: '2021-06-15',
-        status: 'active',
-        created_at: '2024-01-03T09:00:00Z',
-        updated_at: '2024-01-03T09:00:00Z',
-        last_login: '2024-08-11T08:45:00Z'
-      },
-      // 강사
-      {
-        id: '4',
-        name: '최강사',
-        email: 'instructor1@company.com',
-        phone: '010-4444-4444',
-        employee_id: 'INS001',
-        role: 'instructor',
-        department: '교육팀',
-        position: '수석강사',
-        hire_date: '2018-09-01',
-        status: 'active',
-        created_at: '2024-01-04T09:00:00Z',
-        updated_at: '2024-01-04T09:00:00Z',
-        last_login: '2024-08-10T17:20:00Z'
-      },
-      {
-        id: '5',
-        name: '정강사',
-        email: 'instructor2@company.com',
-        phone: '010-5555-5555',
-        employee_id: 'INS002',
-        role: 'instructor',
-        department: '교육팀',
-        position: '선임강사',
-        hire_date: '2020-02-01',
-        status: 'active',
-        created_at: '2024-01-05T09:00:00Z',
-        updated_at: '2024-01-05T09:00:00Z',
-        last_login: '2024-08-09T14:10:00Z'
-      },
-      // 교육생
-      {
-        id: '6',
-        name: '김교육',
-        email: 'trainee1@company.com',
-        phone: '010-6666-6666',
-        employee_id: 'TRN001',
-        role: 'trainee',
-        department: '영업1팀',
-        position: '사원',
-        hire_date: '2024-01-15',
-        status: 'active',
-        created_at: '2024-01-15T09:00:00Z',
-        updated_at: '2024-01-15T09:00:00Z',
-        last_login: '2024-08-11T07:30:00Z',
-        emergency_contact: {
-          name: '김부모',
-          relationship: '부모',
-          phone: '010-9999-9999'
-        }
-      },
-      {
-        id: '7',
-        name: '박신입',
-        email: 'trainee2@company.com',
-        phone: '010-7777-7777',
-        employee_id: 'TRN002',
-        role: 'trainee',
-        department: '영업2팀',
-        position: '사원',
-        hire_date: '2024-02-01',
-        status: 'pending',
-        created_at: '2024-02-01T09:00:00Z',
-        updated_at: '2024-02-01T09:00:00Z'
-      }
-    ];
-
-    setUsers(mockUsers);
-    setFilteredUsers(mockUsers);
-  }, []);
-  */
 
   // 필터링 로직
   useEffect(() => {
@@ -273,7 +151,7 @@ const UserManagement: React.FC = () => {
   };
 
   const handleDeleteUser = async (user: User) => {
-    if (!confirm(`${user.name} 사용자를 삭제하시겠습니까?\\n\\n이 작업은 되돌릴 수 없습니다.`)) {
+    if (!confirm(`${user.name} 사용자를 삭제하시겠습니까?\n\n이 작업은 되돌릴 수 없습니다.`)) {
       return;
     }
 
@@ -312,7 +190,7 @@ const UserManagement: React.FC = () => {
 
       const results = await UserService.createBulkUsers(createDataList);
 
-      alert(`${results.success.length}명의 사용자가 추가되었습니다.${results.failed.length > 0 ? `\\n실패: ${results.failed.length}명` : ''}`);
+      alert(`${results.success.length}명의 사용자가 추가되었습니다.${results.failed.length > 0 ? `\n실패: ${results.failed.length}명` : ''}`);
       setShowImportModal(false);
       await loadUsers();
     } catch (err: any) {
@@ -363,13 +241,12 @@ const UserManagement: React.FC = () => {
         <div className="space-y-6">
           {/* 에러 메시지 */}
           {error && (
-            <div className="bg-red-50 border border-red-100 text-red-600 px-4 py-3 rounded-xl flex items-center">
+            <div className="bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-800 text-red-600 dark:text-red-400 px-4 py-3 rounded-xl flex items-center">
               <span className="mr-2">⚠️</span>
               {error}
             </div>
           )}
 
-          {/* 헤더 */}
           {/* 헤더 */}
           <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-6 mb-8">
             <PageHeader
@@ -380,14 +257,14 @@ const UserManagement: React.FC = () => {
             <div className="flex space-x-3 w-full lg:w-auto">
               <button
                 onClick={() => setShowImportModal(true)}
-                className="flex-1 lg:flex-none bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-gray-600 px-4 py-3 rounded-xl font-bold shadow-sm hover:shadow transition-all flex items-center justify-center space-x-2"
+                className="flex-1 lg:flex-none btn-outline flex items-center justify-center space-x-2"
               >
-                <Upload className="w-5 h-5 text-gray-500 dark:text-gray-400" />
+                <Upload className="w-5 h-5" />
                 <span>일괄 불러오기</span>
               </button>
               <button
                 onClick={handleCreateUser}
-                className="flex-1 lg:flex-none btn-primary px-6 py-3 rounded-xl font-bold hover:shadow-xl transition-all flex items-center justify-center space-x-2"
+                className="flex-1 lg:flex-none btn-primary flex items-center justify-center space-x-2"
               >
                 <Plus className="w-5 h-5" />
                 <span>사용자 추가</span>
@@ -396,7 +273,7 @@ const UserManagement: React.FC = () => {
           </div>
 
           {/* 역할별 탭 메뉴 */}
-          <div className="bg-white dark:bg-gray-800 rounded-[2rem] shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
             <div className="border-b border-gray-100 dark:border-gray-700">
               <nav className="-mb-px flex overflow-x-auto px-6">
                 {tabs.map((tab) => (
@@ -422,7 +299,7 @@ const UserManagement: React.FC = () => {
           </div>
 
           {/* 검색 및 필터 */}
-          <div className="bg-white dark:bg-gray-800 rounded-[2rem] shadow-sm border border-gray-100 dark:border-gray-700 p-6">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
             <div className="flex flex-col md:flex-row gap-4">
               {/* 검색 입력 */}
               <div className="flex-1 relative">
@@ -455,8 +332,8 @@ const UserManagement: React.FC = () => {
                 </div>
 
                 {/* 엑셀 내보내기 버튼 */}
-                <button className="bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-gray-600 px-4 py-3 rounded-xl font-bold shadow-sm hover:shadow transition-all flex items-center justify-center space-x-2 whitespace-nowrap">
-                  <FileDown className="h-5 w-5 text-gray-500 dark:text-gray-400" />
+                <button className="btn-outline flex items-center justify-center space-x-2 whitespace-nowrap">
+                  <FileDown className="h-5 w-5" />
                   <span className="hidden sm:inline">엑셀 내보내기</span>
                 </button>
               </div>
@@ -471,10 +348,10 @@ const UserManagement: React.FC = () => {
           </div>
 
           {/* 사용자 목록 */}
-          <div className="bg-white dark:bg-gray-800 rounded-[2rem] shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-gray-50/50 dark:bg-gray-700/50 border-b border-gray-100 dark:border-gray-700">
+                <thead className="bg-gray-50 dark:bg-gray-900/50 border-b border-gray-100 dark:border-gray-700">
                   <tr>
                     <th className="px-8 py-5 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       사용자 정보
@@ -488,14 +365,14 @@ const UserManagement: React.FC = () => {
                     <th className="px-6 py-5 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       최근 접속
                     </th>
-                    <th className="px-8 py-5 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    <th className="px-8 py-5 text-right text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       액션
                     </th>
                   </tr>
                 </thead>
                 <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-100 dark:divide-gray-700">
                   {filteredUsers.map((user) => (
-                    <tr key={user.id} className="hover:bg-blue-50/30 dark:hover:bg-blue-900/20 transition-colors group">
+                    <tr key={user.id} className="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors group">
                       <td className="px-8 py-5 whitespace-nowrap">
                         <div className="flex items-center">
                           <div className="flex-shrink-0 h-12 w-12">
@@ -534,11 +411,14 @@ const UserManagement: React.FC = () => {
                         <div className="text-xs text-gray-400 mt-1 font-mono">ID: {user.employee_id}</div>
                       </td>
                       <td className="px-6 py-5 whitespace-nowrap">
-                        <span className={`inline-flex px-3 py-1 text-xs font-bold rounded-full border ${user.status === 'active' ? 'bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800' :
+                        <span className={`inline-flex items-center px-3 py-1 text-xs font-bold rounded-full border ${user.status === 'active' ? 'bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800' :
                           user.status === 'pending' ? 'bg-yellow-50 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-400 border-yellow-200 dark:border-yellow-800' :
                             user.status === 'suspended' ? 'bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 border-red-200 dark:border-red-800' :
                               'bg-gray-50 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-600'
                           }`}>
+                          {user.status === 'active' && <CheckCircle className="w-3 h-3 mr-1" />}
+                          {user.status === 'pending' && <Clock className="w-3 h-3 mr-1" />}
+                          {user.status === 'suspended' && <XCircle className="w-3 h-3 mr-1" />}
                           {userStatusLabels[user.status]}
                         </span>
                       </td>
@@ -552,17 +432,17 @@ const UserManagement: React.FC = () => {
                           <span className="text-gray-400 text-xs bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded">미접속</span>
                         )}
                       </td>
-                      <td className="px-8 py-5 whitespace-nowrap text-sm font-medium">
-                        <div className="flex items-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <td className="px-8 py-5 whitespace-nowrap text-sm font-medium text-right">
+                        <div className="flex items-center justify-end space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
                           <button
                             onClick={() => handleViewUser(user)}
-                            className="px-3 py-1.5 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-xs font-bold text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:border-blue-200 dark:hover:border-blue-500 hover:shadow-sm transition-all"
+                            className="btn-outline py-1.5 px-3 h-auto text-xs"
                           >
                             상세보기
                           </button>
                           <button
                             onClick={() => handleEditUser(user)}
-                            className="px-3 py-1.5 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-xs font-bold text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 hover:border-indigo-200 dark:hover:border-indigo-500 hover:shadow-sm transition-all"
+                            className="btn-secondary py-1.5 px-3 h-auto text-xs"
                           >
                             수정
                           </button>

@@ -5,7 +5,8 @@ import {
   UserIcon,
   AcademicCapIcon,
   EyeIcon,
-  ChevronDownIcon
+  ChevronDownIcon,
+  XMarkIcon
 } from '@heroicons/react/24/outline';
 import TraineeDashboard from '../trainee/TraineeDashboard';
 import InstructorDashboard from '../instructor/InstructorDashboard';
@@ -128,26 +129,34 @@ const RolePreviewSelector: React.FC<RolePreviewSelectorProps> = ({ onClose }) =>
   if (showTraineeSelector) {
     return (
       <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-        <div className="bg-card rounded-2xl shadow-2xl max-w-md w-full max-h-[80vh] overflow-hidden border border-border">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-md w-full max-h-[80vh] overflow-hidden border border-gray-100 dark:border-gray-700">
           {/* 헤더 */}
-          <div className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-6 py-4">
-            <h3 className="text-lg font-semibold">교육생 선택</h3>
-            <p className="text-xs text-white/80 mt-1">미리보기할 교육생을 선택하세요</p>
+          <div className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-6 py-4 flex justify-between items-start">
+            <div>
+              <h3 className="text-lg font-bold">교육생 선택</h3>
+              <p className="text-xs text-white/80 mt-1">미리보기할 교육생을 선택하세요</p>
+            </div>
+            <button
+              onClick={() => setShowTraineeSelector(false)}
+              className="text-white/70 hover:text-white transition-colors"
+            >
+              <XMarkIcon className="h-6 w-6" />
+            </button>
           </div>
 
           {/* 교육생 목록 */}
           <div className="p-4 overflow-y-auto max-h-[60vh]">
             {loadingTrainees ? (
-              <div className="text-center py-8 text-muted-foreground">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600 mx-auto mb-2"></div>
+              <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600 dark:border-indigo-400 mx-auto mb-2"></div>
                 <p className="text-sm">교육생 목록을 불러오는 중...</p>
               </div>
             ) : trainees.length === 0 ? (
-              <div className="text-center py-8 text-muted-foreground">
-                <UserIcon className="h-12 w-12 mx-auto mb-2 text-muted-foreground/50" />
+              <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+                <UserIcon className="h-12 w-12 mx-auto mb-2 text-gray-300 dark:text-gray-600" />
                 <p className="text-sm">등록된 교육생이 없습니다.</p>
                 <p className="text-xs mt-2">샘플 데이터를 생성하려면 아래 스크립트를 실행하세요:</p>
-                <code className="text-xs bg-secondary px-2 py-1 rounded mt-2 block">
+                <code className="text-xs bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded mt-2 block">
                   npx tsx scripts/seed-sample-trainee.ts
                 </code>
               </div>
@@ -157,14 +166,14 @@ const RolePreviewSelector: React.FC<RolePreviewSelectorProps> = ({ onClose }) =>
                   <button
                     key={trainee.id}
                     onClick={() => handleTraineeSelect(trainee.id)}
-                    className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-accent transition-colors text-left border border-border hover:border-indigo-300 dark:hover:border-indigo-700"
+                    className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors text-left border border-gray-100 dark:border-gray-700 hover:border-indigo-300 dark:hover:border-indigo-700"
                   >
                     <div className="w-10 h-10 rounded-full bg-indigo-50 dark:bg-indigo-900/30 flex items-center justify-center flex-shrink-0">
                       <UserIcon className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="font-medium text-card-foreground">{trainee.name}</div>
-                      <div className="text-xs text-muted-foreground truncate">{trainee.email}</div>
+                      <div className="font-bold text-gray-900 dark:text-white">{trainee.name}</div>
+                      <div className="text-xs text-gray-500 dark:text-gray-400 truncate">{trainee.email}</div>
                     </div>
                   </button>
                 ))}
@@ -173,10 +182,10 @@ const RolePreviewSelector: React.FC<RolePreviewSelectorProps> = ({ onClose }) =>
           </div>
 
           {/* 하단 버튼 */}
-          <div className="border-t border-border p-4">
+          <div className="border-t border-gray-100 dark:border-gray-700 p-4 bg-gray-50 dark:bg-gray-800/50">
             <button
               onClick={() => setShowTraineeSelector(false)}
-              className="w-full px-4 py-2 text-sm font-medium bg-secondary text-secondary-foreground rounded-lg hover:bg-secondary/80 transition-colors"
+              className="w-full btn-outline"
             >
               취소
             </button>
@@ -197,7 +206,7 @@ const RolePreviewSelector: React.FC<RolePreviewSelectorProps> = ({ onClose }) =>
               <div className="flex items-center gap-2 sm:gap-3">
                 <EyeIcon className="h-4 w-4 sm:h-5 sm:w-5" />
                 <div>
-                  <span className="font-semibold text-sm sm:text-base">교육생 대시보드 미리보기</span>
+                  <span className="font-bold text-sm sm:text-base">교육생 대시보드 미리보기</span>
                   <p className="text-xs text-white/80 hidden sm:block">관리자 모드에서 교육생 화면 확인</p>
                 </div>
               </div>
@@ -206,14 +215,14 @@ const RolePreviewSelector: React.FC<RolePreviewSelectorProps> = ({ onClose }) =>
                   setPreviewRole(null);
                   setSelectedTraineeId(null);
                 }}
-                className="px-3 sm:px-4 py-1.5 bg-white/20 hover:bg-white/30 rounded-lg text-xs sm:text-sm font-medium transition-colors"
+                className="px-3 sm:px-4 py-1.5 bg-white/20 hover:bg-white/30 rounded-lg text-xs sm:text-sm font-bold transition-colors"
               >
                 닫기
               </button>
             </div>
 
             {/* 교육생 대시보드 */}
-            <div className="bg-background rounded-b-xl sm:rounded-b-2xl shadow-2xl">
+            <div className="bg-gray-50 dark:bg-gray-900 rounded-b-xl sm:rounded-b-2xl shadow-2xl overflow-hidden">
               <TraineeDashboard traineeId={selectedTraineeId} />
             </div>
           </div>
@@ -226,26 +235,34 @@ const RolePreviewSelector: React.FC<RolePreviewSelectorProps> = ({ onClose }) =>
   if (showInstructorSelector) {
     return (
       <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-        <div className="bg-card rounded-2xl shadow-2xl max-w-md w-full max-h-[80vh] overflow-hidden border border-border">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-md w-full max-h-[80vh] overflow-hidden border border-gray-100 dark:border-gray-700">
           {/* 헤더 */}
-          <div className="bg-gradient-to-r from-emerald-600 to-teal-600 text-white px-6 py-4">
-            <h3 className="text-lg font-semibold">강사 선택</h3>
-            <p className="text-xs text-white/80 mt-1">미리보기할 강사를 선택하세요</p>
+          <div className="bg-gradient-to-r from-emerald-600 to-teal-600 text-white px-6 py-4 flex justify-between items-start">
+            <div>
+              <h3 className="text-lg font-bold">강사 선택</h3>
+              <p className="text-xs text-white/80 mt-1">미리보기할 강사를 선택하세요</p>
+            </div>
+            <button
+              onClick={() => setShowInstructorSelector(false)}
+              className="text-white/70 hover:text-white transition-colors"
+            >
+              <XMarkIcon className="h-6 w-6" />
+            </button>
           </div>
 
           {/* 강사 목록 */}
           <div className="p-4 overflow-y-auto max-h-[60vh]">
             {loadingInstructors ? (
-              <div className="text-center py-8 text-muted-foreground">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-600 mx-auto mb-2"></div>
+              <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-600 dark:border-emerald-400 mx-auto mb-2"></div>
                 <p className="text-sm">강사 목록을 불러오는 중...</p>
               </div>
             ) : instructors.length === 0 ? (
-              <div className="text-center py-8 text-muted-foreground">
-                <AcademicCapIcon className="h-12 w-12 mx-auto mb-2 text-muted-foreground/50" />
+              <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+                <AcademicCapIcon className="h-12 w-12 mx-auto mb-2 text-gray-300 dark:text-gray-600" />
                 <p className="text-sm">등록된 강사가 없습니다.</p>
                 <p className="text-xs mt-2">샘플 데이터를 생성하려면 아래 스크립트를 실행하세요:</p>
-                <code className="text-xs bg-secondary px-2 py-1 rounded mt-2 block">
+                <code className="text-xs bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded mt-2 block">
                   npx tsx scripts/seed-sample-instructor.ts
                 </code>
               </div>
@@ -255,14 +272,14 @@ const RolePreviewSelector: React.FC<RolePreviewSelectorProps> = ({ onClose }) =>
                   <button
                     key={instructor.id}
                     onClick={() => handleInstructorSelect(instructor.id)}
-                    className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-accent transition-colors text-left border border-border hover:border-emerald-300 dark:hover:border-emerald-700"
+                    className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors text-left border border-gray-100 dark:border-gray-700 hover:border-emerald-300 dark:hover:border-emerald-700"
                   >
                     <div className="w-10 h-10 rounded-full bg-emerald-50 dark:bg-emerald-900/30 flex items-center justify-center flex-shrink-0">
                       <AcademicCapIcon className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="font-medium text-card-foreground">{instructor.name}</div>
-                      <div className="text-xs text-muted-foreground truncate">{instructor.email}</div>
+                      <div className="font-bold text-gray-900 dark:text-white">{instructor.name}</div>
+                      <div className="text-xs text-gray-500 dark:text-gray-400 truncate">{instructor.email}</div>
                     </div>
                   </button>
                 ))}
@@ -271,10 +288,10 @@ const RolePreviewSelector: React.FC<RolePreviewSelectorProps> = ({ onClose }) =>
           </div>
 
           {/* 하단 버튼 */}
-          <div className="border-t border-border p-4">
+          <div className="border-t border-gray-100 dark:border-gray-700 p-4 bg-gray-50 dark:bg-gray-800/50">
             <button
               onClick={() => setShowInstructorSelector(false)}
-              className="w-full px-4 py-2 text-sm font-medium bg-secondary text-secondary-foreground rounded-lg hover:bg-secondary/80 transition-colors"
+              className="w-full btn-outline"
             >
               취소
             </button>
@@ -295,7 +312,7 @@ const RolePreviewSelector: React.FC<RolePreviewSelectorProps> = ({ onClose }) =>
               <div className="flex items-center gap-2 sm:gap-3">
                 <EyeIcon className="h-4 w-4 sm:h-5 sm:w-5" />
                 <div>
-                  <span className="font-semibold text-sm sm:text-base">강사 대시보드 미리보기</span>
+                  <span className="font-bold text-sm sm:text-base">강사 대시보드 미리보기</span>
                   <p className="text-xs text-white/80 hidden sm:block">관리자 모드에서 강사 화면 확인</p>
                 </div>
               </div>
@@ -304,14 +321,14 @@ const RolePreviewSelector: React.FC<RolePreviewSelectorProps> = ({ onClose }) =>
                   setPreviewRole(null);
                   setSelectedInstructorId(null);
                 }}
-                className="px-3 sm:px-4 py-1.5 bg-white/20 hover:bg-white/30 rounded-lg text-xs sm:text-sm font-medium transition-colors"
+                className="px-3 sm:px-4 py-1.5 bg-white/20 hover:bg-white/30 rounded-lg text-xs sm:text-sm font-bold transition-colors"
               >
                 닫기
               </button>
             </div>
 
             {/* 강사 대시보드 */}
-            <div className="bg-background rounded-b-xl sm:rounded-b-2xl shadow-2xl">
+            <div className="bg-gray-50 dark:bg-gray-900 rounded-b-xl sm:rounded-b-2xl shadow-2xl overflow-hidden">
               <InstructorDashboard instructorId={selectedInstructorId} />
             </div>
           </div>
@@ -323,7 +340,7 @@ const RolePreviewSelector: React.FC<RolePreviewSelectorProps> = ({ onClose }) =>
   // 역할 선택 버튼
   return (
     <div className="flex items-center gap-2">
-      <span className="text-xs text-muted-foreground mr-1">미리보기:</span>
+      <span className="text-xs text-gray-500 dark:text-gray-400 mr-1">미리보기:</span>
       {roles.map((role) => {
         const Icon = role.icon;
         const colorClasses = {
@@ -343,7 +360,7 @@ const RolePreviewSelector: React.FC<RolePreviewSelectorProps> = ({ onClose }) =>
                 setPreviewRole(role.id);
               }
             }}
-            className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border transition-all duration-200 text-xs font-medium ${colorClasses[role.color as keyof typeof colorClasses]}`}
+            className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border transition-all duration-200 text-xs font-bold ${colorClasses[role.color as keyof typeof colorClasses]}`}
             title={role.description}
           >
             <Icon className="h-3.5 w-3.5" />

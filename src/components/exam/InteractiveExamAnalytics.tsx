@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -21,6 +21,7 @@ import {
   AcademicCapIcon,
 } from '@heroicons/react/24/outline';
 import type { Exam } from '../../types/exam.types';
+import { supabase } from '@/services/supabase';
 
 // Chart.js 등록
 ChartJS.register(
@@ -70,90 +71,104 @@ export default function InteractiveExamAnalytics({
   const [questionAnalytics, setQuestionAnalytics] = useState<QuestionAnalytics[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Mock 데이터 로드
-  useEffect(() => {
-    loadAnalyticsData();
+  // Load Data
+  const loadAnalyticsData = useCallback(async () => {
+    setLoading(true);
+    try {
+      // 1. Fetch Attempts
+      const { data: attemptsData, error: attemptsError } = await supabase
+        .from('exam_attempts')
+        .select(`
+          id,
+          user_id:trainee_id,
+          score,
+          status,
+          started_at,
+          submitted_at,
+          answers,
+          trainee:trainees(name, user:users(name))
+        `)
+        .eq('exam_id', exam.id);
+
+      if (attemptsError) throw attemptsError;
+
+      // Map to local interface
+      const loadedAttempts: ExamAttempt[] = attemptsData.map((a: any) => ({
+        id: a.id,
+        user_id: a.user_id,
+        user_name: a.trainee?.name || a.trainee?.user?.name || 'Unknown',
+        score: a.score || 0,
+        progress: a.status === 'completed' ? 100 : 0, // Simplified
+        status: a.status,
+        started_at: a.started_at,
+        completed_at: a.submitted_at,
+        answers: a.answers || {},
+      }));
+
+      setAttempts(loadedAttempts);
+
+      // 2. Fetch Questions for Item Analysis
+      const { data: questionsData, error: questionsError } = await supabase
+        .from('exam_questions')
+        .select(`
+          question_id,
+          order_index,
+          question:questions (
+            id,
+            question_text,
+            correct_answer,
+            difficulty,
+            type
+          )
+        `)
+        .eq('exam_id', exam.id)
+        .order('order_index');
+
+      if (questionsError) throw questionsError;
+
+      // 3. Compute Question Analytics
+      const qAnalytics: QuestionAnalytics[] = questionsData.map((eq: { question: any }, index: number) => {
+        const q = eq.question;
+        const qId = q.id;
+
+        let correctCount = 0;
+        let totalCount = 0;
+
+        loadedAttempts.forEach(attempt => {
+          if (attempt.status === 'completed' && attempt.answers) {
+            totalCount++;
+            const userAnswer = attempt.answers[qId]?.answer || attempt.answers[qId]; // Handle different answer structures if any
+            // Simple equality check for auto-gradable questions.
+            // Note: deeply equal check might be needed for arrays/objects
+            // For now assuming primitive or string comparison
+            if (JSON.stringify(userAnswer) === JSON.stringify(q.correct_answer)) {
+              correctCount++;
+            }
+          }
+        });
+
+        return {
+          question_number: index + 1,
+          question_text: q.question_text || `Question ${index + 1}`,
+          correct_count: correctCount,
+          total_count: totalCount,
+          correct_rate: totalCount > 0 ? (correctCount / totalCount) * 100 : 0,
+          difficulty: q.difficulty || 'medium'
+        };
+      });
+
+      setQuestionAnalytics(qAnalytics);
+
+    } catch (err) {
+      console.error('Failed to load analytics:', err);
+    } finally {
+      setLoading(false);
+    }
   }, [exam.id]);
 
-  const loadAnalyticsData = async () => {
-    setLoading(true);
-
-    // TODO: 실제 Supabase에서 데이터 로드
-    // Mock 데이터
-    const mockAttempts: ExamAttempt[] = [
-      {
-        id: '1',
-        user_id: 'u1',
-        user_name: '김철수',
-        score: 85,
-        progress: 100,
-        status: 'completed',
-        started_at: '2025-01-30T09:00:00Z',
-        completed_at: '2025-01-30T10:30:00Z',
-        answers: {},
-      },
-      {
-        id: '2',
-        user_id: 'u2',
-        user_name: '이영희',
-        score: 92,
-        progress: 100,
-        status: 'completed',
-        started_at: '2025-01-30T09:15:00Z',
-        completed_at: '2025-01-30T10:45:00Z',
-        answers: {},
-      },
-      {
-        id: '3',
-        user_id: 'u3',
-        user_name: '박민수',
-        score: 78,
-        progress: 100,
-        status: 'completed',
-        started_at: '2025-01-30T10:00:00Z',
-        completed_at: '2025-01-30T11:20:00Z',
-        answers: {},
-      },
-      {
-        id: '4',
-        user_id: 'u4',
-        user_name: '최지우',
-        score: 88,
-        progress: 100,
-        status: 'completed',
-        started_at: '2025-01-30T11:00:00Z',
-        completed_at: '2025-01-30T12:25:00Z',
-        answers: {},
-      },
-      {
-        id: '5',
-        user_id: 'u5',
-        user_name: '정수진',
-        score: 95,
-        progress: 100,
-        status: 'completed',
-        started_at: '2025-01-30T13:00:00Z',
-        completed_at: '2025-01-30T14:15:00Z',
-        answers: {},
-      },
-    ];
-
-    const mockQuestions: QuestionAnalytics[] = Array.from({ length: 10 }, (_, i) => ({
-      question_number: i + 1,
-      question_text: `문제 ${i + 1}`,
-      correct_count: Math.floor(Math.random() * 5),
-      total_count: 5,
-      correct_rate: 0,
-      difficulty: (i < 3 ? 'easy' : i < 7 ? 'medium' : 'hard') as 'easy' | 'medium' | 'hard',
-    })).map(q => ({
-      ...q,
-      correct_rate: (q.correct_count / q.total_count) * 100,
-    }));
-
-    setAttempts(mockAttempts);
-    setQuestionAnalytics(mockQuestions);
-    setLoading(false);
-  };
+  useEffect(() => {
+    loadAnalyticsData();
+  }, [loadAnalyticsData]);
 
   // 통계 계산
   const stats = useMemo(() => {
@@ -356,304 +371,301 @@ export default function InteractiveExamAnalytics({
   }
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-2xl w-full max-h-[90vh] overflow-hidden flex flex-col">
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-h-[90vh] overflow-hidden flex flex-col border border-gray-100 dark:border-gray-700 animate-in fade-in zoom-in duration-200">
         {/* 헤더 */}
-        <div className="bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-900 dark:to-indigo-900 text-white p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <h2 className="text-2xl font-bold flex items-center">
-                <ChartBarIcon className="h-8 w-8 mr-3" />
-                인터랙티브 분석 대시보드
-              </h2>
-              <p className="mt-2 text-blue-100">{exam.title}</p>
-            </div>
-            <button
-              onClick={onClose}
-              className="btn-ghost p-2 rounded-full text-white hover:bg-white/20"
-            >
-              <XMarkIcon className="h-6 w-6" />
-            </button>
-          </div>
-
-          {/* 통계 카드 */}
-          <div className="grid grid-cols-2 md:grid-cols-6 gap-4 mt-6">
-            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
-              <div className="text-sm text-blue-100">총 응시자</div>
-              <div className="text-2xl font-bold mt-1">{stats.totalAttempts}명</div>
-            </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
-              <div className="text-sm text-blue-100">완료</div>
-              <div className="text-2xl font-bold mt-1">{stats.completedAttempts}명</div>
-            </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
-              <div className="text-sm text-blue-100">평균 점수</div>
-              <div className="text-2xl font-bold mt-1">{stats.averageScore}점</div>
-            </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
-              <div className="text-sm text-blue-100">최고 점수</div>
-              <div className="text-2xl font-bold mt-1">{stats.highestScore}점</div>
-            </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
-              <div className="text-sm text-blue-100">최저 점수</div>
-              <div className="text-2xl font-bold mt-1">{stats.lowestScore}점</div>
-            </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
-              <div className="text-sm text-blue-100">합격률</div>
-              <div className="text-2xl font-bold mt-1">{stats.passingRate}%</div>
-            </div>
-          </div>
-        </div>
-
-        {/* 탭 네비게이션 */}
-        {/* 탭 네비게이션 */}
-        <div className="border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50">
-          <div className="flex space-x-1 p-2">
-            <button
-              onClick={() => setActiveTab('overview')}
-              className={`flex-1 px-4 py-3 rounded-full font-medium transition-all ${activeTab === 'overview'
-                ? 'bg-white dark:bg-gray-800 text-blue-600 dark:text-blue-400 shadow'
-                : 'text-gray-600 dark:text-gray-400 hover:bg-white/50 dark:hover:bg-gray-800/50'
-                }`}
-            >
-              <ChartBarIcon className="h-5 w-5 inline mr-2" />
-              전체 개요
-            </button>
-            <button
-              onClick={() => setActiveTab('questions')}
-              className={`flex-1 px-4 py-3 rounded-full font-medium transition-all ${activeTab === 'questions'
-                ? 'bg-white dark:bg-gray-800 text-blue-600 dark:text-blue-400 shadow'
-                : 'text-gray-600 dark:text-gray-400 hover:bg-white/50 dark:hover:bg-gray-800/50'
-                }`}
-            >
-              <AcademicCapIcon className="h-5 w-5 inline mr-2" />
-              문제별 분석
-            </button>
-            <button
-              onClick={() => setActiveTab('students')}
-              className={`flex-1 px-4 py-3 rounded-full font-medium transition-all ${activeTab === 'students'
-                ? 'bg-white dark:bg-gray-800 text-blue-600 dark:text-blue-400 shadow'
-                : 'text-gray-600 dark:text-gray-400 hover:bg-white/50 dark:hover:bg-gray-800/50'
-                }`}
-            >
-              <UserGroupIcon className="h-5 w-5 inline mr-2" />
-              학습자 분석
-            </button>
-            <button
-              onClick={() => setActiveTab('trends')}
-              className={`flex-1 px-4 py-3 rounded-full font-medium transition-all ${activeTab === 'trends'
-                ? 'bg-white dark:bg-gray-800 text-blue-600 dark:text-blue-400 shadow'
-                : 'text-gray-600 dark:text-gray-400 hover:bg-white/50 dark:hover:bg-gray-800/50'
-                }`}
-            >
-              <ClockIcon className="h-5 w-5 inline mr-2" />
-              추세 분석
-            </button>
-          </div>
-        </div>
-
-        {/* 콘텐츠 영역 */}
-        <div className="flex-1 overflow-y-auto p-6">
-          {activeTab === 'overview' && (
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* 점수 분포 */}
-              <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6">
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">점수 분포</h3>
-                <div className="h-80">
-                  <Bar data={scoreDistributionData} options={barChartOptions} />
-                </div>
-              </div>
-
-              {/* 난이도 분포 */}
-              <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6">
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">문제 난이도 분포</h3>
-                <div className="h-80">
-                  <Doughnut data={difficultyDistributionData} options={doughnutChartOptions} />
-                </div>
-              </div>
-            </div>
-          )}
-
-          {activeTab === 'questions' && (
-            <div className="space-y-6">
-              {/* 문제별 정답률 차트 */}
-              <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6">
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">문제별 정답률</h3>
-                <div className="h-96">
-                  <Bar data={questionAccuracyData} options={barChartOptions} />
-                </div>
-              </div>
-
-              {/* 문제별 상세 테이블 */}
-              <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6">
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">문제별 상세 분석</h3>
-                <div className="overflow-x-auto">
-                  <table className="w-full">
-                    <thead className="bg-gray-50 dark:bg-gray-700/50">
-                      <tr>
-                        <th className="px-4 py-3 text-left text-sm font-semibold text-gray-900 dark:text-white">문제</th>
-                        <th className="px-4 py-3 text-left text-sm font-semibold text-gray-900 dark:text-white">난이도</th>
-                        <th className="px-4 py-3 text-right text-sm font-semibold text-gray-900 dark:text-white">정답자/전체</th>
-                        <th className="px-4 py-3 text-right text-sm font-semibold text-gray-900 dark:text-white">정답률</th>
-                        <th className="px-4 py-3 text-left text-sm font-semibold text-gray-900 dark:text-white">평가</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-                      {questionAnalytics.map((q) => (
-                        <tr key={q.question_number} className="hover:bg-gray-50 dark:hover:bg-gray-700/50">
-                          <td className="px-4 py-3 text-sm text-gray-900 dark:text-gray-300">문제 {q.question_number}</td>
-                          <td className="px-4 py-3 text-sm">
-                            <span className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${q.difficulty === 'easy' ? 'bg-green-500/10 dark:bg-green-500/20 text-green-700 dark:text-green-400' :
-                              q.difficulty === 'medium' ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300' :
-                                'bg-destructive/10 dark:bg-red-900/30 text-destructive dark:text-red-400'
-                              }`}>
-                              {q.difficulty === 'easy' ? '쉬움' : q.difficulty === 'medium' ? '보통' : '어려움'}
-                            </span>
-                          </td>
-                          <td className="px-4 py-3 text-sm text-right text-gray-900 dark:text-gray-300">
-                            {q.correct_count} / {q.total_count}
-                          </td>
-                          <td className="px-4 py-3 text-sm text-right font-semibold">
-                            <span className={
-                              q.correct_rate >= 80 ? 'text-green-600 dark:text-green-400' :
-                                q.correct_rate >= 60 ? 'text-foreground dark:text-gray-300' :
-                                  'text-destructive dark:text-red-400'
-                            }>
-                              {q.correct_rate.toFixed(1)}%
-                            </span>
-                          </td>
-                          <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">
-                            {q.correct_rate >= 80 ? '✅ 우수' :
-                              q.correct_rate >= 60 ? '⚠️ 보통' :
-                                '❌ 개선 필요'}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {activeTab === 'students' && (
-            <div className="space-y-6">
-              {/* 학습자별 성과 */}
-              <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6">
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">학습자별 성과</h3>
-                <div className="overflow-x-auto">
-                  <table className="w-full">
-                    <thead className="bg-gray-50 dark:bg-gray-700/50">
-                      <tr>
-                        <th className="px-4 py-3 text-left text-sm font-semibold text-gray-900 dark:text-white">순위</th>
-                        <th className="px-4 py-3 text-left text-sm font-semibold text-gray-900 dark:text-white">이름</th>
-                        <th className="px-4 py-3 text-right text-sm font-semibold text-gray-900 dark:text-white">점수</th>
-                        <th className="px-4 py-3 text-right text-sm font-semibold text-gray-900 dark:text-white">소요 시간</th>
-                        <th className="px-4 py-3 text-left text-sm font-semibold text-gray-900 dark:text-white">상태</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-                      {attempts
-                        .filter(a => a.status === 'completed')
-                        .sort((a, b) => b.score - a.score)
-                        .map((attempt, index) => {
-                          const duration = attempt.completed_at
-                            ? Math.floor(
-                              (new Date(attempt.completed_at).getTime() -
-                                new Date(attempt.started_at).getTime()) /
-                              60000
-                            )
-                            : 0;
-
-                          return (
-                            <tr key={attempt.id} className="hover:bg-gray-50 dark:hover:bg-gray-700/50">
-                              <td className="px-4 py-3 text-sm font-semibold text-gray-900 dark:text-white">
-                                {index === 0 && '🥇'}
-                                {index === 1 && '🥈'}
-                                {index === 2 && '🥉'}
-                                {index > 2 && index + 1}
-                              </td>
-                              <td className="px-4 py-3 text-sm text-gray-900 dark:text-gray-300">{attempt.user_name}</td>
-                              <td className="px-4 py-3 text-sm text-right">
-                                <span className={`font-semibold ${attempt.score >= exam.passing_score ? 'text-green-600 dark:text-green-400' : 'text-destructive dark:text-red-400'
-                                  }`}>
-                                  {attempt.score}점
-                                </span>
-                              </td>
-                              <td className="px-4 py-3 text-sm text-right text-gray-600 dark:text-gray-400">{duration}분</td>
-                              <td className="px-4 py-3 text-sm">
-                                <span className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${attempt.score >= exam.passing_score
-                                  ? 'bg-green-500/10 dark:bg-green-500/20 text-green-700 dark:text-green-400'
-                                  : 'bg-destructive/10 dark:bg-red-900/30 text-destructive dark:text-red-400'
-                                  }`}>
-                                  {attempt.score >= exam.passing_score ? '합격' : '불합격'}
-                                </span>
-                              </td>
-                            </tr>
-                          );
-                        })}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {activeTab === 'trends' && (
-            <div className="space-y-6">
-              {/* 시간대별 응시 추세 */}
-              <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6">
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">시간대별 응시 추세</h3>
-                <div className="h-96">
-                  <Line data={timeSeriesData} options={lineChartOptions} />
-                </div>
-                <p className="mt-4 text-sm text-gray-600 dark:text-gray-400">
-                  💡 <strong>분석:</strong> 대부분의 응시자가 오전 9시~12시 사이에 시험을 응시합니다.
-                </p>
-              </div>
-
-              {/* 인사이트 카드 */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border border-green-200 dark:border-green-800 rounded-lg p-6">
-                  <div className="text-green-600 dark:text-green-400 font-semibold mb-2">✨ 우수 문제</div>
-                  <div className="text-2xl font-bold text-green-900 dark:text-green-100 mb-2">
-                    {questionAnalytics.filter(q => q.correct_rate >= 80).length}개
-                  </div>
-                  <p className="text-sm text-green-700 dark:text-green-300">정답률 80% 이상</p>
-                </div>
-
-                <div className="bg-gradient-to-br from-yellow-50 to-amber-50 dark:from-yellow-900/20 dark:to-amber-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-6">
-                  <div className="text-foreground dark:text-gray-300 font-semibold mb-2">⚠️ 주의 문제</div>
-                  <div className="text-2xl font-bold text-yellow-900 dark:text-yellow-100 mb-2">
-                    {questionAnalytics.filter(q => q.correct_rate >= 60 && q.correct_rate < 80).length}개
-                  </div>
-                  <p className="text-sm text-foreground dark:text-gray-400">정답률 60-80%</p>
-                </div>
-
-                <div className="bg-gradient-to-br from-red-50 to-rose-50 dark:from-red-900/20 dark:to-rose-900/20 border border-destructive/50 dark:border-red-800 rounded-lg p-6">
-                  <div className="text-destructive dark:text-red-400 font-semibold mb-2">🚨 개선 필요</div>
-                  <div className="text-2xl font-bold text-destructive dark:text-red-200 mb-2">
-                    {questionAnalytics.filter(q => q.correct_rate < 60).length}개
-                  </div>
-                  <p className="text-sm text-destructive dark:text-red-300">정답률 60% 미만</p>
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* 푸터 */}
-        <div className="border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50 px-6 py-4 flex justify-between items-center">
-          <div className="text-sm text-gray-600 dark:text-gray-400">
-            마지막 업데이트: {new Date().toLocaleString('ko-KR')}
+        <div className="flex justify-between items-center p-6 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-900 dark:to-indigo-900 text-white">
+          <div>
+            <h2 className="text-2xl font-bold flex items-center gap-2">
+              <ChartBarIcon className="h-6 w-6" />
+              시험 결과 상세 분석
+            </h2>
+            <p className="text-blue-100 mt-1">{exam.title}</p>
           </div>
           <button
             onClick={onClose}
-            className="btn-secondary"
+            className="text-white/80 hover:text-white hover:bg-white/10 p-2 rounded-full transition-colors"
           >
-            닫기
+            <XMarkIcon className="h-6 w-6" />
           </button>
         </div>
+
+        {/* 통계 카드 */}
+        <div className="grid grid-cols-2 md:grid-cols-6 gap-4 mt-6">
+          <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
+            <div className="text-sm text-blue-100">총 응시자</div>
+            <div className="text-2xl font-bold mt-1">{stats.totalAttempts}명</div>
+          </div>
+          <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
+            <div className="text-sm text-blue-100">완료</div>
+            <div className="text-2xl font-bold mt-1">{stats.completedAttempts}명</div>
+          </div>
+          <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
+            <div className="text-sm text-blue-100">평균 점수</div>
+            <div className="text-2xl font-bold mt-1">{stats.averageScore}점</div>
+          </div>
+          <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
+            <div className="text-sm text-blue-100">최고 점수</div>
+            <div className="text-2xl font-bold mt-1">{stats.highestScore}점</div>
+          </div>
+          <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
+            <div className="text-sm text-blue-100">최저 점수</div>
+            <div className="text-2xl font-bold mt-1">{stats.lowestScore}점</div>
+          </div>
+          <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/10">
+            <div className="text-sm text-blue-100 font-medium">합격률</div>
+            <div className="text-2xl font-bold mt-1">{stats.passingRate}%</div>
+          </div>
+        </div>
+      </div>
+
+      {/* 탭 네비게이션 */}
+      <div className="border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50 p-2">
+        <div className="flex space-x-1 p-2">
+          <button
+            onClick={() => setActiveTab('overview')}
+            className={`flex-1 px-4 py-3 rounded-full font-medium transition-all ${activeTab === 'overview'
+              ? 'bg-white dark:bg-gray-800 text-blue-600 dark:text-blue-400 shadow'
+              : 'text-gray-600 dark:text-gray-400 hover:bg-white/50 dark:hover:bg-gray-800/50'
+              }`}
+          >
+            <ChartBarIcon className="h-5 w-5 inline mr-2" />
+            전체 개요
+          </button>
+          <button
+            onClick={() => setActiveTab('questions')}
+            className={`flex-1 px-4 py-3 rounded-full font-medium transition-all ${activeTab === 'questions'
+              ? 'bg-white dark:bg-gray-800 text-blue-600 dark:text-blue-400 shadow'
+              : 'text-gray-600 dark:text-gray-400 hover:bg-white/50 dark:hover:bg-gray-800/50'
+              }`}
+          >
+            <AcademicCapIcon className="h-5 w-5 inline mr-2" />
+            문제별 분석
+          </button>
+          <button
+            onClick={() => setActiveTab('students')}
+            className={`flex-1 px-4 py-3 rounded-full font-medium transition-all ${activeTab === 'students'
+              ? 'bg-white dark:bg-gray-800 text-blue-600 dark:text-blue-400 shadow'
+              : 'text-gray-600 dark:text-gray-400 hover:bg-white/50 dark:hover:bg-gray-800/50'
+              }`}
+          >
+            <UserGroupIcon className="h-5 w-5 inline mr-2" />
+            학습자 분석
+          </button>
+          <button
+            onClick={() => setActiveTab('trends')}
+            className={`flex-1 px-4 py-3 rounded-xl font-medium transition-all ${activeTab === 'trends'
+              ? 'bg-white dark:bg-gray-800 text-blue-600 dark:text-blue-400 shadow-sm ring-1 ring-gray-200 dark:ring-gray-700'
+              : 'text-gray-600 dark:text-gray-400 hover:bg-white/50 dark:hover:bg-gray-800/50 hover:text-gray-900 dark:hover:text-gray-200'
+              }`}
+          >
+            <ClockIcon className="h-5 w-5 inline mr-2" />
+            추세 분석
+          </button>
+        </div>
+      </div>
+
+      {/* 콘텐츠 영역 */}
+      <div className="flex-1 overflow-y-auto p-6">
+        {activeTab === 'overview' && (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* 점수 분포 */}
+            <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl p-6 shadow-sm">
+              <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">점수 분포</h3>
+              <div className="h-80">
+                <Bar data={scoreDistributionData} options={barChartOptions} />
+              </div>
+            </div>
+
+            {/* 난이도 분포 */}
+            <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl p-6 shadow-sm">
+              <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">문제 난이도 분포</h3>
+              <div className="h-80">
+                <Doughnut data={difficultyDistributionData} options={doughnutChartOptions} />
+              </div>
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'questions' && (
+          <div className="space-y-6">
+            {/* 문제별 정답률 차트 */}
+            <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl p-6 shadow-sm">
+              <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">문제별 정답률</h3>
+              <div className="h-96">
+                <Bar data={questionAccuracyData} options={barChartOptions} />
+              </div>
+            </div>
+
+            {/* 문제별 상세 테이블 */}
+            <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl p-6 shadow-sm">
+              <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">문제별 상세 분석</h3>
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead className="bg-gray-50 dark:bg-gray-700/50">
+                    <tr>
+                      <th className="px-4 py-3 text-left text-sm font-bold text-gray-900 dark:text-white rounded-l-lg">문제</th>
+                      <th className="px-4 py-3 text-left text-sm font-bold text-gray-900 dark:text-white">난이도</th>
+                      <th className="px-4 py-3 text-right text-sm font-bold text-gray-900 dark:text-white">정답자/전체</th>
+                      <th className="px-4 py-3 text-right text-sm font-bold text-gray-900 dark:text-white">정답률</th>
+                      <th className="px-4 py-3 text-left text-sm font-bold text-gray-900 dark:text-white rounded-r-lg">평가</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+                    {questionAnalytics.map((q) => (
+                      <tr key={q.question_number} className="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                        <td className="px-4 py-3 text-sm text-gray-900 dark:text-gray-300">문제 {q.question_number}</td>
+                        <td className="px-4 py-3 text-sm">
+                          <span className={`inline-flex px-2 py-1 rounded-md text-xs font-medium ${q.difficulty === 'easy' ? 'bg-green-500/10 dark:bg-green-500/20 text-green-700 dark:text-green-400' :
+                            q.difficulty === 'medium' ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300' :
+                              'bg-destructive/10 dark:bg-red-900/30 text-destructive dark:text-red-400'
+                            }`}>
+                            {q.difficulty === 'easy' ? '쉬움' : q.difficulty === 'medium' ? '보통' : '어려움'}
+                          </span>
+                        </td>
+                        <td className="px-4 py-3 text-sm text-right text-gray-900 dark:text-gray-300">
+                          {q.correct_count} / {q.total_count}
+                        </td>
+                        <td className="px-4 py-3 text-sm text-right font-semibold">
+                          <span className={
+                            q.correct_rate >= 80 ? 'text-green-600 dark:text-green-400' :
+                              q.correct_rate >= 60 ? 'text-gray-900 dark:text-gray-300' :
+                                'text-destructive dark:text-red-400'
+                          }>
+                            {q.correct_rate.toFixed(1)}%
+                          </span>
+                        </td>
+                        <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">
+                          {q.correct_rate >= 80 ? '✅ 우수' :
+                            q.correct_rate >= 60 ? '⚠️ 보통' :
+                              '❌ 개선 필요'}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'students' && (
+          <div className="space-y-6">
+            {/* 학습자별 성과 */}
+            <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">학습자별 성과</h3>
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead className="bg-gray-50 dark:bg-gray-700/50">
+                    <tr>
+                      <th className="px-4 py-3 text-left text-sm font-semibold text-gray-900 dark:text-white">순위</th>
+                      <th className="px-4 py-3 text-left text-sm font-semibold text-gray-900 dark:text-white">이름</th>
+                      <th className="px-4 py-3 text-right text-sm font-semibold text-gray-900 dark:text-white">점수</th>
+                      <th className="px-4 py-3 text-right text-sm font-semibold text-gray-900 dark:text-white">소요 시간</th>
+                      <th className="px-4 py-3 text-left text-sm font-semibold text-gray-900 dark:text-white">상태</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+                    {attempts
+                      .filter(a => a.status === 'completed')
+                      .sort((a, b) => b.score - a.score)
+                      .map((attempt, index) => {
+                        const duration = attempt.completed_at
+                          ? Math.floor(
+                            (new Date(attempt.completed_at).getTime() -
+                              new Date(attempt.started_at).getTime()) /
+                            60000
+                          )
+                          : 0;
+
+                        return (
+                          <tr key={attempt.id} className="hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                            <td className="px-4 py-3 text-sm font-semibold text-gray-900 dark:text-white">
+                              {index === 0 && '🥇'}
+                              {index === 1 && '🥈'}
+                              {index === 2 && '🥉'}
+                              {index > 2 && index + 1}
+                            </td>
+                            <td className="px-4 py-3 text-sm text-gray-900 dark:text-gray-300">{attempt.user_name}</td>
+                            <td className="px-4 py-3 text-sm text-right">
+                              <span className={`font-semibold ${attempt.score >= exam.passing_score ? 'text-green-600 dark:text-green-400' : 'text-destructive dark:text-red-400'
+                                }`}>
+                                {attempt.score}점
+                              </span>
+                            </td>
+                            <td className="px-4 py-3 text-sm text-right text-gray-600 dark:text-gray-400">{duration}분</td>
+                            <td className="px-4 py-3 text-sm">
+                              <span className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${attempt.score >= exam.passing_score
+                                ? 'bg-green-500/10 dark:bg-green-500/20 text-green-700 dark:text-green-400'
+                                : 'bg-destructive/10 dark:bg-red-900/30 text-destructive dark:text-red-400'
+                                }`}>
+                                {attempt.score >= exam.passing_score ? '합격' : '불합격'}
+                              </span>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'trends' && (
+          <div className="space-y-6">
+            {/* 시간대별 응시 추세 */}
+            <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">시간대별 응시 추세</h3>
+              <div className="h-96">
+                <Line data={timeSeriesData} options={lineChartOptions} />
+              </div>
+              <p className="mt-4 text-sm text-gray-600 dark:text-gray-400">
+                💡 <strong>분석:</strong> 대부분의 응시자가 오전 9시~12시 사이에 시험을 응시합니다.
+              </p>
+            </div>
+
+            {/* 인사이트 카드 */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border border-green-200 dark:border-green-800 rounded-2xl p-6 shadow-sm">
+                <div className="text-green-600 dark:text-green-400 font-bold mb-2">✨ 우수 문제</div>
+                <div className="text-2xl font-bold text-green-900 dark:text-green-100 mb-2">
+                  {questionAnalytics.filter(q => q.correct_rate >= 80).length}개
+                </div>
+                <p className="text-sm text-green-700 dark:text-green-300 font-medium">정답률 80% 이상</p>
+              </div>
+
+              <div className="bg-gradient-to-br from-yellow-50 to-amber-50 dark:from-yellow-900/20 dark:to-amber-900/20 border border-yellow-200 dark:border-yellow-800 rounded-2xl p-6 shadow-sm">
+                <div className="text-yellow-700 dark:text-yellow-400 font-bold mb-2">⚠️ 주의 문제</div>
+                <div className="text-2xl font-bold text-yellow-900 dark:text-yellow-100 mb-2">
+                  {questionAnalytics.filter(q => q.correct_rate >= 60 && q.correct_rate < 80).length}개
+                </div>
+                <p className="text-sm text-yellow-700 dark:text-yellow-300 font-medium">정답률 60-80%</p>
+              </div>
+
+              <div className="bg-gradient-to-br from-red-50 to-rose-50 dark:from-red-900/20 dark:to-rose-900/20 border border-destructive/50 dark:border-red-800 rounded-2xl p-6 shadow-sm">
+                <div className="text-destructive dark:text-red-400 font-bold mb-2">🚨 개선 필요</div>
+                <div className="text-2xl font-bold text-destructive dark:text-red-200 mb-2">
+                  {questionAnalytics.filter(q => q.correct_rate < 60).length}개
+                </div>
+                <p className="text-sm text-destructive dark:text-red-300 font-medium">정답률 60% 미만</p>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* 푸터 */}
+      <div className="border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50 px-6 py-4 flex justify-between items-center">
+        <div className="text-sm text-gray-600 dark:text-gray-400">
+          마지막 업데이트: {new Date().toLocaleString('ko-KR')}
+        </div>
+        <button
+          onClick={onClose}
+          className="btn-secondary"
+        >
+          닫기
+        </button>
       </div>
     </div>
   );

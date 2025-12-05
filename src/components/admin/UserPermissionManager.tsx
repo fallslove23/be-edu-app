@@ -195,11 +195,11 @@ const UserPermissionManager: React.FC = () => {
 
   const getCategoryColor = (category: string): string => {
     switch (category) {
-      case 'read': return 'bg-blue-100 text-blue-800';
-      case 'write': return 'bg-green-500/10 text-green-700';
-      case 'delete': return 'bg-destructive/10 text-destructive';
-      case 'admin': return 'bg-purple-100 text-purple-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'read': return 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300';
+      case 'write': return 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300';
+      case 'delete': return 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300';
+      case 'admin': return 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300';
+      default: return 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300';
     }
   };
 
@@ -217,8 +217,8 @@ const UserPermissionManager: React.FC = () => {
     return (
       <PageContainer>
         <div className="flex items-center justify-center h-64">
-          <div className="animate-spin rounded-lg h-8 w-8 border-b-2 border-blue-600"></div>
-          <span className="ml-2">권한 정보를 불러오는 중...</span>
+          <div className="animate-spin rounded-lg h-8 w-8 border-b-2 border-blue-600 dark:border-blue-400"></div>
+          <span className="ml-2 text-gray-600 dark:text-gray-400">권한 정보를 불러오는 중...</span>
         </div>
       </PageContainer>
     );
@@ -228,11 +228,11 @@ const UserPermissionManager: React.FC = () => {
     <PageContainer>
       <div className="space-y-6">
         {/* 헤더 */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900 mb-2">🔐 권한 관리 시스템</h1>
-              <p className="text-gray-600">
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">🔐 권한 관리 시스템</h1>
+              <p className="text-gray-600 dark:text-gray-400">
                 사용자 권한과 역할을 관리하여 시스템 보안을 강화하세요.
               </p>
             </div>
@@ -243,9 +243,9 @@ const UserPermissionManager: React.FC = () => {
                   setIsEditing(true);
                   setShowModal(true);
                 }}
-                className="btn-primary"
+                className="btn-primary flex items-center"
               >
-                <PlusIcon className="h-4 w-4" />
+                <PlusIcon className="h-4 w-4 mr-2" />
                 <span>새 사용자</span>
               </button>
             </div>
@@ -253,65 +253,67 @@ const UserPermissionManager: React.FC = () => {
         </div>
 
         {/* 탭 네비게이션 */}
-        <div className="border-b border-gray-200">
-          <nav className="-mb-px flex space-x-8">
-            {[
-              { key: 'users', label: '사용자 관리', icon: UserGroupIcon },
-              { key: 'roles', label: '역할 관리', icon: ShieldCheckIcon },
-              { key: 'permissions', label: '권한 관리', icon: KeyIcon }
-            ].map(({ key, label, icon: Icon }) => (
-              <button
-                key={key}
-                onClick={() => setActiveTab(key as any)}
-                className={`py-4 px-1 border-b-2 font-medium text-sm flex items-center space-x-2 rounded-full ${activeTab === key
-                    ? 'border-blue-500 text-blue-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                  }`}
-              >
-                <Icon className="h-4 w-4" />
-                <span>{label}</span>
-              </button>
-            ))}
-          </nav>
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
+          <div className="border-b border-gray-100 dark:border-gray-700">
+            <nav className="-mb-px flex px-6">
+              {[
+                { key: 'users', label: '사용자 관리', icon: UserGroupIcon },
+                { key: 'roles', label: '역할 관리', icon: ShieldCheckIcon },
+                { key: 'permissions', label: '권한 관리', icon: KeyIcon }
+              ].map(({ key, label, icon: Icon }) => (
+                <button
+                  key={key}
+                  onClick={() => setActiveTab(key as any)}
+                  className={`py-4 px-6 border-b-2 font-medium text-sm flex items-center space-x-2 transition-colors ${activeTab === key
+                    ? 'border-blue-500 text-blue-600 dark:text-blue-400'
+                    : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:border-gray-300 dark:hover:border-gray-600'
+                    }`}
+                >
+                  <Icon className="h-4 w-4" />
+                  <span>{label}</span>
+                </button>
+              ))}
+            </nav>
+          </div>
         </div>
 
         {/* 사용자 관리 탭 */}
         {activeTab === 'users' && (
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-            <div className="px-6 py-4 border-b border-gray-200">
-              <h3 className="text-lg font-medium text-gray-900">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
+            <div className="px-6 py-4 border-b border-gray-100 dark:border-gray-700">
+              <h3 className="text-lg font-bold text-gray-900 dark:text-white">
                 사용자 목록 ({users.length})
               </h3>
             </div>
 
             <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+              <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                <thead className="bg-gray-50 dark:bg-gray-900/50">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       사용자
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       역할
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       상태
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       최근 로그인
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-right text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                       작업
                     </th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                   {users.map((user) => (
-                    <tr key={user.id} className="hover:bg-gray-50">
+                    <tr key={user.id} className="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div>
-                          <div className="text-sm font-medium text-gray-900">{user.name}</div>
-                          <div className="text-sm text-gray-500">{user.email}</div>
+                          <div className="text-sm font-medium text-gray-900 dark:text-white">{user.name}</div>
+                          <div className="text-sm text-gray-500 dark:text-gray-400">{user.email}</div>
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
@@ -319,7 +321,7 @@ const UserPermissionManager: React.FC = () => {
                           {user.roles.map((roleId) => (
                             <span
                               key={roleId}
-                              className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
+                              className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300"
                             >
                               {getRoleName(roleId)}
                             </span>
@@ -329,9 +331,9 @@ const UserPermissionManager: React.FC = () => {
                       <td className="px-6 py-4 whitespace-nowrap">
                         <button
                           onClick={() => handleUserStatusToggle(user.id)}
-                          className={`inline-flex items-center space-x-1 px-3 py-1 rounded-full text-xs font-medium ${user.isActive
-                              ? 'bg-green-500/10 text-green-700 hover:bg-green-200'
-                              : 'bg-destructive/10 text-destructive hover:bg-red-200'
+                          className={`inline-flex items-center space-x-1 px-3 py-1 rounded-full text-xs font-medium transition-colors ${user.isActive
+                            ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 hover:bg-green-200 dark:hover:bg-green-900/50'
+                            : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 hover:bg-red-200 dark:hover:bg-red-900/50'
                             }`}
                         >
                           {user.isActive ? (
@@ -347,28 +349,30 @@ const UserPermissionManager: React.FC = () => {
                           )}
                         </button>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
                         {user.lastLogin ? formatDate(user.lastLogin) : '로그인 기록 없음'}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <button
-                          onClick={() => {
-                            setSelectedUser(user);
-                            setIsEditing(true);
-                            setShowModal(true);
-                          }}
-                          className="btn-ghost p-2 text-blue-600 hover:text-blue-900 mr-1"
-                          title="편집"
-                        >
-                          <PencilIcon className="h-4 w-4" />
-                        </button>
-                        <button
-                          onClick={() => handleDeleteUser(user.id)}
-                          className="btn-ghost p-2 text-destructive hover:text-destructive"
-                          title="삭제"
-                        >
-                          <TrashIcon className="h-4 w-4" />
-                        </button>
+                        <div className="flex items-center justify-end gap-2">
+                          <button
+                            onClick={() => {
+                              setSelectedUser(user);
+                              setIsEditing(true);
+                              setShowModal(true);
+                            }}
+                            className="btn-ghost p-2 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg"
+                            title="편집"
+                          >
+                            <PencilIcon className="h-4 w-4" />
+                          </button>
+                          <button
+                            onClick={() => handleDeleteUser(user.id)}
+                            className="btn-ghost p-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg"
+                            title="삭제"
+                          >
+                            <TrashIcon className="h-4 w-4" />
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))}
@@ -380,9 +384,9 @@ const UserPermissionManager: React.FC = () => {
 
         {/* 역할 관리 탭 */}
         {activeTab === 'roles' && (
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-            <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
-              <h3 className="text-lg font-medium text-gray-900">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
+            <div className="px-6 py-4 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center">
+              <h3 className="text-lg font-bold text-gray-900 dark:text-white">
                 역할 목록 ({roles.length})
               </h3>
               <button
@@ -391,9 +395,9 @@ const UserPermissionManager: React.FC = () => {
                   setIsEditing(true);
                   setShowModal(true);
                 }}
-                className="btn-primary"
+                className="btn-primary flex items-center"
               >
-                <PlusIcon className="h-4 w-4" />
+                <PlusIcon className="h-4 w-4 mr-2" />
                 <span>새 역할</span>
               </button>
             </div>
@@ -402,45 +406,45 @@ const UserPermissionManager: React.FC = () => {
               {roles.map((role) => (
                 <div
                   key={role.id}
-                  className="border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow"
+                  className="border border-gray-200 dark:border-gray-700 rounded-xl p-6 hover:shadow-md transition-all bg-white dark:bg-gray-800"
                 >
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center space-x-2">
-                      <ShieldCheckIcon className="h-5 w-5 text-blue-600" />
-                      <h4 className="text-lg font-medium text-gray-900">{role.name}</h4>
+                      <ShieldCheckIcon className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                      <h4 className="text-lg font-bold text-gray-900 dark:text-white">{role.name}</h4>
                     </div>
                     {role.isSystem && (
-                      <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                      <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200">
                         시스템
                       </span>
                     )}
                   </div>
 
-                  <p className="text-sm text-gray-600 mb-4">{role.description}</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">{role.description}</p>
 
                   <div className="mb-4">
-                    <div className="text-xs font-medium text-gray-500 uppercase mb-2">
+                    <div className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase mb-2">
                       권한 ({role.permissions.length})
                     </div>
                     <div className="flex flex-wrap gap-1">
                       {role.permissions.slice(0, 3).map((permId) => (
                         <span
                           key={permId}
-                          className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-gray-100 text-gray-800"
+                          className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200"
                         >
                           {getPermissionName(permId)}
                         </span>
                       ))}
                       {role.permissions.length > 3 && (
-                        <span className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-gray-100 text-gray-800">
+                        <span className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200">
                           +{role.permissions.length - 3}개
                         </span>
                       )}
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-500">
+                  <div className="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-gray-700">
+                    <span className="text-sm text-gray-500 dark:text-gray-400">
                       {role.userCount}명 사용 중
                     </span>
                     <div className="flex items-center space-x-2">
@@ -450,7 +454,7 @@ const UserPermissionManager: React.FC = () => {
                           setIsEditing(true);
                           setShowModal(true);
                         }}
-                        className="btn-ghost p-2 text-blue-600 hover:text-blue-900"
+                        className="btn-ghost p-2 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg"
                         title="편집"
                       >
                         <PencilIcon className="h-4 w-4" />
@@ -462,7 +466,7 @@ const UserPermissionManager: React.FC = () => {
                               setRoles(prev => prev.filter(r => r.id !== role.id));
                             }
                           }}
-                          className="btn-ghost p-2 text-destructive hover:text-destructive"
+                          className="btn-ghost p-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg"
                           title="삭제"
                         >
                           <TrashIcon className="h-4 w-4" />
@@ -478,9 +482,9 @@ const UserPermissionManager: React.FC = () => {
 
         {/* 권한 관리 탭 */}
         {activeTab === 'permissions' && (
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-            <div className="px-6 py-4 border-b border-gray-200">
-              <h3 className="text-lg font-medium text-gray-900">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
+            <div className="px-6 py-4 border-b border-gray-100 dark:border-gray-700">
+              <h3 className="text-lg font-bold text-gray-900 dark:text-white">
                 권한 목록 ({permissions.length})
               </h3>
             </div>
@@ -491,8 +495,13 @@ const UserPermissionManager: React.FC = () => {
                   const categoryPermissions = permissions.filter(p => p.category === category);
 
                   return (
-                    <div key={category} className="border border-gray-200 rounded-lg p-4">
-                      <h4 className="text-lg font-medium text-gray-900 mb-4 capitalize">
+                    <div key={category} className="border border-gray-200 dark:border-gray-700 rounded-xl p-4 bg-gray-50/50 dark:bg-gray-800/50">
+                      <h4 className="text-lg font-bold text-gray-900 dark:text-white mb-4 capitalize flex items-center">
+                        <span className={`w-2 h-2 rounded-full mr-2 ${category === 'read' ? 'bg-blue-500' :
+                          category === 'write' ? 'bg-green-500' :
+                            category === 'delete' ? 'bg-red-500' :
+                              'bg-purple-500'
+                          }`}></span>
                         {category === 'read' && '조회 권한'}
                         {category === 'write' && '편집 권한'}
                         {category === 'delete' && '삭제 권한'}
@@ -503,17 +512,17 @@ const UserPermissionManager: React.FC = () => {
                         {categoryPermissions.map((permission) => (
                           <div
                             key={permission.id}
-                            className="border border-gray-100 rounded-lg p-4 hover:shadow-sm transition-shadow"
+                            className="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-xl p-4 hover:shadow-sm transition-shadow"
                           >
                             <div className="flex items-center justify-between mb-2">
-                              <span className="text-sm font-medium text-gray-900">
+                              <span className="text-sm font-bold text-gray-900 dark:text-white">
                                 {permission.name}
                               </span>
                               <span className={`px-2 py-1 rounded-full text-xs font-medium ${getCategoryColor(permission.category)}`}>
                                 {permission.resource}
                               </span>
                             </div>
-                            <p className="text-xs text-gray-600">{permission.description}</p>
+                            <p className="text-xs text-gray-600 dark:text-gray-400">{permission.description}</p>
                           </div>
                         ))}
                       </div>
@@ -527,25 +536,23 @@ const UserPermissionManager: React.FC = () => {
 
         {/* 편집 모달 (사용자/역할) */}
         {showModal && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-            <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-              <div className="px-6 py-4 border-b border-gray-200">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-lg font-medium text-gray-900">
-                    {selectedUser ? (isEditing ? '사용자 편집' : '사용자 상세') : '새 사용자 추가'}
-                  </h3>
-                  <button
-                    onClick={() => {
-                      setShowModal(false);
-                      setSelectedUser(null);
-                      setSelectedRole(null);
-                      setIsEditing(false);
-                    }}
-                    className="text-gray-400 hover:text-gray-600"
-                  >
-                    <XMarkIcon className="h-6 w-6" />
-                  </button>
-                </div>
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <div className="bg-white dark:bg-gray-800 rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-gray-100 dark:border-gray-700 shadow-2xl">
+              <div className="px-6 py-4 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center bg-gray-50 dark:bg-gray-800/50">
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white">
+                  {selectedUser ? (isEditing ? '사용자 편집' : '사용자 상세') : '새 사용자 추가'}
+                </h3>
+                <button
+                  onClick={() => {
+                    setShowModal(false);
+                    setSelectedUser(null);
+                    setSelectedRole(null);
+                    setIsEditing(false);
+                  }}
+                  className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                >
+                  <XMarkIcon className="h-6 w-6" />
+                </button>
               </div>
 
               <div className="p-6 space-y-6">
@@ -575,12 +582,12 @@ const UserPermissionManager: React.FC = () => {
                     />
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
                         역할 할당
                       </label>
-                      <div className="space-y-2">
+                      <div className="space-y-2 bg-gray-50 dark:bg-gray-700/30 p-4 rounded-xl border border-gray-200 dark:border-gray-600">
                         {roles.map((role) => (
-                          <label key={role.id} className="flex items-center">
+                          <label key={role.id} className="flex items-center p-2 hover:bg-white dark:hover:bg-gray-600 rounded-lg transition-colors cursor-pointer">
                             <input
                               type="checkbox"
                               checked={selectedUser?.roles.includes(role.id) || false}
@@ -592,11 +599,11 @@ const UserPermissionManager: React.FC = () => {
                                   handleRoleChange(selectedUser.id, newRoles);
                                 }
                               }}
-                              className="h-4 w-4 text-blue-600 border-gray-300 rounded"
+                              className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
                             />
                             <div className="ml-3">
-                              <span className="text-sm font-medium text-gray-900">{role.name}</span>
-                              <p className="text-xs text-gray-500">{role.description}</p>
+                              <span className="text-sm font-medium text-gray-900 dark:text-white">{role.name}</span>
+                              <p className="text-xs text-gray-500 dark:text-gray-400">{role.description}</p>
                             </div>
                           </label>
                         ))}
@@ -606,7 +613,7 @@ const UserPermissionManager: React.FC = () => {
                 )}
               </div>
 
-              <div className="px-6 py-4 border-t border-gray-200 flex justify-end space-x-3">
+              <div className="px-6 py-4 border-t border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 flex justify-end space-x-3">
                 <button
                   onClick={() => {
                     setShowModal(false);

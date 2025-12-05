@@ -1694,8 +1694,8 @@ export default function IntegratedScheduleManager() {
         {/* 일정 수정 모달 */}
         {
           showEditModal && (
-            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onClick={() => setShowEditModal(false)}>
-              <div className="bg-white dark:bg-gray-800 rounded-[2rem] p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+            <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50" onClick={() => setShowEditModal(false)}>
+              <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-6">일정 수정</h3>
 
                 <div className="space-y-4">
@@ -1707,7 +1707,7 @@ export default function IntegratedScheduleManager() {
                       type="text"
                       value={scheduleForm.title}
                       onChange={(e) => setScheduleForm({ ...scheduleForm, title: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                     />
                   </div>
 
@@ -1719,7 +1719,7 @@ export default function IntegratedScheduleManager() {
                       <select
                         value={scheduleForm.subject}
                         onChange={(e) => setScheduleForm({ ...scheduleForm, subject: e.target.value })}
-                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                         required
                       >
                         <option value="">과목 선택</option>
@@ -1730,7 +1730,7 @@ export default function IntegratedScheduleManager() {
                         ))}
                       </select>
                     ) : (
-                      <div className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400">
+                      <div className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-xl bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400">
                         {scheduleForm.instructor_id ? '해당 강사의 담당 과목이 없습니다' : '먼저 강사를 선택해주세요'}
                       </div>
                     )}
@@ -1745,7 +1745,7 @@ export default function IntegratedScheduleManager() {
                         type="datetime-local"
                         value={scheduleForm.start_time}
                         onChange={(e) => setScheduleForm({ ...scheduleForm, start_time: e.target.value })}
-                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                       />
                     </div>
 
@@ -1757,7 +1757,7 @@ export default function IntegratedScheduleManager() {
                         type="datetime-local"
                         value={scheduleForm.end_time}
                         onChange={(e) => setScheduleForm({ ...scheduleForm, end_time: e.target.value })}
-                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                       />
                     </div>
                   </div>
@@ -1769,7 +1769,7 @@ export default function IntegratedScheduleManager() {
                     <select
                       value={scheduleForm.instructor_id}
                       onChange={(e) => handleInstructorChange(e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                     >
                       <option value="">선택 안함</option>
                       {instructors.map((instructor) => (
@@ -1819,7 +1819,7 @@ export default function IntegratedScheduleManager() {
                     <select
                       value={scheduleForm.classroom_id}
                       onChange={(e) => handleClassroomChange(e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                     >
                       <option value="">선택 안함</option>
                       {classrooms.map((classroom) => (
@@ -1893,17 +1893,17 @@ export default function IntegratedScheduleManager() {
                     <textarea
                       value={scheduleForm.description}
                       onChange={(e) => setScheduleForm({ ...scheduleForm, description: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                       rows={3}
                     />
                   </div>
                 </div>
 
                 <div className="mt-6 flex justify-end gap-3">
-                  <button onClick={() => setShowEditModal(false)} className="btn-secondary rounded-full">
+                  <button onClick={() => setShowEditModal(false)} className="btn-secondary">
                     취소
                   </button>
-                  <button onClick={handleEditSchedule} className="btn-primary rounded-full">
+                  <button onClick={handleEditSchedule} className="btn-primary">
                     수정
                   </button>
                 </div>
@@ -1915,8 +1915,8 @@ export default function IntegratedScheduleManager() {
         {/* 이벤트 상세 모달 */}
         {
           showEventModal && selectedEvent && (
-            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onClick={() => setShowEventModal(false)}>
-              <div className="bg-white dark:bg-gray-800 rounded-[2rem] p-6 w-full max-w-md" onClick={(e) => e.stopPropagation()}>
+            <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50" onClick={() => setShowEventModal(false)}>
+              <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 w-full max-w-md" onClick={(e) => e.stopPropagation()}>
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">{selectedEvent.title}</h3>
                 <div className="space-y-3">
                   <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
@@ -1954,7 +1954,7 @@ export default function IntegratedScheduleManager() {
                       </button>
                     </div>
                   )}
-                  <button onClick={() => setShowEventModal(false)} className="btn-secondary ml-auto rounded-full">
+                  <button onClick={() => setShowEventModal(false)} className="btn-secondary ml-auto">
                     닫기
                   </button>
                 </div>
@@ -1966,8 +1966,8 @@ export default function IntegratedScheduleManager() {
         {/* 충돌 알림 모달 */}
         {
           showConflictModal && (
-            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onClick={handleConflictCancel}>
-              <div className="bg-white dark:bg-gray-800 rounded-[2rem] p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+            <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50" onClick={handleConflictCancel}>
+              <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
                 <div className="flex items-center gap-3 mb-6">
                   <div className="flex-shrink-0 w-12 h-12 rounded-lg bg-yellow-100 dark:bg-yellow-900/30 flex items-center justify-center">
                     <span className="text-2xl">⚠️</span>
@@ -2054,7 +2054,7 @@ export default function IntegratedScheduleManager() {
                   </button>
                   <button
                     onClick={handleConflictProceed}
-                    className="px-4 py-2 bg-yellow-600 dark:bg-yellow-500 text-white rounded-full hover:bg-yellow-700 dark:hover:bg-yellow-600"
+                    className="px-4 py-2 bg-yellow-600 dark:bg-yellow-500 text-white rounded-xl hover:bg-yellow-700 dark:hover:bg-yellow-600"
                   >
                     충돌 무시하고 진행
                   </button>

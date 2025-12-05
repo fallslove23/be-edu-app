@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { ArrowLeft, Check } from 'lucide-react';
+import { ArrowLeft, Check, ChevronDown } from 'lucide-react';
 import type { User, UserRole, UserStatus } from '../../types/auth.types';
 import { roleLabels, userStatusLabels } from '../../types/auth.types';
 
@@ -208,19 +208,19 @@ const UserForm: React.FC<UserFormProps> = ({ user, onBack, onSave }) => {
   return (
     <div className="max-w-4xl mx-auto space-y-6">
       {/* 헤더 */}
-      <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 p-6">
+      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
         <div className="flex items-center">
           <button
             onClick={onBack}
-            className="mr-4 p-3 text-gray-500 hover:text-gray-900 hover:bg-gray-50 rounded-xl transition-all"
+            className="mr-4 p-3 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-700 rounded-xl transition-all"
           >
             <ArrowLeft className="h-6 w-6" />
           </button>
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
               {user ? '사용자 정보 수정' : '새 사용자 등록'}
             </h1>
-            <p className="text-gray-500 mt-1">
+            <p className="text-gray-500 dark:text-gray-400 mt-1">
               {user ? '기존 사용자 정보를 수정합니다.' : '새로운 시스템 사용자를 등록합니다.'}
             </p>
           </div>
@@ -229,21 +229,21 @@ const UserForm: React.FC<UserFormProps> = ({ user, onBack, onSave }) => {
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         {/* 기본 정보 */}
-        <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 p-6">
-          <h2 className="text-lg font-bold text-gray-900 mb-6 flex items-center">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
+          <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-6 flex items-center">
             <span className="w-1 h-6 bg-blue-600 rounded-full mr-3"></span>
             기본 정보
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-bold text-gray-700 mb-2">
-                이름 *
+              <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
+                이름 <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
                 {...register('name', { required: '이름을 입력해주세요.' })}
-                className="w-full border border-gray-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                className="w-full border border-gray-200 dark:border-gray-600 rounded-xl px-4 py-3 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                 placeholder="홍길동"
               />
               {errors.name && (
@@ -252,8 +252,8 @@ const UserForm: React.FC<UserFormProps> = ({ user, onBack, onSave }) => {
             </div>
 
             <div>
-              <label className="block text-sm font-bold text-gray-700 mb-2">
-                이메일 *
+              <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
+                이메일 <span className="text-red-500">*</span>
               </label>
               <input
                 type="email"
@@ -264,7 +264,7 @@ const UserForm: React.FC<UserFormProps> = ({ user, onBack, onSave }) => {
                     message: '올바른 이메일 형식을 입력해주세요.'
                   }
                 })}
-                className="w-full border border-gray-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                className="w-full border border-gray-200 dark:border-gray-600 rounded-xl px-4 py-3 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                 placeholder="example@company.com"
               />
               {errors.email && (
@@ -273,8 +273,8 @@ const UserForm: React.FC<UserFormProps> = ({ user, onBack, onSave }) => {
             </div>
 
             <div>
-              <label className="block text-sm font-bold text-gray-700 mb-2">
-                전화번호 *
+              <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
+                전화번호 <span className="text-red-500">*</span>
               </label>
               <input
                 type="tel"
@@ -285,7 +285,7 @@ const UserForm: React.FC<UserFormProps> = ({ user, onBack, onSave }) => {
                     message: '올바른 전화번호 형식을 입력해주세요. (010-0000-0000)'
                   }
                 })}
-                className="w-full border border-gray-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                className="w-full border border-gray-200 dark:border-gray-600 rounded-xl px-4 py-3 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                 placeholder="010-1234-5678"
               />
               {errors.phone && (
@@ -294,13 +294,13 @@ const UserForm: React.FC<UserFormProps> = ({ user, onBack, onSave }) => {
             </div>
 
             <div>
-              <label className="block text-sm font-bold text-gray-700 mb-2">
-                사번 *
+              <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
+                사번 <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
                 {...register('employee_id', { required: '사번을 입력해주세요.' })}
-                className="w-full border border-gray-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                className="w-full border border-gray-200 dark:border-gray-600 rounded-xl px-4 py-3 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                 placeholder="EMP001"
               />
               {errors.employee_id && (
@@ -311,59 +311,53 @@ const UserForm: React.FC<UserFormProps> = ({ user, onBack, onSave }) => {
         </div>
 
         {/* 회사 정보 */}
-        <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 p-6">
-          <h2 className="text-lg font-bold text-gray-900 mb-6 flex items-center">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
+          <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-6 flex items-center">
             <span className="w-1 h-6 bg-blue-600 rounded-full mr-3"></span>
             회사 정보
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label className="block text-sm font-bold text-gray-700 mb-2">
-                역할 *
+            <div className="relative">
+              <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
+                역할 <span className="text-red-500">*</span>
               </label>
-              <select
-                {...register('role', { required: '역할을 선택해주세요.' })}
-                className="w-full border border-gray-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all appearance-none bg-white"
-                style={{
-                  backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`,
-                  backgroundPosition: 'right 1rem center',
-                  backgroundRepeat: 'no-repeat',
-                  backgroundSize: '1.5em 1.5em',
-                }}
-              >
-                {(Object.keys(roleLabels) as UserRole[]).map(role => (
-                  <option key={role} value={role}>{roleLabels[role]}</option>
-                ))}
-              </select>
+              <div className="relative">
+                <select
+                  {...register('role', { required: '역할을 선택해주세요.' })}
+                  className="w-full border border-gray-200 dark:border-gray-600 rounded-xl pl-4 pr-10 py-3 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all appearance-none"
+                >
+                  {(Object.keys(roleLabels) as UserRole[]).map(role => (
+                    <option key={role} value={role}>{roleLabels[role]}</option>
+                  ))}
+                </select>
+                <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
+              </div>
               {errors.role && (
                 <p className="mt-1 text-sm text-red-500 font-medium">{errors.role.message}</p>
               )}
             </div>
 
-            <div>
-              <label className="block text-sm font-bold text-gray-700 mb-2">
-                상태 *
+            <div className="relative">
+              <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
+                상태 <span className="text-red-500">*</span>
               </label>
-              <select
-                {...register('status', { required: '상태를 선택해주세요.' })}
-                className="w-full border border-gray-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all appearance-none bg-white"
-                style={{
-                  backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`,
-                  backgroundPosition: 'right 1rem center',
-                  backgroundRepeat: 'no-repeat',
-                  backgroundSize: '1.5em 1.5em',
-                }}
-              >
-                {(Object.keys(userStatusLabels) as UserStatus[]).map(status => (
-                  <option key={status} value={status}>{userStatusLabels[status]}</option>
-                ))}
-              </select>
+              <div className="relative">
+                <select
+                  {...register('status', { required: '상태를 선택해주세요.' })}
+                  className="w-full border border-gray-200 dark:border-gray-600 rounded-xl pl-4 pr-10 py-3 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all appearance-none"
+                >
+                  {(Object.keys(userStatusLabels) as UserStatus[]).map(status => (
+                    <option key={status} value={status}>{userStatusLabels[status]}</option>
+                  ))}
+                </select>
+                <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
+              </div>
             </div>
 
             <div className="relative">
-              <label className="block text-sm font-bold text-gray-700 mb-2">
-                부서 *
+              <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
+                부서 <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
@@ -371,18 +365,18 @@ const UserForm: React.FC<UserFormProps> = ({ user, onBack, onSave }) => {
                 onChange={handleDepartmentInputChange}
                 onFocus={() => setShowDepartmentSuggestions(true)}
                 onBlur={() => setTimeout(() => setShowDepartmentSuggestions(false), 200)}
-                className="w-full border border-gray-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                className="w-full border border-gray-200 dark:border-gray-600 rounded-xl px-4 py-3 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                 placeholder="부서명을 입력하세요"
                 disabled={loading}
               />
               {showDepartmentSuggestions && getDepartmentSuggestions().length > 0 && (
-                <div className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-xl shadow-lg max-h-60 overflow-y-auto">
+                <div className="absolute z-10 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg max-h-60 overflow-y-auto">
                   {getDepartmentSuggestions().map((dept, index) => (
                     <button
                       key={index}
                       type="button"
                       onClick={() => handleSelectDepartment(dept)}
-                      className="w-full text-left px-4 py-3 hover:bg-gray-50 transition-colors first:rounded-t-xl last:rounded-b-xl"
+                      className="w-full text-left px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-900 dark:text-white transition-colors first:rounded-t-xl last:rounded-b-xl"
                     >
                       {dept}
                     </button>
@@ -395,8 +389,8 @@ const UserForm: React.FC<UserFormProps> = ({ user, onBack, onSave }) => {
             </div>
 
             <div className="relative">
-              <label className="block text-sm font-bold text-gray-700 mb-2">
-                직급 *
+              <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
+                직급 <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
@@ -404,18 +398,18 @@ const UserForm: React.FC<UserFormProps> = ({ user, onBack, onSave }) => {
                 onChange={handlePositionInputChange}
                 onFocus={() => setShowPositionSuggestions(true)}
                 onBlur={() => setTimeout(() => setShowPositionSuggestions(false), 200)}
-                className="w-full border border-gray-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                className="w-full border border-gray-200 dark:border-gray-600 rounded-xl px-4 py-3 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                 placeholder="직급을 입력하세요 (예: 사원, 과장, 부장)"
                 disabled={loading}
               />
               {showPositionSuggestions && getPositionSuggestions().length > 0 && (
-                <div className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-xl shadow-lg max-h-60 overflow-y-auto">
+                <div className="absolute z-10 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg max-h-60 overflow-y-auto">
                   {getPositionSuggestions().map((pos, index) => (
                     <button
                       key={index}
                       type="button"
                       onClick={() => handleSelectPosition(pos)}
-                      className="w-full text-left px-4 py-3 hover:bg-gray-50 transition-colors first:rounded-t-xl last:rounded-b-xl"
+                      className="w-full text-left px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-900 dark:text-white transition-colors first:rounded-t-xl last:rounded-b-xl"
                     >
                       {pos}
                     </button>
@@ -428,13 +422,13 @@ const UserForm: React.FC<UserFormProps> = ({ user, onBack, onSave }) => {
             </div>
 
             <div className="md:col-span-2">
-              <label className="block text-sm font-bold text-gray-700 mb-2">
-                입사일 *
+              <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
+                입사일 <span className="text-red-500">*</span>
               </label>
               <input
                 type="date"
                 {...register('hire_date', { required: '입사일을 선택해주세요.' })}
-                className="w-full md:w-1/2 border border-gray-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                className="w-full md:w-1/2 border border-gray-200 dark:border-gray-600 rounded-xl px-4 py-3 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
               />
               {errors.hire_date && (
                 <p className="mt-1 text-sm text-red-500 font-medium">{errors.hire_date.message}</p>
@@ -445,57 +439,54 @@ const UserForm: React.FC<UserFormProps> = ({ user, onBack, onSave }) => {
 
         {/* 비상 연락처 (교육생만) */}
         {selectedRole === 'trainee' && (
-          <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 p-6">
-            <h2 className="text-lg font-bold text-gray-900 mb-6 flex items-center">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
+            <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-6 flex items-center">
               <span className="w-1 h-6 bg-blue-600 rounded-full mr-3"></span>
               비상 연락처
             </h2>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div>
-                <label className="block text-sm font-bold text-gray-700 mb-2">
+                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
                   연락처 이름
                 </label>
                 <input
                   type="text"
                   {...register('emergency_contact_name')}
-                  className="w-full border border-gray-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                  className="w-full border border-gray-200 dark:border-gray-600 rounded-xl px-4 py-3 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                   placeholder="김가족"
                 />
               </div>
 
-              <div>
-                <label className="block text-sm font-bold text-gray-700 mb-2">
+              <div className="relative">
+                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
                   관계
                 </label>
-                <select
-                  {...register('emergency_contact_relationship')}
-                  className="w-full border border-gray-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all appearance-none bg-white"
-                  style={{
-                    backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`,
-                    backgroundPosition: 'right 1rem center',
-                    backgroundRepeat: 'no-repeat',
-                    backgroundSize: '1.5em 1.5em',
-                  }}
-                >
-                  <option value="">관계 선택</option>
-                  <option value="부모">부모</option>
-                  <option value="배우자">배우자</option>
-                  <option value="자녀">자녀</option>
-                  <option value="형제자매">형제자매</option>
-                  <option value="친구">친구</option>
-                  <option value="기타">기타</option>
-                </select>
+                <div className="relative">
+                  <select
+                    {...register('emergency_contact_relationship')}
+                    className="w-full border border-gray-200 dark:border-gray-600 rounded-xl pl-4 pr-10 py-3 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all appearance-none"
+                  >
+                    <option value="">관계 선택</option>
+                    <option value="부모">부모</option>
+                    <option value="배우자">배우자</option>
+                    <option value="자녀">자녀</option>
+                    <option value="형제자매">형제자매</option>
+                    <option value="친구">친구</option>
+                    <option value="기타">기타</option>
+                  </select>
+                  <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
+                </div>
               </div>
 
               <div>
-                <label className="block text-sm font-bold text-gray-700 mb-2">
+                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
                   전화번호
                 </label>
                 <input
                   type="tel"
                   {...register('emergency_contact_phone')}
-                  className="w-full border border-gray-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                  className="w-full border border-gray-200 dark:border-gray-600 rounded-xl px-4 py-3 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                   placeholder="010-9876-5432"
                 />
               </div>
@@ -504,19 +495,19 @@ const UserForm: React.FC<UserFormProps> = ({ user, onBack, onSave }) => {
         )}
 
         {/* 액션 버튼 */}
-        <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 p-6 sticky bottom-6">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 sticky bottom-6 z-10">
           <div className="flex items-center justify-end space-x-3">
             <button
               type="button"
               onClick={onBack}
-              className="px-6 py-3 bg-white border border-gray-200 rounded-xl text-gray-700 font-bold hover:bg-gray-50 hover:border-gray-300 transition-all"
+              className="btn-outline px-6 py-3"
             >
               취소
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="px-8 py-3 btn-primary rounded-xl font-bold hover:shadow-xl transition-all flex items-center"
+              className="btn-primary px-8 py-3 flex items-center"
             >
               <Check className="h-5 w-5 mr-2" />
               {isSubmitting ? '저장 중...' : (user ? '수정 완료' : '사용자 등록')}

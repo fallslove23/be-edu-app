@@ -35,7 +35,7 @@ interface LiveExamDashboardProps {
 export default function LiveExamDashboard({ exam, onClose }: LiveExamDashboardProps) {
   const [attempts, setAttempts] = useState<ExamAttempt[]>([]);
   const [loading, setLoading] = useState(true);
-  const [channel, setChannel] = useState<RealtimeChannel | null>(null);
+  // const [channel, setChannel] = useState<RealtimeChannel | null>(null);
   const [stats, setStats] = useState({
     total: 0,
     inProgress: 0,
@@ -65,59 +65,78 @@ export default function LiveExamDashboard({ exam, onClose }: LiveExamDashboardPr
     try {
       setLoading(true);
 
-      // 실제 구현에서는 exam_attempts 테이블에서 조회
-      // 현재는 Mock 데이터 사용
-      const mockAttempts: ExamAttempt[] = [
-        {
-          id: '1',
-          exam_id: exam.id,
-          user_id: 'user1',
-          user_name: '김철수',
-          started_at: new Date(Date.now() - 10 * 60 * 1000).toISOString(),
-          status: 'in_progress',
-          progress: 65,
-          current_question: 7,
-          total_questions: 10,
-          time_remaining: 1200, // 20분
-        },
-        {
-          id: '2',
-          exam_id: exam.id,
-          user_id: 'user2',
-          user_name: '이영희',
-          started_at: new Date(Date.now() - 5 * 60 * 1000).toISOString(),
-          completed_at: new Date(Date.now() - 2 * 60 * 1000).toISOString(),
-          status: 'completed',
-          score: 85,
-          progress: 100,
-        },
-        {
-          id: '3',
-          exam_id: exam.id,
-          user_id: 'user3',
-          user_name: '박민수',
-          started_at: new Date(Date.now() - 15 * 60 * 1000).toISOString(),
-          status: 'in_progress',
-          progress: 30,
-          current_question: 3,
-          total_questions: 10,
-          time_remaining: 900, // 15분
-        },
-      ];
+      const { data, error } = await supabase
+        .from('exam_attempts')
+        .select(`
+          *,
+          trainee:trainees (
+            id,
+            name,
+            user:users (
+              name
+            )
+          )
+        `)
+        .eq('exam_id', exam.id);
 
-      setAttempts(mockAttempts);
-      calculateStats(mockAttempts);
+      if (error) throw error;
+
+      // Transform data
+      const realAttempts: ExamAttempt[] = data.map((attempt: any) => {
+        const startedAt = new Date(attempt.started_at);
+        const durationMs = (exam.duration_minutes || 60) * 60 * 1000;
+        const endsAt = new Date(startedAt.getTime() + durationMs);
+        const timeRemaining = Math.max(0, Math.floor((endsAt.getTime() - Date.now()) / 1000));
+
+        // Progress estimate (using score percentage as proxy if completed, else 0 or needs simpler logic)
+        // For real progress tracking, we'd need to count question_responses. 
+        // For now, simpler approximation:
+        const progress = attempt.status === 'completed' ? 100 :
+          attempt.status === 'in_progress' ? 50 : 0; // Placeholder until question_response count is integrated
+
+        return {
+          id: attempt.id,
+          exam_id: attempt.exam_id,
+          user_id: attempt.trainee_id, // Using trainee_id for user_id field for now
+          user_name: attempt.trainee?.name || attempt.trainee?.user?.name || 'Unknown',
+          started_at: attempt.started_at,
+          completed_at: attempt.submitted_at,
+          score: attempt.score,
+          status: attempt.status,
+          progress: progress,
+          current_question: 0, // Not available without joining question_responses
+          total_questions: exam.question_count || 0,
+          time_remaining: attempt.status === 'in_progress' ? timeRemaining : 0,
+        };
+      });
+
+      setAttempts(realAttempts);
+      calculateStats(realAttempts);
 
     } catch (error) {
       console.error('❌ Failed to load attempts:', error);
     } finally {
       setLoading(false);
     }
-  }, [exam.id, calculateStats]);
+  }, [exam.id, exam.duration_minutes, exam.question_count, calculateStats]);
 
   // Realtime 구독 설정
   useEffect(() => {
     loadAttempts();
+
+    // Polling for time remaining updates
+    const timer = setInterval(() => {
+      setAttempts(prev => prev.map(a => {
+        if (a.status === 'in_progress') {
+          const startedAt = new Date(a.started_at);
+          const durationMs = (exam.duration_minutes || 60) * 60 * 1000;
+          const endsAt = new Date(startedAt.getTime() + durationMs);
+          const timeRemaining = Math.max(0, Math.floor((endsAt.getTime() - Date.now()) / 1000));
+          return { ...a, time_remaining: timeRemaining };
+        }
+        return a;
+      }));
+    }, 1000);
 
     // Supabase Realtime 채널 생성
     const examChannel = supabase
@@ -130,58 +149,26 @@ export default function LiveExamDashboard({ exam, onClose }: LiveExamDashboardPr
           table: 'exam_attempts',
           filter: `exam_id=eq.${exam.id}`,
         },
-        (payload) => {
-          console.log('🔔 Realtime update:', payload);
-
-          if (payload.eventType === 'INSERT') {
-            const newAttempt = payload.new as ExamAttempt;
-            setAttempts((prev) => {
-              const updated = [...prev, newAttempt];
-              calculateStats(updated);
-              return updated;
-            });
-
-            // 새 응시자 알림
-            showNotification('새 응시자', `${newAttempt.user_name || '사용자'}님이 시험을 시작했습니다.`);
-          } else if (payload.eventType === 'UPDATE') {
-            const updatedAttempt = payload.new as ExamAttempt;
-            setAttempts((prev) => {
-              const updated = prev.map((a) =>
-                a.id === updatedAttempt.id ? updatedAttempt : a
-              );
-              calculateStats(updated);
-              return updated;
-            });
-
-            // 완료 알림
-            if (updatedAttempt.status === 'completed') {
-              showNotification(
-                '시험 완료',
-                `${updatedAttempt.user_name || '사용자'}님이 시험을 완료했습니다. (${updatedAttempt.score}점)`
-              );
-            }
-          } else if (payload.eventType === 'DELETE') {
-            setAttempts((prev) => {
-              const updated = prev.filter((a) => a.id !== payload.old.id);
-              calculateStats(updated);
-              return updated;
-            });
-          }
+        () => {
+          // Instead of incremental updates, reload all to keep simple with trainee relations
+          loadAttempts();
         }
       )
       .subscribe();
 
-    setChannel(examChannel);
+    // setChannel(examChannel); (Unused)
 
     // 정리
     return () => {
+      clearInterval(timer);
       if (examChannel) {
         supabase.removeChannel(examChannel);
       }
     };
-  }, [exam.id, loadAttempts, calculateStats]);
+  }, [exam.id, loadAttempts, exam.duration_minutes]);
 
   // 브라우저 알림
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const showNotification = (title: string, body: string) => {
     if ('Notification' in window && Notification.permission === 'granted') {
       new Notification(title, {
@@ -207,17 +194,20 @@ export default function LiveExamDashboard({ exam, onClose }: LiveExamDashboardPr
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-2xl w-full max-h-[90vh] overflow-hidden flex flex-col">
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-h-[90vh] overflow-hidden flex flex-col border border-gray-100 dark:border-gray-700 animate-in fade-in zoom-in duration-200">
         {/* 헤더 */}
-        <div className="p-6 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/30 dark:to-indigo-900/30">
+        <div className="p-6 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/80">
           <div className="flex items-center justify-between">
             <div>
               <div className="flex items-center gap-3">
-                <div className="w-3 h-3 bg-green-500 rounded-lg animate-pulse"></div>
+                <span className="flex h-3 w-3 relative">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+                </span>
                 <h2 className="text-2xl font-bold text-gray-900 dark:text-white">실시간 응시 현황</h2>
               </div>
-              <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">{exam.title}</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 font-medium">{exam.title}</p>
             </div>
             <div className="flex items-center gap-3">
               <button
@@ -238,40 +228,40 @@ export default function LiveExamDashboard({ exam, onClose }: LiveExamDashboardPr
 
           {/* 통계 카드 */}
           <div className="grid grid-cols-5 gap-4 mt-6">
-            <div className="bg-white dark:bg-gray-700 rounded-lg p-4 shadow-sm">
-              <div className="flex items-center gap-2 text-gray-600 dark:text-gray-300 text-sm mb-1">
+            <div className="bg-white dark:bg-gray-700 rounded-xl p-4 shadow-sm border border-gray-100 dark:border-gray-600">
+              <div className="flex items-center gap-2 text-gray-600 dark:text-gray-300 text-sm mb-1 font-medium">
                 <UsersIcon className="h-4 w-4" />
                 <span>총 응시자</span>
               </div>
               <div className="text-3xl font-bold text-gray-900 dark:text-white">{stats.total}</div>
             </div>
 
-            <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4 shadow-sm border border-blue-200 dark:border-blue-800">
-              <div className="flex items-center gap-2 text-blue-700 dark:text-blue-300 text-sm mb-1">
+            <div className="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-4 shadow-sm border border-blue-100 dark:border-blue-800">
+              <div className="flex items-center gap-2 text-blue-700 dark:text-blue-300 text-sm mb-1 font-medium">
                 <ClockIcon className="h-4 w-4" />
                 <span>응시 중</span>
               </div>
               <div className="text-3xl font-bold text-blue-900 dark:text-blue-100">{stats.inProgress}</div>
             </div>
 
-            <div className="bg-green-500/10 dark:bg-green-500/20 rounded-lg p-4 shadow-sm border border-green-200 dark:border-green-800">
-              <div className="flex items-center gap-2 text-green-700 dark:text-green-300 text-sm mb-1">
+            <div className="bg-green-50 dark:bg-green-900/20 rounded-xl p-4 shadow-sm border border-green-100 dark:border-green-800">
+              <div className="flex items-center gap-2 text-green-700 dark:text-green-300 text-sm mb-1 font-medium">
                 <CheckCircleIcon className="h-4 w-4" />
                 <span>완료</span>
               </div>
               <div className="text-3xl font-bold text-green-900 dark:text-green-100">{stats.completed}</div>
             </div>
 
-            <div className="bg-purple-50 dark:bg-purple-900/20 rounded-lg p-4 shadow-sm border border-purple-200 dark:border-purple-800">
-              <div className="flex items-center gap-2 text-purple-700 dark:text-purple-300 text-sm mb-1">
+            <div className="bg-purple-50 dark:bg-purple-900/20 rounded-xl p-4 shadow-sm border border-purple-100 dark:border-purple-800">
+              <div className="flex items-center gap-2 text-purple-700 dark:text-purple-300 text-sm mb-1 font-medium">
                 <ChartBarIcon className="h-4 w-4" />
                 <span>평균 점수</span>
               </div>
               <div className="text-3xl font-bold text-purple-900 dark:text-purple-100">{stats.averageScore}점</div>
             </div>
 
-            <div className="bg-orange-500/10 dark:bg-orange-500/20 rounded-lg p-4 shadow-sm border border-orange-200 dark:border-orange-800">
-              <div className="flex items-center gap-2 text-orange-700 dark:text-orange-300 text-sm mb-1">
+            <div className="bg-orange-50 dark:bg-orange-900/20 rounded-xl p-4 shadow-sm border border-orange-100 dark:border-orange-800">
+              <div className="flex items-center gap-2 text-orange-700 dark:text-orange-300 text-sm mb-1 font-medium">
                 <ArrowPathIcon className="h-4 w-4" />
                 <span>평균 진행률</span>
               </div>
@@ -284,8 +274,8 @@ export default function LiveExamDashboard({ exam, onClose }: LiveExamDashboardPr
         <div className="flex-1 overflow-y-auto p-6">
           {loading ? (
             <div className="flex items-center justify-center py-12">
-              <div className="animate-spin rounded-lg h-8 w-8 border-b-2 border-blue-600 dark:border-blue-400"></div>
-              <span className="ml-3 text-gray-600 dark:text-gray-400">로딩 중...</span>
+              <div className="animate-spin rounded-xl h-8 w-8 border-b-2 border-blue-600 dark:border-blue-400"></div>
+              <span className="ml-3 text-gray-600 dark:text-gray-400 font-medium">로딩 중...</span>
             </div>
           ) : attempts.length === 0 ? (
             <div className="text-center py-12">
@@ -297,11 +287,11 @@ export default function LiveExamDashboard({ exam, onClose }: LiveExamDashboardPr
               {attempts.map((attempt) => (
                 <div
                   key={attempt.id}
-                  className={`border-2 rounded-lg p-5 transition-all ${attempt.status === 'in_progress'
-                    ? 'border-blue-300 dark:border-blue-700 bg-blue-50 dark:bg-blue-900/10'
+                  className={`border rounded-2xl p-5 transition-all ${attempt.status === 'in_progress'
+                    ? 'border-blue-200 dark:border-blue-800 bg-blue-50/50 dark:bg-blue-900/10 shadow-sm'
                     : attempt.status === 'completed'
-                      ? 'border-green-300 dark:border-green-700 bg-green-500/10 dark:bg-green-900/10'
-                      : 'border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/30'
+                      ? 'border-green-200 dark:border-green-800 bg-green-50/50 dark:bg-green-900/10 shadow-sm'
+                      : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700/50'
                     }`}
                 >
                   <div className="flex items-center justify-between">
@@ -335,9 +325,9 @@ export default function LiveExamDashboard({ exam, onClose }: LiveExamDashboardPr
                             </span>
                             <span>{attempt.progress}%</span>
                           </div>
-                          <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-lg h-2">
+                          <div className="w-full bg-gray-100 dark:bg-gray-700/50 rounded-full h-2.5 overflow-hidden">
                             <div
-                              className="bg-blue-600 h-2 rounded-lg transition-all duration-300"
+                              className="bg-blue-600 h-2.5 rounded-full transition-all duration-300"
                               style={{ width: `${attempt.progress}%` }}
                             />
                           </div>
@@ -387,12 +377,14 @@ export default function LiveExamDashboard({ exam, onClose }: LiveExamDashboardPr
           )}
         </div>
 
-        {/* 하단 정보 */}
-        <div className="p-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
-          <div className="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400">
+        <div className="p-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/80 rounded-b-2xl">
+          <div className="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400">
             <div className="flex items-center gap-2">
-              <div className="w-2 h-2 bg-green-500 rounded-lg animate-pulse"></div>
-              <span>실시간 업데이트 활성</span>
+              <span className="flex h-2 w-2 relative">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+              </span>
+              <span className="font-medium">실시간 업데이트 활성</span>
             </div>
             <div className="flex items-center gap-2">
               <BellIcon className="h-4 w-4" />
