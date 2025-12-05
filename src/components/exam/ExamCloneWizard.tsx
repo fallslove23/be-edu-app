@@ -171,7 +171,7 @@ export default function ExamCloneWizard({
                   value={clonedExam.description || ''}
                   onChange={(e) => updateExamField('description', e.target.value)}
                   rows={3}
-                  className="w-full border border-gray-300 dark:border-gray-600 rounded-full px-3 py-2 focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400"
+                  className="w-full border border-gray-300 dark:border-gray-600 rounded-2xl px-3 py-2 focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 resize-none"
                   placeholder="시험 설명"
                 />
               </div>

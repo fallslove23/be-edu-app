@@ -17,7 +17,7 @@ export default function QuestionEditModal({
 }: QuestionEditModalProps) {
   const [question, setQuestion] = React.useState<QuestionFormData>(initialQuestion);
 
-  const updateField = (field: keyof QuestionFormData, value: any) => {
+  const updateField = (field: keyof QuestionFormData, value: any) => { // eslint-disable-line @typescript-eslint/no-explicit-any
     setQuestion(prev => ({ ...prev, [field]: value }));
   };
 
@@ -33,17 +33,17 @@ export default function QuestionEditModal({
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col">
+    <div className="fixed inset-0 bg-black/50 dark:bg-black/70 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col border border-gray-200 dark:border-gray-700">
         {/* 헤더 */}
-        <div className="p-6 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-indigo-50">
+        <div className="p-6 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20">
           <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-bold text-gray-900">
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
               문제 {questionIndex + 1} 편집
             </h2>
             <button
               onClick={onClose}
-              className="btn-ghost p-2 rounded-full"
+              className="p-2 rounded-full hover:bg-white/50 dark:hover:bg-gray-700/50 transition-colors text-gray-500 dark:text-gray-400"
             >
               <XMarkIcon className="h-6 w-6" />
             </button>
@@ -51,16 +51,16 @@ export default function QuestionEditModal({
         </div>
 
         {/* 내용 */}
-        <div className="flex-1 overflow-y-auto p-6 space-y-4">
+        <div className="flex-1 overflow-y-auto p-6 space-y-6">
           {/* 문제 유형 */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               문제 유형 *
             </label>
             <select
               value={question.question_type}
               onChange={(e) => updateField('question_type', e.target.value)}
-              className="w-full border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full border border-gray-300 dark:border-gray-600 rounded-full px-4 py-2.5 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
             >
               <option value="multiple_choice">객관식</option>
               <option value="true_false">O/X</option>
@@ -71,14 +71,14 @@ export default function QuestionEditModal({
 
           {/* 문제 내용 */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               문제 내용 *
             </label>
             <textarea
               value={question.question_text}
               onChange={(e) => updateField('question_text', e.target.value)}
               rows={4}
-              className="w-full border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full border border-gray-300 dark:border-gray-600 rounded-2xl px-4 py-3 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all resize-none"
               placeholder="문제를 입력하세요."
             />
           </div>
@@ -86,20 +86,20 @@ export default function QuestionEditModal({
           {/* 객관식 선택지 */}
           {question.question_type === 'multiple_choice' && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 선택지
               </label>
-              <div className="space-y-2">
+              <div className="space-y-3">
                 {(question.options || ['', '', '', '']).map((option, optionIndex) => (
-                  <div key={optionIndex} className="flex items-center space-x-2">
-                    <span className="text-sm font-medium text-gray-500 w-8">
+                  <div key={optionIndex} className="flex items-center space-x-3">
+                    <span className="text-sm font-medium text-gray-500 dark:text-gray-400 w-8">
                       {String.fromCharCode(65 + optionIndex)}.
                     </span>
                     <input
                       type="text"
                       value={option}
                       onChange={(e) => updateOption(optionIndex, e.target.value)}
-                      className="flex-1 border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="flex-1 border border-gray-300 dark:border-gray-600 rounded-full px-4 py-2.5 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
                       placeholder={`선택지 ${optionIndex + 1}`}
                     />
                   </div>
@@ -109,29 +109,29 @@ export default function QuestionEditModal({
           )}
 
           {/* 배점 & 정답 */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 배점 *
               </label>
               <input
                 type="number"
                 value={question.points}
                 onChange={(e) => updateField('points', parseInt(e.target.value) || 1)}
-                className="w-full border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full border border-gray-300 dark:border-gray-600 rounded-full px-4 py-2.5 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
                 min="1"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 정답 *
               </label>
               {question.question_type === 'true_false' ? (
                 <select
                   value={question.correct_answer}
                   onChange={(e) => updateField('correct_answer', e.target.value)}
-                  className="w-full border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full border border-gray-300 dark:border-gray-600 rounded-full px-4 py-2.5 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
                 >
                   <option value="true">O (참)</option>
                   <option value="false">X (거짓)</option>
@@ -140,7 +140,7 @@ export default function QuestionEditModal({
                 <select
                   value={question.correct_answer}
                   onChange={(e) => updateField('correct_answer', e.target.value)}
-                  className="w-full border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full border border-gray-300 dark:border-gray-600 rounded-full px-4 py-2.5 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
                 >
                   <option value="">선택하세요</option>
                   {(question.options || []).map((_, i) => (
@@ -154,7 +154,7 @@ export default function QuestionEditModal({
                   type="text"
                   value={question.correct_answer}
                   onChange={(e) => updateField('correct_answer', e.target.value)}
-                  className="w-full border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full border border-gray-300 dark:border-gray-600 rounded-full px-4 py-2.5 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
                   placeholder="정답을 입력하세요."
                 />
               )}
@@ -163,21 +163,21 @@ export default function QuestionEditModal({
 
           {/* 해설 */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               해설 (선택사항)
             </label>
             <textarea
               value={question.explanation || ''}
               onChange={(e) => updateField('explanation', e.target.value)}
               rows={3}
-              className="w-full border border-gray-300 rounded-full px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full border border-gray-300 dark:border-gray-600 rounded-2xl px-4 py-3 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all resize-none"
               placeholder="정답 해설을 입력하세요."
             />
           </div>
         </div>
 
         {/* 하단 버튼 */}
-        <div className="p-6 border-t border-gray-200 bg-gray-50 flex items-center justify-end gap-3">
+        <div className="p-6 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 flex items-center justify-end gap-3">
           <button
             onClick={onClose}
             className="btn-outline"

@@ -386,7 +386,7 @@ const BankForm: React.FC<BankFormProps> = ({ bank, onSave, onCancel }) => {
               onChange={(e) => setDescription(e.target.value)}
               placeholder="문제은행에 대한 설명을 입력하세요..."
               rows={4}
-              className="w-full border border-gray-300 dark:border-gray-600 rounded-full px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400"
+              className="w-full border border-gray-300 dark:border-gray-600 rounded-2xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 resize-none"
             />
           </div>
 
@@ -774,7 +774,7 @@ const QuestionForm: React.FC<QuestionFormProps> = ({ bankId, question, onSave, o
               onChange={(e) => setQuestionText(e.target.value)}
               placeholder="문제를 입력하세요..."
               rows={3}
-              className="w-full border border-gray-300 dark:border-gray-600 rounded-full px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400"
+              className="w-full border border-gray-300 dark:border-gray-600 rounded-2xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 resize-none"
               required
             />
           </div>

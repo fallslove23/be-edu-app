@@ -61,7 +61,7 @@ const ExamForm: React.FC<ExamFormProps> = ({
   const [showQuestions, setShowQuestions] = useState(false);
   const [editingQuestionIndex, setEditingQuestionIndex] = useState<number | null>(null);
   const [showBankSelector, setShowBankSelector] = useState(false);
-  const [availableBanks, setAvailableBanks] = useState<any[]>([]);
+  const [availableBanks, setAvailableBanks] = useState<QB[]>([]);
 
   // 디버깅: courseRounds 확인
   useEffect(() => {
@@ -232,21 +232,7 @@ const ExamForm: React.FC<ExamFormProps> = ({
     }
   };
 
-  // 문제 업데이트
-  const updateQuestion = (index: number, questionData: Partial<QuestionFormData>) => {
-    const newQuestions = [...questions];
-    newQuestions[index] = { ...newQuestions[index], ...questionData };
-    setQuestions(newQuestions);
-  };
 
-  // 문제 옵션 업데이트
-  const updateQuestionOption = (questionIndex: number, optionIndex: number, value: string) => {
-    const newQuestions = [...questions];
-    const newOptions = [...newQuestions[questionIndex].options];
-    newOptions[optionIndex] = value;
-    newQuestions[questionIndex].options = newOptions;
-    setQuestions(newQuestions);
-  };
 
   return (
     <PageContainer>
@@ -292,7 +278,7 @@ const ExamForm: React.FC<ExamFormProps> = ({
                 </label>
                 <select
                   {...register('round_id', { required: '과정 차수를 선택해주세요.' })}
-                  className="w-full border border-gray-300 dark:border-gray-600 rounded-full px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full border border-gray-300 dark:border-gray-600 rounded-full px-4 py-2.5 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
                 >
                   <option value="">과정 차수 선택</option>
                   {courseRounds.map(round => (
@@ -314,7 +300,7 @@ const ExamForm: React.FC<ExamFormProps> = ({
                 </label>
                 <select
                   {...register('exam_type', { required: '시험 유형을 선택해주세요.' })}
-                  className="w-full border border-gray-300 dark:border-gray-600 rounded-full px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full border border-gray-300 dark:border-gray-600 rounded-full px-4 py-2.5 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
                 >
                   {(Object.keys(examTypeLabels) as ExamType[]).map(type => (
                     <option key={type} value={type}>{examTypeLabels[type]}</option>
@@ -330,7 +316,7 @@ const ExamForm: React.FC<ExamFormProps> = ({
               <input
                 type="text"
                 {...register('title', { required: '시험 제목을 입력해주세요.' })}
-                className="w-full border border-gray-300 dark:border-gray-600 rounded-full px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full border border-gray-300 dark:border-gray-600 rounded-full px-4 py-2.5 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
                 placeholder="예: 영업 기초 이론 평가"
               />
               {errors.title && (
@@ -345,7 +331,7 @@ const ExamForm: React.FC<ExamFormProps> = ({
               <textarea
                 {...register('description')}
                 rows={3}
-                className="w-full border border-gray-300 dark:border-gray-600 rounded-full px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full border border-gray-300 dark:border-gray-600 rounded-2xl px-4 py-3 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all resize-none"
                 placeholder="시험에 대한 상세 설명을 입력하세요."
               />
             </div>
@@ -366,7 +352,7 @@ const ExamForm: React.FC<ExamFormProps> = ({
                     required: '시험 시간을 입력해주세요.',
                     min: { value: 1, message: '1분 이상이어야 합니다.' }
                   })}
-                  className="w-full border border-gray-300 dark:border-gray-600 rounded-full px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full border border-gray-300 dark:border-gray-600 rounded-full px-4 py-2.5 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
                   min="1"
                 />
                 {errors.duration_minutes && (
@@ -385,7 +371,7 @@ const ExamForm: React.FC<ExamFormProps> = ({
                     min: { value: 1, message: '1문항 이상이어야 합니다.' },
                     max: { value: 100, message: '100문항을 초과할 수 없습니다.' }
                   })}
-                  className="w-full border border-gray-300 dark:border-gray-600 rounded-full px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full border border-gray-300 dark:border-gray-600 rounded-full px-4 py-2.5 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
                   min="1"
                   max="100"
                 />
@@ -405,7 +391,7 @@ const ExamForm: React.FC<ExamFormProps> = ({
                     min: { value: 0, message: '0점 이상이어야 합니다.' },
                     max: { value: 100, message: '100점을 초과할 수 없습니다.' }
                   })}
-                  className="w-full border border-gray-300 dark:border-gray-600 rounded-full px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full border border-gray-300 dark:border-gray-600 rounded-full px-4 py-2.5 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
                   min="0"
                   max="100"
                 />
@@ -424,7 +410,7 @@ const ExamForm: React.FC<ExamFormProps> = ({
                     required: '최대 응시 횟수를 입력해주세요.',
                     min: { value: 1, message: '1회 이상이어야 합니다.' }
                   })}
-                  className="w-full border border-gray-300 dark:border-gray-600 rounded-full px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full border border-gray-300 dark:border-gray-600 rounded-full px-4 py-2.5 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
                   min="1"
                 />
                 {errors.max_attempts && (
@@ -470,7 +456,7 @@ const ExamForm: React.FC<ExamFormProps> = ({
                 <input
                   type="datetime-local"
                   {...register('scheduled_at', { required: '시작 일시를 설정해주세요.' })}
-                  className="w-full border border-gray-300 dark:border-gray-600 rounded-full px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full border border-gray-300 dark:border-gray-600 rounded-full px-4 py-2.5 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
                 />
                 {errors.scheduled_at && (
                   <p className="mt-1 text-sm text-destructive">{errors.scheduled_at.message}</p>
@@ -484,7 +470,7 @@ const ExamForm: React.FC<ExamFormProps> = ({
                 <input
                   type="datetime-local"
                   {...register('available_until', { required: '마감 일시를 설정해주세요.' })}
-                  className="w-full border border-gray-300 dark:border-gray-600 rounded-full px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full border border-gray-300 dark:border-gray-600 rounded-full px-4 py-2.5 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
                 />
                 {errors.available_until && (
                   <p className="mt-1 text-sm text-destructive">{errors.available_until.message}</p>
@@ -497,7 +483,7 @@ const ExamForm: React.FC<ExamFormProps> = ({
                 </label>
                 <select
                   {...register('status', { required: '상태를 선택해주세요.' })}
-                  className="w-full border border-gray-300 dark:border-gray-600 rounded-full px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full border border-gray-300 dark:border-gray-600 rounded-full px-4 py-2.5 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
                 >
                   {(Object.keys(examStatusLabels) as ExamStatus[]).map(status => (
                     <option key={status} value={status}>{examStatusLabels[status]}</option>
@@ -587,7 +573,7 @@ const ExamForm: React.FC<ExamFormProps> = ({
         {/* 스마트 문제은행 선택 모달 */}
         {showBankSelector && (
           <SmartQuestionBankSelector
-            banks={availableBanks}
+            banks={availableBanks as any[]}
             onSelect={importQuestionsFromBank as any}
             onClose={() => setShowBankSelector(false)}
           />

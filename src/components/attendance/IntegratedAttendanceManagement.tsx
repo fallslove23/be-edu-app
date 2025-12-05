@@ -90,6 +90,7 @@ const IntegratedAttendanceManagement: React.FC = () => {
         .from('course_rounds')
         .select(`
           id,
+          title,
           round_name,
           round_code,
           round_number,
@@ -112,12 +113,17 @@ const IntegratedAttendanceManagement: React.FC = () => {
       const mappedSessions = (data || []).map(round => {
         // 차수 표시 형식: "25-8차 BS Basic" 또는 "{year}-{round_number}차 {course_name}"
         const year = round.start_date ? new Date(round.start_date).getFullYear().toString().slice(-2) : '';
+
+        // round_name이 없으면 title을 사용 (DB 스키마 호환성)
+        const name = round.round_name || round.title;
+
         const displayName = round.round_number && round.course_name
           ? `${year}-${round.round_number}차 ${round.course_name}`
-          : round.round_name; // fallback to round_name if fields are missing
+          : name; // fallback to name if fields are missing
 
         console.log('🔄 Mapping round:', {
           round_name: round.round_name,
+          title: round.title,
           round_number: round.round_number,
           course_name: round.course_name,
           displayName
@@ -125,7 +131,7 @@ const IntegratedAttendanceManagement: React.FC = () => {
 
         return {
           id: round.id,
-          session_name: displayName,
+          session_name: displayName || '이름 없음', // 최종 fallback
           session_code: round.round_code,
           start_date: round.start_date,
           end_date: round.end_date,
@@ -138,7 +144,7 @@ const IntegratedAttendanceManagement: React.FC = () => {
       if (mappedSessions.length > 0) {
         setSelectedSession(mappedSessions[0]);
       }
-    } catch (error: any) {
+    } catch (error: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
       console.error('Failed to load sessions:', error);
       console.error('Error details:', {
         message: error?.message,
@@ -744,7 +750,7 @@ const IntegratedAttendanceManagement: React.FC = () => {
                 <option value="">차수를 선택하세요</option>
                 {sessions.map(session => (
                   <option key={session.id} value={session.id}>
-                    {session.session_name} ({session.session_code}) - {format(new Date(session.start_date), 'yyyy-MM-dd')}
+                    {session.session_name} {session.session_code ? `(${session.session_code})` : ''} - {format(new Date(session.start_date), 'yyyy-MM-dd')}
                   </option>
                 ))}
               </select>
