@@ -4,6 +4,7 @@ import '../src/index.css'
 import { AuthProvider } from '@/contexts/AuthContext'
 import { ThemeProvider } from '@/contexts/ThemeContext'
 import { Modal } from '@/components/common/Modal'
+import DeveloperRoleSwitcher from '@/components/common/DeveloperRoleSwitcher'
 
 export default function RootLayout({
   children,
@@ -34,6 +35,7 @@ export default function RootLayout({
           <AuthProvider>
             {children}
             <Modal />
+            <DeveloperRoleSwitcher />
           </AuthProvider>
         </ThemeProvider>
       </body>
