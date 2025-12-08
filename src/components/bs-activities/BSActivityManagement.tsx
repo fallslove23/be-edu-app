@@ -314,25 +314,16 @@ const BSActivityManagementDesktop: React.FC = () => {
           <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-6 mb-8">
             <PageHeader
               title="BS 활동 관리"
-              description="전체 교육생의 활동 일지 관리, 피드백 및 발표"
+              description="전체 교육생의 활동 일지 검토, 피드백 및 발표 관리"
               badge="Activity Management"
             />
-            <div className="flex gap-3 w-full lg:w-auto">
-              <button
-                onClick={() => setViewMode('create')}
-                className="btn-primary flex-1 lg:flex-none flex items-center justify-center gap-2"
-              >
-                <PlusIcon className="w-5 h-5" />
-                새 활동 작성
-              </button>
-              <button
-                onClick={() => setShowPresentationMode(true)}
-                className="btn-secondary flex-1 lg:flex-none flex items-center justify-center gap-2"
-              >
-                <PresentationChartLineIcon className="w-5 h-5" />
-                프레젠테이션 모드
-              </button>
-            </div>
+            <button
+              onClick={() => setShowPresentationMode(true)}
+              className="btn-primary w-full lg:w-auto flex items-center justify-center gap-2"
+            >
+              <PresentationChartLineIcon className="w-5 h-5" />
+              프레젠테이션 모드
+            </button>
           </div>
 
           {/* Rest of the content will be added here */}
@@ -590,121 +581,145 @@ const BSActivityManagementDesktop: React.FC = () => {
             </div>
 
             {filteredActivities.length > 0 ? (
-              <div className="divide-y divide-gray-200 dark:divide-gray-700">
+              <div className="grid grid-cols-1 gap-4 p-6">
                 {filteredActivities.map((activity) => (
-                  <div key={activity.id} className="p-6 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
-                    <div className="flex justify-between items-start mb-3">
-                      <div className="flex items-start space-x-4">
-                        <div className="flex-shrink-0">
-                          <CalendarDaysIcon className="w-5 h-5 text-gray-400 mt-1" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center space-x-3 mb-2">
-                            <h3 className="text-lg font-semibold text-gray-900 dark:text-white truncate">
+                  <div
+                    key={activity.id}
+                    className="group bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-600 hover:shadow-lg transition-all duration-200"
+                  >
+                    <div className="p-6">
+                      {/* 상단: 제목, 상태, 액션 버튼 */}
+                      <div className="flex justify-between items-start mb-4">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-3 mb-2">
+                            <h3 className="text-xl font-bold text-gray-900 dark:text-white">
                               {activity.clinic_name}
                             </h3>
                             <Badge variant={getStatusVariant(activity.status)} size="sm">
                               {ACTIVITY_STATUS_LABELS[activity.status]}
                             </Badge>
-                          </div>
-
-                          <div className="flex items-center space-x-4 text-sm text-gray-600 dark:text-gray-400 mb-2">
-                            <span className="flex items-center">
-                              <CalendarDaysIcon className="w-4 h-4 mr-1" />
-                              {new Date(activity.visit_date).toLocaleDateString()}
-                            </span>
-                            <span className="flex items-center">
-                              <MapPinIcon className="w-4 h-4 mr-1" />
-                              {activity.clinic_address}
-                            </span>
-                            <span className="flex items-center">
-                              <PhotoIcon className="w-4 h-4 mr-1" />
-                              {activity.photos.length}장
-                            </span>
-                          </div>
-
-                          <p className="text-gray-700 dark:text-gray-300 line-clamp-2">{activity.visit_purpose}</p>
-
-                          {/* 활동 유형 태그 */}
-                          <div className="flex flex-wrap gap-2 mt-3">
-                            {Array.from(new Set(activity.activities.map(a => a.type))).slice(0, 3).map(type => (
-                              <Badge
-                                key={type}
-                                variant={getActivityTypeVariant(type)}
-                                size="sm"
-                              >
-                                {ACTIVITY_TYPE_CONFIG[type].icon} {ACTIVITY_TYPE_CONFIG[type].label}
-                              </Badge>
-                            ))}
-                            {Array.from(new Set(activity.activities.map(a => a.type))).length > 3 && (
-                              <Badge variant="inactive" size="sm">
-                                +{Array.from(new Set(activity.activities.map(a => a.type))).length - 3}개 더
-                              </Badge>
+                            {activity.instructor_feedback && (
+                              <div className="flex items-center gap-1 px-2 py-1 bg-yellow-50 dark:bg-yellow-900/20 rounded-full">
+                                <StarIcon className="w-4 h-4 text-yellow-500" />
+                                <span className="text-sm font-medium text-yellow-700 dark:text-yellow-400">
+                                  {activity.instructor_feedback.overall_rating}/5
+                                </span>
+                              </div>
                             )}
                           </div>
-                        </div>
-                      </div>
 
-                      <div className="flex items-center space-x-2 ml-4">
-                        <button
-                          onClick={() => {
-                            setSelectedActivity(activity);
-                            setViewMode('view');
-                          }}
-                          className="btn-ghost p-2"
-                          title="상세보기"
-                        >
-                          <EyeIcon className="w-4 h-4" />
-                        </button>
-                        {activity.status === 'submitted' && (
-                          <button
-                            onClick={() => {
-                              setSelectedActivity(activity);
-                              setShowFeedbackModal(true);
-                            }}
-                            className="btn-ghost p-2 text-purple-600 hover:text-purple-700 hover:bg-purple-50"
-                            title="피드백 작성"
-                          >
-                            <ChatBubbleLeftEllipsisIcon className="w-4 h-4" />
-                          </button>
-                        )}
-                        {activity.instructor_feedback && (
-                          <button
-                            onClick={() => {
-                              setSelectedActivity(activity);
-                              setShowFeedbackModal(true);
-                            }}
-                            className="btn-ghost p-2 text-purple-600 hover:text-purple-700 hover:bg-purple-50"
-                            title="피드백 수정"
-                          >
-                            <ChatBubbleLeftEllipsisIcon className="w-4 h-4" />
-                          </button>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* 피드백 표시 */}
-                    {activity.instructor_feedback && (
-                      <div className="mt-3 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
-                        <div className="flex items-center space-x-2">
-                          <StarIcon className="w-4 h-4 text-foreground" />
-                          <span className="text-sm font-medium text-blue-900 dark:text-blue-300">강사 피드백</span>
-                          <div className="flex space-x-1">
-                            {[1, 2, 3, 4, 5].map(star => (
-                              <span
-                                key={star}
-                                className={`text-sm ${star <= activity.instructor_feedback!.overall_rating ? 'text-yellow-400' : 'text-gray-300'}`}
-                              >
-                                ★
-                              </span>
-                            ))}
+                          <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
+                            <span className="flex items-center gap-1.5">
+                              <CalendarDaysIcon className="w-4 h-4" />
+                              {new Date(activity.visit_date).toLocaleDateString('ko-KR', {
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric'
+                              })}
+                            </span>
+                            <span className="flex items-center gap-1.5">
+                              <MapPinIcon className="w-4 h-4" />
+                              {activity.clinic_address}
+                            </span>
+                            <span className="flex items-center gap-1.5 px-2 py-0.5 bg-blue-50 dark:bg-blue-900/20 rounded-full">
+                              <PhotoIcon className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                              <span className="font-medium text-blue-700 dark:text-blue-300">{activity.photos.length}장</span>
+                            </span>
                           </div>
-                          <span className="text-xs text-blue-700 dark:text-blue-400">
-                            ({activity.instructor_feedback.overall_rating}/5)
-                          </span>
+                        </div>
+
+                        <div className="flex items-center gap-2 ml-4">
+                          <button
+                            onClick={() => {
+                              setSelectedActivity(activity);
+                              setViewMode('view');
+                            }}
+                            className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors flex items-center gap-2"
+                          >
+                            <EyeIcon className="w-4 h-4" />
+                            상세보기
+                          </button>
+                          {(activity.status === 'submitted' || activity.instructor_feedback) && (
+                            <button
+                              onClick={() => {
+                                setSelectedActivity(activity);
+                                setShowFeedbackModal(true);
+                              }}
+                              className="px-4 py-2 text-sm font-medium text-white bg-purple-600 dark:bg-purple-500 rounded-lg hover:bg-purple-700 dark:hover:bg-purple-600 transition-colors flex items-center gap-2"
+                            >
+                              <ChatBubbleLeftEllipsisIcon className="w-4 h-4" />
+                              {activity.instructor_feedback ? '피드백 보기' : '피드백 작성'}
+                            </button>
+                          )}
                         </div>
                       </div>
-                    )}
+
+                      {/* 중단: 방문 목적 */}
+                      <p className="text-gray-700 dark:text-gray-300 mb-4 leading-relaxed">
+                        {activity.visit_purpose}
+                      </p>
+
+                      {/* 하단: 활동 유형 태그 */}
+                      <div className="flex flex-wrap gap-2">
+                        {Array.from(new Set(activity.activities.map(a => a.type))).slice(0, 5).map(type => (
+                          <Badge
+                            key={type}
+                            variant={getActivityTypeVariant(type)}
+                            size="sm"
+                          >
+                            {ACTIVITY_TYPE_CONFIG[type].icon} {ACTIVITY_TYPE_CONFIG[type].label}
+                          </Badge>
+                        ))}
+                        {Array.from(new Set(activity.activities.map(a => a.type))).length > 5 && (
+                          <Badge variant="inactive" size="sm">
+                            +{Array.from(new Set(activity.activities.map(a => a.type))).length - 5}
+                          </Badge>
+                        )}
+                      </div>
+
+                      {/* 피드백 요약 (있는 경우) */}
+                      {activity.instructor_feedback && (
+                        <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+                          <div className="flex items-start gap-3">
+                            <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-600 rounded-full flex items-center justify-center">
+                              <ChatBubbleLeftEllipsisIcon className="w-5 h-5 text-white" />
+                            </div>
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2 mb-1">
+                                <span className="text-sm font-semibold text-gray-900 dark:text-white">강사 피드백</span>
+                                <div className="flex gap-0.5">
+                                  {[1, 2, 3, 4, 5].map(star => (
+                                    <span
+                                      key={star}
+                                      className={`text-lg ${star <= activity.instructor_feedback!.overall_rating ? 'text-yellow-400' : 'text-gray-300 dark:text-gray-600'}`}
+                                    >
+                                      ★
+                                    </span>
+                                  ))}
+                                </div>
+                              </div>
+                              <div className="flex flex-wrap gap-2 text-xs">
+                                {activity.instructor_feedback.strengths.length > 0 && (
+                                  <span className="px-2 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded-full">
+                                    ✓ 잘한 점 {activity.instructor_feedback.strengths.length}개
+                                  </span>
+                                )}
+                                {activity.instructor_feedback.improvements.length > 0 && (
+                                  <span className="px-2 py-1 bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400 rounded-full">
+                                    → 개선점 {activity.instructor_feedback.improvements.length}개
+                                  </span>
+                                )}
+                                {activity.instructor_feedback.suggestions.length > 0 && (
+                                  <span className="px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 rounded-full">
+                                    💡 제안 {activity.instructor_feedback.suggestions.length}개
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 ))}
               </div>
@@ -729,22 +744,6 @@ const BSActivityManagementDesktop: React.FC = () => {
 
         </div>
       </PageContainer>
-    );
-  }
-
-  // 활동 작성 화면 - StudentActivityInput 사용
-  if (viewMode === 'create') {
-    return (
-      <StudentActivityInput
-        traineeId={user?.id || 'current-user'}
-        courseId="current-course-id"
-        skipList={true}
-        onSubmit={async (data) => {
-          console.log('Activity submitted:', data);
-          setViewMode('list');
-          toast.success('활동이 성공적으로 생성되었습니다.');
-        }}
-      />
     );
   }
 
