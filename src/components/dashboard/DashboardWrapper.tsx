@@ -25,6 +25,7 @@ import EnhancedDashboard from './EnhancedDashboard';
 import RolePreviewSelector from '../admin/RolePreviewSelector';
 import TraineeDashboard from '../trainee/TraineeDashboard';
 import InstructorDashboard from '../instructor/InstructorDashboard';
+import ErrorBoundary from '../common/ErrorBoundary';
 import { useAuth } from '../../contexts/AuthContext';
 import { PageContainer } from '../common/PageContainer';
 import { PageHeader } from '../common/PageHeader';
@@ -320,7 +321,9 @@ const DashboardWrapper: React.FC<DashboardWrapperProps> = ({ onNavigate }) => {
         {/* Original Dashboard Content (Hidden or moved below) */}
         <div className="pt-8 border-t border-gray-200 dark:border-gray-700">
           <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4 px-2">상세 대시보드</h3>
-          <EnhancedDashboard embedded={true} />
+          <ErrorBoundary>
+            <EnhancedDashboard embedded={true} />
+          </ErrorBoundary>
         </div>
       </div>
     </div>
