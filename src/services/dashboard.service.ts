@@ -87,7 +87,7 @@ export class DashboardService {
       const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
 
       const { data: recentAttendance } = await supabase
-        .from('attendance')
+        .from('attendance_records')
         .select('status')
         .gte('attendance_date', thirtyDaysAgo.toISOString());
 
@@ -100,7 +100,7 @@ export class DashboardService {
       // 이전 30일 출석률
       const sixtyDaysAgo = new Date(now.getTime() - 60 * 24 * 60 * 60 * 1000);
       const { data: previousAttendance } = await supabase
-        .from('attendance')
+        .from('attendance_records')
         .select('status')
         .gte('attendance_date', sixtyDaysAgo.toISOString())
         .lt('attendance_date', thirtyDaysAgo.toISOString());
@@ -179,7 +179,7 @@ export class DashboardService {
       const startDate = new Date(now.getTime() - days * 24 * 60 * 60 * 1000);
 
       const { data: attendance } = await supabase
-        .from('attendance')
+        .from('attendance_records')
         .select('attendance_date, status')
         .gte('attendance_date', startDate.toISOString())
         .order('attendance_date', { ascending: true });
@@ -348,7 +348,7 @@ export class DashboardService {
 
         // 해당 월의 출석률
         const { data: attendance } = await supabase
-          .from('attendance')
+          .from('attendance_records')
           .select('status')
           .gte('attendance_date', monthDate.toISOString())
           .lt('attendance_date', nextMonth.toISOString());
