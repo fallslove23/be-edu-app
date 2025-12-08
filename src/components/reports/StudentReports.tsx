@@ -12,6 +12,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { ReportService } from '../../services/report.services';
 import IntegratedAnalyticsDashboard from './IntegratedAnalyticsDashboard';
+import StudentDetailView from './StudentDetailView';
 import type {
   StudentReport,
   ReportStatistics,
@@ -99,22 +100,20 @@ const StudentReports: React.FC = () => {
           <div className="flex space-x-4">
             <button
               onClick={() => setMainView('analytics')}
-              className={`flex items-center px-4 py-3 border-b-2 transition-colors ${
-                mainView === 'analytics'
-                  ? 'border-primary text-primary font-medium'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
-              }`}
+              className={`flex items-center px-4 py-3 border-b-2 transition-colors ${mainView === 'analytics'
+                ? 'border-primary text-primary font-medium'
+                : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
+                }`}
             >
               <DocumentChartBarIcon className="h-5 w-5 mr-2" />
               통합 분석 대시보드
             </button>
             <button
               onClick={() => setMainView('reports')}
-              className={`flex items-center px-4 py-3 border-b-2 transition-colors ${
-                mainView === 'reports'
-                  ? 'border-primary text-primary font-medium'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
-              }`}
+              className={`flex items-center px-4 py-3 border-b-2 transition-colors ${mainView === 'reports'
+                ? 'border-primary text-primary font-medium'
+                : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
+                }`}
             >
               <UserGroupIcon className="h-5 w-5 mr-2" />
               교육생 개별 리포트
@@ -132,90 +131,89 @@ const StudentReports: React.FC = () => {
       {mainView === 'reports' && (
         <div className="space-y-6">
 
-      {/* 통계 요약 (간단하게) */}
-      {view === 'list' && statistics && (
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-          <div className="bg-card border rounded-lg p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground mb-1">총 교육생</p>
-                <p className="text-2xl font-bold">{statistics.total_trainees}</p>
+          {/* 통계 요약 (간단하게) */}
+          {view === 'list' && statistics && (
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+              <div className="bg-card border rounded-lg p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-muted-foreground mb-1">총 교육생</p>
+                    <p className="text-2xl font-bold">{statistics.total_trainees}</p>
+                  </div>
+                  <UserGroupIcon className="h-8 w-8 text-blue-600 opacity-20" />
+                </div>
               </div>
-              <UserGroupIcon className="h-8 w-8 text-blue-600 opacity-20" />
-            </div>
-          </div>
-          <div className="bg-card border rounded-lg p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground mb-1">총 이수</p>
-                <p className="text-2xl font-bold">{statistics.total_completions}</p>
+              <div className="bg-card border rounded-lg p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-muted-foreground mb-1">총 이수</p>
+                    <p className="text-2xl font-bold">{statistics.total_completions}</p>
+                  </div>
+                  <AcademicCapIcon className="h-8 w-8 text-green-600 opacity-20" />
+                </div>
               </div>
-              <AcademicCapIcon className="h-8 w-8 text-green-600 opacity-20" />
-            </div>
-          </div>
-          <div className="bg-card border rounded-lg p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground mb-1">평균 이수율</p>
-                <p className="text-2xl font-bold">{statistics.average_completion_rate.toFixed(1)}%</p>
+              <div className="bg-card border rounded-lg p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-muted-foreground mb-1">평균 이수율</p>
+                    <p className="text-2xl font-bold">{statistics.average_completion_rate.toFixed(1)}%</p>
+                  </div>
+                  <ClipboardDocumentCheckIcon className="h-8 w-8 text-purple-600 opacity-20" />
+                </div>
               </div>
-              <ClipboardDocumentCheckIcon className="h-8 w-8 text-purple-600 opacity-20" />
-            </div>
-          </div>
-          <div className="bg-card border rounded-lg p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground mb-1">평균 성적</p>
-                <p className="text-2xl font-bold">{statistics.average_score.toFixed(1)}점</p>
+              <div className="bg-card border rounded-lg p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-muted-foreground mb-1">평균 성적</p>
+                    <p className="text-2xl font-bold">{statistics.average_score.toFixed(1)}점</p>
+                  </div>
+                  <ChartBarIcon className="h-8 w-8 text-orange-600 opacity-20" />
+                </div>
               </div>
-              <ChartBarIcon className="h-8 w-8 text-orange-600 opacity-20" />
-            </div>
-          </div>
-          <div className="bg-card border rounded-lg p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground mb-1">평균 출석률</p>
-                <p className="text-2xl font-bold">{statistics.average_attendance_rate.toFixed(1)}%</p>
+              <div className="bg-card border rounded-lg p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-muted-foreground mb-1">평균 출석률</p>
+                    <p className="text-2xl font-bold">{statistics.average_attendance_rate.toFixed(1)}%</p>
+                  </div>
+                  <ClipboardDocumentCheckIcon className="h-8 w-8 text-teal-600 opacity-20" />
+                </div>
               </div>
-              <ClipboardDocumentCheckIcon className="h-8 w-8 text-teal-600 opacity-20" />
-            </div>
-          </div>
-          <div className="bg-card border rounded-lg p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground mb-1">발급 인증서</p>
-                <p className="text-2xl font-bold">{statistics.certificates_issued}</p>
+              <div className="bg-card border rounded-lg p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-muted-foreground mb-1">발급 인증서</p>
+                    <p className="text-2xl font-bold">{statistics.certificates_issued}</p>
+                  </div>
+                  <AcademicCapIcon className="h-8 w-8 text-indigo-600 opacity-20" />
+                </div>
               </div>
-              <AcademicCapIcon className="h-8 w-8 text-indigo-600 opacity-20" />
             </div>
-          </div>
-        </div>
-      )}
+          )}
 
-      {/* 뷰 렌더링 */}
-      {view === 'list' && (
-        <StudentListView
-          reports={reports}
-          filter={filter}
-          sort={sort}
-          showFilters={showFilters}
-          onFilterChange={setFilter}
-          onSortChange={setSort}
-          onToggleFilters={() => setShowFilters(!showFilters)}
-          onViewDetail={handleViewDetail}
-          onRefresh={loadData}
-        />
-      )}
+          {/* 뷰 렌더링 */}
+          {view === 'list' && (
+            <StudentListView
+              reports={reports}
+              filter={filter}
+              sort={sort}
+              showFilters={showFilters}
+              onFilterChange={setFilter}
+              onSortChange={setSort}
+              onToggleFilters={() => setShowFilters(!showFilters)}
+              onViewDetail={handleViewDetail}
+              onRefresh={loadData}
+            />
+          )}
 
-      {view === 'detail' && selectedReport && (
-        <StudentDetailView report={selectedReport} onBack={handleBackToList} />
-      )}
+          {view === 'detail' && selectedReport && (
+            <StudentDetailView report={selectedReport} onBack={handleBackToList} />
+          )}
         </div>
       )}
     </div>
   );
 };
-
 /**
  * 교육생 목록 뷰 컴포넌트
  */
@@ -367,25 +365,22 @@ const StudentListView: React.FC<StudentListViewProps> = ({
         <span className="text-sm text-muted-foreground self-center">정렬:</span>
         <button
           onClick={() => handleSortChange('name')}
-          className={`px-3 py-1 text-sm rounded ${
-            sort.field === 'name' ? 'bg-primary text-primary-foreground' : 'bg-secondary'
-          }`}
+          className={`px-3 py-1 text-sm rounded ${sort.field === 'name' ? 'bg-primary text-primary-foreground' : 'bg-secondary'
+            }`}
         >
           이름 {sort.field === 'name' && (sort.direction === 'asc' ? '↑' : '↓')}
         </button>
         <button
           onClick={() => handleSortChange('score')}
-          className={`px-3 py-1 text-sm rounded ${
-            sort.field === 'score' ? 'bg-primary text-primary-foreground' : 'bg-secondary'
-          }`}
+          className={`px-3 py-1 text-sm rounded ${sort.field === 'score' ? 'bg-primary text-primary-foreground' : 'bg-secondary'
+            }`}
         >
           성적 {sort.field === 'score' && (sort.direction === 'asc' ? '↑' : '↓')}
         </button>
         <button
           onClick={() => handleSortChange('attendance_rate')}
-          className={`px-3 py-1 text-sm rounded ${
-            sort.field === 'attendance_rate' ? 'bg-primary text-primary-foreground' : 'bg-secondary'
-          }`}
+          className={`px-3 py-1 text-sm rounded ${sort.field === 'attendance_rate' ? 'bg-primary text-primary-foreground' : 'bg-secondary'
+            }`}
         >
           출석률 {sort.field === 'attendance_rate' && (sort.direction === 'asc' ? '↑' : '↓')}
         </button>
@@ -467,340 +462,5 @@ const StudentListView: React.FC<StudentListViewProps> = ({
   );
 };
 
-/**
- * 교육생 상세 뷰 컴포넌트
- */
-interface StudentDetailViewProps {
-  report: StudentReport;
-  onBack: () => void;
-}
-
-const StudentDetailView: React.FC<StudentDetailViewProps> = ({ report, onBack }) => {
-  const [activeTab, setActiveTab] = useState<'overview' | 'courses' | 'grades' | 'attendance' | 'certificates'>('overview');
-
-  const handleExportPDF = () => {
-    // TODO: PDF 내보내기 구현
-    alert('PDF 내보내기 기능은 추후 구현 예정입니다.');
-  };
-
-  return (
-    <div className="space-y-6">
-      {/* 헤더 */}
-      <div className="flex items-center justify-between">
-        <button
-          onClick={onBack}
-          className="text-primary hover:underline font-medium"
-        >
-          ← 목록으로 돌아가기
-        </button>
-        <button
-          onClick={handleExportPDF}
-          className="px-4 py-2 bg-primary text-primary-foreground rounded-full hover:bg-primary/90 transition-colors"
-        >
-          <ArrowDownTrayIcon className="h-5 w-5 inline mr-2" />
-          PDF 내보내기
-        </button>
-      </div>
-
-      {/* 교육생 정보 카드 */}
-      <div className="bg-card border rounded-lg p-6">
-        <div className="flex items-start gap-6">
-          {report.trainee.profile_image_url ? (
-            <img
-              src={report.trainee.profile_image_url}
-              alt={report.trainee.name}
-              className="w-24 h-24 rounded-lg object-cover"
-            />
-          ) : (
-            <div className="w-24 h-24 rounded-lg bg-primary/10 flex items-center justify-center">
-              <span className="text-3xl font-bold text-primary">
-                {report.trainee.name.charAt(0)}
-              </span>
-            </div>
-          )}
-          <div className="flex-1">
-            <h2 className="text-2xl font-bold mb-2">{report.trainee.name}</h2>
-            <div className="grid grid-cols-2 gap-4 text-sm">
-              <div>
-                <span className="text-muted-foreground">이메일: </span>
-                <span>{report.trainee.email}</span>
-              </div>
-              {report.trainee.phone && (
-                <div>
-                  <span className="text-muted-foreground">전화번호: </span>
-                  <span>{report.trainee.phone}</span>
-                </div>
-              )}
-              <div>
-                <span className="text-muted-foreground">가입일: </span>
-                <span>{new Date(report.trainee.joined_at).toLocaleDateString('ko-KR')}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* 탭 네비게이션 */}
-      <div className="border-b">
-        <div className="flex gap-6">
-          {[
-            { id: 'overview', label: '개요' },
-            { id: 'courses', label: '과정 이수' },
-            { id: 'grades', label: '성적' },
-            { id: 'attendance', label: '출석' },
-            { id: 'certificates', label: '인증서' }
-          ].map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id as any)}
-              className={`pb-3 px-2 font-medium transition-colors ${
-                activeTab === tab.id
-                  ? 'text-primary border-b-2 border-primary'
-                  : 'text-muted-foreground hover:text-foreground'
-              }`}
-            >
-              {tab.label}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* 탭 컨텐츠 */}
-      <div>
-        {activeTab === 'overview' && <OverviewTab report={report} />}
-        {activeTab === 'courses' && <CoursesTab report={report} />}
-        {activeTab === 'grades' && <GradesTab report={report} />}
-        {activeTab === 'attendance' && <AttendanceTab report={report} />}
-        {activeTab === 'certificates' && <CertificatesTab report={report} />}
-      </div>
-    </div>
-  );
-};
-
-/**
- * 개요 탭
- */
-const OverviewTab: React.FC<{ report: StudentReport }> = ({ report }) => {
-  return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-      <div className="bg-card border rounded-lg p-6">
-        <p className="text-sm text-muted-foreground mb-1">총 과정</p>
-        <p className="text-3xl font-bold">{report.overall_statistics.total_courses}</p>
-      </div>
-      <div className="bg-card border rounded-lg p-6">
-        <p className="text-sm text-muted-foreground mb-1">이수 완료</p>
-        <p className="text-3xl font-bold text-green-600">{report.overall_statistics.completed_courses}</p>
-      </div>
-      <div className="bg-card border rounded-lg p-6">
-        <p className="text-sm text-muted-foreground mb-1">수강 중</p>
-        <p className="text-3xl font-bold text-blue-600">{report.overall_statistics.in_progress_courses}</p>
-      </div>
-      <div className="bg-card border rounded-lg p-6">
-        <p className="text-sm text-muted-foreground mb-1">평균 성적</p>
-        <p className="text-3xl font-bold text-orange-600">{report.overall_statistics.average_score.toFixed(1)}점</p>
-      </div>
-      <div className="bg-card border rounded-lg p-6">
-        <p className="text-sm text-muted-foreground mb-1">평균 출석률</p>
-        <p className="text-3xl font-bold text-teal-600">{report.overall_statistics.average_attendance_rate.toFixed(1)}%</p>
-      </div>
-      <div className="bg-card border rounded-lg p-6">
-        <p className="text-sm text-muted-foreground mb-1">인증서</p>
-        <p className="text-3xl font-bold text-indigo-600">{report.overall_statistics.total_certificates}개</p>
-      </div>
-    </div>
-  );
-};
-
-/**
- * 과정 이수 탭
- */
-const CoursesTab: React.FC<{ report: StudentReport }> = ({ report }) => {
-  const getStatusBadge = (status: string) => {
-    const badges = {
-      completed: { label: '완료', className: 'bg-green-500/10 text-green-700' },
-      in_progress: { label: '수강중', className: 'bg-blue-100 text-blue-800' },
-      dropped: { label: '중도포기', className: 'bg-destructive/10 text-destructive' },
-      pending: { label: '대기', className: 'bg-gray-100 text-gray-800' }
-    };
-    const badge = badges[status as keyof typeof badges] || badges.pending;
-    return (
-      <span className={`px-2 py-1 text-xs font-medium rounded ${badge.className}`}>
-        {badge.label}
-      </span>
-    );
-  };
-
-  return (
-    <div className="space-y-4">
-      {report.course_completions.map((course) => (
-        <div key={course.id} className="bg-card border rounded-lg p-6">
-          <div className="flex items-start justify-between mb-4">
-            <div>
-              <h3 className="font-semibold text-lg">{course.course_name}</h3>
-              <p className="text-sm text-muted-foreground">
-                {course.session_code}
-                {course.division_name && ` - ${course.division_name}`}
-              </p>
-            </div>
-            {getStatusBadge(course.completion_status)}
-          </div>
-          <div className="grid grid-cols-2 gap-4 text-sm">
-            <div>
-              <span className="text-muted-foreground">시작일: </span>
-              <span>{new Date(course.start_date).toLocaleDateString('ko-KR')}</span>
-            </div>
-            <div>
-              <span className="text-muted-foreground">종료일: </span>
-              <span>{new Date(course.end_date).toLocaleDateString('ko-KR')}</span>
-            </div>
-            {course.completion_date && (
-              <div>
-                <span className="text-muted-foreground">이수일: </span>
-                <span>{new Date(course.completion_date).toLocaleDateString('ko-KR')}</span>
-              </div>
-            )}
-            {course.certificate_issued && (
-              <div>
-                <span className="text-muted-foreground">인증서 번호: </span>
-                <span>{course.certificate_number}</span>
-              </div>
-            )}
-          </div>
-        </div>
-      ))}
-      {report.course_completions.length === 0 && (
-        <p className="text-center py-8 text-muted-foreground">이수 과정이 없습니다.</p>
-      )}
-    </div>
-  );
-};
-
-/**
- * 성적 탭
- */
-const GradesTab: React.FC<{ report: StudentReport }> = ({ report }) => {
-  return (
-    <div className="space-y-4">
-      <div className="overflow-x-auto">
-        <table className="w-full">
-          <thead>
-            <tr className="border-b">
-              <th className="text-left py-3 px-4">과목</th>
-              <th className="text-center py-3 px-4">점수</th>
-              <th className="text-center py-3 px-4">백분율</th>
-              <th className="text-center py-3 px-4">등급</th>
-              <th className="text-center py-3 px-4">평가일</th>
-            </tr>
-          </thead>
-          <tbody>
-            {report.grades.map((grade, index) => (
-              <tr key={index} className="border-b hover:bg-muted/50">
-                <td className="py-3 px-4">{grade.subject}</td>
-                <td className="text-center py-3 px-4">
-                  {grade.score}/{grade.max_score}
-                </td>
-                <td className="text-center py-3 px-4">{grade.percentage.toFixed(1)}%</td>
-                <td className="text-center py-3 px-4">
-                  <span className="font-bold">{grade.grade}</span>
-                </td>
-                <td className="text-center py-3 px-4">
-                  {new Date(grade.evaluation_date).toLocaleDateString('ko-KR')}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-      {report.grades.length === 0 && (
-        <p className="text-center py-8 text-muted-foreground">성적 정보가 없습니다.</p>
-      )}
-    </div>
-  );
-};
-
-/**
- * 출석 탭
- */
-const AttendanceTab: React.FC<{ report: StudentReport }> = ({ report }) => {
-  const { attendance_summary } = report;
-
-  return (
-    <div className="space-y-6">
-      {/* 출석 통계 카드 */}
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-        <div className="bg-card border rounded-lg p-4 text-center">
-          <p className="text-sm text-muted-foreground mb-1">총 일수</p>
-          <p className="text-2xl font-bold">{attendance_summary.total_days}</p>
-        </div>
-        <div className="bg-card border rounded-lg p-4 text-center">
-          <p className="text-sm text-muted-foreground mb-1">출석</p>
-          <p className="text-2xl font-bold text-green-600">{attendance_summary.present_days}</p>
-        </div>
-        <div className="bg-card border rounded-lg p-4 text-center">
-          <p className="text-sm text-muted-foreground mb-1">지각</p>
-          <p className="text-2xl font-bold text-foreground">{attendance_summary.late_days}</p>
-        </div>
-        <div className="bg-card border rounded-lg p-4 text-center">
-          <p className="text-sm text-muted-foreground mb-1">결석</p>
-          <p className="text-2xl font-bold text-destructive">{attendance_summary.absent_days}</p>
-        </div>
-        <div className="bg-card border rounded-lg p-4 text-center">
-          <p className="text-sm text-muted-foreground mb-1">출석률</p>
-          <p className="text-2xl font-bold text-blue-600">{attendance_summary.attendance_rate.toFixed(1)}%</p>
-        </div>
-      </div>
-
-      {/* 출석률 프로그레스 바 */}
-      <div className="bg-card border rounded-lg p-6">
-        <p className="text-sm text-muted-foreground mb-2">전체 출석률</p>
-        <div className="w-full bg-gray-200 rounded-lg h-4">
-          <div
-            className="bg-blue-600 h-4 rounded-lg transition-all"
-            style={{ width: `${attendance_summary.attendance_rate}%` }}
-          />
-        </div>
-      </div>
-    </div>
-  );
-};
-
-/**
- * 인증서 탭
- */
-const CertificatesTab: React.FC<{ report: StudentReport }> = ({ report }) => {
-  return (
-    <div className="space-y-4">
-      {report.certificates.map((cert) => (
-        <div key={cert.id} className="bg-card border rounded-lg p-6">
-          <div className="flex items-start justify-between">
-            <div>
-              <h3 className="font-semibold text-lg">{cert.course_name}</h3>
-              <p className="text-sm text-muted-foreground mt-1">
-                인증서 번호: {cert.certificate_number}
-              </p>
-              <p className="text-sm text-muted-foreground">
-                발급일: {new Date(cert.issued_date).toLocaleDateString('ko-KR')}
-              </p>
-            </div>
-            {cert.certificate_url && (
-              <a
-                href={cert.certificate_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-4 py-2 bg-primary text-primary-foreground rounded-full hover:bg-primary/90 transition-colors"
-              >
-                <ArrowDownTrayIcon className="h-5 w-5 inline mr-2" />
-                다운로드
-              </a>
-            )}
-          </div>
-        </div>
-      ))}
-      {report.certificates.length === 0 && (
-        <p className="text-center py-8 text-muted-foreground">발급된 인증서가 없습니다.</p>
-      )}
-    </div>
-  );
-};
 
 export default StudentReports;

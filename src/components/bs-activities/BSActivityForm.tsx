@@ -186,14 +186,14 @@ const BSActivityForm: React.FC<BSActivityFormProps> = ({
     <form onSubmit={handleSubmit} className="space-y-6 pb-24">
       {/* 에러 메시지 */}
       {error && (
-        <div className="bg-destructive/10 border border-destructive/50 text-destructive px-4 py-3 rounded-full">
+        <div className="bg-destructive/10 dark:bg-red-900/30 border border-destructive/50 dark:border-red-800 text-destructive dark:text-red-400 px-4 py-3 rounded-lg">
           {error}
         </div>
       )}
 
       {/* 활동 날짜 */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
           <CalendarIcon className="h-5 w-5 inline mr-2" />
           활동 날짜
         </label>
@@ -201,14 +201,14 @@ const BSActivityForm: React.FC<BSActivityFormProps> = ({
           type="date"
           value={activityDate}
           onChange={(e) => setActivityDate(e.target.value)}
-          className="w-full px-4 py-3 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg"
+          className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg"
           required
         />
       </div>
 
       {/* 카테고리 */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
           <TagIcon className="h-5 w-5 inline mr-2" />
           활동 유형
         </label>
@@ -220,8 +220,8 @@ const BSActivityForm: React.FC<BSActivityFormProps> = ({
               onClick={() => setCategory(cat)}
               className={`px-4 py-3 rounded-full text-sm font-medium transition-colors ${
                 category === cat
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  ? 'bg-blue-600 dark:bg-blue-500 text-white'
+                  : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
               }`}
             >
               <span className="mr-2">{activityCategoryIcons[cat]}</span>
@@ -233,7 +233,7 @@ const BSActivityForm: React.FC<BSActivityFormProps> = ({
 
       {/* 제목 */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
           <DocumentTextIcon className="h-5 w-5 inline mr-2" />
           제목
         </label>
@@ -242,14 +242,14 @@ const BSActivityForm: React.FC<BSActivityFormProps> = ({
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           placeholder="활동 제목을 입력하세요"
-          className="w-full px-4 py-3 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg"
+          className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg"
           required
         />
       </div>
 
       {/* 활동 내용 */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
           활동 내용
         </label>
         <textarea
@@ -257,14 +257,14 @@ const BSActivityForm: React.FC<BSActivityFormProps> = ({
           onChange={(e) => setContent(e.target.value)}
           placeholder="활동 내용을 상세히 기록해주세요"
           rows={8}
-          className="w-full px-4 py-3 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg resize-none"
+          className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg resize-none"
           required
         />
       </div>
 
       {/* 사진 업로드 */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
           <PhotoIcon className="h-5 w-5 inline mr-2" />
           사진 ({images.length}/{DEFAULT_IMAGE_UPLOAD_OPTIONS.max_count})
         </label>
@@ -282,7 +282,7 @@ const BSActivityForm: React.FC<BSActivityFormProps> = ({
                 <button
                   type="button"
                   onClick={() => handleImageRemove(index)}
-                  className="btn-danger"
+                  className="absolute top-1 right-1 p-1.5 bg-red-500 dark:bg-red-600 text-white rounded-full hover:bg-red-600 dark:hover:bg-red-700 transition-colors shadow-lg"
                 >
                   <XMarkIcon className="h-4 w-4" />
                 </button>
@@ -296,10 +296,10 @@ const BSActivityForm: React.FC<BSActivityFormProps> = ({
           type="button"
           onClick={() => fileInputRef.current?.click()}
           disabled={images.length >= DEFAULT_IMAGE_UPLOAD_OPTIONS.max_count || isUploadingImage}
-          className="w-full py-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full py-4 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 hover:border-blue-500 dark:hover:border-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          <CameraIcon className="h-8 w-8 mx-auto text-gray-400 mb-2" />
-          <p className="text-sm text-gray-600">
+          <CameraIcon className="h-8 w-8 mx-auto text-gray-400 dark:text-gray-500 mb-2" />
+          <p className="text-sm text-gray-600 dark:text-gray-400">
             {isUploadingImage ? '업로드 중...' : '사진 촬영 또는 선택'}
           </p>
         </button>
@@ -316,17 +316,17 @@ const BSActivityForm: React.FC<BSActivityFormProps> = ({
 
       {/* 위치 정보 */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
           <MapPinIcon className="h-5 w-5 inline mr-2" />
           위치 정보
         </label>
         {location ? (
-          <div className="bg-green-500/10 border border-green-200 rounded-lg p-3">
-            <p className="text-sm text-green-800">📍 {location.address}</p>
+          <div className="bg-green-500/10 dark:bg-green-900/30 border border-green-200 dark:border-green-800 rounded-lg p-3">
+            <p className="text-sm text-green-800 dark:text-green-400">📍 {location.address}</p>
             <button
               type="button"
               onClick={() => setLocation(undefined)}
-              className="text-xs text-green-600 hover:text-green-700 mt-1"
+              className="text-xs text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 mt-1"
             >
               위치 정보 제거
             </button>
@@ -335,7 +335,7 @@ const BSActivityForm: React.FC<BSActivityFormProps> = ({
           <button
             type="button"
             onClick={handleGetLocation}
-            className="w-full py-3 border border-gray-300 rounded-full hover:bg-gray-50 transition-colors"
+            className="w-full py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors"
           >
             현재 위치 가져오기
           </button>
@@ -343,12 +343,12 @@ const BSActivityForm: React.FC<BSActivityFormProps> = ({
       </div>
 
       {/* 버튼 */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 grid grid-cols-3 gap-2">
+      <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 p-4 grid grid-cols-3 gap-2 z-10">
         {onCancel && (
           <button
             type="button"
             onClick={onCancel}
-            className="px-4 py-3 bg-gray-100 text-gray-700 rounded-full hover:bg-gray-200 transition-colors font-medium"
+            className="px-4 py-3 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors font-medium"
           >
             취소
           </button>
@@ -357,7 +357,7 @@ const BSActivityForm: React.FC<BSActivityFormProps> = ({
           type="button"
           onClick={handleSaveDraft}
           disabled={isSubmitting}
-          className="px-4 py-3 bg-gray-600 text-white rounded-full hover:bg-gray-700 transition-colors font-medium disabled:opacity-50"
+          className="px-4 py-3 bg-gray-600 dark:bg-gray-600 text-white rounded-lg hover:bg-gray-700 dark:hover:bg-gray-500 transition-colors font-medium disabled:opacity-50"
         >
           임시저장
         </button>

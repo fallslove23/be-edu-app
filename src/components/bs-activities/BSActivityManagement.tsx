@@ -13,7 +13,8 @@ import {
   StarIcon,
   ChatBubbleLeftEllipsisIcon,
   PresentationChartLineIcon,
-  PlusIcon
+  PlusIcon,
+  XMarkIcon
 } from '@heroicons/react/24/outline';
 import { PageContainer } from '../common/PageContainer';
 import { PageHeader } from '../common/PageHeader';
@@ -384,12 +385,208 @@ const BSActivityManagementDesktop: React.FC = () => {
             </div>
           </div>
 
+          {/* 검색 및 필터 */}
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+            {/* 검색바 */}
+            <div className="flex flex-col lg:flex-row gap-4 mb-4">
+              <div className="flex-1 relative">
+                <MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="병원명, 방문목적, 활동 내용으로 검색..."
+                  className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+                {searchQuery && (
+                  <button
+                    onClick={() => setSearchQuery('')}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 p-1 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-full transition-colors"
+                  >
+                    <XMarkIcon className="w-4 h-4 text-gray-400" />
+                  </button>
+                )}
+              </div>
+              <button
+                onClick={() => setShowFilters(!showFilters)}
+                className={`px-4 py-3 rounded-lg border transition-colors flex items-center gap-2 ${
+                  showFilters || Object.values(filters).some(v => Array.isArray(v) ? v.length > 0 : v)
+                    ? 'bg-blue-50 dark:bg-blue-900/30 border-blue-500 dark:border-blue-600 text-blue-700 dark:text-blue-400'
+                    : 'bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600'
+                }`}
+              >
+                <FunnelIcon className="w-5 h-5" />
+                필터
+                {Object.values(filters).some(v => Array.isArray(v) ? v.length > 0 : v) && (
+                  <Badge variant="info" size="sm">
+                    {(filters.status?.length || 0) +
+                     (filters.activity_types?.length || 0) +
+                     (filters.date_from ? 1 : 0) +
+                     (filters.date_to ? 1 : 0) +
+                     (filters.clinic_name ? 1 : 0) +
+                     (filters.has_photos !== undefined ? 1 : 0) +
+                     (filters.has_feedback !== undefined ? 1 : 0)}
+                  </Badge>
+                )}
+              </button>
+            </div>
+
+            {/* 빠른 필터 칩 */}
+            <div className="flex flex-wrap gap-2 mb-4">
+              <button
+                onClick={() => setFilters(prev => ({ ...prev, status: prev.status?.includes('submitted') ? [] : ['submitted'] }))}
+                className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
+                  filters.status?.includes('submitted')
+                    ? 'bg-orange-100 dark:bg-orange-900/30 border-orange-500 dark:border-orange-600 text-orange-700 dark:text-orange-400 border'
+                    : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-600'
+                }`}
+              >
+                🔔 피드백 대기
+              </button>
+              <button
+                onClick={() => setFilters(prev => ({ ...prev, has_feedback: prev.has_feedback === true ? undefined : true }))}
+                className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
+                  filters.has_feedback === true
+                    ? 'bg-purple-100 dark:bg-purple-900/30 border-purple-500 dark:border-purple-600 text-purple-700 dark:text-purple-400 border'
+                    : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-600'
+                }`}
+              >
+                💬 피드백 있음
+              </button>
+              <button
+                onClick={() => setFilters(prev => ({ ...prev, has_photos: prev.has_photos === true ? undefined : true }))}
+                className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
+                  filters.has_photos === true
+                    ? 'bg-blue-100 dark:bg-blue-900/30 border-blue-500 dark:border-blue-600 text-blue-700 dark:text-blue-400 border'
+                    : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-600'
+                }`}
+              >
+                📷 사진 있음
+              </button>
+              {(searchQuery || Object.values(filters).some(v => Array.isArray(v) ? v.length > 0 : v)) && (
+                <button
+                  onClick={() => {
+                    setSearchQuery('');
+                    setFilters({
+                      status: [],
+                      activity_types: [],
+                      date_from: '',
+                      date_to: '',
+                      clinic_name: '',
+                      has_photos: undefined,
+                      has_feedback: undefined
+                    });
+                  }}
+                  className="px-3 py-1.5 rounded-full text-sm font-medium bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 hover:bg-red-200 dark:hover:bg-red-900/50 transition-colors"
+                >
+                  ✕ 초기화
+                </button>
+              )}
+            </div>
+
+            {/* 고급 필터 패널 */}
+            {showFilters && (
+              <div className="border-t border-gray-200 dark:border-gray-700 pt-4 space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {/* 상태 필터 */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      상태
+                    </label>
+                    <div className="space-y-2">
+                      {(['draft', 'submitted', 'reviewed', 'approved'] as const).map(status => (
+                        <label key={status} className="flex items-center">
+                          <input
+                            type="checkbox"
+                            checked={filters.status?.includes(status)}
+                            onChange={(e) => {
+                              if (e.target.checked) {
+                                setFilters(prev => ({ ...prev, status: [...(prev.status || []), status] }));
+                              } else {
+                                setFilters(prev => ({ ...prev, status: prev.status?.filter(s => s !== status) || [] }));
+                              }
+                            }}
+                            className="w-4 h-4 text-blue-600 border-gray-300 dark:border-gray-600 rounded focus:ring-blue-500"
+                          />
+                          <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">
+                            {ACTIVITY_STATUS_LABELS[status]}
+                          </span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* 날짜 범위 */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      기간
+                    </label>
+                    <div className="space-y-2">
+                      <input
+                        type="date"
+                        value={filters.date_from || ''}
+                        onChange={(e) => setFilters(prev => ({ ...prev, date_from: e.target.value }))}
+                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm"
+                        placeholder="시작일"
+                      />
+                      <input
+                        type="date"
+                        value={filters.date_to || ''}
+                        onChange={(e) => setFilters(prev => ({ ...prev, date_to: e.target.value }))}
+                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm"
+                        placeholder="종료일"
+                      />
+                    </div>
+                  </div>
+
+                  {/* 병원명 */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      병원명
+                    </label>
+                    <input
+                      type="text"
+                      value={filters.clinic_name || ''}
+                      onChange={(e) => setFilters(prev => ({ ...prev, clinic_name: e.target.value }))}
+                      placeholder="병원명 입력"
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm"
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
           {/* 활동 목록 */}
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-            <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+            <div className="p-6 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
               <h2 className="text-lg font-bold text-gray-900 dark:text-white">
-                활동 일지 목록 ({filteredActivities.length})
+                활동 일지 목록
+                <span className="ml-2 text-blue-600 dark:text-blue-400">
+                  ({filteredActivities.length}/{activities.length})
+                </span>
               </h2>
+              <div className="flex items-center gap-2">
+                <select
+                  className="px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                  onChange={(e) => {
+                    const sortedActivities = [...filteredActivities];
+                    if (e.target.value === 'date-desc') {
+                      sortedActivities.sort((a, b) => new Date(b.visit_date).getTime() - new Date(a.visit_date).getTime());
+                    } else if (e.target.value === 'date-asc') {
+                      sortedActivities.sort((a, b) => new Date(a.visit_date).getTime() - new Date(b.visit_date).getTime());
+                    } else if (e.target.value === 'status') {
+                      const statusOrder = { 'submitted': 0, 'reviewed': 1, 'approved': 2, 'draft': 3 };
+                      sortedActivities.sort((a, b) => (statusOrder[a.status as keyof typeof statusOrder] || 999) - (statusOrder[b.status as keyof typeof statusOrder] || 999));
+                    }
+                    setFilteredActivities(sortedActivities);
+                  }}
+                >
+                  <option value="date-desc">최신순</option>
+                  <option value="date-asc">오래된순</option>
+                  <option value="status">상태별</option>
+                </select>
+              </div>
             </div>
 
             {filteredActivities.length > 0 ? (

@@ -160,63 +160,80 @@
 
   /* Glassmorphism Utilities */
   .glass-panel {
-    @apply bg-white/5 backdrop-blur-xl border border-white/10 shadow-xl;
+    @apply bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border border-white/20 dark:border-gray-800 shadow-xl;
   }
 
   .glass-card {
-    @apply bg-black/20 backdrop-blur-md border border-white/5 shadow-lg hover:bg-black/30 transition-all duration-300 hover:scale-[1.02] hover:shadow-primary/20 hover:border-primary/30;
+    @apply bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 shadow-sm transition-all duration-300 hover:shadow-md;
   }
 
   .glass-button {
-    @apply bg-white/10 backdrop-blur-md border border-white/10 hover:bg-white/20 active:scale-95 transition-all duration-200;
+    @apply bg-white/50 dark:bg-gray-800/50 backdrop-blur-md border border-gray-200 dark:border-gray-700 hover:bg-white/80 dark:hover:bg-gray-800 active:scale-95 transition-all duration-200;
+  }
+
+  /* Premium Card Styles */
+  .card-premium {
+    @apply bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm transition-all duration-300;
+  }
+
+  .card-premium:hover {
+    @apply shadow-md border-gray-200 dark:border-gray-600 transform scale-[1.002];
   }
 
   /* Text Gradients */
   .text-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 animate-gradient-x;
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 animate-gradient-x;
+  }
+
+  .text-gradient-subtle {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-gray-700 via-gray-900 to-gray-700 dark:from-gray-300 dark:via-white dark:to-gray-300;
   }
 
   /* Bento Grid Layouts */
   .bento-grid {
-    @apply grid grid-cols-1 md:grid-cols-3 gap-4 auto-rows-[minmax(180px, auto)];
+    @apply grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[minmax(180px, auto)];
   }
 
   .bento-item {
-    @apply glass-card rounded-xl p-6 flex flex-col justify-between overflow-hidden relative;
+    @apply card-premium p-6 flex flex-col justify-between overflow-hidden relative;
   }
 
   /* Buttons Overhaul */
   .btn-base {
-    @apply px-5 py-2.5 rounded-full font-medium shadow-lg transition-all duration-300 inline-flex items-center justify-center gap-2 cursor-pointer relative overflow-hidden;
+    @apply px-5 py-2.5 rounded-xl font-medium shadow-sm transition-all duration-300 inline-flex items-center justify-center gap-2 cursor-pointer relative overflow-hidden focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-900;
     flex-direction: row !important;
     writing-mode: horizontal-tb !important;
   }
 
   .btn-primary {
     @apply btn-base text-white border-0;
-    background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
-    box-shadow: 0 0 20px rgba(124, 58, 237, 0.3);
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
   }
 
   .btn-primary:hover {
-    @apply scale-[1.02];
-    box-shadow: 0 0 30px rgba(124, 58, 237, 0.5);
+    @apply scale-[1.02] shadow-lg;
+    box-shadow: 0 6px 16px rgba(79, 70, 229, 0.4);
+  }
+
+  .btn-primary:active {
+    @apply scale-[0.98];
   }
 
   .btn-secondary {
-    @apply btn-base bg-secondary text-secondary-foreground border border-transparent hover:brightness-95;
+    @apply btn-base bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700;
   }
 
   .btn-outline {
-    @apply btn-base bg-transparent border border-input hover:bg-accent hover:text-accent-foreground;
+    @apply btn-base bg-transparent border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white hover:border-gray-400 dark:hover:border-gray-500;
   }
 
   .btn-danger {
-    @apply btn-base bg-destructive text-destructive-foreground border border-transparent hover:brightness-90;
+    @apply btn-base bg-white dark:bg-gray-800 text-red-600 border border-red-200 dark:border-red-900/30 hover:bg-red-50 dark:hover:bg-red-900/20 hover:border-red-300;
   }
 
   .btn-ghost {
-    @apply btn-base bg-transparent shadow-none hover:bg-accent hover:text-accent-foreground;
+    @apply btn-base bg-transparent shadow-none border-transparent hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white;
   }
 
   /* Button sizes */
@@ -254,7 +271,7 @@
     }
 
     50% {
-      transform: translateY(-10px);
+      transform: translateY(-6px);
     }
   }
 

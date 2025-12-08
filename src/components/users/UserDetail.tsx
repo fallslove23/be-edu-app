@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  ArrowLeft,
   Pencil,
   User as UserIcon,
   Mail,
@@ -12,6 +11,7 @@ import {
 } from 'lucide-react';
 import type { User } from '../../types/auth.types';
 import { roleLabels, userStatusLabels } from '../../types/auth.types';
+import { DetailLayout, DetailSection } from '../common/DetailLayout';
 
 interface UserDetailProps {
   user: User;
@@ -33,230 +33,195 @@ const UserDetail: React.FC<UserDetailProps> = ({ user, onBack, onEdit }) => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
-      {/* 헤더 */}
-      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center">
-            <button
-              onClick={onBack}
-              className="mr-4 p-3 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-700 rounded-xl transition-all"
-            >
-              <ArrowLeft className="h-6 w-6" />
-            </button>
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">사용자 상세 정보</h1>
-              <p className="text-gray-500 dark:text-gray-400 mt-1">{user.name}님의 정보를 확인합니다.</p>
+    <DetailLayout
+      title="사용자 상세 정보"
+      description={`${user.name}님의 정보를 확인하고 관리합니다.`}
+      onBack={onBack}
+      actions={
+        <button
+          onClick={() => onEdit(user)}
+          className="btn-primary"
+        >
+          <Pencil className="h-4 w-4 mr-2" />
+          정보 수정
+        </button>
+      }
+    >
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* 기본 정보 */}
+        <DetailSection
+          title="기본 정보"
+          gradientLine
+          className="lg:col-span-1"
+        >
+          <div className="flex flex-col md:flex-row items-start md:items-center gap-6 mb-8">
+            <div className="flex-shrink-0">
+              <div className="h-24 w-24 rounded-2xl bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-900/30 dark:to-purple-900/30 flex items-center justify-center shadow-inner border border-indigo-100 dark:border-indigo-800">
+                <UserIcon className="h-10 w-10 text-indigo-600 dark:text-indigo-400" />
+              </div>
+            </div>
+            <div className="flex-1">
+              <div className="flex items-center gap-3 mb-2">
+                <h3 className="text-2xl font-bold text-gray-900 dark:text-white">{user.name}</h3>
+                <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold border ${user.status === 'active' ? 'bg-green-50 text-green-700 border-green-200 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800' :
+                    user.status === 'pending' ? 'bg-yellow-50 text-yellow-700 border-yellow-200 dark:bg-yellow-900/20 dark:text-yellow-400 dark:border-yellow-800' :
+                      'bg-red-50 text-red-700 border-red-200 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800'
+                  }`}>
+                  {userStatusLabels[user.status]}
+                </span>
+              </div>
+              <p className="text-sm text-gray-500 dark:text-gray-400 font-mono mb-2">사번: {user.employee_id}</p>
+              <div className="flex items-center gap-2">
+                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-lg text-xs font-medium ${user.role === 'admin' ? 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300' :
+                  user.role === 'manager' ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300' :
+                    'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300'
+                  }`}>
+                  {roleLabels[user.role]}
+                </span>
+              </div>
             </div>
           </div>
-          <button
-            onClick={() => onEdit(user)}
-            className="btn-primary flex items-center"
-          >
-            <Pencil className="h-5 w-5 mr-2" />
-            수정
-          </button>
-        </div>
-      </div>
 
-      {/* 기본 정보 */}
-      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
-        <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-6 flex items-center">
-          <span className="w-1 h-6 bg-blue-600 rounded-full mr-3"></span>
-          기본 정보
-        </h2>
+          <div className="space-y-4">
+            <div className="flex items-center p-4 bg-gray-50 dark:bg-gray-800/50 rounded-xl border border-gray-100 dark:border-gray-700/50 transition-colors hover:bg-gray-100 dark:hover:bg-gray-800">
+              <Mail className="h-5 w-5 mr-3 text-gray-400" />
+              <div>
+                <div className="text-xs text-gray-500 dark:text-gray-400 mb-0.5">이메일</div>
+                <div className="text-gray-900 dark:text-white font-medium">{user.email}</div>
+              </div>
+            </div>
+            <div className="flex items-center p-4 bg-gray-50 dark:bg-gray-800/50 rounded-xl border border-gray-100 dark:border-gray-700/50 transition-colors hover:bg-gray-100 dark:hover:bg-gray-800">
+              <Phone className="h-5 w-5 mr-3 text-gray-400" />
+              <div>
+                <div className="text-xs text-gray-500 dark:text-gray-400 mb-0.5">전화번호</div>
+                <div className="text-gray-900 dark:text-white font-medium">{user.phone}</div>
+              </div>
+            </div>
+          </div>
+        </DetailSection>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="space-y-6">
-            <div className="flex items-center space-x-4">
-              <div className="flex-shrink-0 h-20 w-20">
-                <div className="h-20 w-20 rounded-2xl bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center shadow-sm">
-                  <UserIcon className="h-10 w-10 text-blue-600 dark:text-blue-400" />
+        {/* 회사 정보 */}
+        <DetailSection
+          title="회사 정보"
+          gradientLine
+          className="lg:col-span-1"
+        >
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="p-4 bg-gray-50 dark:bg-gray-800/50 rounded-xl border border-gray-100 dark:border-gray-700/50">
+              <div className="flex items-center gap-2 mb-2">
+                <Building2 className="h-4 w-4 text-indigo-500" />
+                <span className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">부서</span>
+              </div>
+              <div className="text-lg font-bold text-gray-900 dark:text-white ml-6">{user.department}</div>
+            </div>
+
+            <div className="p-4 bg-gray-50 dark:bg-gray-800/50 rounded-xl border border-gray-100 dark:border-gray-700/50">
+              <div className="flex items-center gap-2 mb-2">
+                <UserIcon className="h-4 w-4 text-indigo-500" />
+                <span className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">직급</span>
+              </div>
+              <div className="text-lg font-bold text-gray-900 dark:text-white ml-6">{user.position}</div>
+            </div>
+
+            <div className="p-4 bg-gray-50 dark:bg-gray-800/50 rounded-xl border border-gray-100 dark:border-gray-700/50">
+              <div className="flex items-center gap-2 mb-2">
+                <CalendarDays className="h-4 w-4 text-indigo-500" />
+                <span className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">입사일</span>
+              </div>
+              <div className="text-lg font-bold text-gray-900 dark:text-white ml-6">{formatDate(user.hire_date)}</div>
+            </div>
+
+            <div className="p-4 bg-gray-50 dark:bg-gray-800/50 rounded-xl border border-gray-100 dark:border-gray-700/50">
+              <div className="flex items-center gap-2 mb-2">
+                <Clock className="h-4 w-4 text-indigo-500" />
+                <span className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">근속 기간</span>
+              </div>
+              <div className="text-lg font-bold text-gray-900 dark:text-white ml-6">
+                {(() => {
+                  const hireDate = new Date(user.hire_date);
+                  const now = new Date();
+                  const diffTime = Math.abs(now.getTime() - hireDate.getTime());
+                  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                  const years = Math.floor(diffDays / 365);
+                  const months = Math.floor((diffDays % 365) / 30);
+                  return `${years > 0 ? `${years}년 ` : ''}${months}개월`;
+                })()}
+              </div>
+            </div>
+          </div>
+        </DetailSection>
+
+        {/* 비상 연락처 (교육생만) */}
+        {
+          user.role === 'trainee' && user.emergency_contact && (
+            <DetailSection
+              title="비상 연락처"
+              icon={<AlertCircle className="h-5 w-5" />}
+              className="lg:col-span-2"
+            >
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="p-4 bg-orange-50 dark:bg-orange-900/10 rounded-xl border border-orange-100 dark:border-orange-900/30">
+                  <label className="block text-xs font-bold text-orange-600 dark:text-orange-400 uppercase tracking-wider mb-1">이름</label>
+                  <div className="text-gray-900 dark:text-white font-bold text-lg">{user.emergency_contact.name}</div>
+                </div>
+
+                <div className="p-4 bg-orange-50 dark:bg-orange-900/10 rounded-xl border border-orange-100 dark:border-orange-900/30">
+                  <label className="block text-xs font-bold text-orange-600 dark:text-orange-400 uppercase tracking-wider mb-1">관계</label>
+                  <div className="text-gray-900 dark:text-white font-bold text-lg">{user.emergency_contact.relationship}</div>
+                </div>
+
+                <div className="p-4 bg-orange-50 dark:bg-orange-900/10 rounded-xl border border-orange-100 dark:border-orange-900/30">
+                  <label className="block text-xs font-bold text-orange-600 dark:text-orange-400 uppercase tracking-wider mb-1">전화번호</label>
+                  <div className="flex items-center text-gray-900 dark:text-white font-bold text-lg">
+                    <Phone className="h-4 w-4 mr-2 text-orange-500" />
+                    <span>{user.emergency_contact.phone}</span>
+                  </div>
                 </div>
               </div>
-              <div>
-                <div className="text-2xl font-bold text-gray-900 dark:text-white">{user.name}</div>
-                <div className="text-sm text-gray-500 dark:text-gray-400 mt-1 font-mono">사번: {user.employee_id}</div>
-              </div>
-            </div>
+            </DetailSection>
+          )
+        }
 
-            <div className="space-y-4">
-              <div className="flex items-center p-3 bg-gray-50 dark:bg-gray-700/50 rounded-xl">
-                <Mail className="h-5 w-5 mr-3 text-gray-400" />
-                <span className="text-gray-700 dark:text-gray-300 font-medium">{user.email}</span>
-              </div>
-              <div className="flex items-center p-3 bg-gray-50 dark:bg-gray-700/50 rounded-xl">
-                <Phone className="h-5 w-5 mr-3 text-gray-400" />
-                <span className="text-gray-700 dark:text-gray-300 font-medium">{user.phone}</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="space-y-6">
+        {/* 시스템 정보 */}
+        <DetailSection
+          title="시스템 정보"
+          className="lg:col-span-2"
+        >
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <div>
-              <label className="block text-sm font-bold text-gray-500 dark:text-gray-400 mb-2">상태</label>
-              <span className={`inline-flex px-4 py-2 text-sm font-bold rounded-xl border ${user.status === 'active' ? 'bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800' :
-                user.status === 'pending' ? 'bg-yellow-50 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-400 border-yellow-200 dark:border-yellow-800' :
-                  user.status === 'suspended' ? 'bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 border-red-200 dark:border-red-800' :
-                    'bg-gray-50 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-600'
-                }`}>
-                {userStatusLabels[user.status]}
-              </span>
+              <label className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider block mb-1">등록일</label>
+              <div className="text-gray-900 dark:text-white font-medium">{formatDateTime(user.created_at)}</div>
             </div>
 
             <div>
-              <label className="block text-sm font-bold text-gray-500 dark:text-gray-400 mb-2">역할</label>
-              <span className={`inline-flex px-4 py-2 text-sm font-bold rounded-xl ${user.role === 'admin' ? 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300' :
-                user.role === 'manager' ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300' :
-                  user.role === 'operator' ? 'bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300' :
-                    user.role === 'instructor' ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300' :
-                      'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300'
-                }`}>
-                {roleLabels[user.role]}
-              </span>
+              <label className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider block mb-1">최근 수정일</label>
+              <div className="text-gray-900 dark:text-white font-medium">{formatDateTime(user.updated_at)}</div>
             </div>
 
             <div>
-              <label className="block text-sm font-bold text-gray-500 dark:text-gray-400 mb-2">최근 접속</label>
-              <div className="flex items-center text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-700/50 px-4 py-2 rounded-xl inline-block">
-                <Clock className="h-4 w-4 mr-2 text-gray-400" />
-                <span className="font-medium">{user.last_login ? formatDateTime(user.last_login) : '미접속'}</span>
+              <label className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider block mb-1">마지막 접속</label>
+              <div className="text-gray-900 dark:text-white font-medium">
+                {user.last_login ? formatDateTime(user.last_login) : '미접속'}
+              </div>
+            </div>
+
+            <div>
+              <label className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider block mb-1">권한</label>
+              <div className="flex flex-wrap gap-1">
+                {user.permissions && user.permissions.length > 0
+                  ? user.permissions.map(p => (
+                    <span key={p} className="text-xs bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 px-2 py-0.5 rounded">
+                      {p}
+                    </span>
+                  ))
+                  : <span className="text-gray-500 text-sm">기본 권한</span>
+                }
               </div>
             </div>
           </div>
-        </div>
-      </div>
-
-      {/* 회사 정보 */}
-      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
-        <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-6 flex items-center">
-          <span className="w-1 h-6 bg-blue-600 rounded-full mr-3"></span>
-          회사 정보
-        </h2>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl border border-gray-100 dark:border-gray-700">
-            <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">부서</label>
-            <div className="flex items-center text-gray-900 dark:text-white">
-              <Building2 className="h-5 w-5 mr-2 text-blue-500" />
-              <span className="font-bold text-lg">{user.department}</span>
-            </div>
-          </div>
-
-          <div className="p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl border border-gray-100 dark:border-gray-700">
-            <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">직급</label>
-            <div className="text-gray-900 dark:text-white font-bold text-lg">{user.position}</div>
-          </div>
-
-          <div className="p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl border border-gray-100 dark:border-gray-700">
-            <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">입사일</label>
-            <div className="flex items-center text-gray-900 dark:text-white">
-              <CalendarDays className="h-5 w-5 mr-2 text-blue-500" />
-              <span className="font-bold text-lg">{formatDate(user.hire_date)}</span>
-            </div>
-          </div>
-
-          <div className="p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl border border-gray-100 dark:border-gray-700">
-            <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">재직 기간</label>
-            <div className="text-gray-900 dark:text-white font-bold text-lg">
-              {(() => {
-                const hireDate = new Date(user.hire_date);
-                const now = new Date();
-                const diffTime = Math.abs(now.getTime() - hireDate.getTime());
-                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                const years = Math.floor(diffDays / 365);
-                const months = Math.floor((diffDays % 365) / 30);
-                return `${years > 0 ? `${years}년 ` : ''}${months}개월`;
-              })()}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* 비상 연락처 (교육생만) */}
-      {user.role === 'trainee' && user.emergency_contact && (
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
-          <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-6 flex items-center">
-            <AlertCircle className="h-6 w-6 mr-2 text-orange-500" />
-            비상 연락처
-          </h2>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="p-4 bg-orange-50 dark:bg-orange-900/20 rounded-xl border border-orange-100 dark:border-orange-800">
-              <label className="block text-xs font-bold text-orange-600 dark:text-orange-400 uppercase tracking-wider mb-2">이름</label>
-              <div className="text-gray-900 dark:text-white font-bold text-lg">{user.emergency_contact.name}</div>
-            </div>
-
-            <div className="p-4 bg-orange-50 dark:bg-orange-900/20 rounded-xl border border-orange-100 dark:border-orange-800">
-              <label className="block text-xs font-bold text-orange-600 dark:text-orange-400 uppercase tracking-wider mb-2">관계</label>
-              <div className="text-gray-900 dark:text-white font-bold text-lg">{user.emergency_contact.relationship}</div>
-            </div>
-
-            <div className="p-4 bg-orange-50 dark:bg-orange-900/20 rounded-xl border border-orange-100 dark:border-orange-800">
-              <label className="block text-xs font-bold text-orange-600 dark:text-orange-400 uppercase tracking-wider mb-2">전화번호</label>
-              <div className="flex items-center text-gray-900 dark:text-white font-bold text-lg">
-                <Phone className="h-5 w-5 mr-2 text-orange-500" />
-                <span>{user.emergency_contact.phone}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* 시스템 정보 */}
-      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
-        <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-6 flex items-center">
-          <span className="w-1 h-6 bg-gray-400 rounded-full mr-3"></span>
-          시스템 정보
-        </h2>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
-          <div className="flex justify-between py-3 border-b border-gray-100 dark:border-gray-700">
-            <label className="font-medium text-gray-500 dark:text-gray-400">등록일</label>
-            <div className="text-gray-900 dark:text-white font-medium">{formatDateTime(user.created_at)}</div>
-          </div>
-
-          <div className="flex justify-between py-3 border-b border-gray-100 dark:border-gray-700">
-            <label className="font-medium text-gray-500 dark:text-gray-400">최근 수정일</label>
-            <div className="text-gray-900 dark:text-white font-medium">{formatDateTime(user.updated_at)}</div>
-          </div>
-
-          <div className="flex justify-between py-3 border-b border-gray-100 dark:border-gray-700">
-            <label className="font-medium text-gray-500 dark:text-gray-400">사용자 ID</label>
-            <div className="text-gray-500 dark:text-gray-400 font-mono text-xs bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded">{user.id}</div>
-          </div>
-
-          <div className="flex justify-between py-3 border-b border-gray-100 dark:border-gray-700">
-            <label className="font-medium text-gray-500 dark:text-gray-400">권한</label>
-            <div className="text-gray-900 dark:text-white font-medium">
-              {user.permissions && user.permissions.length > 0
-                ? user.permissions.join(', ')
-                : '기본 권한'
-              }
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* 액션 영역 */}
-      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 sticky bottom-6">
-        <div className="flex items-center justify-between">
-          <button
-            onClick={onBack}
-            className="btn-outline px-6 py-3"
-          >
-            목록으로
-          </button>
-          <button
-            onClick={() => onEdit(user)}
-            className="btn-primary px-8 py-3 flex items-center"
-          >
-            <Pencil className="h-5 w-5 mr-2" />
-            정보 수정
-          </button>
-        </div>
-      </div>
-    </div>
+        </DetailSection>
+      </div >
+    </DetailLayout >
   );
 };
 
