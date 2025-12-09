@@ -1,4 +1,3 @@
-export { default as CourseManagement } from './CourseManagement';
 export { default as CourseList } from './CourseList';
 export { default as CourseForm } from './CourseForm';
 export { default as DeleteCourseModal } from './DeleteCourseModal';
@@ -6,7 +5,6 @@ export { default as CourseEnrollmentDashboard } from './CourseEnrollmentDashboar
 export { default as TraineeSelector } from './TraineeSelector';
 export { default as EnrollmentHistoryModal } from './EnrollmentHistoryModal';
 export { default as WaitingListManager } from './WaitingListManager';
-export { default as NewCourseManagement } from './NewCourseManagement';
 export { default as CourseTemplateManagement } from './CourseTemplateManagement';
 export { default as OfflineCourseWizard } from './OfflineCourseWizard';
 export { default as EducationTargetManager } from './EducationTargetManager';
