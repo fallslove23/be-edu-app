@@ -63,18 +63,29 @@ export default function DeveloperRoleSwitcher() {
     }
   };
 
+  const handleMinimize = () => {
+    setIsOpen(false); // 드롭다운 닫기
+    setIsMinimized(true);
+  };
+
+  const handleMaximize = () => {
+    setIsMinimized(false);
+    setIsOpen(false); // 복원 시 드롭다운 닫은 상태로
+  };
+
   // 최소화된 상태
   if (isMinimized) {
     return (
-      <div className="fixed bottom-4 right-4 z-50">
+      <div className="fixed bottom-4 right-4 z-[9999]">
         <button
-          onClick={() => setIsMinimized(false)}
-          className={`p-3 rounded-full shadow-lg transition-all ${
+          onClick={handleMaximize}
+          className={`p-3 rounded-full shadow-lg transition-all hover:scale-110 active:scale-95 ${
             isSwitched
               ? 'bg-gradient-to-r from-orange-500 to-red-500 text-white hover:from-orange-600 hover:to-red-600'
               : 'bg-gradient-to-r from-purple-500 to-blue-500 text-white hover:from-purple-600 hover:to-blue-600'
           }`}
           title="개발자 도구 열기"
+          aria-label="개발자 도구 열기"
         >
           <UserCircleIcon className="w-6 h-6" />
         </button>
@@ -105,9 +116,10 @@ export default function DeveloperRoleSwitcher() {
             )}
           </div>
           <button
-            onClick={() => setIsMinimized(true)}
+            onClick={handleMinimize}
             className="text-white hover:bg-white/20 rounded-lg p-1 transition-colors"
             title="최소화"
+            aria-label="최소화"
           >
             <XMarkIcon className="w-4 h-4" />
           </button>
