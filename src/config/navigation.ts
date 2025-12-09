@@ -114,16 +114,34 @@ export const navigationItems: MenuItem[] = [
     label: '시험 관리',
     icon: 'clipboard-document-list',
     description: '시험 출제 및 채점',
-    roles: ['admin', 'manager', 'operator', 'instructor', 'trainee'],
+    roles: ['admin', 'manager', 'operator', 'instructor'],
+    section: 'assessment',
+    route: 'exams'
+  },
+  {
+    id: 'exam-taking',
+    label: '시험 응시',
+    icon: 'pencil-square',
+    description: '시험 보기',
+    roles: ['trainee'],
     section: 'assessment',
     route: 'exams'
   },
   {
     id: 'practice',
-    label: '실습 평가',
+    label: '실습 평가 관리',
     icon: 'beaker',
     description: '실습 과제 평가',
-    roles: ['admin', 'manager', 'operator', 'instructor', 'trainee'],
+    roles: ['admin', 'manager', 'operator', 'instructor'],
+    section: 'assessment',
+    route: 'practice'
+  },
+  {
+    id: 'my-practice',
+    label: '내 실습 평가',
+    icon: 'beaker',
+    description: '내 실습 과제 및 평가 확인',
+    roles: ['trainee'],
     section: 'assessment',
     route: 'practice'
   },
@@ -147,10 +165,19 @@ export const navigationItems: MenuItem[] = [
   },
   {
     id: 'comprehensive-grades',
-    label: '종합 성적',
+    label: '종합 성적 관리',
     icon: 'trophy',
-    description: '최종 성적표',
-    roles: ['admin', 'manager', 'operator', 'instructor', 'trainee'],
+    description: '최종 성적표 조회 및 관리',
+    roles: ['admin', 'manager', 'operator', 'instructor'],
+    section: 'assessment',
+    route: 'comprehensive-grades'
+  },
+  {
+    id: 'my-grades',
+    label: '내 성적',
+    icon: 'trophy',
+    description: '내 시험 및 실습 성적 확인',
+    roles: ['trainee'],
     section: 'assessment',
     route: 'comprehensive-grades'
   },
