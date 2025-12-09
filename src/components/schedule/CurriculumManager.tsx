@@ -270,11 +270,11 @@ export default function CurriculumManager() {
       if (instructorsError) throw instructorsError;
       setInstructors(instructorsData || []);
 
-      // 운영자 로드 (course_manager 역할)
+      // 운영자 로드 (operator 역할)
       const { data: managersData, error: managersError } = await supabase
         .from('users')
         .select('id, name, email')
-        .eq('role', 'course_manager');
+        .eq('role', 'operator');
 
       if (managersError) throw managersError;
       setManagers(managersData || []);

@@ -92,12 +92,12 @@ const CourseForm: React.FC<CourseFormProps> = ({
 
   const loadUsers = async () => {
     try {
-      const [adminList, courseManagerList] = await Promise.all([
+      const [adminList, operatorList] = await Promise.all([
         UserService.getUsersByRole('admin'),
-        UserService.getUsersByRole('course_manager')
+        UserService.getUsersByRole('operator')
       ]);
 
-      const managerList = [...adminList, ...courseManagerList];
+      const managerList = [...adminList, ...operatorList];
 
       setManagers(managerList);
     } catch (error) {

@@ -70,7 +70,7 @@ export const permissionManager = {
   // 역할별 권한 매트릭스
   rolePermissions: {
     admin: ['read', 'write', 'delete', 'admin', 'manage_users', 'system_config'],
-    course_manager: ['read', 'write', 'manage_courses', 'view_reports'],
+    operator: ['read', 'write', 'manage_courses', 'view_reports'],
     instructor: ['read', 'write', 'manage_own_courses', 'grade_students'],
     trainee: ['read', 'view_own_data'],
     guest: ['read_public']
@@ -86,19 +86,19 @@ export const permissionManager = {
   canAccessResource: (userRole: string, resource: string, action: string): boolean => {
     const resourcePermissions = {
       courses: {
-        read: ['admin', 'course_manager', 'instructor', 'trainee'],
-        write: ['admin', 'course_manager', 'instructor'],
-        delete: ['admin', 'course_manager']
+        read: ['admin', 'operator', 'instructor', 'trainee'],
+        write: ['admin', 'operator', 'instructor'],
+        delete: ['admin', 'operator']
       },
       users: {
-        read: ['admin', 'course_manager'],
+        read: ['admin', 'operator'],
         write: ['admin'],
         delete: ['admin']
       },
       exams: {
-        read: ['admin', 'course_manager', 'instructor', 'trainee'],
-        write: ['admin', 'course_manager', 'instructor'],
-        delete: ['admin', 'course_manager']
+        read: ['admin', 'operator', 'instructor', 'trainee'],
+        write: ['admin', 'operator', 'instructor'],
+        delete: ['admin', 'operator']
       }
     } as const;
 

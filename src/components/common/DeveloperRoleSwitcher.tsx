@@ -48,7 +48,7 @@ export default function DeveloperRoleSwitcher() {
     return null;
   }
 
-  const availableRoles: UserRole[] = ['trainee', 'instructor', 'course_manager', 'operator', 'manager', 'admin'];
+  const availableRoles: UserRole[] = ['trainee', 'instructor', 'operator', 'manager', 'admin'];
 
   const handleRoleSwitch = (role: UserRole) => {
     switchRole(role);

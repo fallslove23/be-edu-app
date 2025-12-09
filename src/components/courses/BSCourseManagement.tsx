@@ -96,7 +96,7 @@ const BSCourseManagement: React.FC<BSCourseManagementProps> = ({
 
   const loadManagers = async () => {
     try {
-      const managerUsers = await UserService.getUsersByRole('course_manager');
+      const managerUsers = await UserService.getUsersByRole('operator');
       setManagers(managerUsers);
     } catch (error) {
       console.error('운영 담당자 로드 오류:', error);
