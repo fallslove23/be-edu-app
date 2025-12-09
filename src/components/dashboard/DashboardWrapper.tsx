@@ -22,7 +22,6 @@ import {
   PieChart,
 } from 'lucide-react';
 import EnhancedDashboard from './EnhancedDashboard';
-import RolePreviewSelector from '../admin/RolePreviewSelector';
 import TraineeDashboard from '../trainee/TraineeDashboard';
 import InstructorDashboard from '../instructor/InstructorDashboard';
 import ErrorBoundary from '../common/ErrorBoundary';
@@ -36,7 +35,6 @@ interface DashboardWrapperProps {
 
 const DashboardWrapper: React.FC<DashboardWrapperProps> = ({ onNavigate }) => {
   const { user } = useAuth();
-  const isAdmin = user && ['admin', 'manager'].includes(user.role);
   const [showMoreMenu, setShowMoreMenu] = useState(false);
   const moreMenuRef = useRef<HTMLDivElement>(null);
 
@@ -75,9 +73,6 @@ const DashboardWrapper: React.FC<DashboardWrapperProps> = ({ onNavigate }) => {
             badge={user?.role === 'admin' ? '관리자' : '매니저'}
           />
           <div className="flex items-center gap-3">
-            {/* 역할 미리보기 버튼 */}
-            {isAdmin && <RolePreviewSelector />}
-
             <button
               onClick={() => onNavigate?.('search')}
               className="p-2 text-gray-800 dark:text-gray-200 hover:bg-white dark:hover:bg-gray-800 rounded-full transition-all shadow-sm hover:shadow-md bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm"
