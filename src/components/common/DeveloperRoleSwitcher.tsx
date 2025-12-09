@@ -43,8 +43,8 @@ export default function DeveloperRoleSwitcher() {
     }
   }, [user?.role]);
 
-  // 관리자/조직장만 표시
-  if (!user || (user.role !== 'admin' && user.role !== 'manager')) {
+  // 원본 역할이 관리자/조직장인 경우에만 표시 (전환 후에도 계속 표시)
+  if (!user || !originalRole || (originalRole !== 'admin' && originalRole !== 'manager')) {
     return null;
   }
 
