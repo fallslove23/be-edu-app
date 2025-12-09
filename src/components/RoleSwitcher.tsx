@@ -1,7 +1,7 @@
 import React from 'react';
-import { useAuth } from '../../contexts/AuthContext';
-import { roleLabels } from '../../types/auth.types';
-import type { UserRole } from '../../types/auth.types';
+import { useAuth } from '@/contexts/AuthContext';
+import { roleLabels } from '@/types/auth.types';
+import type { UserRole } from '@/types/auth.types';
 import { UserCircleIcon, ChevronDownIcon } from '@heroicons/react/24/outline';
 
 const RoleSwitcher: React.FC = () => {

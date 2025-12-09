@@ -21,13 +21,12 @@ import {
   BellIcon
 } from '@heroicons/react/24/outline';
 import { useAuth } from '../../contexts/AuthContext';
-import type { 
-  EnrollmentManagement, 
-  EnrollmentFilters, 
-  EnrollmentStats,
-  enrollmentStatusLabels,
-  enrollmentTypeLabels
+import type {
+  EnrollmentManagement,
+  EnrollmentFilters,
+  EnrollmentStats
 } from '../../types/student.types';
+import { enrollmentStatusLabels, enrollmentTypeLabels } from '../../types/student.types';
 import EnrollmentForm from './EnrollmentForm';
 
 const EnrollmentManagementComponent: React.FC = () => {

@@ -6,8 +6,7 @@ import type {
   CourseSession,
   CourseEnrollment,
   RoundStats,
-  BSCourseSummary,
-  DEFAULT_COURSE_TEMPLATES
+  BSCourseSummary
 } from '../types/course-template.types';
 import { DEFAULT_COURSE_TEMPLATES } from '../types/course-template.types';
 

@@ -296,37 +296,57 @@ async function getUserByEmail(email: string): Promise<User> {
       id: 'admin1',
       name: '관리자',
       email: 'admin@company.com',
+      phone: '010-0000-0000',
+      employee_id: 'EMP001',
       role: 'admin',
       department: 'IT팀',
+      position: '관리자',
+      hire_date: new Date().toISOString(),
+      status: 'active',
       created_at: new Date().toISOString(),
-      last_login: new Date().toISOString()
+      updated_at: new Date().toISOString()
     },
     'instructor@company.com': {
       id: 'instructor1',
       name: '김강사',
       email: 'instructor@company.com',
+      phone: '010-1111-1111',
+      employee_id: 'EMP002',
       role: 'instructor',
       department: '교육팀',
+      position: '강사',
+      hire_date: new Date().toISOString(),
+      status: 'active',
       created_at: new Date().toISOString(),
-      last_login: new Date().toISOString()
+      updated_at: new Date().toISOString()
     },
     'trainee@company.com': {
       id: 'trainee1',
       name: '이교육생',
       email: 'trainee@company.com',
+      phone: '010-2222-2222',
+      employee_id: 'EMP003',
       role: 'trainee',
       department: '영업팀',
+      position: '교육생',
+      hire_date: new Date().toISOString(),
+      status: 'active',
       created_at: new Date().toISOString(),
-      last_login: new Date().toISOString()
+      updated_at: new Date().toISOString()
     },
     'manager@company.com': {
       id: 'manager1',
       name: '박매니저',
       email: 'manager@company.com',
+      phone: '010-3333-3333',
+      employee_id: 'EMP004',
       role: 'manager',
       department: '인사팀',
+      position: '매니저',
+      hire_date: new Date().toISOString(),
+      status: 'active',
       created_at: new Date().toISOString(),
-      last_login: new Date().toISOString()
+      updated_at: new Date().toISOString()
     }
   };
 
@@ -339,9 +359,14 @@ async function getUserFromPayload(payload: TokenPayload): Promise<User> {
     id: payload.userId,
     name: '사용자',
     email: payload.email,
+    phone: '010-0000-0000',
+    employee_id: 'EMP000',
     role: payload.role as UserRole,
     department: payload.role === 'trainee' ? '영업팀' : 'IT팀',
+    position: payload.role,
+    hire_date: new Date().toISOString(),
+    status: 'active',
     created_at: new Date().toISOString(),
-    last_login: new Date().toISOString()
+    updated_at: new Date().toISOString()
   };
 }

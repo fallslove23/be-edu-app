@@ -13,7 +13,7 @@ import {
 } from 'lucide-react';
 import type { Trainee } from '../../types/trainee.types';
 import { traineeStatusLabels } from '../../types/trainee.types';
-import { LearningHistoryDashboard } from '../students/LearningHistoryDashboard';
+// import { LearningHistoryDashboard } from '../students/LearningHistoryDashboard'; // 삭제된 컴포넌트
 import { DetailLayout, DetailSection } from '../common/DetailLayout';
 
 interface TraineeDetailProps {
@@ -279,10 +279,9 @@ const TraineeDetail: React.FC<TraineeDetailProps> = ({
 
       {/* 학습 이력 탭 */}
       {activeTab === 'history' && (
-        <LearningHistoryDashboard
-          traineeId={trainee.id}
-          traineeName={trainee.name}
-        />
+        <div className="p-8 text-center">
+          <p className="text-gray-500 dark:text-gray-400">학습 히스토리 기능은 준비 중입니다.</p>
+        </div>
       )}
     </DetailLayout>
   );

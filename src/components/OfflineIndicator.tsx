@@ -6,7 +6,7 @@ import {
   XMarkIcon,
   InformationCircleIcon
 } from '@heroicons/react/24/outline';
-import { useOffline } from '../../hooks/useOffline';
+import { useOffline } from '@/hooks/useOffline';
 
 const OfflineIndicator: React.FC = () => {
   const { 
