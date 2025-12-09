@@ -5,6 +5,7 @@ import { AuthProvider } from '@/contexts/AuthContext'
 import { ThemeProvider } from '@/contexts/ThemeContext'
 import { Modal } from '@/components/common/Modal'
 import DeveloperRoleSwitcher from '@/components/common/DeveloperRoleSwitcher'
+import ErrorBoundary from '@/components/common/ErrorBoundary'
 
 export default function RootLayout({
   children,
@@ -31,13 +32,15 @@ export default function RootLayout({
             `,
           }}
         />
-        <ThemeProvider>
-          <AuthProvider>
-            {children}
-            <Modal />
-            <DeveloperRoleSwitcher />
-          </AuthProvider>
-        </ThemeProvider>
+        <ErrorBoundary>
+          <ThemeProvider>
+            <AuthProvider>
+              {children}
+              <Modal />
+              <DeveloperRoleSwitcher />
+            </AuthProvider>
+          </ThemeProvider>
+        </ErrorBoundary>
       </body>
     </html>
   )
