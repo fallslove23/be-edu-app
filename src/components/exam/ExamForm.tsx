@@ -11,6 +11,8 @@ import {
 } from '@heroicons/react/24/outline';
 import { examStatusLabels, examTypeLabels } from '../../services/exam.services';
 import type { Exam, ExamType, ExamStatus, ExamQuestion, QuestionType } from '../../types/exam.types';
+import { examTypeOptions, examStatusOptions } from '@/config/dropdown-options';
+import Select from '@/components/common/Select';
 import type { CourseRound } from '../../types/course-template.types';
 import { format, addDays } from 'date-fns';
 import { QuestionBankService } from '../../services/question-bank.service';
@@ -294,19 +296,17 @@ const ExamForm: React.FC<ExamFormProps> = ({
                 )}
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  시험 유형 *
-                </label>
-                <select
-                  {...register('exam_type', { required: '시험 유형을 선택해주세요.' })}
-                  className="w-full border border-gray-300 dark:border-gray-600 rounded-full px-4 py-2.5 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
-                >
-                  {(Object.keys(examTypeLabels) as ExamType[]).map(type => (
-                    <option key={type} value={type}>{examTypeLabels[type]}</option>
-                  ))}
-                </select>
-              </div>
+              <Select
+                label="시험 유형"
+                value={watch('exam_type')}
+                onChange={(value) => setValue('exam_type', value as ExamType)}
+                options={examTypeOptions}
+                placeholder="시험 유형을 선택하세요"
+                showIcons={true}
+                showDescriptions={true}
+                required
+                error={errors.exam_type?.message}
+              />
             </div>
 
             <div className="mt-6">

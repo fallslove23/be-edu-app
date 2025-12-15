@@ -16,23 +16,28 @@ interface UserFormData {
   phone: string;
   employee_id: string;
   role: UserRole;
-  department: string;
+  division?: string; // 본부/연구소 (선택사항)
+  office?: string; // 실 (선택사항)
+  team: string; // 팀 (필수)
   position: string;
   hire_date: string;
   status: UserStatus;
-  emergency_contact_name?: string;
-  emergency_contact_relationship?: string;
-  emergency_contact_phone?: string;
 }
 
 const UserForm: React.FC<UserFormProps> = ({ user, onBack, onSave }) => {
   // 로딩 상태
   const [loading, setLoading] = useState(false);
 
-  // 부서 자동완성 상태
-  const [departmentInput, setDepartmentInput] = useState(user?.department || '');
-  const [showDepartmentSuggestions, setShowDepartmentSuggestions] = useState(false);
-  const [departmentHistory, setDepartmentHistory] = useState<string[]>([]);
+  // 조직 구조 자동완성 상태
+  const [divisionInput, setDivisionInput] = useState(user?.department?.split(' > ')[0] || '');
+  const [officeInput, setOfficeInput] = useState(user?.department?.split(' > ')[1] || '');
+  const [teamInput, setTeamInput] = useState(user?.department?.split(' > ')[2] || user?.department || '');
+  const [showDivisionSuggestions, setShowDivisionSuggestions] = useState(false);
+  const [showOfficeSuggestions, setShowOfficeSuggestions] = useState(false);
+  const [showTeamSuggestions, setShowTeamSuggestions] = useState(false);
+  const [divisionHistory, setDivisionHistory] = useState<string[]>([]);
+  const [officeHistory, setOfficeHistory] = useState<string[]>([]);
+  const [teamHistory, setTeamHistory] = useState<string[]>([]);
 
   // 직급 자동완성 상태
   const [positionInput, setPositionInput] = useState(user?.position || '');
@@ -51,40 +56,59 @@ const UserForm: React.FC<UserFormProps> = ({ user, onBack, onSave }) => {
       phone: user.phone,
       employee_id: user.employee_id,
       role: user.role,
-      department: user.department,
+      division: '',
+      office: '',
+      team: user.department || '',
       position: user.position,
       hire_date: user.hire_date,
       status: user.status,
-      emergency_contact_name: user.emergency_contact?.name || '',
-      emergency_contact_relationship: user.emergency_contact?.relationship || '',
-      emergency_contact_phone: user.emergency_contact?.phone || ''
     } : {
       name: '',
       email: '',
       phone: '',
       employee_id: '',
       role: 'trainee',
-      department: '',
+      division: '',
+      office: '',
+      team: '',
       position: '',
       hire_date: new Date().toISOString().split('T')[0],
       status: 'active',
-      emergency_contact_name: '',
-      emergency_contact_relationship: '',
-      emergency_contact_phone: ''
     }
   });
 
   const selectedRole = watch('role');
 
 
-  // 부서 히스토리 로드
+  // 조직 구조 히스토리 로드
   useEffect(() => {
-    const savedHistory = localStorage.getItem('departmentHistory');
-    if (savedHistory) {
+    // 본부/연구소 히스토리
+    const savedDivisionHistory = localStorage.getItem('divisionHistory');
+    if (savedDivisionHistory) {
       try {
-        setDepartmentHistory(JSON.parse(savedHistory));
+        setDivisionHistory(JSON.parse(savedDivisionHistory));
       } catch (error) {
-        console.error('부서 히스토리 로드 실패:', error);
+        console.error('본부/연구소 히스토리 로드 실패:', error);
+      }
+    }
+
+    // 실 히스토리
+    const savedOfficeHistory = localStorage.getItem('officeHistory');
+    if (savedOfficeHistory) {
+      try {
+        setOfficeHistory(JSON.parse(savedOfficeHistory));
+      } catch (error) {
+        console.error('실 히스토리 로드 실패:', error);
+      }
+    }
+
+    // 팀 히스토리
+    const savedTeamHistory = localStorage.getItem('teamHistory');
+    if (savedTeamHistory) {
+      try {
+        setTeamHistory(JSON.parse(savedTeamHistory));
+      } catch (error) {
+        console.error('팀 히스토리 로드 실패:', error);
       }
     }
   }, []);
@@ -108,38 +132,79 @@ const UserForm: React.FC<UserFormProps> = ({ user, onBack, onSave }) => {
     }
   }, []);
 
-  // 부서 입력값 변경 핸들러
-  const handleDepartmentInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // 본부/연구소 입력값 변경 핸들러
+  const handleDivisionInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    setDepartmentInput(value);
-    setShowDepartmentSuggestions(true);
+    setDivisionInput(value);
+    setShowDivisionSuggestions(true);
   };
 
-  // 부서 제안 선택 핸들러
-  const handleSelectDepartment = (dept: string) => {
-    setDepartmentInput(dept);
-    setShowDepartmentSuggestions(false);
+  const handleSelectDivision = (division: string) => {
+    setDivisionInput(division);
+    setShowDivisionSuggestions(false);
   };
 
-  // 부서 히스토리 저장
-  const saveDepartmentToHistory = (dept: string) => {
-    if (!dept || dept.trim() === '') return;
-
-    const trimmedDept = dept.trim();
-    const newHistory = [trimmedDept, ...departmentHistory.filter(d => d !== trimmedDept)].slice(0, 10);
-    setDepartmentHistory(newHistory);
-    localStorage.setItem('departmentHistory', JSON.stringify(newHistory));
+  const saveDivisionToHistory = (division: string) => {
+    if (!division || division.trim() === '') return;
+    const trimmed = division.trim();
+    const newHistory = [trimmed, ...divisionHistory.filter(d => d !== trimmed)].slice(0, 10);
+    setDivisionHistory(newHistory);
+    localStorage.setItem('divisionHistory', JSON.stringify(newHistory));
   };
 
-  // 필터링된 부서 제안 목록
-  const getDepartmentSuggestions = () => {
-    if (!departmentInput.trim()) {
-      return departmentHistory.slice(0, 10);
-    }
+  const getDivisionSuggestions = () => {
+    if (!divisionInput.trim()) return divisionHistory.slice(0, 10);
+    return divisionHistory.filter(d => d.toLowerCase().includes(divisionInput.toLowerCase())).slice(0, 10);
+  };
 
-    return departmentHistory.filter(dept =>
-      dept.toLowerCase().includes(departmentInput.toLowerCase())
-    ).slice(0, 10);
+  // 실 입력값 변경 핸들러
+  const handleOfficeInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setOfficeInput(value);
+    setShowOfficeSuggestions(true);
+  };
+
+  const handleSelectOffice = (office: string) => {
+    setOfficeInput(office);
+    setShowOfficeSuggestions(false);
+  };
+
+  const saveOfficeToHistory = (office: string) => {
+    if (!office || office.trim() === '') return;
+    const trimmed = office.trim();
+    const newHistory = [trimmed, ...officeHistory.filter(d => d !== trimmed)].slice(0, 10);
+    setOfficeHistory(newHistory);
+    localStorage.setItem('officeHistory', JSON.stringify(newHistory));
+  };
+
+  const getOfficeSuggestions = () => {
+    if (!officeInput.trim()) return officeHistory.slice(0, 10);
+    return officeHistory.filter(o => o.toLowerCase().includes(officeInput.toLowerCase())).slice(0, 10);
+  };
+
+  // 팀 입력값 변경 핸들러
+  const handleTeamInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setTeamInput(value);
+    setShowTeamSuggestions(true);
+  };
+
+  const handleSelectTeam = (team: string) => {
+    setTeamInput(team);
+    setShowTeamSuggestions(false);
+  };
+
+  const saveTeamToHistory = (team: string) => {
+    if (!team || team.trim() === '') return;
+    const trimmed = team.trim();
+    const newHistory = [trimmed, ...teamHistory.filter(d => d !== trimmed)].slice(0, 10);
+    setTeamHistory(newHistory);
+    localStorage.setItem('teamHistory', JSON.stringify(newHistory));
+  };
+
+  const getTeamSuggestions = () => {
+    if (!teamInput.trim()) return teamHistory.slice(0, 10);
+    return teamHistory.filter(t => t.toLowerCase().includes(teamInput.toLowerCase())).slice(0, 10);
   };
 
   // 직급 입력값 변경 핸들러
@@ -177,9 +242,15 @@ const UserForm: React.FC<UserFormProps> = ({ user, onBack, onSave }) => {
   };
 
   const onSubmit = async (data: UserFormData) => {
-    // 부서명과 직급을 히스토리에 저장
-    saveDepartmentToHistory(departmentInput);
+    // 조직 구조 및 직급을 히스토리에 저장
+    saveDivisionToHistory(divisionInput);
+    saveOfficeToHistory(officeInput);
+    saveTeamToHistory(teamInput);
     savePositionToHistory(positionInput);
+
+    // 부서 정보를 "본부/연구소 > 실 > 팀" 형식으로 조합
+    const departmentParts = [divisionInput, officeInput, teamInput].filter(p => p.trim());
+    const departmentString = departmentParts.join(' > ');
 
     const userData: Partial<User> = {
       name: data.name,
@@ -187,20 +258,11 @@ const UserForm: React.FC<UserFormProps> = ({ user, onBack, onSave }) => {
       phone: data.phone,
       employee_id: data.employee_id,
       role: data.role,
-      department: departmentInput, // 자동완성 입력값 사용
-      position: positionInput, // 자동완성 입력값 사용
+      department: departmentString || teamInput, // 최소한 팀 정보는 포함
+      position: positionInput,
       hire_date: data.hire_date,
       status: data.status
     };
-
-    // 교육생의 경우 비상연락처 추가
-    if (data.role === 'trainee' && data.emergency_contact_name) {
-      userData.emergency_contact = {
-        name: data.emergency_contact_name,
-        relationship: data.emergency_contact_relationship || '',
-        phone: data.emergency_contact_phone || ''
-      };
-    }
 
     onSave(userData);
   };
@@ -301,7 +363,7 @@ const UserForm: React.FC<UserFormProps> = ({ user, onBack, onSave }) => {
                 type="text"
                 {...register('employee_id', { required: '사번을 입력해주세요.' })}
                 className="w-full border border-gray-200 dark:border-gray-600 rounded-xl px-4 py-3 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                placeholder="EMP001"
+                placeholder="20240001"
               />
               {errors.employee_id && (
                 <p className="mt-1 text-sm text-red-500 font-medium">{errors.employee_id.message}</p>
@@ -355,37 +417,102 @@ const UserForm: React.FC<UserFormProps> = ({ user, onBack, onSave }) => {
               </div>
             </div>
 
-            <div className="relative">
-              <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
-                부서 <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="text"
-                value={departmentInput}
-                onChange={handleDepartmentInputChange}
-                onFocus={() => setShowDepartmentSuggestions(true)}
-                onBlur={() => setTimeout(() => setShowDepartmentSuggestions(false), 200)}
-                className="w-full border border-gray-200 dark:border-gray-600 rounded-xl px-4 py-3 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                placeholder="부서명을 입력하세요"
-                disabled={loading}
-              />
-              {showDepartmentSuggestions && getDepartmentSuggestions().length > 0 && (
-                <div className="absolute z-10 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg max-h-60 overflow-y-auto">
-                  {getDepartmentSuggestions().map((dept, index) => (
-                    <button
-                      key={index}
-                      type="button"
-                      onClick={() => handleSelectDepartment(dept)}
-                      className="w-full text-left px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-900 dark:text-white transition-colors first:rounded-t-xl last:rounded-b-xl"
-                    >
-                      {dept}
-                    </button>
-                  ))}
-                </div>
-              )}
-              {!departmentInput.trim() && (
-                <p className="mt-1 text-sm text-red-500 font-medium">부서명을 입력해주세요.</p>
-              )}
+            <div className="md:col-span-2 space-y-6">
+              {/* 본부/연구소 (선택사항) */}
+              <div className="relative">
+                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
+                  본부/연구소
+                </label>
+                <input
+                  type="text"
+                  value={divisionInput}
+                  onChange={handleDivisionInputChange}
+                  onFocus={() => setShowDivisionSuggestions(true)}
+                  onBlur={() => setTimeout(() => setShowDivisionSuggestions(false), 200)}
+                  className="w-full border border-gray-200 dark:border-gray-600 rounded-xl px-4 py-3 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                  placeholder="예: 기술본부, 경영본부, 연구소 (선택사항)"
+                  disabled={loading}
+                />
+                {showDivisionSuggestions && getDivisionSuggestions().length > 0 && (
+                  <div className="absolute z-10 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg max-h-60 overflow-y-auto">
+                    {getDivisionSuggestions().map((division, index) => (
+                      <button
+                        key={index}
+                        type="button"
+                        onClick={() => handleSelectDivision(division)}
+                        className="w-full text-left px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-900 dark:text-white transition-colors first:rounded-t-xl last:rounded-b-xl"
+                      >
+                        {division}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* 실 (선택사항) */}
+              <div className="relative">
+                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
+                  실
+                </label>
+                <input
+                  type="text"
+                  value={officeInput}
+                  onChange={handleOfficeInputChange}
+                  onFocus={() => setShowOfficeSuggestions(true)}
+                  onBlur={() => setTimeout(() => setShowOfficeSuggestions(false), 200)}
+                  className="w-full border border-gray-200 dark:border-gray-600 rounded-xl px-4 py-3 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                  placeholder="예: 개발실, 기획실, 관리실 (선택사항)"
+                  disabled={loading}
+                />
+                {showOfficeSuggestions && getOfficeSuggestions().length > 0 && (
+                  <div className="absolute z-10 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg max-h-60 overflow-y-auto">
+                    {getOfficeSuggestions().map((office, index) => (
+                      <button
+                        key={index}
+                        type="button"
+                        onClick={() => handleSelectOffice(office)}
+                        className="w-full text-left px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-900 dark:text-white transition-colors first:rounded-t-xl last:rounded-b-xl"
+                      >
+                        {office}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* 팀 (필수) */}
+              <div className="relative">
+                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
+                  팀 <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  value={teamInput}
+                  onChange={handleTeamInputChange}
+                  onFocus={() => setShowTeamSuggestions(true)}
+                  onBlur={() => setTimeout(() => setShowTeamSuggestions(false), 200)}
+                  className="w-full border border-gray-200 dark:border-gray-600 rounded-xl px-4 py-3 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                  placeholder="예: 프론트엔드팀, 백엔드팀, 인프라팀"
+                  disabled={loading}
+                />
+                {showTeamSuggestions && getTeamSuggestions().length > 0 && (
+                  <div className="absolute z-10 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg max-h-60 overflow-y-auto">
+                    {getTeamSuggestions().map((team, index) => (
+                      <button
+                        key={index}
+                        type="button"
+                        onClick={() => handleSelectTeam(team)}
+                        className="w-full text-left px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-900 dark:text-white transition-colors first:rounded-t-xl last:rounded-b-xl"
+                      >
+                        {team}
+                      </button>
+                    ))}
+                  </div>
+                )}
+                {!teamInput.trim() && (
+                  <p className="mt-1 text-sm text-red-500 font-medium">팀을 입력해주세요.</p>
+                )}
+              </div>
             </div>
 
             <div className="relative">
@@ -437,62 +564,6 @@ const UserForm: React.FC<UserFormProps> = ({ user, onBack, onSave }) => {
           </div>
         </div>
 
-        {/* 비상 연락처 (교육생만) */}
-        {selectedRole === 'trainee' && (
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
-            <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-6 flex items-center">
-              <span className="w-1 h-6 bg-blue-600 rounded-full mr-3"></span>
-              비상 연락처
-            </h2>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div>
-                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
-                  연락처 이름
-                </label>
-                <input
-                  type="text"
-                  {...register('emergency_contact_name')}
-                  className="w-full border border-gray-200 dark:border-gray-600 rounded-xl px-4 py-3 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                  placeholder="김가족"
-                />
-              </div>
-
-              <div className="relative">
-                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
-                  관계
-                </label>
-                <div className="relative">
-                  <select
-                    {...register('emergency_contact_relationship')}
-                    className="w-full border border-gray-200 dark:border-gray-600 rounded-xl pl-4 pr-10 py-3 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all appearance-none"
-                  >
-                    <option value="">관계 선택</option>
-                    <option value="부모">부모</option>
-                    <option value="배우자">배우자</option>
-                    <option value="자녀">자녀</option>
-                    <option value="형제자매">형제자매</option>
-                    <option value="친구">친구</option>
-                    <option value="기타">기타</option>
-                  </select>
-                  <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
-                  전화번호
-                </label>
-                <input
-                  type="tel"
-                  {...register('emergency_contact_phone')}
-                  className="w-full border border-gray-200 dark:border-gray-600 rounded-xl px-4 py-3 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                  placeholder="010-9876-5432"
-                />
-              </div>
-            </div>
-          </div>
-        )}
 
         {/* 액션 버튼 */}
         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 sticky bottom-6 z-10">

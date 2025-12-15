@@ -556,4 +556,4 @@ export const ClassroomManagement: React.FC = () => {
   );
 };
 
-export default ClassroomManagement;
+export default React.memo(ClassroomManagement);

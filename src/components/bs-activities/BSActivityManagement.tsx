@@ -699,17 +699,17 @@ const BSActivityManagementDesktop: React.FC = () => {
                                 </div>
                               </div>
                               <div className="flex flex-wrap gap-2 text-xs">
-                                {activity.instructor_feedback.strengths.length > 0 && (
+                                {activity.instructor_feedback?.strengths && activity.instructor_feedback.strengths.length > 0 && (
                                   <span className="px-2 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded-full">
                                     ✓ 잘한 점 {activity.instructor_feedback.strengths.length}개
                                   </span>
                                 )}
-                                {activity.instructor_feedback.improvements.length > 0 && (
+                                {activity.instructor_feedback?.areas_for_improvement && activity.instructor_feedback.areas_for_improvement.length > 0 && (
                                   <span className="px-2 py-1 bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400 rounded-full">
-                                    → 개선점 {activity.instructor_feedback.improvements.length}개
+                                    → 개선점 {activity.instructor_feedback.areas_for_improvement.length}개
                                   </span>
                                 )}
-                                {activity.instructor_feedback.suggestions.length > 0 && (
+                                {activity.instructor_feedback?.suggestions && activity.instructor_feedback.suggestions.length > 0 && (
                                   <span className="px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 rounded-full">
                                     💡 제안 {activity.instructor_feedback.suggestions.length}개
                                   </span>
@@ -783,4 +783,4 @@ const BSActivityManagementDesktop: React.FC = () => {
   );
 };
 
-export default BSActivityManagement;
+export default React.memo(BSActivityManagement);

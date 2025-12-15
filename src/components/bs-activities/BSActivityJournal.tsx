@@ -320,13 +320,13 @@ const BSActivityJournal: React.FC<BSActivityJournalProps> = ({
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
+    <div className="max-w-4xl mx-auto space-y-6 p-4 md:p-6">
       {/* 헤더 */}
-      <div className="bg-white rounded-lg shadow-sm border p-6">
-        <div className="flex justify-between items-start mb-4">
+      <div className="bg-card rounded-lg shadow-sm border border-border p-4 md:p-6">
+        <div className="flex justify-between items-start mb-6">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">BS 활동 일지</h1>
-            <p className="text-gray-600">치과 방문 활동 및 학습 내용 기록</p>
+            <h1 className="text-xl md:text-2xl font-bold text-foreground">BS 활동 사진 촬영</h1>
+            <p className="text-sm text-muted-foreground mt-1">현장 활동 및 학습 내용 기록</p>
           </div>
           {formData.status && (
             <Badge variant={getStatusVariant(formData.status)} size="sm">
@@ -338,41 +338,19 @@ const BSActivityJournal: React.FC<BSActivityJournalProps> = ({
           )}
         </div>
 
-        {/* 교육 과정 선택 */}
+        {/* 사진 업로드 섹션 - 최상단으로 이동 */}
         <div className="mb-6">
-          <label className="block text-sm font-medium text-foreground mb-2">
-            <AcademicCapIcon className="w-4 h-4 inline mr-2" />
-            교육 과정
-          </label>
-          <select
-            value={courseId}
-            onChange={(e) => setCourseId(e.target.value)}
-            disabled={readonly}
-            className="w-full border border-border rounded-full px-3 py-2.5 bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent disabled:bg-muted disabled:text-muted-foreground"
-          >
-            <option value="">교육 과정을 선택하세요</option>
-            <option value="course-1">BS 기본 과정</option>
-            <option value="course-2">BS 심화 과정</option>
-            <option value="course-3">BS 전문가 과정</option>
-          </select>
-        </div>
-
-        {/* 사진 업로드 섹션 */}
-        <div className="mb-6">
-          <label className="block text-sm font-medium text-foreground mb-2">
-            <PhotoIcon className="w-4 h-4 inline mr-2" />
-            사진 ({uploadedPhotos.length}/5)
+          <label className="block text-sm font-medium text-foreground mb-3">
+            사진 <span className="text-muted-foreground text-xs">필수입력</span>
           </label>
           <div className="space-y-3">
-            {!readonly && (
-              <div className="flex space-x-2">
-                <button
-                  onClick={handleCameraCapture}
-                  className="flex-1 bg-primary text-primary-foreground px-4 py-3 rounded-full hover:bg-primary/90 transition-colors flex items-center justify-center font-medium shadow-sm"
-                >
-                  <CameraIcon className="w-5 h-5 mr-2" />
-                  사진 촬영/업로드
-                </button>
+            {!readonly && uploadedPhotos.length === 0 && (
+              <div
+                onClick={handleCameraCapture}
+                className="border-2 border-dashed border-border rounded-lg p-8 text-center cursor-pointer hover:border-primary hover:bg-primary/5 transition-colors"
+              >
+                <PhotoIcon className="w-12 h-12 mx-auto text-muted-foreground mb-2" />
+                <p className="text-sm text-muted-foreground">이미지 선택...</p>
               </div>
             )}
 
@@ -387,229 +365,232 @@ const BSActivityJournal: React.FC<BSActivityJournalProps> = ({
             />
 
             {uploadedPhotos.length > 0 && (
-              <div className="grid grid-cols-3 gap-3">
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                 {uploadedPhotos.map((photo) => (
                   <div key={photo.id} className="relative group">
                     <img
                       src={photo.url}
                       alt={photo.caption || '활동 사진'}
-                      className="w-full h-24 object-cover rounded-lg"
+                      className="w-full aspect-square object-cover rounded-lg border border-border"
                     />
                     {!readonly && (
                       <button
                         onClick={() => handlePhotoDelete(photo.id)}
-                        className="btn-danger absolute top-1 right-1 p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                        className="absolute top-2 right-2 bg-destructive/90 text-destructive-foreground p-1.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity shadow-lg"
                       >
                         <XMarkIcon className="w-4 h-4" />
                       </button>
                     )}
                   </div>
                 ))}
+                {!readonly && uploadedPhotos.length < 5 && (
+                  <div
+                    onClick={handleCameraCapture}
+                    className="aspect-square border-2 border-dashed border-border rounded-lg flex items-center justify-center cursor-pointer hover:border-primary hover:bg-primary/5 transition-colors"
+                  >
+                    <PlusIcon className="w-8 h-8 text-muted-foreground" />
+                  </div>
+                )}
               </div>
+            )}
+            {uploadedPhotos.length > 0 && (
+              <p className="text-xs text-muted-foreground text-center">
+                {uploadedPhotos.length}/5 사진 업로드됨
+              </p>
             )}
           </div>
         </div>
 
-        {/* BS 교육생 회복 섹션 */}
-        <div className="border-t border-border pt-6 mb-6">
-          <h3 className="text-lg font-semibold text-foreground mb-4">BS 교육생 회복</h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-foreground mb-2">사번</label>
-              <input
-                type="text"
-                value={employeeId}
-                onChange={(e) => setEmployeeId(e.target.value)}
-                disabled={readonly}
-                placeholder="사번을 입력하세요"
-                className="w-full border border-border rounded-full px-3 py-2 bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent disabled:bg-muted disabled:text-muted-foreground"
-              />
-            </div>
+        <div className="h-px bg-border mb-6"></div>
 
-            <div>
-              <label className="block text-sm font-medium text-foreground mb-2">소속</label>
-              <input
-                type="text"
-                value={department}
-                onChange={(e) => setDepartment(e.target.value)}
-                disabled={readonly}
-                placeholder="소속을 입력하세요"
-                className="w-full border border-border rounded-full px-3 py-2 bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent disabled:bg-muted disabled:text-muted-foreground"
-              />
-            </div>
+        {/* BS 활동일지 타이틀 */}
+        <div className="mb-6">
+          <h2 className="text-base font-semibold text-primary mb-4">BS 활동일지 입력</h2>
+        </div>
 
-            <div>
-              <label className="block text-sm font-medium text-foreground mb-2">이름</label>
-              <input
-                type="text"
-                value={studentName}
-                onChange={(e) => setStudentName(e.target.value)}
-                disabled={readonly}
-                placeholder="이름을 입력하세요"
-                className="w-full border border-border rounded-full px-3 py-2 bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent disabled:bg-muted disabled:text-muted-foreground"
-              />
-            </div>
+        {/* BS 활동 입력 */}
+        <div className="space-y-4 mb-6">
+          <div>
+            <label className="block text-sm font-medium text-foreground mb-2">사번</label>
+            <input
+              type="text"
+              value={employeeId}
+              onChange={(e) => setEmployeeId(e.target.value)}
+              disabled={readonly}
+              className="w-full border border-border rounded-lg px-4 py-2.5 bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent disabled:bg-muted disabled:text-muted-foreground"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-foreground mb-2">소속</label>
+            <input
+              type="text"
+              value={department}
+              onChange={(e) => setDepartment(e.target.value)}
+              disabled={readonly}
+              className="w-full border border-border rounded-lg px-4 py-2.5 bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent disabled:bg-muted disabled:text-muted-foreground"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-foreground mb-2">이름</label>
+            <input
+              type="text"
+              value={studentName}
+              onChange={(e) => setStudentName(e.target.value)}
+              disabled={readonly}
+              className="w-full border border-border rounded-lg px-4 py-2.5 bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent disabled:bg-muted disabled:text-muted-foreground"
+            />
           </div>
         </div>
 
-        {/* BS 활동 입력 섹션 */}
-        <div className="border-t border-border pt-6">
-          <h3 className="text-lg font-semibold text-foreground mb-4">BS 활동 입력</h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-            <div>
-              <label className="block text-sm font-medium text-foreground mb-2">
-                <CalendarDaysIcon className="w-4 h-4 inline mr-2" />
-                발표일
-              </label>
-              <input
-                type="date"
-                value={presentationDate}
-                onChange={(e) => setPresentationDate(e.target.value)}
-                disabled={readonly}
-                className="w-full border border-border rounded-full px-3 py-2 bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent disabled:bg-muted disabled:text-muted-foreground"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-foreground mb-2">
-                <CalendarDaysIcon className="w-4 h-4 inline mr-2" />
-                방문일
-              </label>
-              <input
-                type="date"
-                value={formData.visit_date || ''}
-                onChange={(e) => updateBasicInfo('visit_date', e.target.value)}
-                disabled={readonly}
-                className="w-full border border-border rounded-full px-3 py-2 bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent disabled:bg-muted disabled:text-muted-foreground"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-foreground mb-2">
-                <CalendarDaysIcon className="w-4 h-4 inline mr-2" />
-                완료일
-              </label>
-              <input
-                type="date"
-                value={completionDate}
-                onChange={(e) => setCompletionDate(e.target.value)}
-                disabled={readonly}
-                className="w-full border border-border rounded-full px-3 py-2 bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent disabled:bg-muted disabled:text-muted-foreground"
-              />
-            </div>
+        {/* 날짜 정보 */}
+        <div className="space-y-4 mb-6">
+          <div>
+            <label className="block text-sm font-medium text-foreground mb-2">발표일 <span className="text-muted-foreground text-xs">필수입력</span></label>
+            <input
+              type="date"
+              value={presentationDate}
+              onChange={(e) => setPresentationDate(e.target.value)}
+              disabled={readonly}
+              className="w-full border border-border rounded-lg px-4 py-2.5 bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent disabled:bg-muted disabled:text-muted-foreground"
+            />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-            <div>
-              <label className="block text-sm font-medium text-foreground mb-2">
-                <MapPinIcon className="w-4 h-4 inline mr-2" />
-                방문 치과명
-              </label>
-              <input
-                type="text"
-                value={formData.clinic_name || ''}
-                onChange={(e) => updateBasicInfo('clinic_name', e.target.value)}
-                disabled={readonly}
-                placeholder="방문한 치과/병원명을 입력하세요"
-                className="w-full border border-border rounded-full px-3 py-2 bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent disabled:bg-muted disabled:text-muted-foreground"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-foreground mb-2">주소</label>
-              <input
-                type="text"
-                value={formData.clinic_address || ''}
-                onChange={(e) => updateBasicInfo('clinic_address', e.target.value)}
-                disabled={readonly}
-                placeholder="치과/병원 주소"
-                className="w-full border border-border rounded-full px-3 py-2 bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent disabled:bg-muted disabled:text-muted-foreground"
-              />
-            </div>
+          <div>
+            <label className="block text-sm font-medium text-foreground mb-2">방문일</label>
+            <input
+              type="date"
+              value={formData.visit_date || ''}
+              onChange={(e) => updateBasicInfo('visit_date', e.target.value)}
+              disabled={readonly}
+              className="w-full border border-border rounded-lg px-4 py-2.5 bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent disabled:bg-muted disabled:text-muted-foreground"
+            />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-            <div>
-              <label className="block text-sm font-medium text-foreground mb-2">점검 제/상품</label>
-              <input
-                type="text"
-                value={inspectionProduct}
-                onChange={(e) => setInspectionProduct(e.target.value)}
-                disabled={readonly}
-                placeholder="점검한 제품/상품을 입력하세요"
-                className="w-full border border-border rounded-full px-3 py-2 bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent disabled:bg-muted disabled:text-muted-foreground"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-foreground mb-2">점검 대수</label>
-              <input
-                type="text"
-                value={inspectionCount}
-                onChange={(e) => setInspectionCount(e.target.value)}
-                disabled={readonly}
-                placeholder="점검 대수를 입력하세요"
-                className="w-full border border-border rounded-full px-3 py-2 bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent disabled:bg-muted disabled:text-muted-foreground"
-              />
-            </div>
-          </div>
-
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-foreground mb-2">요약</label>
-              <textarea
-                value={summary}
-                onChange={(e) => setSummary(e.target.value)}
-                disabled={readonly}
-                placeholder="활동 내용을 간단히 요약해주세요"
-                rows={3}
-                className="w-full border border-border rounded-full px-3 py-2 bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent disabled:bg-muted disabled:text-muted-foreground resize-none"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-foreground mb-2">상세 활동 내용</label>
-              <textarea
-                value={detailedActivity}
-                onChange={(e) => setDetailedActivity(e.target.value)}
-                disabled={readonly}
-                placeholder="활동 내용을 자세히 설명해주세요"
-                rows={5}
-                className="w-full border border-border rounded-full px-3 py-2 bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent disabled:bg-muted disabled:text-muted-foreground resize-none"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-foreground mb-2">학습/느낀 점</label>
-              <textarea
-                value={learningReflection}
-                onChange={(e) => setLearningReflection(e.target.value)}
-                disabled={readonly}
-                placeholder="이 활동을 통해 배우고 느낀 점을 써주세요"
-                rows={4}
-                className="w-full border border-border rounded-full px-3 py-2 bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent disabled:bg-muted disabled:text-muted-foreground resize-none"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-foreground mb-2">특이사항</label>
-              <textarea
-                value={specialNotes}
-                onChange={(e) => setSpecialNotes(e.target.value)}
-                disabled={readonly}
-                placeholder="특이사항이 있다면 기록해주세요"
-                rows={3}
-                className="w-full border border-border rounded-full px-3 py-2 bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent disabled:bg-muted disabled:text-muted-foreground resize-none"
-              />
-            </div>
+          <div>
+            <label className="block text-sm font-medium text-foreground mb-2">완료일</label>
+            <input
+              type="date"
+              value={completionDate}
+              onChange={(e) => setCompletionDate(e.target.value)}
+              disabled={readonly}
+              className="w-full border border-border rounded-lg px-4 py-2.5 bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent disabled:bg-muted disabled:text-muted-foreground"
+            />
           </div>
         </div>
+
+        {/* 장소 정보 */}
+        <div className="space-y-4 mb-6">
+          <div>
+            <label className="block text-sm font-medium text-foreground mb-2">방문처</label>
+            <select
+              value={formData.clinic_name || ''}
+              onChange={(e) => updateBasicInfo('clinic_name', e.target.value)}
+              disabled={readonly}
+              className="w-full border border-border rounded-lg px-4 py-2.5 bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent disabled:bg-muted disabled:text-muted-foreground"
+            >
+              <option value="">-- 선택하세요 --</option>
+              <option value="병원1">병원1</option>
+              <option value="병원2">병원2</option>
+              <option value="병원3">병원3</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-foreground mb-2">점검 제/상품</label>
+            <input
+              type="text"
+              value={inspectionProduct}
+              onChange={(e) => setInspectionProduct(e.target.value)}
+              disabled={readonly}
+              className="w-full border border-border rounded-lg px-4 py-2.5 bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent disabled:bg-muted disabled:text-muted-foreground"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-foreground mb-2">점검 대수 <span className="text-muted-foreground text-xs">필수입력</span></label>
+            <input
+              type="text"
+              value={inspectionCount}
+              onChange={(e) => setInspectionCount(e.target.value)}
+              disabled={readonly}
+              className="w-full border border-border rounded-lg px-4 py-2.5 bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent disabled:bg-muted disabled:text-muted-foreground"
+            />
+          </div>
+        </div>
+
+        {/* 활동 내용 */}
+        <div className="space-y-4 mb-6">
+
+          <div>
+            <label className="block text-sm font-medium text-foreground mb-2">요약</label>
+            <textarea
+              value={summary}
+              onChange={(e) => setSummary(e.target.value)}
+              disabled={readonly}
+              rows={3}
+              className="w-full border border-border rounded-lg px-4 py-3 bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent disabled:bg-muted disabled:text-muted-foreground resize-none"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-foreground mb-2">상세 활동 내용</label>
+            <textarea
+              value={detailedActivity}
+              onChange={(e) => setDetailedActivity(e.target.value)}
+              disabled={readonly}
+              rows={5}
+              className="w-full border border-border rounded-lg px-4 py-3 bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent disabled:bg-muted disabled:text-muted-foreground resize-none"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-foreground mb-2">학습/느낀 점</label>
+            <textarea
+              value={learningReflection}
+              onChange={(e) => setLearningReflection(e.target.value)}
+              disabled={readonly}
+              rows={4}
+              className="w-full border border-border rounded-lg px-4 py-3 bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent disabled:bg-muted disabled:text-muted-foreground resize-none"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-foreground mb-2">특이사항</label>
+            <textarea
+              value={specialNotes}
+              onChange={(e) => setSpecialNotes(e.target.value)}
+              disabled={readonly}
+              rows={3}
+              className="w-full border border-border rounded-lg px-4 py-3 bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent disabled:bg-muted disabled:text-muted-foreground resize-none"
+            />
+          </div>
+        </div>
+
+        {/* 저장 버튼 */}
+        {!readonly && (
+          <div className="flex gap-3 pt-6 border-t border-border">
+            <button
+              onClick={handleSave}
+              className="flex-1 px-6 py-3 border border-border rounded-full text-foreground hover:bg-muted transition-colors font-medium"
+            >
+              임시 저장
+            </button>
+            <button
+              onClick={handleSubmit}
+              className="flex-1 px-6 py-3 bg-primary text-primary-foreground rounded-full hover:bg-primary/90 transition-colors font-medium shadow-sm"
+            >
+              제출하기
+            </button>
+          </div>
+        )}
       </div>
 
       {/* 활동 목록 */}
-      <div className="bg-white rounded-lg shadow-sm border p-6">
+      <div className="bg-card rounded-lg shadow-sm border border-border p-4 md:p-6">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-xl font-bold text-gray-900">활동 내역</h2>
+          <h2 className="text-xl font-bold text-foreground">활동 내역</h2>
           {!readonly && (
             <button
               onClick={() => setShowActivityForm(true)}
@@ -635,7 +616,7 @@ const BSActivityJournal: React.FC<BSActivityJournalProps> = ({
                       {ACTIVITY_TYPE_CONFIG[activity.type].icon}
                     </div>
                     <div>
-                      <h3 className="font-semibold text-gray-900">{activity.title}</h3>
+                      <h3 className="font-semibold text-foreground">{activity.title}</h3>
                       <p className="text-sm text-gray-600">{ACTIVITY_TYPE_CONFIG[activity.type].label}</p>
                     </div>
                   </div>
@@ -693,9 +674,9 @@ const BSActivityJournal: React.FC<BSActivityJournalProps> = ({
       {/* 활동 추가/편집 폼 */}
       {showActivityForm && !readonly && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+          <div className="bg-card rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
             <div className="p-6 border-b border-gray-200">
-              <h3 className="text-lg font-bold text-gray-900">
+              <h3 className="text-lg font-bold text-foreground">
                 {editingActivityIndex !== null ? '활동 편집' : '새 활동 추가'}
               </h3>
             </div>
@@ -857,7 +838,7 @@ const BSActivityJournal: React.FC<BSActivityJournalProps> = ({
 
       {/* 하단 버튼 */}
       {!readonly && (
-        <div className="bg-white rounded-lg shadow-sm border border-border p-6">
+        <div className="bg-card rounded-lg shadow-sm border border-border p-6">
           <div className="flex justify-end space-x-3">
             <button
               onClick={handleSave}
@@ -878,8 +859,8 @@ const BSActivityJournal: React.FC<BSActivityJournalProps> = ({
 
       {/* 피드백 섹션 (검토된 일지의 경우) */}
       {activity?.instructor_feedback && (
-        <div className="bg-white rounded-lg shadow-sm border p-6">
-          <h2 className="text-xl font-bold text-gray-900 mb-4">강사 피드백</h2>
+        <div className="bg-card rounded-lg shadow-sm border p-6">
+          <h2 className="text-xl font-bold text-foreground mb-4">강사 피드백</h2>
           <div className="space-y-4">
             <div className="flex items-center space-x-2">
               <span className="text-sm font-medium text-gray-700">전체 평점:</span>

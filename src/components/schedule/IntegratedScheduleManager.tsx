@@ -33,7 +33,7 @@ type ViewMode = 'month' | 'week' | 'day';
 
 export default function IntegratedScheduleManager() {
   const { user } = useAuth();
-  const [viewMode, setViewMode] = useState<ViewMode>('month');
+  const [viewMode, setViewMode] = useState<ViewMode>('day');
   const [currentDate, setCurrentDate] = useState(new Date());
   const [events, setEvents] = useState<CalendarEvent[]>([]);
   const [classrooms, setClassrooms] = useState<Classroom[]>([]);
@@ -218,12 +218,14 @@ export default function IntegratedScheduleManager() {
 
   const handleInstructorChange = async (instructorId: string) => {
     try {
-      setScheduleForm({ ...scheduleForm, instructor_id: instructorId, subject: '' });
-
       // 선택된 강사의 프로필 찾기
       if (instructorId) {
         const profile = instructorProfiles.find(p => p.user_id === instructorId);
         setSelectedInstructorProfile(profile || null);
+
+        // 강사명 가져오기
+        const instructor = instructors.find(i => i.id === instructorId);
+        const instructorName = instructor?.name || '';
 
         // 강사의 과목 로드
         try {
@@ -235,14 +237,40 @@ export default function IntegratedScheduleManager() {
           setInstructorSubjects([]);
           setError('강사의 담당 과목을 불러오는데 실패했습니다.');
         }
+
+        // 제목 자동 생성: 과목이 이미 선택되어 있으면 업데이트
+        if (scheduleForm.subject) {
+          const selectedSubject = subjects.find(s => s.subject.id === scheduleForm.subject);
+          const subjectName = selectedSubject?.subject.name || '';
+          const autoTitle = subjectName && instructorName ? `${subjectName} - ${instructorName}` : '';
+          setScheduleForm({ ...scheduleForm, instructor_id: instructorId, title: autoTitle || scheduleForm.title });
+        } else {
+          setScheduleForm({ ...scheduleForm, instructor_id: instructorId, subject: '' });
+        }
       } else {
         setSelectedInstructorProfile(null);
         setInstructorSubjects([]);
+        setScheduleForm({ ...scheduleForm, instructor_id: instructorId, subject: '' });
       }
     } catch (error) {
       console.error('Error in handleInstructorChange:', error);
       setError('강사 변경 처리 중 오류가 발생했습니다.');
     }
+  };
+
+  const handleSubjectChange = (subjectName: string) => {
+    // 강사명 가져오기
+    const instructor = instructors.find(i => i.id === scheduleForm.instructor_id);
+    const instructorName = instructor?.name || '';
+
+    // 제목 자동 생성
+    const autoTitle = subjectName && instructorName ? `${subjectName} - ${instructorName}` : '';
+
+    setScheduleForm({
+      ...scheduleForm,
+      subject: subjectName,
+      title: autoTitle || scheduleForm.title
+    });
   };
 
   const handleClassroomChange = (classroomId: string) => {
@@ -1461,7 +1489,7 @@ export default function IntegratedScheduleManager() {
                         <>
                           <select
                             value={scheduleForm.subject}
-                            onChange={(e) => setScheduleForm({ ...scheduleForm, subject: e.target.value })}
+                            onChange={(e) => handleSubjectChange(e.target.value)}
                             className="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none transition-all"
                           >
                             <option value="">과목 선택</option>
@@ -1482,7 +1510,7 @@ export default function IntegratedScheduleManager() {
                         <>
                           <select
                             value={scheduleForm.subject}
-                            onChange={(e) => setScheduleForm({ ...scheduleForm, subject: e.target.value })}
+                            onChange={(e) => handleSubjectChange(e.target.value)}
                             className="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none transition-all"
                           >
                             <option value="">과목 선택 (선택사항)</option>
@@ -1718,7 +1746,7 @@ export default function IntegratedScheduleManager() {
                     {scheduleForm.instructor_id && instructorSubjects.length > 0 ? (
                       <select
                         value={scheduleForm.subject}
-                        onChange={(e) => setScheduleForm({ ...scheduleForm, subject: e.target.value })}
+                        onChange={(e) => handleSubjectChange(e.target.value)}
                         className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                         required
                       >

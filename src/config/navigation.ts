@@ -288,6 +288,15 @@ export const navigationItems: MenuItem[] = [
     section: 'system',
     route: 'advanced-file-manager'
   },
+  {
+    id: 'dropdown-options-management',
+    label: '드롭다운 옵션 관리',
+    icon: 'adjustments-horizontal',
+    description: '시스템 드롭다운 메뉴 옵션 관리',
+    roles: ['admin', 'manager'],
+    section: 'system',
+    route: 'dropdown-options-management'
+  },
 
   // 교육 자료 관리 - 평탄화
   {

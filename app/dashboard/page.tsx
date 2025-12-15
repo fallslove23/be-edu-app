@@ -19,36 +19,6 @@ import {
   ComputerDesktopIcon,
 } from '@heroicons/react/24/outline';
 
-// Dynamic imports with Next.js - Fixed for Next.js 15
-const DashboardWrapper = dynamic(() => import('@/components/dashboard/DashboardWrapper').then(mod => mod.default), { ssr: false });
-const CourseManagementTabs = dynamic(() => import('@/components/courses/CourseManagementTabs').then(mod => mod.default), { ssr: false });
-const TraineeManagement = dynamic(() => import('@/components/trainees/TraineeManagement').then(mod => mod.default), { ssr: false });
-const UserManagement = dynamic(() => import('@/components/users/UserManagement').then(mod => mod.default), { ssr: false });
-const InstructorManagement = dynamic(() => import('@/components/admin/InstructorManagement').then(mod => mod.default), { ssr: false });
-const BSActivitiesManagement = dynamic(() => import('@/components/bs-activities/BSActivityManagement').then(mod => mod.default), { ssr: false });
-const StudentActivityJournal = dynamic(() => import('@/components/bs-activities/StudentActivityJournal').then(mod => mod.default), { ssr: false });
-const ExamManagement = dynamic(() => import('@/components/exam/ExamManagement').then(mod => mod.default), { ssr: false });
-const EvaluationManagementComplete = dynamic(() => import('@/components/evaluation/EvaluationManagementComplete').then(mod => mod.default), { ssr: false });
-const EvaluationTemplateManagement = dynamic(() => import('@/components/evaluation/EvaluationTemplateManagement').then(mod => mod.default), { ssr: false });
-const InstructorEvaluationPage = dynamic(() => import('@/components/evaluation/InstructorEvaluationPage').then(mod => mod.default), { ssr: false });
-const ComprehensiveGradesPage = dynamic(() => import('@/components/evaluation/ComprehensiveGradesPage').then(mod => mod.default), { ssr: false });
-const IntegratedAnalyticsManagement = dynamic(() => import('@/components/analytics/IntegratedAnalyticsManagement').then(mod => mod.default), { ssr: false });
-const IntegratedScheduleManager = dynamic(() => import('@/components/schedule/IntegratedScheduleManager').then(mod => mod.default), { ssr: false });
-const CurriculumManager = dynamic(() => import('@/components/schedule/CurriculumManager').then(mod => mod.default), { ssr: false });
-const CategoryManagement = dynamic(() => import('@/components/admin/CategoryManagement').then(mod => mod.default), { ssr: false });
-const SubjectManagement = dynamic(() => import('@/components/admin/SubjectManagement').then(mod => mod.default), { ssr: false });
-const ClassroomManagement = dynamic(() => import('@/components/admin/ClassroomManagement').then(mod => mod.default), { ssr: false });
-const InstructorPaymentManagement = dynamic(() => import('@/components/admin/InstructorPaymentManagement').then(mod => mod.default), { ssr: false });
-const NoticeManagement = dynamic(() => import('@/components/notices/NoticeManagement').then(mod => mod.default), { ssr: false });
-const SecurityDashboard = dynamic(() => import('@/components/security/SecurityDashboard').then(mod => mod.default), { ssr: false });
-const AdvancedPWA = dynamic(() => import('@/components/pwa/AdvancedPWA').then(mod => mod.default), { ssr: false });
-const AdvancedFileManager = dynamic(() => import('@/components/files/AdvancedFileManager').then(mod => mod.default), { ssr: false });
-const MaterialsLibrary = dynamic(() => import('@/components/materials/MaterialsLibrary').then(mod => mod.default), { ssr: false });
-const MaterialsUpload = dynamic(() => import('@/components/materials/MaterialsUpload').then(mod => mod.default), { ssr: false });
-const MaterialsCategories = dynamic(() => import('@/components/materials/MaterialsCategories').then(mod => mod.default), { ssr: false });
-const MaterialsDistribution = dynamic(() => import('@/components/materials/MaterialsDistribution').then(mod => mod.default), { ssr: false });
-const IntegratedAttendanceManagement = dynamic(() => import('@/components/attendance/IntegratedAttendanceManagement').then(mod => mod.default), { ssr: false });
-
 // Loading component
 const LoadingSpinner = () => (
   <div className="flex items-center justify-center h-full">
@@ -58,6 +28,41 @@ const LoadingSpinner = () => (
     </div>
   </div>
 );
+
+// Dynamic imports with Next.js 15 - Lazy loading with loading fallback
+const loadingFallback = { loading: () => <LoadingSpinner /> };
+
+const DashboardWrapper = dynamic(() => import('@/components/dashboard/DashboardWrapper').then(mod => mod.default), { ...loadingFallback, ssr: false });
+const CourseManagementTabs = dynamic(() => import('@/components/courses/CourseManagementTabs').then(mod => mod.default), { ...loadingFallback, ssr: false });
+const TraineeManagement = dynamic(() => import('@/components/trainees/TraineeManagement').then(mod => mod.default), { ...loadingFallback, ssr: false });
+const UserManagement = dynamic(() => import('@/components/users/UserManagement').then(mod => mod.default), { ...loadingFallback, ssr: false });
+const InstructorManagement = dynamic(() => import('@/components/admin/InstructorManagement').then(mod => mod.default), { ...loadingFallback, ssr: false });
+const BSActivitiesManagement = dynamic(() => import('@/components/bs-activities/BSActivityManagement').then(mod => mod.default), { ...loadingFallback, ssr: false });
+const StudentActivityJournal = dynamic(() => import('@/components/bs-activities/StudentActivityJournal').then(mod => mod.default), { ...loadingFallback, ssr: false });
+const ExamManagement = dynamic(() => import('@/components/exam/ExamManagement').then(mod => mod.default), { ...loadingFallback, ssr: false });
+const StudentExamDashboard = dynamic(() => import('@/components/exam/StudentExamDashboard').then(mod => mod.default), { ...loadingFallback, ssr: false });
+const EvaluationManagementComplete = dynamic(() => import('@/components/evaluation/EvaluationManagementComplete').then(mod => mod.default), { ...loadingFallback, ssr: false });
+const StudentPracticeDashboard = dynamic(() => import('@/components/evaluation/StudentPracticeDashboard').then(mod => mod.default), { ...loadingFallback, ssr: false });
+const EvaluationTemplateManagement = dynamic(() => import('@/components/evaluation/EvaluationTemplateManagement').then(mod => mod.default), { ...loadingFallback, ssr: false });
+const InstructorEvaluationPage = dynamic(() => import('@/components/evaluation/InstructorEvaluationPage').then(mod => mod.default), { ...loadingFallback, ssr: false });
+const ComprehensiveGradesPage = dynamic(() => import('@/components/evaluation/ComprehensiveGradesPage').then(mod => mod.default), { ...loadingFallback, ssr: false });
+const IntegratedAnalyticsManagement = dynamic(() => import('@/components/analytics/IntegratedAnalyticsManagement').then(mod => mod.default), { ...loadingFallback, ssr: false });
+const IntegratedScheduleManager = dynamic(() => import('@/components/schedule/IntegratedScheduleManager').then(mod => mod.default), { ...loadingFallback, ssr: false });
+const CurriculumManager = dynamic(() => import('@/components/schedule/CurriculumManager').then(mod => mod.default), { ...loadingFallback, ssr: false });
+const CategoryManagement = dynamic(() => import('@/components/admin/CategoryManagement').then(mod => mod.default), { ...loadingFallback, ssr: false });
+const SubjectManagement = dynamic(() => import('@/components/admin/SubjectManagement').then(mod => mod.default), { ...loadingFallback, ssr: false });
+const ClassroomManagement = dynamic(() => import('@/components/admin/ClassroomManagement').then(mod => mod.default), { ...loadingFallback, ssr: false });
+const InstructorPaymentManagement = dynamic(() => import('@/components/admin/InstructorPaymentManagement').then(mod => mod.default), { ...loadingFallback, ssr: false });
+const NoticeManagement = dynamic(() => import('@/components/notices/NoticeManagement').then(mod => mod.default), { ...loadingFallback, ssr: false });
+const SecurityDashboard = dynamic(() => import('@/components/security/SecurityDashboard').then(mod => mod.default), { ...loadingFallback, ssr: false });
+const AdvancedPWA = dynamic(() => import('@/components/pwa/AdvancedPWA').then(mod => mod.default), { ...loadingFallback, ssr: false });
+const AdvancedFileManager = dynamic(() => import('@/components/files/AdvancedFileManager').then(mod => mod.default), { ...loadingFallback, ssr: false });
+const MaterialsLibrary = dynamic(() => import('@/components/materials/MaterialsLibrary').then(mod => mod.default), { ...loadingFallback, ssr: false });
+const MaterialsUpload = dynamic(() => import('@/components/materials/MaterialsUpload').then(mod => mod.default), { ...loadingFallback, ssr: false });
+const MaterialsCategories = dynamic(() => import('@/components/materials/MaterialsCategories').then(mod => mod.default), { ...loadingFallback, ssr: false });
+const MaterialsDistribution = dynamic(() => import('@/components/materials/MaterialsDistribution').then(mod => mod.default), { ...loadingFallback, ssr: false });
+const IntegratedAttendanceManagement = dynamic(() => import('@/components/attendance/IntegratedAttendanceManagement').then(mod => mod.default), { ...loadingFallback, ssr: false });
+const DropdownOptionsManagement = dynamic(() => import('@/components/admin/DropdownOptionsManagement').then(mod => mod.default), { ...loadingFallback, ssr: false });
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -116,13 +121,18 @@ export default function DashboardPage() {
         return <StudentActivityJournal />;
       case 'exams':
         return <ExamManagement />;
+      case 'exam-taking': // 교육생 시험 응시
+        return <StudentExamDashboard />;
       case 'practice':
         return <EvaluationManagementComplete />;
+      case 'my-practice': // 교육생 내 실습 평가
+        return <StudentPracticeDashboard />;
       case 'evaluation-templates':
         return <EvaluationTemplateManagement />;
       case 'instructor-evaluation':
         return <InstructorEvaluationPage />;
       case 'comprehensive-grades':
+      case 'my-grades': // 교육생 내 성적
         return <ComprehensiveGradesPage />;
       case 'analytics':
       case 'statistics':
@@ -157,6 +167,8 @@ export default function DashboardPage() {
         return <MaterialsDistribution />;
       case 'attendance':
         return <IntegratedAttendanceManagement />;
+      case 'dropdown-options-management':
+        return <DropdownOptionsManagement />;
       default:
         return <DashboardWrapper onNavigate={setActiveView} />;
     }

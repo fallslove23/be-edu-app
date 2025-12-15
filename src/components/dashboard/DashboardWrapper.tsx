@@ -325,4 +325,4 @@ const DashboardWrapper: React.FC<DashboardWrapperProps> = ({ onNavigate }) => {
   );
 };
 
-export default DashboardWrapper;
+export default React.memo(DashboardWrapper);

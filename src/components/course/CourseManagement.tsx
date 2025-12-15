@@ -15,7 +15,8 @@ import {
   DocumentDuplicateIcon,
   PlayIcon,
   PauseIcon,
-  StopIcon
+  StopIcon,
+  ChevronLeftIcon
 } from '@heroicons/react/24/outline';
 import { useAuth } from '../../contexts/AuthContext';
 import { PageContainer } from '../common/PageContainer';
@@ -315,6 +316,202 @@ const CourseManagement: React.FC = () => {
         }}
         isEditing={true}
       />
+    );
+  }
+
+  if (currentView === 'details' && selectedCourse) {
+    return (
+      <PageContainer>
+        {/* 상세 정보 헤더 */}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center space-x-4">
+              <button
+                onClick={() => {
+                  setCurrentView('list');
+                  setSelectedCourse(null);
+                }}
+                className="p-2 hover:bg-gray-100 rounded-full"
+              >
+                <ChevronLeftIcon className="h-5 w-5 text-gray-600" />
+              </button>
+              <div>
+                <div className="flex items-center space-x-3 mb-2">
+                  <span className="text-sm font-medium text-blue-600">{selectedCourse.courseCode}</span>
+                  <span className={`px-3 py-1 text-sm font-medium rounded-full ${getStatusColor(selectedCourse.status)}`}>
+                    {getStatusLabel(selectedCourse.status)}
+                  </span>
+                </div>
+                <h1 className="text-2xl font-bold text-gray-900">{selectedCourse.name}</h1>
+              </div>
+            </div>
+
+            {isManager && (
+              <button
+                onClick={() => setCurrentView('edit')}
+                className="btn-primary px-4 py-2 rounded-full flex items-center space-x-2"
+              >
+                <PencilIcon className="h-4 w-4" />
+                <span>편집</span>
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* 상세 정보 본문 */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* 왼쪽 - 주요 정보 */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* 기본 정보 */}
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+              <h2 className="text-lg font-semibold text-gray-900 mb-4">기본 정보</h2>
+              <div className="space-y-4">
+                <div>
+                  <label className="text-sm text-gray-600">과정 설명</label>
+                  <p className="mt-1 text-gray-900">{selectedCourse.description || '설명이 없습니다.'}</p>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-sm text-gray-600">분야</label>
+                    <p className="mt-1 text-gray-900">{getCategoryLabel(selectedCourse.category)}</p>
+                  </div>
+                  <div>
+                    <label className="text-sm text-gray-600">난이도</label>
+                    <p className="mt-1 text-gray-900">{getTypeLabel(selectedCourse.courseType)}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* 일정 정보 */}
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+              <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                <CalendarDaysIcon className="h-5 w-5 mr-2" />
+                일정 정보
+              </h2>
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-sm text-gray-600">교육 기간</label>
+                    <p className="mt-1 text-gray-900">
+                      {formatDate(selectedCourse.start_date)} ~ {formatDate(selectedCourse.end_date)}
+                    </p>
+                  </div>
+                  <div>
+                    <label className="text-sm text-gray-600">모집 기간</label>
+                    <p className="mt-1 text-gray-900">
+                      {formatDate(selectedCourse.registrationStartDate)} ~ {formatDate(selectedCourse.registrationEndDate)}
+                    </p>
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-sm text-gray-600">총 회차</label>
+                    <p className="mt-1 text-gray-900">{selectedCourse.totalSessions}회</p>
+                  </div>
+                  <div>
+                    <label className="text-sm text-gray-600">회당 시간</label>
+                    <p className="mt-1 text-gray-900">{formatDuration(selectedCourse.sessionDuration)}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* 교육생 정보 */}
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+              <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                <UserGroupIcon className="h-5 w-5 mr-2" />
+                교육생 정보
+              </h2>
+              <div className="space-y-4">
+                <div>
+                  <div className="flex justify-between text-sm mb-2">
+                    <span className="text-gray-600">등록 현황</span>
+                    <span className="font-medium text-gray-900">
+                      {selectedCourse.currentEnrollment}/{selectedCourse.max_trainees}명 ({Math.round((selectedCourse.currentEnrollment / selectedCourse.max_trainees) * 100)}%)
+                    </span>
+                  </div>
+                  <div className="w-full bg-gray-200 rounded-full h-3">
+                    <div
+                      className="bg-blue-600 h-3 rounded-full transition-all"
+                      style={{ width: `${(selectedCourse.currentEnrollment / selectedCourse.max_trainees) * 100}%` }}
+                    ></div>
+                  </div>
+                </div>
+
+                {selectedCourse.status === 'completed' && (
+                  <div className="grid grid-cols-2 gap-4 pt-4 border-t">
+                    <div>
+                      <label className="text-sm text-gray-600">수료율</label>
+                      <p className="mt-1 text-2xl font-bold text-green-600">{selectedCourse.completionRate}%</p>
+                    </div>
+                    <div>
+                      <label className="text-sm text-gray-600">평균 평점</label>
+                      <p className="mt-1 text-2xl font-bold text-yellow-600">{selectedCourse.averageRating}/5.0</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* 오른쪽 - 담당자 및 부가 정보 */}
+          <div className="space-y-6">
+            {/* 담당 인력 */}
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+              <h2 className="text-lg font-semibold text-gray-900 mb-4">담당 인력</h2>
+              <div className="space-y-4">
+                <div>
+                  <label className="text-sm text-gray-600">강사</label>
+                  <p className="mt-1 text-gray-900 font-medium">{selectedCourse.instructor_name}</p>
+                </div>
+                <div>
+                  <label className="text-sm text-gray-600">매니저</label>
+                  <p className="mt-1 text-gray-900 font-medium">{selectedCourse.manager_name}</p>
+                </div>
+              </div>
+            </div>
+
+            {/* 메타 정보 */}
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+              <h2 className="text-lg font-semibold text-gray-900 mb-4">메타 정보</h2>
+              <div className="space-y-3 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-gray-600">생성일</span>
+                  <span className="text-gray-900">{formatDate(selectedCourse.created_at)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">최종 수정</span>
+                  <span className="text-gray-900">{formatDate(selectedCourse.updated_at)}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* 액션 버튼 */}
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+              <h2 className="text-lg font-semibold text-gray-900 mb-4">액션</h2>
+              <div className="space-y-3">
+                <button className="w-full px-4 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 flex items-center justify-center space-x-2">
+                  <UserGroupIcon className="h-4 w-4" />
+                  <span>수강생 관리</span>
+                </button>
+                <button className="w-full px-4 py-2 bg-green-600 text-white rounded-full hover:bg-green-700 flex items-center justify-center space-x-2">
+                  <CalendarDaysIcon className="h-4 w-4" />
+                  <span>일정 관리</span>
+                </button>
+                <button className="w-full px-4 py-2 bg-purple-600 text-white rounded-full hover:bg-purple-700 flex items-center justify-center space-x-2">
+                  <ChartBarIcon className="h-4 w-4" />
+                  <span>성과 분석</span>
+                </button>
+                <button className="w-full px-4 py-2 border border-gray-300 text-gray-700 rounded-full hover:bg-gray-50 flex items-center justify-center space-x-2">
+                  <DocumentDuplicateIcon className="h-4 w-4" />
+                  <span>과정 복제</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </PageContainer>
     );
   }
 

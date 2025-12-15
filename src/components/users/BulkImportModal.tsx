@@ -48,9 +48,9 @@ const BulkImportModal: React.FC<BulkImportModalProps> = ({ isOpen, onClose, onIm
 
       const mockData = [
         ['이름', '이메일', '전화번호', '사번', '역할', '부서', '직급', '입사일', '상태'],
-        ['홍길동', 'hong@company.com', '010-1234-5678', 'EMP001', 'trainee', '영업팀', '사원', '2024-03-01', 'active'],
-        ['김철수', 'kim@company.com', '010-2345-6789', 'EMP002', 'instructor', '교육팀', '강사', '2022-01-15', 'active'],
-        ['이영희', 'lee@company.com', '010-3456-7890', 'EMP003', 'manager', '영업본부', '팀장', '2020-06-01', 'active'],
+        ['홍길동', 'hong@company.com', '010-1234-5678', '20240001', 'trainee', '영업팀', '사원', '2024-03-01', 'active'],
+        ['김철수', 'kim@company.com', '010-2345-6789', '20220001', 'instructor', '교육팀', '강사', '2022-01-15', 'active'],
+        ['이영희', 'lee@company.com', '010-3456-7890', '20200001', 'manager', '영업본부', '팀장', '2020-06-01', 'active'],
       ];
 
       processCsvData(mockData);
@@ -176,8 +176,8 @@ const BulkImportModal: React.FC<BulkImportModalProps> = ({ isOpen, onClose, onIm
   const downloadTemplate = () => {
     const template = [
       ['이름', '이메일', '전화번호', '사번', '역할', '부서', '직급', '입사일', '상태'],
-      ['홍길동', 'hong@example.com', '010-1234-5678', 'EMP001', 'trainee', '영업팀', '사원', '2024-01-01', 'active'],
-      ['김강사', 'kim@example.com', '010-2345-6789', 'INS001', 'instructor', '교육팀', '강사', '2022-01-01', 'active']
+      ['홍길동', 'hong@example.com', '010-1234-5678', '20240001', 'trainee', '영업팀', '사원', '2024-01-01', 'active'],
+      ['김강사', 'kim@example.com', '010-2345-6789', '20220001', 'instructor', '교육팀', '강사', '2022-01-01', 'active']
     ];
 
     const csvContent = template.map(row => row.join(',')).join('\n');

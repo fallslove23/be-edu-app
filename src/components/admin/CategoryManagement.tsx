@@ -440,4 +440,4 @@ export const CategoryManagement: React.FC = () => {
   );
 };
 
-export default CategoryManagement;
+export default React.memo(CategoryManagement);

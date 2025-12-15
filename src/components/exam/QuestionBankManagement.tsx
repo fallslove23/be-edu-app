@@ -657,7 +657,7 @@ const QuestionForm: React.FC<QuestionFormProps> = ({ bankId, question, onSave, o
   );
   const [questionText, setQuestionText] = useState(question?.question_text || '');
   const [options, setOptions] = useState<string[]>(
-    question?.options as string[] || ['', '', '', '']
+    Array.isArray(question?.options) ? question.options as string[] : ['', '', '', '']
   );
   const [correctAnswer, setCorrectAnswer] = useState<any>(question?.correct_answer || 0);
   const [explanation, setExplanation] = useState(question?.explanation || '');
@@ -665,6 +665,13 @@ const QuestionForm: React.FC<QuestionFormProps> = ({ bankId, question, onSave, o
   const [difficulty, setDifficulty] = useState<'easy' | 'medium' | 'hard'>(
     question?.difficulty || 'medium'
   );
+
+  // 문제 유형 변경 시 options 초기화
+  useEffect(() => {
+    if (type === 'multiple_choice' && !Array.isArray(options)) {
+      setOptions(['', '', '', '']);
+    }
+  }, [type]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -786,7 +793,7 @@ const QuestionForm: React.FC<QuestionFormProps> = ({ bankId, question, onSave, o
                 선택지 <span className="text-destructive">*</span>
               </label>
               <div className="space-y-2">
-                {options.map((option, index) => (
+                {(Array.isArray(options) ? options : ['', '', '', '']).map((option, index) => (
                   <div key={index} className="flex items-center space-x-2">
                     <input
                       type="radio"

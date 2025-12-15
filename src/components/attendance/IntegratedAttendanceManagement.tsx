@@ -109,30 +109,33 @@ const IntegratedAttendanceManagement: React.FC = () => {
         console.log('📊 Course Round Data Sample:', data[0]);
       }
 
-      // Map course_rounds to Session interface with formatted display name
+      // Map course_rounds to Session interface
       const mappedSessions = (data || []).map(round => {
-        // 차수 표시 형식: "25-8차 BS Basic" 또는 "{year}-{round_number}차 {course_name}"
-        const year = round.start_date ? new Date(round.start_date).getFullYear().toString().slice(-2) : '';
+        // title이 있으면 우선 사용 (예: "25-4차 BS Basic")
+        // round_name이 있으면 사용
+        // 둘 다 없으면 직접 생성
+        let displayName = round.title || round.round_name || '';
 
-        // round_name이 없으면 title을 사용 (DB 스키마 호환성)
-        const name = round.round_name || round.title;
-
-        const displayName = round.round_number && round.course_name
-          ? `${year}-${round.round_number}차 ${round.course_name}`
-          : name; // fallback to name if fields are missing
+        // title이나 round_name이 없으면 직접 생성
+        if (!displayName && round.course_name && round.round_number) {
+          const year = round.start_date ? new Date(round.start_date).getFullYear().toString().slice(-2) : '';
+          displayName = `${year}-${round.round_number}차 ${round.course_name}`;
+        }
 
         console.log('🔄 Mapping round:', {
-          round_name: round.round_name,
+          id: round.id,
+          round_code: round.round_code,
           title: round.title,
+          round_name: round.round_name,
           round_number: round.round_number,
           course_name: round.course_name,
-          displayName
+          displayName: displayName || '이름 없음'
         });
 
         return {
           id: round.id,
-          session_name: displayName || '이름 없음', // 최종 fallback
-          session_code: round.round_code,
+          session_name: displayName || '이름 없음',
+          session_code: round.round_code || '',
           start_date: round.start_date,
           end_date: round.end_date,
           status: round.status
@@ -349,12 +352,10 @@ const IntegratedAttendanceManagement: React.FC = () => {
     return (
       <div className="space-y-6">
         {/* 날짜 및 세션 정보 */}
-        <div className="bg-gradient-to-r from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 rounded-xl shadow-sm border border-blue-200 dark:border-blue-800 p-6">
-          <h2 className="text-2xl font-bold mb-2 text-gray-900 dark:text-white">{selectedSession.session_name}</h2>
-          <div className="flex items-center gap-4 text-gray-600 dark:text-gray-300 text-sm">
-            <span className="font-medium">{selectedSession.session_code}</span>
-            <span>•</span>
-            <span>{format(new Date(selectedSession.start_date), 'yyyy-MM-dd')} ~ {format(new Date(selectedSession.end_date), 'yyyy-MM-dd')}</span>
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+          <h2 className="text-xl font-bold mb-2 text-gray-900 dark:text-white">{selectedSession.session_name}</h2>
+          <div className="text-sm text-gray-600 dark:text-gray-300">
+            {format(new Date(selectedSession.start_date), 'yyyy-MM-dd')} ~ {format(new Date(selectedSession.end_date), 'yyyy-MM-dd')}
           </div>
         </div>
 
@@ -364,16 +365,16 @@ const IntegratedAttendanceManagement: React.FC = () => {
             <div className="text-sm text-gray-500 dark:text-gray-400 mb-1">총 인원</div>
             <div className="text-2xl font-bold text-gray-900 dark:text-white">{summary.total}명</div>
           </div>
-          <div className="bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-lg shadow-sm p-4 text-white">
-            <div className="text-sm text-emerald-100 mb-1">출석률</div>
+          <div className="bg-green-600 rounded-lg shadow-sm p-4 text-white">
+            <div className="text-sm text-green-100 mb-1">출석률</div>
             <div className="text-2xl font-bold">{summary.attendanceRate}%</div>
-            <div className="text-xs text-emerald-100 mt-1">출석 {summary.present} / 지각 {summary.late}</div>
+            <div className="text-xs text-green-100 mt-1">출석 {summary.present} / 지각 {summary.late}</div>
           </div>
-          <div className="bg-gradient-to-br from-red-500 to-red-600 rounded-lg shadow-sm p-4 text-white">
+          <div className="bg-red-600 rounded-lg shadow-sm p-4 text-white">
             <div className="text-sm text-red-100 mb-1">결석</div>
             <div className="text-2xl font-bold">{summary.absent}명</div>
           </div>
-          <div className="bg-gradient-to-br from-gray-500 to-gray-600 rounded-lg shadow-sm p-4 text-white">
+          <div className="bg-gray-600 rounded-lg shadow-sm p-4 text-white">
             <div className="text-sm text-gray-100 mb-1">미체크</div>
             <div className="text-2xl font-bold">{summary.unchecked}명</div>
           </div>
@@ -459,7 +460,7 @@ const IntegratedAttendanceManagement: React.FC = () => {
         </div>
 
         {/* 출석 대상 목록 */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
           <div className="divide-y divide-gray-200 dark:divide-gray-700">
             {filteredTargets.length > 0 ? (
               filteredTargets.map(target => (
@@ -550,7 +551,7 @@ const IntegratedAttendanceManagement: React.FC = () => {
 
     return (
       <div className="space-y-6">
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
               <thead className="bg-gray-50 dark:bg-gray-700/50">
@@ -642,7 +643,7 @@ const IntegratedAttendanceManagement: React.FC = () => {
 
     return (
       <div className="space-y-6">
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
               <thead className="bg-gray-50 dark:bg-gray-700/50">
@@ -732,11 +733,11 @@ const IntegratedAttendanceManagement: React.FC = () => {
         />
 
         {/* 필터 및 탭 컨테이너 */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 space-y-6">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 space-y-6">
           {/* 차수 및 날짜 선택 */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
                 과정 차수
               </label>
               <select
@@ -745,37 +746,37 @@ const IntegratedAttendanceManagement: React.FC = () => {
                   const session = sessions.find(s => s.id === e.target.value);
                   setSelectedSession(session || null);
                 }}
-                className="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                className="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
               >
                 <option value="">차수를 선택하세요</option>
                 {sessions.map(session => (
                   <option key={session.id} value={session.id}>
-                    {session.session_name} {session.session_code ? `(${session.session_code})` : ''} - {format(new Date(session.start_date), 'yyyy-MM-dd')}
+                    {session.session_name} - {format(new Date(session.start_date), 'yyyy-MM-dd')}
                   </option>
                 ))}
               </select>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
                 출석 날짜
               </label>
               <input
                 type="date"
                 value={selectedDate}
                 onChange={(e) => setSelectedDate(e.target.value)}
-                className="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                className="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
               />
             </div>
           </div>
 
           {/* 뷰 모드 탭 */}
-          <div className="flex p-1 bg-gray-100 dark:bg-gray-700 rounded-lg w-fit">
+          <div className="flex gap-2 p-1 bg-gray-100 dark:bg-gray-700 rounded-lg w-fit">
             <button
               onClick={() => setViewMode('check')}
-              className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${viewMode === 'check'
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${viewMode === 'check'
                 ? 'bg-white dark:bg-gray-600 text-blue-600 dark:text-white shadow-sm'
-                : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
+                : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
                 }`}
             >
               <CheckCircleIcon className="w-4 h-4 inline mr-2" />
@@ -783,9 +784,9 @@ const IntegratedAttendanceManagement: React.FC = () => {
             </button>
             <button
               onClick={() => setViewMode('trainee')}
-              className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${viewMode === 'trainee'
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${viewMode === 'trainee'
                 ? 'bg-white dark:bg-gray-600 text-blue-600 dark:text-white shadow-sm'
-                : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
+                : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
                 }`}
             >
               <UserGroupIcon className="w-4 h-4 inline mr-2" />
@@ -793,9 +794,9 @@ const IntegratedAttendanceManagement: React.FC = () => {
             </button>
             <button
               onClick={() => setViewMode('statistics')}
-              className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${viewMode === 'statistics'
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${viewMode === 'statistics'
                 ? 'bg-white dark:bg-gray-600 text-blue-600 dark:text-white shadow-sm'
-                : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
+                : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
                 }`}
             >
               <ChartBarIcon className="w-4 h-4 inline mr-2" />

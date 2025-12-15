@@ -286,7 +286,9 @@ const TraineeManagement: React.FC = () => {
       email: '',
       phone: '',
       employee_id: '',
-      department: '',
+      division: '',
+      lab: '',
+      team: '',
       position: '',
       hire_date: '',
       cohort: ''
@@ -295,7 +297,23 @@ const TraineeManagement: React.FC = () => {
     const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
       try {
-        await TraineeService.createTrainee(formData);
+        // 부서를 "본부/연구소 > 실 > 팀" 형식으로 합치기
+        const departmentParts = [formData.division, formData.lab, formData.team]
+          .filter(part => part.trim())
+          .join(' > ');
+
+        const createData = {
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          employee_id: formData.employee_id,
+          department: departmentParts,
+          position: formData.position,
+          hire_date: formData.hire_date,
+          cohort: formData.cohort
+        };
+
+        await TraineeService.createTrainee(createData);
         toast.success('새로운 교육생이 생성되었습니다!');
         setIsCreateModalOpen(false);
         loadTrainees();
@@ -304,7 +322,9 @@ const TraineeManagement: React.FC = () => {
           email: '',
           phone: '',
           employee_id: '',
-          department: '',
+          division: '',
+          lab: '',
+          team: '',
           position: '',
           hire_date: '',
           cohort: ''
@@ -377,13 +397,30 @@ const TraineeManagement: React.FC = () => {
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-card-foreground mb-2">부서</label>
-                <input
-                  type="text"
-                  value={formData.department}
-                  onChange={(e) => setFormData({ ...formData, department: e.target.value })}
-                  className="w-full border border-input rounded-lg px-3 py-2 bg-background text-foreground focus:ring-2 focus:ring-ring"
-                />
+                <label className="block text-sm font-medium text-card-foreground mb-2">소속</label>
+                <div className="space-y-2">
+                  <input
+                    type="text"
+                    value={formData.division}
+                    onChange={(e) => setFormData({ ...formData, division: e.target.value })}
+                    placeholder="본부/연구소 (예: 경기남부본부)"
+                    className="w-full border border-input rounded-lg px-3 py-2 bg-background text-foreground focus:ring-2 focus:ring-ring text-sm"
+                  />
+                  <input
+                    type="text"
+                    value={formData.lab}
+                    onChange={(e) => setFormData({ ...formData, lab: e.target.value })}
+                    placeholder="실 (예: 안전실)"
+                    className="w-full border border-input rounded-lg px-3 py-2 bg-background text-foreground focus:ring-2 focus:ring-ring text-sm"
+                  />
+                  <input
+                    type="text"
+                    value={formData.team}
+                    onChange={(e) => setFormData({ ...formData, team: e.target.value })}
+                    placeholder="팀 (예: 안전팀)"
+                    className="w-full border border-input rounded-lg px-3 py-2 bg-background text-foreground focus:ring-2 focus:ring-ring text-sm"
+                  />
+                </div>
               </div>
               <div>
                 <label className="block text-sm font-medium text-card-foreground mb-2">직급</label>
@@ -429,12 +466,27 @@ const TraineeManagement: React.FC = () => {
 
   // 교육생 편집 모달
   const EditTraineeModal = () => {
+    // 부서를 파싱: "본부/연구소 > 실 > 팀" 형식
+    const parseDepartment = (dept: string) => {
+      if (!dept) return { division: '', lab: '', team: '' };
+      const parts = dept.split('>').map(p => p.trim());
+      return {
+        division: parts[0] || '',
+        lab: parts[1] || '',
+        team: parts[2] || ''
+      };
+    };
+
+    const initialDept = parseDepartment(selectedTrainee?.department || '');
+
     const [formData, setFormData] = useState({
       name: selectedTrainee?.name || '',
       email: selectedTrainee?.email || '',
       phone: selectedTrainee?.phone || '',
       employee_id: selectedTrainee?.employee_id || '',
-      department: selectedTrainee?.department || '',
+      division: initialDept.division,
+      lab: initialDept.lab,
+      team: initialDept.team,
       position: selectedTrainee?.position || '',
       hire_date: selectedTrainee?.hire_date || '',
       cohort: selectedTrainee?.cohort || ''
@@ -442,12 +494,15 @@ const TraineeManagement: React.FC = () => {
 
     useEffect(() => {
       if (selectedTrainee) {
+        const dept = parseDepartment(selectedTrainee.department);
         setFormData({
           name: selectedTrainee.name,
           email: selectedTrainee.email,
           phone: selectedTrainee.phone,
           employee_id: selectedTrainee.employee_id,
-          department: selectedTrainee.department,
+          division: dept.division,
+          lab: dept.lab,
+          team: dept.team,
           position: selectedTrainee.position,
           hire_date: selectedTrainee.hire_date,
           cohort: selectedTrainee.cohort || ''
@@ -460,12 +515,29 @@ const TraineeManagement: React.FC = () => {
       if (!selectedTrainee) return;
 
       try {
-        await TraineeService.updateTrainee(selectedTrainee.id, formData);
+        // 부서를 "본부/연구소 > 실 > 팀" 형식으로 합치기
+        const departmentParts = [formData.division, formData.lab, formData.team]
+          .filter(part => part.trim())
+          .join(' > ');
+
+        const updateData = {
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          employee_id: formData.employee_id,
+          department: departmentParts,
+          position: formData.position,
+          hire_date: formData.hire_date,
+          cohort: formData.cohort
+        };
+
+        await TraineeService.updateTrainee(selectedTrainee.id, updateData);
         toast.success('교육생 정보가 수정되었습니다!');
         setIsEditModalOpen(false);
         setSelectedTrainee(null);
         loadTrainees();
       } catch (error) {
+        console.error('교육생 정보 수정 오류:', error);
         toast.error('교육생 정보 수정 중 오류가 발생했습니다.');
       }
     };
@@ -536,13 +608,30 @@ const TraineeManagement: React.FC = () => {
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-card-foreground mb-2">부서</label>
-                <input
-                  type="text"
-                  value={formData.department}
-                  onChange={(e) => setFormData({ ...formData, department: e.target.value })}
-                  className="w-full border border-input rounded-lg px-3 py-2 bg-background text-foreground focus:ring-2 focus:ring-ring"
-                />
+                <label className="block text-sm font-medium text-card-foreground mb-2">소속</label>
+                <div className="space-y-2">
+                  <input
+                    type="text"
+                    value={formData.division}
+                    onChange={(e) => setFormData({ ...formData, division: e.target.value })}
+                    placeholder="본부/연구소 (예: 경기남부본부)"
+                    className="w-full border border-input rounded-lg px-3 py-2 bg-background text-foreground focus:ring-2 focus:ring-ring text-sm"
+                  />
+                  <input
+                    type="text"
+                    value={formData.lab}
+                    onChange={(e) => setFormData({ ...formData, lab: e.target.value })}
+                    placeholder="실 (예: 안전실)"
+                    className="w-full border border-input rounded-lg px-3 py-2 bg-background text-foreground focus:ring-2 focus:ring-ring text-sm"
+                  />
+                  <input
+                    type="text"
+                    value={formData.team}
+                    onChange={(e) => setFormData({ ...formData, team: e.target.value })}
+                    placeholder="팀 (예: 안전팀)"
+                    className="w-full border border-input rounded-lg px-3 py-2 bg-background text-foreground focus:ring-2 focus:ring-ring text-sm"
+                  />
+                </div>
               </div>
               <div>
                 <label className="block text-sm font-medium text-card-foreground mb-2">직급</label>
@@ -1427,4 +1516,4 @@ const TraineeManagement: React.FC = () => {
   }
 };
 
-export default TraineeManagement;
+export default React.memo(TraineeManagement);

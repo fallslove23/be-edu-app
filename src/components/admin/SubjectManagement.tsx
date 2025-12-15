@@ -471,4 +471,4 @@ export function SubjectManagement() {
   );
 }
 
-export default SubjectManagement;
+export default React.memo(SubjectManagement);

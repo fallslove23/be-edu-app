@@ -491,4 +491,4 @@ const UserManagement: React.FC = () => {
   );
 };
 
-export default UserManagement;
+export default React.memo(UserManagement);

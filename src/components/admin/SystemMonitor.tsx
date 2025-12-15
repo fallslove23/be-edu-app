@@ -561,4 +561,4 @@ const SystemMonitor: React.FC = () => {
   );
 };
 
-export default SystemMonitor;
+export default React.memo(SystemMonitor);

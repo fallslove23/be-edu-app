@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { StaggerContainer, FadeInUp } from '../common/Animations';
 import {
   TrendingUp,
@@ -72,11 +72,7 @@ const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({ embedded = false 
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState('30days');
 
-  useEffect(() => {
-    loadDashboardData();
-  }, []);
-
-  const loadDashboardData = async () => {
+  const loadDashboardData = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -109,10 +105,14 @@ const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({ embedded = false 
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  // 통계 카드 데이터
-  const statCards: StatCard[] = stats ? [
+  useEffect(() => {
+    loadDashboardData();
+  }, [loadDashboardData]);
+
+  // 통계 카드 데이터 (useMemo로 캐싱)
+  const statCards: StatCard[] = useMemo(() => stats ? [
     {
       label: '전체 교육생',
       value: stats.totalTrainees.toString(),
@@ -145,7 +145,7 @@ const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({ embedded = false 
       subtitle: '목표 달성률 상승',
       icon: Clock,
     },
-  ] : [];
+  ] : [], [stats]);
 
   // Clean Minimalist Theme (inspired by screenshot)
   const cleanTheme = {
@@ -581,4 +581,4 @@ const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({ embedded = false 
   );
 };
 
-export default EnhancedDashboard;
+export default React.memo(EnhancedDashboard);

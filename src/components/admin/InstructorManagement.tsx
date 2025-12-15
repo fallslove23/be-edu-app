@@ -1167,4 +1167,4 @@ export function InstructorManagement() {
   );
 }
 
-export default InstructorManagement;
+export default React.memo(InstructorManagement);
