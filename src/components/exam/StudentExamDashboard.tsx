@@ -26,11 +26,9 @@ const StudentExamDashboard: React.FC = () => {
   const loadExams = async () => {
     try {
       setLoading(true);
-      const allExams = await ExamService.getAllExams();
+      const allExams = await ExamService.getExams({ status: 'published' });
 
-      // 활성화된 시험만 필터링
-      const activeExams = allExams.filter(exam => exam.status === 'published');
-      setExams(activeExams);
+      setExams(allExams);
     } catch (error) {
       console.error('시험 목록 로딩 실패:', error);
       toast.error('시험 목록을 불러오는데 실패했습니다.');
