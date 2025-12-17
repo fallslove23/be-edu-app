@@ -3,6 +3,7 @@
 import React from 'react';
 import { PageContainer } from '../../src/components/common/PageContainer';
 import { PageHeader } from '../../src/components/common/PageHeader';
+import RoleGuard from '../../src/components/auth/RoleGuard';
 import {
   AcademicCapIcon,
   ClipboardDocumentCheckIcon,
@@ -151,13 +152,14 @@ const StudentDashboard: React.FC = () => {
   };
 
   return (
-    <PageContainer>
-      <div className="space-y-6">
-        <PageHeader
-          title="나의 학습"
-          description="학습 진행 현황 및 과제를 확인하세요"
-          badge="Student Dashboard"
-        />
+    <RoleGuard allowedRoles={['trainee']}>
+      <PageContainer>
+        <div className="space-y-6">
+          <PageHeader
+            title="나의 학습"
+            description="학습 진행 현황 및 과제를 확인하세요"
+            badge="Student Dashboard"
+          />
 
         {/* 환영 메시지 */}
         <div className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg shadow-sm p-8 text-white">
@@ -217,6 +219,7 @@ const StudentDashboard: React.FC = () => {
         </div>
       </div>
     </PageContainer>
+    </RoleGuard>
   );
 };
 
