@@ -39,14 +39,20 @@ export default function EvaluationManagementComplete() {
   const loadCourseRounds = async () => {
     try {
       setLoading(true);
-      const rounds = await courseTemplateService.getRounds({
-        status: 'in_progress',
-      });
-      setCourseRounds(rounds || []);
+      // 모든 활성 과정 회차를 가져옵니다 (status 필터 제거)
+      const rounds = await courseTemplateService.getRounds();
+
+      // 진행 중이거나 모집 중인 과정만 필터링
+      const activeRounds = (rounds || []).filter(
+        (round) => round.status === 'in_progress' || round.status === 'recruiting'
+      );
+
+      setCourseRounds(activeRounds);
+      console.log('[EvaluationManagement] Loaded course rounds:', activeRounds);
 
       // 첫 번째 과정 자동 선택
-      if (rounds && rounds.length > 0) {
-        setSelectedRoundId(rounds[0].id);
+      if (activeRounds.length > 0) {
+        setSelectedRoundId(activeRounds[0].id);
       }
     } catch (error) {
       console.error('Failed to load course rounds:', error);
@@ -98,9 +104,9 @@ export default function EvaluationManagementComplete() {
             <option value="">선택하세요</option>
             {courseRounds.map((round) => (
               <option key={round.id} value={round.id}>
-                {round.course_name || round.title} - {round.round_number}차 (
-                {new Date(round.start_date).toLocaleDateString()} ~{' '}
-                {new Date(round.end_date).toLocaleDateString()})
+                {round.title || `${round.template?.name || '과정'} ${round.round_number}차`}
+                {' '}({new Date(round.start_date).toLocaleDateString()} ~ {new Date(round.end_date).toLocaleDateString()})
+                {' '}- {round.status === 'recruiting' ? '모집중' : '진행중'}
               </option>
             ))}
           </select>
