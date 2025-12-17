@@ -20,6 +20,7 @@ import {
   TrendingUp,
   FolderOpen,
   PieChart,
+  RefreshCw,
 } from 'lucide-react';
 import EnhancedDashboard from './EnhancedDashboard';
 import TraineeDashboard from '../trainee/TraineeDashboard';
@@ -28,6 +29,7 @@ import ErrorBoundary from '../common/ErrorBoundary';
 import { useAuth } from '../../contexts/AuthContext';
 import { PageContainer } from '../common/PageContainer';
 import { PageHeader } from '../common/PageHeader';
+import { DashboardService, type DashboardStats } from '../../services/dashboard.service';
 
 interface DashboardWrapperProps {
   onNavigate?: (view: string) => void;
@@ -36,7 +38,42 @@ interface DashboardWrapperProps {
 const DashboardWrapper: React.FC<DashboardWrapperProps> = ({ onNavigate }) => {
   const { user } = useAuth();
   const [showMoreMenu, setShowMoreMenu] = useState(false);
+  const [stats, setStats] = useState<DashboardStats | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [lastRefresh, setLastRefresh] = useState<Date>(new Date());
   const moreMenuRef = useRef<HTMLDivElement>(null);
+
+  // Load dashboard stats
+  useEffect(() => {
+    loadDashboardStats();
+  }, []);
+
+  // Auto-refresh every 5 minutes
+  useEffect(() => {
+    const interval = setInterval(() => {
+      loadDashboardStats();
+    }, 5 * 60 * 1000); // 5 minutes
+
+    return () => clearInterval(interval);
+  }, []);
+
+  const loadDashboardStats = async () => {
+    try {
+      setLoading(true);
+      const dashboardStats = await DashboardService.getMainStats();
+      setStats(dashboardStats);
+      setLastRefresh(new Date());
+    } catch (error) {
+      console.error('Failed to load dashboard stats:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleRefresh = () => {
+    setShowMoreMenu(false);
+    loadDashboardStats();
+  };
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -132,13 +169,12 @@ const DashboardWrapper: React.FC<DashboardWrapperProps> = ({ onNavigate }) => {
                 {showMoreMenu && (
                   <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-100 dark:border-gray-700 py-1 z-20">
                     <button
-                      onClick={() => {
-                        setShowMoreMenu(false);
-                        window.location.reload();
-                      }}
+                      onClick={handleRefresh}
                       className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center gap-2"
+                      disabled={loading}
                     >
-                      <span>🔄</span> 새로고침
+                      <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+                      {loading ? '새로고침 중...' : '새로고침'}
                     </button>
                     <button
                       onClick={() => {
@@ -156,12 +192,18 @@ const DashboardWrapper: React.FC<DashboardWrapperProps> = ({ onNavigate }) => {
 
             <div className="text-center py-6">
               <div className="inline-flex items-baseline justify-center space-x-2">
-                <span className="text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400 tracking-tight">
-                  8
-                </span>
-                <span className="text-xl font-medium text-gray-500 dark:text-gray-400">
-                  개 과정 진행중
-                </span>
+                {loading ? (
+                  <RefreshCw className="w-12 h-12 animate-spin text-indigo-600 dark:text-indigo-400" />
+                ) : (
+                  <>
+                    <span className="text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400 tracking-tight">
+                      {stats?.activeCourses || 0}
+                    </span>
+                    <span className="text-xl font-medium text-gray-500 dark:text-gray-400">
+                      개 과정 진행중
+                    </span>
+                  </>
+                )}
               </div>
             </div>
 
@@ -187,8 +229,10 @@ const DashboardWrapper: React.FC<DashboardWrapperProps> = ({ onNavigate }) => {
                   <CheckCircle className="w-5 h-5" />
                 </div>
                 <div>
-                  <div className="text-xs text-gray-500 dark:text-gray-400 mb-0.5">오늘 출석률</div>
-                  <div className="text-lg font-bold text-gray-900 dark:text-white">98.5%</div>
+                  <div className="text-xs text-gray-500 dark:text-gray-400 mb-0.5">평균 출석률</div>
+                  <div className="text-lg font-bold text-gray-900 dark:text-white">
+                    {loading ? '...' : `${stats?.averageAttendance.toFixed(1) || 0}%`}
+                  </div>
                 </div>
               </div>
               <div className="bg-gray-50 dark:bg-gray-700/30 rounded-2xl p-4 flex items-center space-x-4 border border-gray-100 dark:border-gray-700/50">
@@ -197,7 +241,9 @@ const DashboardWrapper: React.FC<DashboardWrapperProps> = ({ onNavigate }) => {
                 </div>
                 <div>
                   <div className="text-xs text-gray-500 dark:text-gray-400 mb-0.5">총 교육생</div>
-                  <div className="text-lg font-bold text-gray-900 dark:text-white">156명</div>
+                  <div className="text-lg font-bold text-gray-900 dark:text-white">
+                    {loading ? '...' : `${stats?.totalTrainees || 0}명`}
+                  </div>
                 </div>
               </div>
             </div>
