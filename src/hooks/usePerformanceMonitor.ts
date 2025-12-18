@@ -304,21 +304,27 @@ export const usePerformanceMonitor = (
     // 컴포넌트 언마운트 시 메트릭 수집
     return () => {
       const metrics = collectMetrics();
-      
-      // 성능 데이터를 로컬 스토리지에 저장 (선택사항)
-      const performanceLog = JSON.parse(localStorage.getItem('performance-log') || '[]');
-      performanceLog.push({
-        component: componentName,
-        timestamp: new Date().toISOString(),
-        metrics
-      });
-      
-      // 최근 100개 기록만 유지
-      if (performanceLog.length > 100) {
-        performanceLog.splice(0, performanceLog.length - 100);
+
+      // 성능 데이터를 로컬 스토리지에 저장 (선택사항, SSR-safe)
+      if (typeof window !== 'undefined' && window.localStorage) {
+        try {
+          const performanceLog = JSON.parse(localStorage.getItem('performance-log') || '[]');
+          performanceLog.push({
+            component: componentName,
+            timestamp: new Date().toISOString(),
+            metrics
+          });
+
+          // 최근 100개 기록만 유지
+          if (performanceLog.length > 100) {
+            performanceLog.splice(0, performanceLog.length - 100);
+          }
+
+          localStorage.setItem('performance-log', JSON.stringify(performanceLog));
+        } catch (error) {
+          console.warn('Failed to save performance log:', error);
+        }
       }
-      
-      localStorage.setItem('performance-log', JSON.stringify(performanceLog));
     };
   }, [componentName, collectMetrics, measureWebVitals]);
 
@@ -329,23 +335,33 @@ export const usePerformanceMonitor = (
 
   // 성능 리포트 생성
   const generateReport = useCallback(() => {
-    const performanceLog = JSON.parse(localStorage.getItem('performance-log') || '[]');
-    const componentLogs = performanceLog.filter((log: any) => log.component === componentName);
-    
-    if (componentLogs.length === 0) {
+    // SSR-safe localStorage access
+    if (typeof window === 'undefined' || !window.localStorage) {
       return null;
     }
 
-    const avgMetrics = componentLogs.reduce((acc: any, log: any) => {
-      acc.loadTime += log.metrics.loadTime;
-      acc.renderTime += log.metrics.renderTime;
-      acc.memoryUsage += log.metrics.memoryUsage;
-      return acc;
-    }, { loadTime: 0, renderTime: 0, memoryUsage: 0 });
+    try {
+      const performanceLog = JSON.parse(localStorage.getItem('performance-log') || '[]');
+      const componentLogs = performanceLog.filter((log: any) => log.component === componentName);
 
-    Object.keys(avgMetrics).forEach(key => {
-      avgMetrics[key] = Math.round(avgMetrics[key] / componentLogs.length);
-    });
+      if (componentLogs.length === 0) {
+        return null;
+      }
+
+      const avgMetrics = componentLogs.reduce((acc: any, log: any) => {
+        acc.loadTime += log.metrics.loadTime;
+        acc.renderTime += log.metrics.renderTime;
+        acc.memoryUsage += log.metrics.memoryUsage;
+        return acc;
+      }, { loadTime: 0, renderTime: 0, memoryUsage: 0 });
+
+      Object.keys(avgMetrics).forEach(key => {
+        avgMetrics[key] = Math.round(avgMetrics[key] / componentLogs.length);
+      });
+    } catch (error) {
+      console.warn('Failed to generate performance report:', error);
+      return null;
+    }
 
     return {
       component: componentName,
