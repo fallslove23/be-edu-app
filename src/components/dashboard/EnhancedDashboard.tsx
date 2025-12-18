@@ -182,6 +182,14 @@ const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({ embedded = false 
   const attendanceChartOptions = {
     responsive: true,
     maintainAspectRatio: false,
+    layout: {
+      padding: {
+        top: 10,
+        right: 10,
+        bottom: 0,
+        left: 0,
+      },
+    },
     plugins: {
       legend: {
         display: false,
