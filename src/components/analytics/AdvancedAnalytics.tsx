@@ -112,11 +112,14 @@ const AdvancedAnalytics: React.FC = () => {
   const [viewMode, setViewMode] = useState<'charts' | 'table'>('charts');
 
   // 성능 모니터링 (간소화) - 개발 모드에서는 경고 비활성화
-  const performanceMonitor = usePerformanceMonitor('AdvancedAnalytics', {
-    loadTime: 5000,    // 5초로 증가 (차트가 많은 페이지)
-    renderTime: 500,   // 500ms로 증가 (복잡한 컴포넌트)
-    memoryUsage: 100   // 100MB로 증가
-  });
+  // SSR 호환성을 위해 조건부로 사용
+  const performanceMonitor = typeof window !== 'undefined'
+    ? usePerformanceMonitor('AdvancedAnalytics', {
+        loadTime: 5000,    // 5초로 증가 (차트가 많은 페이지)
+        renderTime: 500,   // 500ms로 증가 (복잡한 컴포넌트)
+        memoryUsage: 100   // 100MB로 증가
+      })
+    : null;
 
   // Mock 데이터 생성
   useEffect(() => {
