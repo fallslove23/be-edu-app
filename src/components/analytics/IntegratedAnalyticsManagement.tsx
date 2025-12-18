@@ -1,19 +1,23 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   BarChart2,
   TrendingUp,
   FileText,
   Calendar,
   Download,
-  ChartPie
+  ChartPie,
+  Info,
+  Database,
+  RefreshCw
 } from 'lucide-react';
 import PerformanceTracking from '../performance/PerformanceTracking';
 import AdvancedAnalytics from './AdvancedAnalytics';
 import { ReportGenerator } from '../reports';
 import { PageContainer } from '../common/PageContainer';
 import { PageHeader } from '../common/PageHeader';
+import { AnalyticsService } from '../../services/analytics.service';
 
 type TabType = 'performance' | 'analytics' | 'reports';
 
@@ -59,6 +63,35 @@ const IntegratedAnalyticsManagement: React.FC<IntegratedAnalyticsManagementProps
   const [activeTab, setActiveTab] = useState<TabType>('performance');
   const [searchTerm, setSearchTerm] = useState('');
   const [dateRange, setDateRange] = useState('7days');
+  const [dataStatus, setDataStatus] = useState<'loading' | 'ready' | 'mock'>('loading');
+  const [stats, setStats] = useState<any>(null);
+
+  // 데이터 상태 확인
+  useEffect(() => {
+    checkDataAvailability();
+  }, []);
+
+  const checkDataAvailability = async () => {
+    try {
+      setDataStatus('loading');
+
+      // AnalyticsService로 실제 데이터 확인
+      const [summary, coursePerf] = await Promise.all([
+        AnalyticsService.getSummary().catch(() => null),
+        AnalyticsService.getCoursePerformance().catch(() => [])
+      ]);
+
+      if (summary && (summary.total_students > 0 || coursePerf.length > 0)) {
+        setDataStatus('ready');
+        setStats(summary);
+      } else {
+        setDataStatus('mock');
+      }
+    } catch (error) {
+      console.error('데이터 확인 실패:', error);
+      setDataStatus('mock');
+    }
+  };
 
   // 사용자 권한에 따라 접근 가능한 탭 필터링
   const availableTabs = tabs.filter(tab => tab.roles.includes(userRole));
@@ -111,6 +144,60 @@ const IntegratedAnalyticsManagement: React.FC<IntegratedAnalyticsManagementProps
           description={getActiveTabConfig()?.description || '데이터 기반의 의사결정을 위한 분석 도구'}
           badge="Analytics & Reports"
         />
+
+        {/* 데이터 상태 배너 */}
+        {dataStatus === 'ready' && stats && (
+          <div className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border border-green-200 dark:border-green-800 rounded-2xl p-4 flex items-center gap-3">
+            <div className="flex-shrink-0 w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center">
+              <Database className="w-5 h-5 text-green-600 dark:text-green-400" />
+            </div>
+            <div className="flex-1">
+              <h3 className="text-sm font-semibold text-green-900 dark:text-green-100">
+                실시간 데이터 연동 중
+              </h3>
+              <p className="text-xs text-green-700 dark:text-green-300 mt-0.5">
+                총 {stats.total_students}명의 교육생, {stats.active_courses}개 과정 데이터 표시 중
+              </p>
+            </div>
+            <button
+              onClick={checkDataAvailability}
+              className="flex-shrink-0 p-2 hover:bg-green-100 dark:hover:bg-green-900/30 rounded-lg transition-colors"
+              title="새로고침"
+            >
+              <RefreshCw className="w-4 h-4 text-green-600 dark:text-green-400" />
+            </button>
+          </div>
+        )}
+
+        {dataStatus === 'mock' && (
+          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 border border-blue-200 dark:border-blue-800 rounded-2xl p-4 flex items-center gap-3">
+            <div className="flex-shrink-0 w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center">
+              <Info className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+            </div>
+            <div className="flex-1">
+              <h3 className="text-sm font-semibold text-blue-900 dark:text-blue-100">
+                샘플 데이터 표시 중
+              </h3>
+              <p className="text-xs text-blue-700 dark:text-blue-300 mt-0.5">
+                실제 교육생 데이터가 입력되면 자동으로 실시간 데이터로 전환됩니다
+              </p>
+            </div>
+            <button
+              onClick={checkDataAvailability}
+              className="flex-shrink-0 p-2 hover:bg-blue-100 dark:hover:bg-blue-900/30 rounded-lg transition-colors"
+              title="다시 확인"
+            >
+              <RefreshCw className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+            </button>
+          </div>
+        )}
+
+        {dataStatus === 'loading' && (
+          <div className="bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 rounded-2xl p-4 flex items-center gap-3">
+            <RefreshCw className="w-5 h-5 text-gray-400 animate-spin" />
+            <p className="text-sm text-gray-600 dark:text-gray-400">데이터 확인 중...</p>
+          </div>
+        )}
 
         {/* 탭 네비게이션 및 필터 */}
         <div className="flex flex-col md:flex-row justify-between items-center gap-4 bg-white dark:bg-gray-800 p-2 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
