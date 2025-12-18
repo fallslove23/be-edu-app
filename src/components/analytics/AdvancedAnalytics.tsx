@@ -37,7 +37,7 @@ import {
   PolarRadiusAxis,
   Radar
 } from 'recharts';
-import { usePerformanceMonitor } from '../../hooks/usePerformanceMonitor';
+// import { usePerformanceMonitor } from '../../hooks/usePerformanceMonitor'; // 임시 비활성화
 import { useTheme } from '../../contexts/ThemeContext';
 
 interface LearningProgress {
@@ -111,12 +111,12 @@ const AdvancedAnalytics: React.FC = () => {
   const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
   const [viewMode, setViewMode] = useState<'charts' | 'table'>('charts');
 
-  // 성능 모니터링 (간소화) - SSR-safe hook
-  const performanceMonitor = usePerformanceMonitor('AdvancedAnalytics', {
-    loadTime: 5000,    // 5초로 증가 (차트가 많은 페이지)
-    renderTime: 500,   // 500ms로 증가 (복잡한 컴포넌트)
-    memoryUsage: 100   // 100MB로 증가
-  });
+  // 성능 모니터링 임시 비활성화 (React error #185 해결을 위해)
+  // const performanceMonitor = usePerformanceMonitor('AdvancedAnalytics', {
+  //   loadTime: 5000,
+  //   renderTime: 500,
+  //   memoryUsage: 100
+  // });
 
   // Mock 데이터 생성
   useEffect(() => {
