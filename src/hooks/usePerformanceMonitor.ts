@@ -358,18 +358,18 @@ export const usePerformanceMonitor = (
       Object.keys(avgMetrics).forEach(key => {
         avgMetrics[key] = Math.round(avgMetrics[key] / componentLogs.length);
       });
+
+      return {
+        component: componentName,
+        recordCount: componentLogs.length,
+        averageMetrics: avgMetrics,
+        latestMetrics: componentLogs[componentLogs.length - 1]?.metrics,
+        thresholds: finalThresholds
+      };
     } catch (error) {
       console.warn('Failed to generate performance report:', error);
       return null;
     }
-
-    return {
-      component: componentName,
-      recordCount: componentLogs.length,
-      averageMetrics: avgMetrics,
-      latestMetrics: componentLogs[componentLogs.length - 1]?.metrics,
-      thresholds: finalThresholds
-    };
   }, [componentName, finalThresholds]);
 
   // 실시간 모니터링 시작
