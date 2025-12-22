@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
+import dynamic from 'next/dynamic';
 import {
   Users,
   GraduationCap,
@@ -22,14 +23,39 @@ import {
   PieChart,
   RefreshCw,
 } from 'lucide-react';
-import EnhancedDashboard from './EnhancedDashboard';
-import TraineeDashboard from '../trainee/TraineeDashboard';
-import InstructorDashboard from '../instructor/InstructorDashboard';
 import ErrorBoundary from '../common/ErrorBoundary';
 import { useAuth } from '../../contexts/AuthContext';
 import { PageContainer } from '../common/PageContainer';
 import { PageHeader } from '../common/PageHeader';
 import { DashboardService, type DashboardStats } from '../../services/dashboard.service';
+
+// Dynamic imports for heavy dashboard components
+const EnhancedDashboard = dynamic(() => import('./EnhancedDashboard'), {
+  loading: () => (
+    <div className="flex items-center justify-center py-12">
+      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+    </div>
+  ),
+  ssr: false,
+});
+
+const TraineeDashboard = dynamic(() => import('../trainee/TraineeDashboard'), {
+  loading: () => (
+    <div className="flex items-center justify-center py-12">
+      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+    </div>
+  ),
+  ssr: false,
+});
+
+const InstructorDashboard = dynamic(() => import('../instructor/InstructorDashboard'), {
+  loading: () => (
+    <div className="flex items-center justify-center py-12">
+      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+    </div>
+  ),
+  ssr: false,
+});
 
 interface DashboardWrapperProps {
   onNavigate?: (view: string) => void;

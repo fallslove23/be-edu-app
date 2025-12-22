@@ -1,10 +1,53 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { PageContainer } from '@/components/common/PageContainer';
-import { CloudArrowUpIcon } from '@heroicons/react/24/outline';
+import { useRouter } from 'next/navigation';
+import { MaterialService } from '@/services/material.service';
+import MaterialUploadZone from '@/components/materials/MaterialUploadZone';
+import type { MaterialCategory } from '@/types/material.types';
+import toast from 'react-hot-toast';
 
 export default function MaterialsUploadPage() {
+    const router = useRouter();
+    const [categories, setCategories] = useState<MaterialCategory[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        loadCategories();
+    }, []);
+
+    const loadCategories = async () => {
+        try {
+            setLoading(true);
+            const data = await MaterialService.getCategories();
+            setCategories(data);
+        } catch (error) {
+            console.error('카테고리 로드 실패:', error);
+            toast.error('카테고리를 불러오는데 실패했습니다.');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleUploadComplete = () => {
+        toast.success('모든 파일 업로드가 완료되었습니다.');
+        // 자료 라이브러리 페이지로 이동하거나 페이지 갱신
+        setTimeout(() => {
+            router.push('/materials-library');
+        }, 1500);
+    };
+
+    if (loading) {
+        return (
+            <PageContainer>
+                <div className="flex items-center justify-center py-12">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+                </div>
+            </PageContainer>
+        );
+    }
+
     return (
         <PageContainer>
             <div className="bg-card border-b border-border p-6 mb-6">
@@ -15,25 +58,18 @@ export default function MaterialsUploadPage() {
             </div>
 
             <div className="bg-card rounded-lg border border-border p-8">
-                <div className="border-2 border-dashed border-border rounded-lg p-12 text-center hover:bg-muted/50 transition-colors cursor-pointer">
-                    <CloudArrowUpIcon className="mx-auto h-16 w-16 text-muted-foreground mb-4" />
-                    <h3 className="text-lg font-medium text-foreground mb-2">
-                        파일을 드래그하여 놓거나 클릭하여 선택하세요
-                    </h3>
-                    <p className="text-muted-foreground mb-6">
-                        최대 100MB, 문서, 이미지, 동영상 등 모든 파일 형식 지원
-                    </p>
-                    <button className="bg-primary text-primary-foreground hover:bg-primary/90 px-6 py-3 rounded-full font-medium transition-colors shadow-sm">
-                        파일 선택하기
-                    </button>
-                </div>
+                <MaterialUploadZone
+                    categories={categories}
+                    onUploadComplete={handleUploadComplete}
+                />
 
-                <div className="mt-8">
+                <div className="mt-8 pt-8 border-t border-border">
                     <h3 className="text-lg font-medium text-foreground mb-4">업로드 가이드</h3>
                     <ul className="list-disc list-inside space-y-2 text-muted-foreground">
                         <li>저작권에 위배되지 않는 자료만 업로드해주세요.</li>
                         <li>파일 명은 내용을 쉽게 파악할 수 있도록 작성해주세요.</li>
                         <li>대용량 파일은 업로드 시간이 소요될 수 있습니다.</li>
+                        <li>업로드한 자료는 선택한 카테고리에 자동으로 분류됩니다.</li>
                     </ul>
                 </div>
             </div>

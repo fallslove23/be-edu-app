@@ -28,39 +28,14 @@ import {
 import toast from 'react-hot-toast';
 import { PageContainer } from '@/components/common/PageContainer';
 import { PageHeader } from '@/components/common/PageHeader';
-
-interface Material {
-  id: string;
-  name: string;
-  type: 'document' | 'presentation' | 'video' | 'audio' | 'image' | 'archive';
-  size: string;
-  uploadDate: string;
-  uploadedBy: string;
-  courseCode?: string;
-  courseName?: string;
-  sessionNumber?: number;
-  category: 'lecture' | 'reference' | 'assignment' | 'exam' | 'template';
-  tags: string[];
-  description?: string;
-  downloadCount: number;
-  isFavorite: boolean;
-  url?: string;
-  thumbnailUrl?: string;
-}
-
-interface Folder {
-  id: string;
-  name: string;
-  parentId?: string;
-  createdDate: string;
-  materialsCount: number;
-  subFoldersCount: number;
-}
+import { MaterialService } from '@/services/material.service';
+import type { Material, MaterialCategory } from '@/types/material.types';
+import { logger } from '@/utils/logger';
+import FilePreviewModal from './FilePreviewModal';
 
 const MaterialsLibrary: React.FC = () => {
   const [materials, setMaterials] = useState<Material[]>([]);
-  const [folders, setFolders] = useState<Folder[]>([]);
-  const [currentFolderId, setCurrentFolderId] = useState<string | null>(null);
+  const [categories, setCategories] = useState<MaterialCategory[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
@@ -68,124 +43,69 @@ const MaterialsLibrary: React.FC = () => {
   const [sortBy, setSortBy] = useState<'name' | 'date' | 'size' | 'downloads'>('date');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [selectedMaterials, setSelectedMaterials] = useState<Set<string>>(new Set());
-  const [showUploadModal, setShowUploadModal] = useState(false);
+  const [showPreviewModal, setShowPreviewModal] = useState(false);
+  const [selectedMaterial, setSelectedMaterial] = useState<Material | null>(null);
 
   useEffect(() => {
-    console.log('📚 MaterialsLibrary 컴포넌트가 렌더링되었습니다.');
     loadData();
   }, []);
 
-  const loadData = () => {
-    setLoading(true);
+  const loadData = async () => {
+    try {
+      setLoading(true);
+      logger.info('자료 라이브러리 데이터 로드 시작', {
+        component: 'MaterialsLibrary',
+        action: 'loadData',
+      });
 
-    setTimeout(() => {
-      const mockFolders: Folder[] = [
-        {
-          id: 'folder-1',
-          name: 'BS 기초과정 1차',
-          createdDate: '2025-01-15',
-          materialsCount: 12,
-          subFoldersCount: 3
-        },
-        {
-          id: 'folder-2',
-          name: 'BS 고급과정 2차',
-          createdDate: '2025-01-20',
-          materialsCount: 8,
-          subFoldersCount: 2
-        },
-        {
-          id: 'folder-3',
-          name: '공통 자료',
-          createdDate: '2025-01-10',
-          materialsCount: 15,
-          subFoldersCount: 1
-        }
-      ];
+      const [materialsData, categoriesData] = await Promise.all([
+        MaterialService.getMaterials(),
+        MaterialService.getCategories(),
+      ]);
 
-      const mockMaterials: Material[] = [
-        {
-          id: 'mat-1',
-          name: 'BS 영업 기초 이론.pptx',
-          type: 'presentation',
-          size: '15.2 MB',
-          uploadDate: '2025-01-25',
-          uploadedBy: '김강사',
-          courseCode: 'BS-2025-01',
-          courseName: 'BS 신입 영업사원 기초과정 1차',
-          sessionNumber: 1,
-          category: 'lecture',
-          tags: ['영업', '기초', '이론'],
-          description: '영업의 기본 개념과 프로세스에 대한 강의 자료',
-          downloadCount: 23,
-          isFavorite: true
-        },
-        {
-          id: 'mat-2',
-          name: '고객 관계 관리 가이드.pdf',
-          type: 'document',
-          size: '2.8 MB',
-          uploadDate: '2025-01-24',
-          uploadedBy: '이강사',
-          courseCode: 'BS-2025-02',
-          courseName: 'BS 고급 영업 전략과정 2차',
-          category: 'reference',
-          tags: ['CRM', '고객관리', '가이드'],
-          description: 'CRM 시스템 활용법과 고객 관계 관리 전략',
-          downloadCount: 15,
-          isFavorite: false
-        },
-        {
-          id: 'mat-3',
-          name: '영업 실습 시나리오.docx',
-          type: 'document',
-          size: '1.5 MB',
-          uploadDate: '2025-01-23',
-          uploadedBy: '박강사',
-          courseCode: 'BS-2025-01',
-          courseName: 'BS 신입 영업사원 기초과정 1차',
-          sessionNumber: 5,
-          category: 'assignment',
-          tags: ['실습', '시나리오', '영업'],
-          description: '영업 상황별 실습을 위한 시나리오 모음',
-          downloadCount: 31,
-          isFavorite: false
-        },
-        {
-          id: 'mat-4',
-          name: '제품 소개 동영상.mp4',
-          type: 'video',
-          size: '125.6 MB',
-          uploadDate: '2025-01-22',
-          uploadedBy: '최강사',
-          category: 'reference',
-          tags: ['제품', '소개', '동영상'],
-          description: '신제품 소개 및 특징 설명 영상',
-          downloadCount: 8,
-          isFavorite: true
-        },
-        {
-          id: 'mat-5',
-          name: '평가 답안지 템플릿.xlsx',
-          type: 'document',
-          size: '456 KB',
-          uploadDate: '2025-01-21',
-          uploadedBy: '정강사',
-          category: 'template',
-          tags: ['평가', '템플릿', '답안지'],
-          description: '이론 및 실습 평가용 답안지 템플릿',
-          downloadCount: 12,
-          isFavorite: false
-        }
-      ];
+      setMaterials(materialsData);
+      setCategories(categoriesData);
 
-      setFolders(mockFolders);
-      setMaterials(mockMaterials);
+      logger.info('자료 라이브러리 데이터 로드 완료', {
+        component: 'MaterialsLibrary',
+        action: 'loadData',
+        metadata: {
+          materialsCount: materialsData.length,
+          categoriesCount: categoriesData.length,
+        },
+      });
+    } catch (error) {
+      logger.error('자료 라이브러리 데이터 로드 실패', error as Error, {
+        component: 'MaterialsLibrary',
+        action: 'loadData',
+      });
+      toast.error('자료 목록을 불러오는데 실패했습니다.');
+    } finally {
       setLoading(false);
-    }, 800);
+    }
   };
 
-  const getTypeIcon = (type: string) => {
+  const getFileTypeFromExtension = (fileName: string): string => {
+    const ext = fileName.split('.').pop()?.toLowerCase();
+
+    // 문서
+    if (['pdf', 'doc', 'docx', 'txt', 'rtf', 'odt'].includes(ext || '')) return 'document';
+    // 프레젠테이션
+    if (['ppt', 'pptx', 'key', 'odp'].includes(ext || '')) return 'presentation';
+    // 스프레드시트
+    if (['xls', 'xlsx', 'csv', 'ods'].includes(ext || '')) return 'document';
+    // 이미지
+    if (['jpg', 'jpeg', 'png', 'gif', 'bmp', 'svg', 'webp'].includes(ext || '')) return 'image';
+    // 비디오
+    if (['mp4', 'avi', 'mov', 'wmv', 'flv', 'mkv', 'webm'].includes(ext || '')) return 'video';
+    // 오디오
+    if (['mp3', 'wav', 'ogg', 'flac', 'aac', 'm4a'].includes(ext || '')) return 'audio';
+
+    return 'document';
+  };
+
+  const getTypeIcon = (fileName: string) => {
+    const type = getFileTypeFromExtension(fileName);
     switch (type) {
       case 'document': return <DocumentTextIcon className="h-8 w-8 text-primary" />;
       case 'presentation': return <PresentationChartBarIcon className="h-8 w-8 text-accent" />;
@@ -196,42 +116,47 @@ const MaterialsLibrary: React.FC = () => {
     }
   };
 
-  const getCategoryColor = (category: string) => {
-    switch (category) {
-      case 'lecture': return 'bg-primary/10 text-primary border-primary/20';
-      case 'reference': return 'bg-success/10 text-success border-success/20';
-      case 'assignment': return 'bg-accent/10 text-accent border-accent/20';
-      case 'exam': return 'bg-destructive/10 text-destructive border-destructive/20';
-      case 'template': return 'bg-secondary/10 text-secondary border-secondary/20';
-      default: return 'bg-muted/10 text-muted-foreground border-muted/20';
+  const getCategoryColor = (categoryId: string) => {
+    const category = categories.find(c => c.id === categoryId);
+    if (category?.color) {
+      return `border-[${category.color}]/20`;
     }
+    return 'bg-muted/10 text-muted-foreground border-muted/20';
   };
 
-  const getCategoryLabel = (category: string) => {
-    switch (category) {
-      case 'lecture': return '강의자료';
-      case 'reference': return '참고자료';
-      case 'assignment': return '과제';
-      case 'exam': return '시험';
-      case 'template': return '템플릿';
-      default: return '기타';
-    }
+  const getCategoryLabel = (categoryId: string) => {
+    const category = categories.find(c => c.id === categoryId);
+    return category?.name || '미분류';
+  };
+
+  const getCategoryIcon = (categoryId: string) => {
+    const category = categories.find(c => c.id === categoryId);
+    return category?.icon || '📁';
+  };
+
+  const formatFileSize = (bytes: number): string => {
+    if (bytes === 0) return '0 B';
+    const k = 1024;
+    const sizes = ['B', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return `${Math.round((bytes / Math.pow(k, i)) * 100) / 100} ${sizes[i]}`;
   };
 
   const filteredMaterials = materials
     .filter(material => {
-      const matchesSearch = material.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        material.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()));
-      const matchesCategory = selectedCategory === 'all' || material.category === selectedCategory;
-      const matchesType = selectedType === 'all' || material.type === selectedType;
+      const matchesSearch = material.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (material.description?.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        (material.tags && material.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase())));
+      const matchesCategory = selectedCategory === 'all' || material.category_id === selectedCategory;
+      const matchesType = selectedType === 'all' || getFileTypeFromExtension(material.file_name) === selectedType;
       return matchesSearch && matchesCategory && matchesType;
     })
     .sort((a, b) => {
       switch (sortBy) {
-        case 'name': return a.name.localeCompare(b.name);
-        case 'date': return new Date(b.uploadDate).getTime() - new Date(a.uploadDate).getTime();
-        case 'size': return parseFloat(b.size) - parseFloat(a.size);
-        case 'downloads': return b.downloadCount - a.downloadCount;
+        case 'name': return a.title.localeCompare(b.title);
+        case 'date': return new Date(b.uploaded_at).getTime() - new Date(a.uploaded_at).getTime();
+        case 'size': return b.file_size - a.file_size;
+        case 'downloads': return b.download_count - a.download_count;
         default: return 0;
       }
     });
@@ -246,39 +171,107 @@ const MaterialsLibrary: React.FC = () => {
     setSelectedMaterials(newSelected);
   };
 
-  const toggleFavorite = (materialId: string) => {
-    setMaterials(prev =>
-      prev.map(material =>
-        material.id === materialId
-          ? { ...material, isFavorite: !material.isFavorite }
-          : material
-      )
-    );
-    toast.success('즐겨찾기가 업데이트되었습니다.');
+  const handleDownload = async (material: Material) => {
+    try {
+      logger.info('자료 다운로드 시작', {
+        component: 'MaterialsLibrary',
+        action: 'handleDownload',
+        metadata: { materialId: material.id, fileName: material.file_name },
+      });
+
+      // 다운로드 카운트 증가
+      await MaterialService.incrementDownloadCount(material.id, 'current-user-id'); // TODO: 실제 user ID 사용
+
+      // 파일 다운로드
+      const link = document.createElement('a');
+      link.href = material.file_path;
+      link.download = material.file_name;
+      link.click();
+
+      toast.success('다운로드가 시작되었습니다.');
+
+      // 목록 새로고침
+      loadData();
+    } catch (error) {
+      logger.error('자료 다운로드 실패', error as Error, {
+        component: 'MaterialsLibrary',
+        action: 'handleDownload',
+      });
+      toast.error('다운로드 중 오류가 발생했습니다.');
+    }
   };
 
-  const handleBulkDownload = () => {
+  const handleBulkDownload = async () => {
     if (selectedMaterials.size === 0) {
       toast.error('다운로드할 자료를 선택해주세요.');
       return;
     }
-    toast.success(`${selectedMaterials.size}개 파일을 다운로드합니다.`);
+
+    try {
+      for (const materialId of selectedMaterials) {
+        const material = materials.find(m => m.id === materialId);
+        if (material) {
+          await handleDownload(material);
+        }
+      }
+    } catch (error) {
+      logger.error('일괄 다운로드 실패', error as Error, {
+        component: 'MaterialsLibrary',
+        action: 'handleBulkDownload',
+      });
+    }
   };
 
-  const handleBulkDelete = () => {
+  const handleDelete = async (materialId: string) => {
+    if (!confirm('이 자료를 삭제하시겠습니까?')) {
+      return;
+    }
+
+    try {
+      await MaterialService.deleteMaterial(materialId);
+      toast.success('자료가 삭제되었습니다.');
+      loadData();
+    } catch (error) {
+      logger.error('자료 삭제 실패', error as Error, {
+        component: 'MaterialsLibrary',
+        action: 'handleDelete',
+      });
+      toast.error('자료 삭제 중 오류가 발생했습니다.');
+    }
+  };
+
+  const handleBulkDelete = async () => {
     if (selectedMaterials.size === 0) {
       toast.error('삭제할 자료를 선택해주세요.');
       return;
     }
-    if (window.confirm(`선택한 ${selectedMaterials.size}개 파일을 삭제하시겠습니까?`)) {
-      setMaterials(prev => prev.filter(material => !selectedMaterials.has(material.id)));
+
+    if (!confirm(`선택한 ${selectedMaterials.size}개 파일을 삭제하시겠습니까?`)) {
+      return;
+    }
+
+    try {
+      for (const materialId of selectedMaterials) {
+        await MaterialService.deleteMaterial(materialId);
+      }
       setSelectedMaterials(new Set());
       toast.success('선택한 자료가 삭제되었습니다.');
+      loadData();
+    } catch (error) {
+      logger.error('일괄 삭제 실패', error as Error, {
+        component: 'MaterialsLibrary',
+        action: 'handleBulkDelete',
+      });
+      toast.error('삭제 중 오류가 발생했습니다.');
     }
   };
 
+  const handleViewPreview = (material: Material) => {
+    setSelectedMaterial(material);
+    setShowPreviewModal(true);
+  };
+
   if (loading) {
-    console.log('⏳ MaterialsLibrary 로딩 중...');
     return (
       <div className="flex items-center justify-center min-h-64 p-8">
         <div className="flex flex-col items-center space-y-4">
@@ -288,12 +281,6 @@ const MaterialsLibrary: React.FC = () => {
       </div>
     );
   }
-
-  console.log('📚 MaterialsLibrary 메인 렌더링 시작', {
-    materials: materials.length,
-    folders: folders.length,
-    filteredMaterials: filteredMaterials.length
-  });
 
   return (
     <div className="space-y-6">
@@ -310,7 +297,7 @@ const MaterialsLibrary: React.FC = () => {
             {viewMode === 'grid' ? '목록 보기' : '격자 보기'}
           </button>
           <button
-            onClick={() => setShowUploadModal(true)}
+            onClick={() => window.location.href = '/materials-upload'}
             className="btn-primary flex items-center gap-2"
           >
             <CloudArrowUpIcon className="h-4 w-4" />
@@ -344,11 +331,11 @@ const MaterialsLibrary: React.FC = () => {
               className="w-full appearance-none border border-gray-200 dark:border-gray-600 rounded-xl px-4 py-3 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
             >
               <option value="all">모든 카테고리</option>
-              <option value="lecture">강의자료</option>
-              <option value="reference">참고자료</option>
-              <option value="assignment">과제</option>
-              <option value="exam">시험</option>
-              <option value="template">템플릿</option>
+              {categories.map(category => (
+                <option key={category.id} value={category.id}>
+                  {category.icon} {category.name}
+                </option>
+              ))}
             </select>
             <FunnelIcon className="absolute right-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none" />
           </div>
@@ -411,42 +398,6 @@ const MaterialsLibrary: React.FC = () => {
         )}
       </div>
 
-      {/* 폴더 목록 */}
-      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700">
-        <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-          <h3 className="text-lg font-bold text-gray-900 dark:text-white">폴더</h3>
-        </div>
-
-        <div className="p-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {folders.map((folder) => (
-              <div
-                key={folder.id}
-                onClick={() => setCurrentFolderId(folder.id)}
-                className="p-4 border border-gray-200 dark:border-gray-700 rounded-xl cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 hover:border-blue-300 dark:hover:border-blue-700 transition-all bg-white dark:bg-gray-800"
-              >
-                <div className="flex items-center space-x-3 mb-3">
-                  <div className="p-2 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-                    <FolderIcon className="h-6 w-6 text-blue-600 dark:text-blue-400" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <h4 className="font-bold text-gray-900 dark:text-white truncate">
-                      {folder.name}
-                    </h4>
-                  </div>
-                </div>
-
-                <div className="text-sm text-gray-500 dark:text-gray-400 space-y-1">
-                  <div>파일: {folder.materialsCount}개</div>
-                  <div>하위폴더: {folder.subFoldersCount}개</div>
-                  <div>{new Date(folder.createdDate).toLocaleDateString('ko-KR')}</div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
       {/* 자료 목록 */}
       <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700">
         <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
@@ -486,21 +437,9 @@ const MaterialsLibrary: React.FC = () => {
                 >
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex-1 min-w-0">
-                      {getTypeIcon(material.type)}
+                      {getTypeIcon(material.file_name)}
                     </div>
                     <div className="flex items-center space-x-1">
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          toggleFavorite(material.id);
-                        }}
-                        className="p-1 rounded hover:bg-muted transition-colors"
-                      >
-                        <StarIcon className={`h-4 w-4 ${material.isFavorite
-                          ? 'text-accent fill-current'
-                          : 'text-muted-foreground'
-                          }`} />
-                      </button>
                       <input
                         type="checkbox"
                         checked={selectedMaterials.has(material.id)}
@@ -511,29 +450,25 @@ const MaterialsLibrary: React.FC = () => {
                     </div>
                   </div>
 
-                  <h4 className="font-bold text-gray-900 dark:text-white mb-2 truncate" title={material.name}>
-                    {material.name}
+                  <h4 className="font-bold text-gray-900 dark:text-white mb-2 truncate" title={material.title}>
+                    {material.title}
                   </h4>
 
                   <div className="space-y-2">
-                    <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border ${getCategoryColor(material.category)}`}>
-                      {getCategoryLabel(material.category)}
+                    <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border ${getCategoryColor(material.category_id)}`}>
+                      {getCategoryIcon(material.category_id)} {getCategoryLabel(material.category_id)}
                     </span>
 
                     <div className="text-sm text-muted-foreground space-y-1">
                       <div className="flex items-center space-x-1">
                         <ClockIcon className="h-3 w-3" />
-                        <span>{new Date(material.uploadDate).toLocaleDateString('ko-KR')}</span>
+                        <span>{new Date(material.uploaded_at).toLocaleDateString('ko-KR')}</span>
                       </div>
-                      <div className="flex items-center space-x-1">
-                        <UserIcon className="h-3 w-3" />
-                        <span>{material.uploadedBy}</span>
-                      </div>
-                      <div>크기: {material.size}</div>
-                      <div>다운로드: {material.downloadCount}회</div>
+                      <div>크기: {formatFileSize(material.file_size)}</div>
+                      <div>다운로드: {material.download_count}회</div>
                     </div>
 
-                    {material.tags.length > 0 && (
+                    {material.tags && material.tags.length > 0 && (
                       <div className="flex flex-wrap gap-1">
                         {material.tags.slice(0, 2).map((tag, index) => (
                           <span key={index} className="inline-flex items-center px-2 py-0.5 rounded text-xs bg-muted text-muted-foreground">
@@ -550,11 +485,23 @@ const MaterialsLibrary: React.FC = () => {
                   </div>
 
                   <div className="mt-4 pt-3 border-t border-gray-100 dark:border-gray-700 flex justify-between">
-                    <button className="text-sm text-primary hover:text-primary/80 flex items-center space-x-1 transition-colors rounded-xl px-2 py-1 hover:bg-primary/10">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleViewPreview(material);
+                      }}
+                      className="text-sm text-primary hover:text-primary/80 flex items-center space-x-1 transition-colors rounded-xl px-2 py-1 hover:bg-primary/10"
+                    >
                       <EyeIcon className="h-4 w-4" />
                       <span>미리보기</span>
                     </button>
-                    <button className="text-sm text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white flex items-center space-x-1 transition-colors rounded-xl px-2 py-1 hover:bg-gray-100 dark:hover:bg-gray-700">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDownload(material);
+                      }}
+                      className="text-sm text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white flex items-center space-x-1 transition-colors rounded-xl px-2 py-1 hover:bg-gray-100 dark:hover:bg-gray-700"
+                    >
                       <CloudArrowDownIcon className="h-4 w-4" />
                       <span>다운로드</span>
                     </button>
@@ -583,27 +530,23 @@ const MaterialsLibrary: React.FC = () => {
                     />
 
                     <div className="flex-shrink-0">
-                      {getTypeIcon(material.type)}
+                      {getTypeIcon(material.file_name)}
                     </div>
 
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center space-x-3">
                         <h4 className="font-medium text-card-foreground truncate">
-                          {material.name}
+                          {material.title}
                         </h4>
-                        <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border ${getCategoryColor(material.category)}`}>
-                          {getCategoryLabel(material.category)}
+                        <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border ${getCategoryColor(material.category_id)}`}>
+                          {getCategoryIcon(material.category_id)} {getCategoryLabel(material.category_id)}
                         </span>
-                        {material.isFavorite && (
-                          <StarIcon className="h-4 w-4 text-accent fill-current" />
-                        )}
                       </div>
 
                       <div className="mt-1 flex items-center space-x-4 text-sm text-muted-foreground">
-                        <span>{material.size}</span>
-                        <span>{new Date(material.uploadDate).toLocaleDateString('ko-KR')}</span>
-                        <span>{material.uploadedBy}</span>
-                        <span>다운로드 {material.downloadCount}회</span>
+                        <span>{formatFileSize(material.file_size)}</span>
+                        <span>{new Date(material.uploaded_at).toLocaleDateString('ko-KR')}</span>
+                        <span>다운로드 {material.download_count}회</span>
                       </div>
 
                       {material.description && (
@@ -614,14 +557,32 @@ const MaterialsLibrary: React.FC = () => {
                     </div>
 
                     <div className="flex items-center space-x-2">
-                      <button className="p-2 text-muted-foreground hover:text-primary transition-colors rounded-full">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleViewPreview(material);
+                        }}
+                        className="p-2 text-muted-foreground hover:text-primary transition-colors rounded-full"
+                      >
                         <EyeIcon className="h-4 w-4" />
                       </button>
-                      <button className="p-2 text-muted-foreground hover:text-success transition-colors rounded-full">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDownload(material);
+                        }}
+                        className="p-2 text-muted-foreground hover:text-success transition-colors rounded-full"
+                      >
                         <CloudArrowDownIcon className="h-4 w-4" />
                       </button>
-                      <button className="p-2 text-muted-foreground hover:text-foreground transition-colors rounded-full">
-                        <ShareIcon className="h-4 w-4" />
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDelete(material.id);
+                        }}
+                        className="p-2 text-muted-foreground hover:text-destructive transition-colors rounded-full"
+                      >
+                        <TrashIcon className="h-4 w-4" />
                       </button>
                     </div>
                   </div>
@@ -640,54 +601,13 @@ const MaterialsLibrary: React.FC = () => {
         </div>
       </div>
 
-      {/* 업로드 모달 */}
-      {showUploadModal && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white dark:bg-gray-800 rounded-2xl w-full max-w-md border border-gray-200 dark:border-gray-700 shadow-2xl animate-in fade-in zoom-in duration-200">
-            <div className="px-6 py-4 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center">
-              <h3 className="text-lg font-bold text-gray-900 dark:text-white">파일 업로드</h3>
-              <button
-                onClick={() => setShowUploadModal(false)}
-                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
-              >
-                <XMarkIcon className="h-6 w-6" />
-              </button>
-            </div>
-
-            <div className="p-6">
-              <div className="border-2 border-dashed border-gray-200 dark:border-gray-700 rounded-xl p-8 text-center bg-gray-50 dark:bg-gray-800/50 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors cursor-pointer">
-                <CloudArrowUpIcon className="mx-auto h-12 w-12 text-gray-400 dark:text-gray-500 mb-4" />
-                <p className="text-gray-600 dark:text-gray-300 font-medium mb-2">
-                  파일을 드래그하여 놓거나 클릭하여 선택하세요
-                </p>
-                <p className="text-sm text-gray-500 dark:text-gray-400">
-                  최대 100MB, 모든 파일 형식 지원
-                </p>
-                <button className="mt-4 btn-primary">
-                  파일 선택
-                </button>
-              </div>
-            </div>
-
-            <div className="px-6 py-4 border-t border-gray-100 dark:border-gray-700 flex justify-end space-x-3 bg-gray-50 dark:bg-gray-800/50 rounded-b-2xl">
-              <button
-                onClick={() => setShowUploadModal(false)}
-                className="btn-secondary"
-              >
-                취소
-              </button>
-              <button
-                onClick={() => {
-                  setShowUploadModal(false);
-                  toast.success('파일이 업로드되었습니다.');
-                }}
-                className="btn-primary"
-              >
-                업로드
-              </button>
-            </div>
-          </div>
-        </div>
+      {/* 파일 미리보기 모달 */}
+      {showPreviewModal && selectedMaterial && (
+        <FilePreviewModal
+          material={selectedMaterial}
+          onClose={() => setShowPreviewModal(false)}
+          onDownload={() => handleDownload(selectedMaterial)}
+        />
       )}
     </div>
   );

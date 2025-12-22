@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import dynamic from 'next/dynamic';
 import {
   BarChart2,
   TrendingUp,
@@ -12,12 +13,37 @@ import {
   Database,
   RefreshCw
 } from 'lucide-react';
-import PerformanceTracking from '../performance/PerformanceTracking';
-import AdvancedAnalytics from './AdvancedAnalytics';
-import { ReportGenerator } from '../reports';
 import { PageContainer } from '../common/PageContainer';
 import { PageHeader } from '../common/PageHeader';
 import { AnalyticsService } from '../../services/analytics.service';
+
+// Dynamic imports for heavy components
+const PerformanceTracking = dynamic(() => import('../performance/PerformanceTracking'), {
+  loading: () => (
+    <div className="flex items-center justify-center py-12">
+      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+    </div>
+  ),
+  ssr: false,
+});
+
+const AdvancedAnalytics = dynamic(() => import('./AdvancedAnalytics'), {
+  loading: () => (
+    <div className="flex items-center justify-center py-12">
+      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+    </div>
+  ),
+  ssr: false,
+});
+
+const ReportGenerator = dynamic(() => import('../reports').then(mod => ({ default: mod.ReportGenerator })), {
+  loading: () => (
+    <div className="flex items-center justify-center py-12">
+      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+    </div>
+  ),
+  ssr: false,
+});
 
 type TabType = 'performance' | 'analytics' | 'reports';
 
