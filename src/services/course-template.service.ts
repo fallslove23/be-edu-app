@@ -1194,6 +1194,83 @@ export class CourseTemplateService {
   static get supabase() {
     return supabase;
   }
+
+  // ===== 시험 관리 =====
+
+  /**
+   * 특정 회차의 시험 목록 조회
+   */
+  static async getExams(roundId: string): Promise<any[]> {
+    try {
+      const { data, error } = await supabase
+        .from('course_exams')
+        .select('*')
+        .eq('round_id', roundId)
+        .order('exam_number', { ascending: true });
+
+      if (error) throw error;
+      return data || [];
+    } catch (error) {
+      console.error('[CourseTemplateService] Error loading exams:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * 시험 생성
+   */
+  static async createExam(examData: any): Promise<any> {
+    try {
+      const { data, error } = await supabase
+        .from('course_exams')
+        .insert([examData])
+        .select()
+        .single();
+
+      if (error) throw error;
+      return data;
+    } catch (error) {
+      console.error('[CourseTemplateService] Error creating exam:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * 시험 수정
+   */
+  static async updateExam(examId: string, examData: any): Promise<any> {
+    try {
+      const { data, error } = await supabase
+        .from('course_exams')
+        .update(examData)
+        .eq('id', examId)
+        .select()
+        .single();
+
+      if (error) throw error;
+      return data;
+    } catch (error) {
+      console.error('[CourseTemplateService] Error updating exam:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * 시험 삭제
+   */
+  static async deleteExam(examId: string): Promise<void> {
+    try {
+      const { error } = await supabase
+        .from('course_exams')
+        .delete()
+        .eq('id', examId);
+
+      if (error) throw error;
+    } catch (error) {
+      console.error('[CourseTemplateService] Error deleting exam:', error);
+      throw error;
+    }
+  }
 }
 
 // 기본 export 추가

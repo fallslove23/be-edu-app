@@ -18,6 +18,7 @@ import type { CourseRound } from '@/types/course-template.types';
 import toast from 'react-hot-toast';
 import RoundTraineesTab from '@/components/courses/RoundTraineesTab';
 import RoundSessionsTab from '@/components/courses/RoundSessionsTab';
+import RoundExamsTab from '@/components/courses/RoundExamsTab';
 import RoundEditModal from '@/components/courses/RoundEditModal';
 
 type TabType = 'overview' | 'trainees' | 'sessions' | 'exams';
@@ -337,10 +338,7 @@ export default function RoundDetailPage() {
         )}
 
         {activeTab === 'exams' && (
-          <div className="bg-card rounded-lg border border-border p-6">
-            <h2 className="text-xl font-bold text-foreground mb-4">시험 관리</h2>
-            <p className="text-muted-foreground">시험 관리 기능 구현 예정</p>
-          </div>
+          <RoundExamsTab round={round} onUpdate={loadRoundData} />
         )}
       </div>
 
