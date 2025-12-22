@@ -37,20 +37,7 @@ const MaterialUploadZone: React.FC<MaterialUploadZoneProps> = ({
     setIsDragging(false);
   }, []);
 
-  const handleDrop = useCallback((e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(false);
-
-    const files = Array.from(e.dataTransfer.files);
-    handleFiles(files);
-  }, []);
-
-  const handleFileSelect = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files || []);
-    handleFiles(files);
-  }, []);
-
-  const handleFiles = async (files: File[]) => {
+  const handleFiles = useCallback(async (files: File[]) => {
     if (!selectedCategory) {
       toast.error('카테고리를 먼저 선택해주세요.');
       return;
@@ -73,13 +60,12 @@ const MaterialUploadZone: React.FC<MaterialUploadZoneProps> = ({
     // 파일별로 업로드 진행
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
-      const uploadIndex = uploads.length + i;
 
       try {
         // 업로드 시작
         setUploads((prev) =>
           prev.map((upload, idx) =>
-            idx === uploadIndex ? { ...upload, status: 'uploading', progress: 0 } : upload
+            upload.file === file ? { ...upload, status: 'uploading', progress: 0 } : upload
           )
         );
 
@@ -94,7 +80,7 @@ const MaterialUploadZone: React.FC<MaterialUploadZoneProps> = ({
         // 업로드 완료
         setUploads((prev) =>
           prev.map((upload, idx) =>
-            idx === uploadIndex ? { ...upload, status: 'completed', progress: 100 } : upload
+            upload.file === file ? { ...upload, status: 'completed', progress: 100 } : upload
           )
         );
 
@@ -103,7 +89,7 @@ const MaterialUploadZone: React.FC<MaterialUploadZoneProps> = ({
         console.error('파일 업로드 실패:', error);
         setUploads((prev) =>
           prev.map((upload, idx) =>
-            idx === uploadIndex
+            upload.file === file
               ? {
                   ...upload,
                   status: 'failed',
@@ -127,7 +113,20 @@ const MaterialUploadZone: React.FC<MaterialUploadZoneProps> = ({
 
     // 완료 콜백 실행
     onUploadComplete?.();
-  };
+  }, [selectedCategory, user, title, description, isPublic, tags, onUploadComplete]);
+
+  const handleDrop = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+
+    const files = Array.from(e.dataTransfer.files);
+    handleFiles(files);
+  }, [handleFiles]);
+
+  const handleFileSelect = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    handleFiles(files);
+  }, [handleFiles]);
 
   const removeUpload = (index: number) => {
     setUploads((prev) => prev.filter((_, idx) => idx !== index));
@@ -266,8 +265,18 @@ const MaterialUploadZone: React.FC<MaterialUploadZoneProps> = ({
           파일을 드래그하여 놓거나 클릭하여 선택하세요
         </h3>
         <p className="text-muted-foreground mb-6">
-          최대 100MB, 모든 파일 형식 지원
+          최대 100MB, 문서, 이미지, 동영상 등 모든 파일 형식 지원
         </p>
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            fileInputRef.current?.click();
+          }}
+          className="px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
+        >
+          파일 선택하기
+        </button>
         <input
           ref={fileInputRef}
           type="file"
