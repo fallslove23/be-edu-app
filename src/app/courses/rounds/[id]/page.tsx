@@ -17,6 +17,8 @@ import { CourseTemplateService } from '@/services/course-template.service';
 import type { CourseRound } from '@/types/course-template.types';
 import toast from 'react-hot-toast';
 import RoundTraineesTab from '@/components/courses/RoundTraineesTab';
+import RoundSessionsTab from '@/components/courses/RoundSessionsTab';
+import RoundEditModal from '@/components/courses/RoundEditModal';
 
 type TabType = 'overview' | 'trainees' | 'sessions' | 'exams';
 
@@ -28,6 +30,7 @@ export default function RoundDetailPage() {
   const [round, setRound] = useState<CourseRound | null>(null);
   const [activeTab, setActiveTab] = useState<TabType>('overview');
   const [isLoading, setIsLoading] = useState(true);
+  const [showEditModal, setShowEditModal] = useState(false);
 
   useEffect(() => {
     loadRoundData();
@@ -57,8 +60,7 @@ export default function RoundDetailPage() {
   };
 
   const handleEdit = () => {
-    // TODO: 편집 모달 또는 페이지로 이동
-    toast('편집 기능 구현 예정', { icon: 'ℹ️' });
+    setShowEditModal(true);
   };
 
   const handleDelete = async () => {
@@ -331,10 +333,7 @@ export default function RoundDetailPage() {
         )}
 
         {activeTab === 'sessions' && (
-          <div className="bg-card rounded-lg border border-border p-6">
-            <h2 className="text-xl font-bold text-foreground mb-4">세션 관리</h2>
-            <p className="text-muted-foreground">세션 관리 기능 구현 예정</p>
-          </div>
+          <RoundSessionsTab round={round} onUpdate={loadRoundData} />
         )}
 
         {activeTab === 'exams' && (
@@ -344,6 +343,15 @@ export default function RoundDetailPage() {
           </div>
         )}
       </div>
+
+      {/* 편집 모달 */}
+      {showEditModal && (
+        <RoundEditModal
+          round={round}
+          onClose={() => setShowEditModal(false)}
+          onUpdate={loadRoundData}
+        />
+      )}
     </div>
   );
 }

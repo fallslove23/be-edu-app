@@ -1107,6 +1107,93 @@ export class CourseTemplateService {
       throw error;
     }
   }
+
+  // ===== 세션 관리 =====
+
+  /**
+   * 특정 회차의 세션 목록 조회
+   */
+  static async getSessions(roundId: string): Promise<CourseSession[]> {
+    try {
+      const { data, error } = await supabase
+        .from('course_sessions')
+        .select('*')
+        .eq('round_id', roundId)
+        .order('session_number', { ascending: true });
+
+      if (error) throw error;
+      return data || [];
+    } catch (error) {
+      console.error('[CourseTemplateService] Error loading sessions:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * 세션 생성
+   */
+  static async createSession(sessionData: Partial<CourseSession>): Promise<CourseSession> {
+    try {
+      const { data, error } = await supabase
+        .from('course_sessions')
+        .insert([sessionData])
+        .select()
+        .single();
+
+      if (error) throw error;
+      return data;
+    } catch (error) {
+      console.error('[CourseTemplateService] Error creating session:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * 세션 수정
+   */
+  static async updateSession(
+    sessionId: string,
+    sessionData: Partial<CourseSession>
+  ): Promise<CourseSession> {
+    try {
+      const { data, error } = await supabase
+        .from('course_sessions')
+        .update(sessionData)
+        .eq('id', sessionId)
+        .select()
+        .single();
+
+      if (error) throw error;
+      return data;
+    } catch (error) {
+      console.error('[CourseTemplateService] Error updating session:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * 세션 삭제
+   */
+  static async deleteSession(sessionId: string): Promise<void> {
+    try {
+      const { error } = await supabase
+        .from('course_sessions')
+        .delete()
+        .eq('id', sessionId);
+
+      if (error) throw error;
+    } catch (error) {
+      console.error('[CourseTemplateService] Error deleting session:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Supabase 클라이언트 노출 (강사 목록 조회 등을 위해)
+   */
+  static get supabase() {
+    return supabase;
+  }
 }
 
 // 기본 export 추가
