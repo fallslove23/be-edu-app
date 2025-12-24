@@ -30,7 +30,7 @@ import { PageHeader } from '../common/PageHeader';
 import { DashboardService, type DashboardStats } from '../../services/dashboard.service';
 
 // Dynamic imports for heavy dashboard components
-const EnhancedDashboard = dynamic(() => import('./EnhancedDashboard'), {
+const ImprovedDashboard = dynamic(() => import('./ImprovedDashboard'), {
   loading: () => (
     <div className="flex items-center justify-center py-12">
       <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
@@ -385,11 +385,10 @@ const DashboardWrapper: React.FC<DashboardWrapperProps> = ({ onNavigate }) => {
           </button>
         </div>
 
-        {/* Original Dashboard Content (Hidden or moved below) */}
-        <div className="pt-8 border-t border-gray-200 dark:border-gray-700">
-          <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4 px-2">상세 대시보드</h3>
+        {/* Improved Dashboard Content */}
+        <div className="pt-8">
           <ErrorBoundary>
-            <EnhancedDashboard embedded={true} />
+            <ImprovedDashboard />
           </ErrorBoundary>
         </div>
       </div>
