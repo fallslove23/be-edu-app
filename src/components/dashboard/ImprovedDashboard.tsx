@@ -152,221 +152,145 @@ export default function ImprovedDashboard() {
   }
 
   return (
-    <div className="space-y-6 p-6">
-      {/* 헤더 */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">대시보드</h1>
-          <p className="text-muted-foreground mt-1">
-            교육 현황을 한눈에 확인하세요
-          </p>
+    <div className="space-y-4">
+      {/* 헤더 - 제거하고 심플하게 */}
+
+      {/* 주요 통계 카드 - 심플한 스타일 */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        {/* 출석률 */}
+        <div className="bg-card border border-border rounded-lg p-4">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-xs text-muted-foreground">출석률</span>
+            <CheckCircle className="w-4 h-4 text-green-500" />
+          </div>
+          <div className="text-2xl font-bold text-foreground">
+            {stats?.averageAttendance.toFixed(1) || 0}%
+          </div>
+          <div className="text-xs text-green-500 mt-1">
+            ↑ {stats?.attendanceGrowth.toFixed(1) || 0}%
+          </div>
         </div>
-        <button
-          onClick={handleRefresh}
-          disabled={refreshing}
-          className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-all disabled:opacity-50"
-        >
-          <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
-          새로고침
-        </button>
+
+        {/* 진행 과정 */}
+        <div className="bg-card border border-border rounded-lg p-4">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-xs text-muted-foreground">진행 과정</span>
+            <BookOpen className="w-4 h-4 text-blue-500" />
+          </div>
+          <div className="text-2xl font-bold text-foreground">
+            {stats?.activeCourses || 0}개
+          </div>
+          <div className="text-xs text-muted-foreground mt-1">
+            총 {stats?.totalTrainees || 0}명 수강
+          </div>
+        </div>
+
+        {/* 완료율 */}
+        <div className="bg-card border border-border rounded-lg p-4">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-xs text-muted-foreground">완료율</span>
+            <Target className="w-4 h-4 text-purple-500" />
+          </div>
+          <div className="text-2xl font-bold text-foreground">
+            {stats?.completionRate.toFixed(1) || 0}%
+          </div>
+          <div className="text-xs text-purple-500 mt-1">
+            ↑ {stats?.completionGrowth.toFixed(1) || 0}%
+          </div>
+        </div>
+
+        {/* 평균 성적 */}
+        <div className="bg-card border border-border rounded-lg p-4">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-xs text-muted-foreground">평균 성적</span>
+            <Award className="w-4 h-4 text-orange-500" />
+          </div>
+          <div className="text-2xl font-bold text-foreground">87.0점</div>
+          <div className="text-xs text-orange-500 mt-1">↑ 3.2%</div>
+        </div>
       </div>
 
-      {/* 주요 통계 카드 */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <ImprovedStatCard
-          title="전체 교육생"
-          value={stats?.totalTrainees || 0}
-          change={stats?.traineeGrowth}
-          subtitle="이번 달 신규 등록"
-          icon={Users}
-          color="blue"
-          trend={stats && stats.traineeGrowth >= 0 ? 'up' : 'down'}
-          loading={loading}
-        />
-        <ImprovedStatCard
-          title="진행 중인 과정"
-          value={stats?.activeCourses || 0}
-          change={stats?.courseGrowth}
-          subtitle="활발한 교육 운영"
-          icon={GraduationCap}
-          color="green"
-          trend={stats && stats.courseGrowth >= 0 ? 'up' : 'down'}
-          loading={loading}
-        />
-        <ImprovedStatCard
-          title="평균 출석률"
-          value={`${stats?.averageAttendance.toFixed(1) || 0}%`}
-          change={stats?.attendanceGrowth}
-          subtitle="높은 참여도 유지"
-          icon={CheckCircle}
-          color="purple"
-          trend={stats && stats.attendanceGrowth >= 0 ? 'up' : 'down'}
-          loading={loading}
-        />
-        <ImprovedStatCard
-          title="완료율"
-          value={`${stats?.completionRate.toFixed(1) || 0}%`}
-          change={stats?.completionGrowth}
-          subtitle="목표 달성률"
-          icon={Target}
-          color="orange"
-          trend={stats && stats.completionGrowth >= 0 ? 'up' : 'down'}
-          loading={loading}
-        />
-      </div>
-
-      {/* 차트 섹션 */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      {/* 차트 섹션 - 심플하게 */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
         {/* 출석률 추이 */}
-        <div className="lg:col-span-2">
-          <ChartCard
-            title="출석률 추이"
-            subtitle="최근 30일간 출석률 변화"
-            actions={
-              <button className="text-sm text-muted-foreground hover:text-foreground flex items-center gap-1">
-                <Download className="w-4 h-4" />
-                내보내기
-              </button>
-            }
-          >
-            <div className="h-80">
-              <Line data={attendanceChartData} options={getChartOptions(isDark)} />
-            </div>
-          </ChartCard>
+        <div className="bg-card border border-border rounded-lg p-4">
+          <h3 className="text-sm font-medium text-foreground mb-3">출석률 추이</h3>
+          <div className="h-48">
+            <Line data={attendanceChartData} options={getChartOptions(isDark)} />
+          </div>
         </div>
 
         {/* 과정별 교육생 분포 */}
-        <div>
-          <ChartCard title="과정별 교육생 분포" subtitle="현재 진행 중인 과정">
-            <div className="h-80 flex items-center justify-center">
-              <Doughnut
-                data={courseDistributionData}
-                options={{
-                  ...getChartOptions(isDark),
-                  maintainAspectRatio: true,
-                }}
-              />
-            </div>
-          </ChartCard>
-        </div>
-      </div>
-
-      {/* 빠른 작업 및 최근 활동 */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* 빠른 작업 */}
-        <div className="lg:col-span-1">
-          <div className="bg-card rounded-xl border border-border p-6">
-            <h3 className="text-lg font-semibold text-foreground mb-4">
-              빠른 작업
-            </h3>
-            <div className="space-y-3">
-              <QuickActionCard
-                title="출석 체크"
-                description="오늘의 출석을 확인하세요"
-                icon={CheckCircle}
-                color="bg-green-500"
-                onClick={() => window.location.href = '/attendance-check'}
-              />
-              <QuickActionCard
-                title="성적 입력"
-                description="평가 성적을 입력하세요"
-                icon={Award}
-                color="bg-purple-500"
-                onClick={() => window.location.href = '/grade-input'}
-              />
-              <QuickActionCard
-                title="일정 관리"
-                description="교육 일정을 확인하세요"
-                icon={Calendar}
-                color="bg-blue-500"
-                onClick={() => window.location.href = '/schedule-calendar'}
-              />
-              <QuickActionCard
-                title="자료 업로드"
-                description="교육 자료를 업로드하세요"
-                icon={BookOpen}
-                color="bg-orange-500"
-                onClick={() => window.location.href = '/materials-upload'}
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* 최근 활동 */}
-        <div className="lg:col-span-2">
-          <div className="bg-card rounded-xl border border-border p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-foreground">
-                최근 활동
-              </h3>
-              <button className="text-sm text-primary hover:underline">
-                전체 보기
-              </button>
-            </div>
-            <div className="space-y-2">
-              {recentActivities.map((activity, index) => (
-                <ActivityFeedItem key={index} {...activity} />
-              ))}
-            </div>
+        <div className="bg-card border border-border rounded-lg p-4">
+          <h3 className="text-sm font-medium text-foreground mb-3">과정별 분포</h3>
+          <div className="h-48 flex items-center justify-center">
+            <Doughnut
+              data={courseDistributionData}
+              options={{
+                ...getChartOptions(isDark),
+                maintainAspectRatio: true,
+              }}
+            />
           </div>
         </div>
       </div>
 
-      {/* 추가 통계 */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <MiniStatCard
-          label="오늘 출석"
-          value="43/45"
-          icon={CheckCircle}
-          color="bg-green-500"
-          trend={5.2}
-        />
-        <MiniStatCard
-          label="이번 주 평균"
-          value="92%"
-          icon={TrendingUp}
-          color="bg-blue-500"
-          trend={2.1}
-        />
-        <MiniStatCard
-          label="완료 과정"
-          value="8"
-          icon={Award}
-          color="bg-purple-500"
-          trend={12.5}
-        />
-        <MiniStatCard
-          label="진행 예정"
-          value="3"
-          icon={Calendar}
-          color="bg-orange-500"
-          trend={-3.2}
-        />
+      {/* 빠른 작업 - 심플한 버튼 */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <button
+          onClick={() => (window.location.href = '/attendance-check')}
+          className="bg-card border border-border rounded-lg p-4 hover:bg-muted/50 transition-colors text-left"
+        >
+          <CheckCircle className="w-5 h-5 text-green-500 mb-2" />
+          <div className="text-sm font-medium text-foreground">출석 체크</div>
+          <div className="text-xs text-muted-foreground mt-1">오늘 출석 확인</div>
+        </button>
+
+        <button
+          onClick={() => (window.location.href = '/grade-input')}
+          className="bg-card border border-border rounded-lg p-4 hover:bg-muted/50 transition-colors text-left"
+        >
+          <Award className="w-5 h-5 text-purple-500 mb-2" />
+          <div className="text-sm font-medium text-foreground">성적 입력</div>
+          <div className="text-xs text-muted-foreground mt-1">평가 성적 입력</div>
+        </button>
+
+        <button
+          onClick={() => (window.location.href = '/schedule-calendar')}
+          className="bg-card border border-border rounded-lg p-4 hover:bg-muted/50 transition-colors text-left"
+        >
+          <Calendar className="w-5 h-5 text-blue-500 mb-2" />
+          <div className="text-sm font-medium text-foreground">일정 관리</div>
+          <div className="text-xs text-muted-foreground mt-1">교육 일정 확인</div>
+        </button>
+
+        <button
+          onClick={() => (window.location.href = '/materials-upload')}
+          className="bg-card border border-border rounded-lg p-4 hover:bg-muted/50 transition-colors text-left"
+        >
+          <BookOpen className="w-5 h-5 text-orange-500 mb-2" />
+          <div className="text-sm font-medium text-foreground">자료 업로드</div>
+          <div className="text-xs text-muted-foreground mt-1">교육 자료 업로드</div>
+        </button>
       </div>
 
-      {/* 진행률 카드 */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <ProgressCard
-          title="이번 달 출석 목표"
-          current={87}
-          total={100}
-          color="bg-blue-500"
-          subtitle="13% 남음"
-        />
-        <ProgressCard
-          title="평가 완료율"
-          current={6}
-          total={8}
-          color="bg-green-500"
-          subtitle="2개 남음"
-        />
-        <ProgressCard
-          title="자료 배포율"
-          current={24}
-          total={30}
-          color="bg-purple-500"
-          subtitle="6개 남음"
-        />
+      {/* 최근 활동 - 심플한 리스트 */}
+      <div className="bg-card border border-border rounded-lg p-4">
+        <h3 className="text-sm font-medium text-foreground mb-3">최근 활동</h3>
+        <div className="space-y-2">
+          {recentActivities.slice(0, 4).map((activity, index) => (
+            <div key={index} className="flex items-start gap-3 p-2 rounded hover:bg-muted/50">
+              <div className={`p-1.5 rounded ${activity.color} bg-opacity-10`}>
+                <activity.icon className={`w-3 h-3 ${activity.color.replace('bg-', 'text-')}`} />
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="text-xs font-medium text-foreground">{activity.title}</div>
+                <div className="text-xs text-muted-foreground">{activity.description}</div>
+              </div>
+              <span className="text-xs text-muted-foreground">{activity.time}</span>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
