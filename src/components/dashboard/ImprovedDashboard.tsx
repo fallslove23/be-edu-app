@@ -161,12 +161,12 @@ export default function ImprovedDashboard() {
         <div className="bg-card border border-border rounded-lg p-4">
           <div className="flex items-center justify-between mb-2">
             <span className="text-xs text-muted-foreground">출석률</span>
-            <CheckCircle className="w-4 h-4 text-green-500" />
+            <CheckCircle className="w-4 h-4 text-cyan-500" />
           </div>
           <div className="text-2xl font-bold text-foreground">
             {stats?.averageAttendance.toFixed(1) || 0}%
           </div>
-          <div className="text-xs text-green-500 mt-1">
+          <div className="text-xs text-cyan-500 mt-1">
             ↑ {stats?.attendanceGrowth.toFixed(1) || 0}%
           </div>
         </div>
@@ -175,7 +175,7 @@ export default function ImprovedDashboard() {
         <div className="bg-card border border-border rounded-lg p-4">
           <div className="flex items-center justify-between mb-2">
             <span className="text-xs text-muted-foreground">진행 과정</span>
-            <BookOpen className="w-4 h-4 text-blue-500" />
+            <BookOpen className="w-4 h-4 text-cyan-500" />
           </div>
           <div className="text-2xl font-bold text-foreground">
             {stats?.activeCourses || 0}개
@@ -189,12 +189,12 @@ export default function ImprovedDashboard() {
         <div className="bg-card border border-border rounded-lg p-4">
           <div className="flex items-center justify-between mb-2">
             <span className="text-xs text-muted-foreground">완료율</span>
-            <Target className="w-4 h-4 text-purple-500" />
+            <Target className="w-4 h-4 text-cyan-500" />
           </div>
           <div className="text-2xl font-bold text-foreground">
             {stats?.completionRate.toFixed(1) || 0}%
           </div>
-          <div className="text-xs text-purple-500 mt-1">
+          <div className="text-xs text-cyan-500 mt-1">
             ↑ {stats?.completionGrowth.toFixed(1) || 0}%
           </div>
         </div>
@@ -203,10 +203,10 @@ export default function ImprovedDashboard() {
         <div className="bg-card border border-border rounded-lg p-4">
           <div className="flex items-center justify-between mb-2">
             <span className="text-xs text-muted-foreground">평균 성적</span>
-            <Award className="w-4 h-4 text-orange-500" />
+            <Award className="w-4 h-4 text-cyan-500" />
           </div>
           <div className="text-2xl font-bold text-foreground">87.0점</div>
-          <div className="text-xs text-orange-500 mt-1">↑ 3.2%</div>
+          <div className="text-xs text-cyan-500 mt-1">↑ 3.2%</div>
         </div>
       </div>
 
@@ -241,7 +241,7 @@ export default function ImprovedDashboard() {
           onClick={() => (window.location.href = '/attendance-check')}
           className="bg-card border border-border rounded-lg p-4 hover:bg-muted/50 transition-colors text-left"
         >
-          <CheckCircle className="w-5 h-5 text-green-500 mb-2" />
+          <CheckCircle className="w-5 h-5 text-cyan-500 mb-2" />
           <div className="text-sm font-medium text-foreground">출석 체크</div>
           <div className="text-xs text-muted-foreground mt-1">오늘 출석 확인</div>
         </button>
@@ -259,7 +259,7 @@ export default function ImprovedDashboard() {
           onClick={() => (window.location.href = '/schedule-calendar')}
           className="bg-card border border-border rounded-lg p-4 hover:bg-muted/50 transition-colors text-left"
         >
-          <Calendar className="w-5 h-5 text-blue-500 mb-2" />
+          <Calendar className="w-5 h-5 text-orange-500 mb-2" />
           <div className="text-sm font-medium text-foreground">일정 관리</div>
           <div className="text-xs text-muted-foreground mt-1">교육 일정 확인</div>
         </button>
@@ -268,7 +268,7 @@ export default function ImprovedDashboard() {
           onClick={() => (window.location.href = '/materials-upload')}
           className="bg-card border border-border rounded-lg p-4 hover:bg-muted/50 transition-colors text-left"
         >
-          <BookOpen className="w-5 h-5 text-orange-500 mb-2" />
+          <BookOpen className="w-5 h-5 text-cyan-500 mb-2" />
           <div className="text-sm font-medium text-foreground">자료 업로드</div>
           <div className="text-xs text-muted-foreground mt-1">교육 자료 업로드</div>
         </button>
